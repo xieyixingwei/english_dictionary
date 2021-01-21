@@ -13,13 +13,17 @@ class Word(models.Model):
     w_etyma = models.JSONField()    # 词根词缀 [root1,root2,...]
     w_synonym = models.JSONField()  # 近义词 [word1,word2,...]
     w_antonym = models.JSONField()  # 反义词 [word1,word2,...]
-    w_distinguish_id = models.JSONField()     # 词义辨析id [id1,id2,...]
-    w_grammar_id = models.JSONField() # 语法id [id1,id2,...]
+    # w_distinguish_id = models.JSONField()     # 词义辨析id [id1,id2,...]
+    # w_grammar_id = models.JSONField() # 语法id [id1,id2,...]
     w_origin = models.CharField(max_length=512, blank=True) # 词源 markdown "1660年左右进入英语，直接源自中古拉丁语的coordinare，意为同一等级的。"
-    w_shorthand = models.CharField(max_length=512, blank=True) # 词源 markdown
-    w_paraphrase = models.JSONField(max_length=512, blank=True) # 释义 {}
+    w_shorthand = models.CharField(max_length=256, blank=True) # 速记 markdown
+    w_partofspeech = models.JSONField(max_length=256, blank=True) # 词性 []
+    w_sentence_pattern = models.JSONField(max_length=256, blank=True) # 常用句型 []
+    w_word_collocation = models.JSONField(max_length=256, blank=True) # 词汇搭配 []
+    w_image = models.ImageField() # 图片讲解
+    w_vedio = models.FilePathField(max_length=128) # 视频讲解
     class Meta:
-        db_table = "Word"
+        db_table = "word"
     def paraphrase(self) -> str:
         return '''
         "PartOfSpeech": [
@@ -64,12 +68,6 @@ class Word(models.Model):
 #         - coordinate one's efforts 齐心协力
 #         - coordinate closely       紧密配合
 #
-#
-# word.w_paraphrase {
-#  "短语": [1,3,5],
-#  "词汇搭配":[
-#    { "type": "用作动词",
-#      "content":[1,3,5]
-#    },
-#  ]
-# }
+# 4. 常用句型
+#     1. It is that ....
+#        It is that very much.

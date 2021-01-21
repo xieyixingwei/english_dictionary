@@ -20,7 +20,7 @@ class User(models.Model):
     u_telephone = models.CharField(max_length=16, blank=True) # 电话
     u_status = models.JSONField() # 状态
     class Meta:
-        db_table = "User"
+        db_table = "user"
 
     def gender(self) -> str:
         return "男" if self.u_gender else "女"

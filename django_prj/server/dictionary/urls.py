@@ -4,6 +4,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    url(r'', views.index, name='index'),
     url(r'^words/$', views.WordView.as_view(), name='words'),
 ]

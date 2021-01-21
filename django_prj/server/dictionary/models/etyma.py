@@ -8,8 +8,10 @@ class Etyma(models.Model):
     e_name = models.CharField(max_length=32, primary_key=True) # 词根 (primary key)
     e_meaning = models.TextField(max_length=512, blank=True) # 含义 markdown
     e_type = models.IntegerField() # 类型: 前缀|后缀|词根
+    e_image = models.ImageField() # 图片讲解
+    e_vedio = models.FilePathField(max_length=128) # 视频讲解
     class Meta:
-        db_table = "Etyma"
+        db_table = "etyma"
     def type(self) -> str:
         if self.e_type == 0:
             return "prefix"
