@@ -1,5 +1,5 @@
 
-from .word import Word
+from .word_tb import Word
 from .etyma import Etyma
 from .distinguish import Distinguish
 from .sentence import Sentence

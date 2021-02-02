@@ -1,5 +1,5 @@
 from django.db import models
-from .word import Word
+from .word_tb import Word
 from .distinguish import Distinguish
 
 class WordToDistinguish(models.Model):

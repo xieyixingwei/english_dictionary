@@ -5,7 +5,7 @@ from rest_framework import serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.request import Request
-
+from rest_framework import generics
 from dictionary.models import Word
 
 
@@ -19,9 +19,6 @@ class WordSerializer(serializers.ModelSerializer):
                   'w_word_collocation', 'w_image', 'w_vedio')
 
 
-class WordView(View):
-    def get(self, request:HttpRequest):
-        return JsonResponse(data={'status': 'get ok'})
-
-    def post(self, request:HttpRequest):
-        return JsonResponse(data={'status': 'post ok'})
+class WordView(generics.CreateAPIView):
+    serializer_class = WordSerializer
+    queryset = Word.objects.all()

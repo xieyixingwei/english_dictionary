@@ -1,0 +1,19 @@
+from django.core.cache import cache
+from rest_framework import authentication
+from rest_framework import request
+from user.models import User
+
+
+class TokenAuthentication(authentication.BaseAuthentication):
+    """
+    Token 认证
+    """
+    def authenticate(self, request:request.Request):
+        token = request.query_params.get('token')
+        try:
+            id = cache.get(token)
+            user = User.objects.get(pk=id)
+            user.is_authenticated = True
+            return user, token # 认证成功返回一个元组(user, token)
+        except:
+            return None # 认证失败返回None
