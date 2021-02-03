@@ -3,15 +3,16 @@ from rest_framework.decorators import action
 from rest_framework import mixins, viewsets
 from rest_framework import permissions, authentication
 from django.core.cache import cache
-from user.models import User
+from user.models import UserTable
 from server.settings import LOGIN_TIMEOUT, ROOT_USERS
 import uuid
 from server import permissions
+from rest_framework.permissions import BasePermission
+
 
 class _UsersSerializer(serializers.ModelSerializer):
-
     class Meta:
-        model = User
+        model = UserTable
         fields = '__all__' # 所有字段
         # fields = '__all__': 表示所有字段
         # exclude = ('add_time',):  除去指定的某些字段
@@ -27,47 +28,60 @@ class _UsersSerializer(serializers.ModelSerializer):
      #   return attrs
 
 
+class _IsAuthenticatedAndSelf(BasePermission):
+    """
+    Allows access only to authenticated users and self.
+    """
+    def has_permission(self, request:request.Request, view):
+        return bool(isinstance(request.user, UserTable) and
+                    request.user.is_authenticated and
+                    request._request.resolver_match.kwargs['u_uname'] == request.user.u_uname)
+
 
 class ListUsersView(generics.ListAPIView):
     serializer_class = _UsersSerializer
-    queryset = User.objects.all()
+    queryset = UserTable.objects.all()
     permission_classes = (permissions.IsRootUser,)
 
 
 class RetrieveUserView(generics.RetrieveAPIView):
     serializer_class = _UsersSerializer
-    queryset = User.objects.all()
-    permission_classes = (permissions.IsAuthenticatedAndSelf,)
+    queryset = UserTable.objects.all()
+    permission_classes = (_IsAuthenticatedAndSelf,)
+    lookup_field = 'u_uname'
 
 
 class DeleteUserView(generics.DestroyAPIView):
     serializer_class = _UsersSerializer
-    queryset = User.objects.all()
+    queryset = UserTable.objects.all()
     permission_classes = (permissions.IsRootUser,)
+    lookup_field = 'u_uname'
 
 
 class _UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = UserTable
         exclude = ('u_uname','u_is_admin',) # 除去指定的某些字段
 
 
 class UpdateUserView(generics.UpdateAPIView):
     serializer_class = _UpdateUserSerializer
-    queryset = User.objects.all()
-    permission_classes = (permissions.IsAuthenticatedAndSelf,)
+    queryset = UserTable.objects.all()
+    permission_classes = (_IsAuthenticatedAndSelf,)
+    lookup_field = 'u_uname'
 
 
 class _ChangeAdminUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ('u_id','u_is_admin')
+        model = UserTable
+        fields = ('u_uname','u_is_admin')
 
 
 class ChangeAmindUserView(generics.UpdateAPIView):
     serializer_class = _ChangeAdminUserSerializer
-    queryset = User.objects.all()
+    queryset = UserTable.objects.all()
     permission_classes = (permissions.IsRootUser,)
+    lookup_field = 'u_uname'
 
 
 '''

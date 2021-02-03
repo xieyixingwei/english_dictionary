@@ -1,1 +1,1 @@
-from .user_tb import User
+from .UserTable import UserTable

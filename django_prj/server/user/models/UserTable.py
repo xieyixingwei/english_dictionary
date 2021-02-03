@@ -1,8 +1,7 @@
 from django.db import models
-from django.contrib.auth.hashers import make_password
 
 
-class User(models.Model):
+class UserTable(models.Model):
     """
     用户表
     """
@@ -20,9 +19,6 @@ class User(models.Model):
     u_email = models.CharField(max_length=64, null=True) # email
     u_telephone = models.CharField(max_length=16, null=True) # 电话
     u_status = models.JSONField(null=True) # 状态
-
-    class Meta:
-        db_table = 'user'
 
     def gender(self) -> str:
         return '男' if self.u_gender else '女'

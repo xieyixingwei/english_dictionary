@@ -8,10 +8,10 @@ urlpatterns = [
     url(r'^login/$', views.LoginView.as_view()),
     url(r'^list/$', views.ListUsersView.as_view()),
     url(r'^create_admin/$', views.CreateAdminUserView.as_view()),
-    url(r'^(?P<pk>\d+)/$', views.RetrieveUserView.as_view()),
-    url(r'^(?P<pk>\d+)/delete/$', views.DeleteUserView.as_view()),
-    url(r'^(?P<pk>\d+)/update/$', views.UpdateUserView.as_view()),
-    url(r'^(?P<pk>\d+)/change_admin/$', views.ChangeAmindUserView.as_view()),
+    url(r'^(?P<u_uname>\w+)/$', views.RetrieveUserView.as_view()),
+    url(r'^(?P<u_uname>\w+)/delete/$', views.DeleteUserView.as_view()),
+    url(r'^(?P<u_uname>\w+)/update/$', views.UpdateUserView.as_view()),
+    url(r'^(?P<u_uname>\w+)/change_admin/$', views.ChangeAmindUserView.as_view()),
 ]
 
 #url(r'^users/login/$', views.UsersView.as_view(

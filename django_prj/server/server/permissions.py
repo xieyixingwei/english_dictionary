@@ -1,9 +1,8 @@
 from django.core.cache import cache
 from rest_framework import permissions
-from user.models import User
+from user.models import UserTable
 from server.settings import ROOT_USERS
 from rest_framework import request
-from django.urls import re_path
 
 
 SAFE_METHODS = ('GET', 'HEAD', 'OPTIONS')
@@ -22,17 +21,7 @@ class IsAuthenticated(permissions.BasePermission):
     Allows access only to authenticated users.
     """
     def has_permission(self, request, view):
-        return bool(isinstance(request.user, User) and request.user.is_authenticated)
-
-
-class IsAuthenticatedAndSelf(permissions.BasePermission):
-    """
-    Allows access only to authenticated users and self.
-    """
-    def has_permission(self, request:request.Request, view):
-        return bool(isinstance(request.user, User) and
-                    request.user.is_authenticated and
-                    request._request.resolver_match.kwargs['pk'] == str(request.user.u_id))
+        return bool(isinstance(request.user, UserTable) and request.user.is_authenticated)
 
 
 class IsAdminUser(permissions.BasePermission):
@@ -40,7 +29,7 @@ class IsAdminUser(permissions.BasePermission):
     Allows access only to admin users.
     """
     def has_permission(self, request, view):
-        return bool(isinstance(request.user, User) and request.user.u_is_admin)
+        return bool(isinstance(request.user, UserTable) and request.user.u_is_admin)
 
 
 class IsRootUser(permissions.BasePermission):
@@ -48,20 +37,8 @@ class IsRootUser(permissions.BasePermission):
     Allows access only to root users.
     """
     def has_permission(self, request, view):
-        return bool(isinstance(request.user, User) and (request.user.u_uname in ROOT_USERS))
+        return bool(isinstance(request.user, UserTable) and (request.user.u_uname in ROOT_USERS))
 
-
-class CallbackAuthenticated(permissions.BasePermission):
-    """
-    Allows access only to authenticated users and self.
-    """
-    def __init__(self, callback):
-        self._callback = callback
-
-    def has_permission(self, request:request.Request, view):
-        return bool(isinstance(request.user, User) and
-                    request.user.is_authenticated and
-                    self._callback(request))
 
 class IsAuthenticatedOrReadOnly(permissions.BasePermission):
     """

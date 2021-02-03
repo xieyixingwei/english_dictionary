@@ -1,7 +1,7 @@
 from django.core.cache import cache
 from rest_framework import authentication
 from rest_framework import request
-from user.models import User
+from user.models import UserTable
 
 
 class TokenAuthentication(authentication.BaseAuthentication):
@@ -12,7 +12,7 @@ class TokenAuthentication(authentication.BaseAuthentication):
         token = request.query_params.get('token')
         try:
             id = cache.get(token)
-            user = User.objects.get(pk=id)
+            user = UserTable.objects.get(pk=id)
             user.is_authenticated = True
             return user, token # 认证成功返回一个元组(user, token)
         except:

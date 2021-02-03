@@ -2,7 +2,7 @@ from rest_framework import serializers, exceptions, views, generics, response, r
 from rest_framework.decorators import action
 from rest_framework import mixins, viewsets
 from django.core.cache import cache
-from user.models import User
+from user.models import UserTable
 from server.settings import LOGIN_TIMEOUT, ROOT_USERS
 import uuid
 from server import permissions
@@ -10,7 +10,7 @@ from server import permissions
 
 class LoginSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = UserTable
         fields = ('u_id','u_uname','u_passwd')
 
 
@@ -20,14 +20,14 @@ class LoginView(generics.CreateAPIView):
     登陆
     '''
     serializer_class = LoginSerializer
-    queryset = User.objects.all()
+    queryset = UserTable.objects.all()
     permission_classes = (permissions.AllowAny,) # 允许所有用户
 
     def post(self, request, *args, **kwargs):
         u_uname = request.data.get('u_uname')
         u_passwd = request.data.get('u_passwd')
         try:
-            user = User.objects.get(u_uname=u_uname)
+            user = UserTable.objects.get(u_uname=u_uname)
             if user.u_passwd != u_passwd:
                 return response.Response({'status': 0,
                                           'msg': '用户名或密码不对!'})
@@ -38,7 +38,7 @@ class LoginView(generics.CreateAPIView):
                 'status': 200,
                 'token': token}
             return response.Response(data)
-        except User.DoesNotExist:
+        except UserTable.DoesNotExist:
             raise exceptions.NotFound
         raise exceptions.ValidationError
 

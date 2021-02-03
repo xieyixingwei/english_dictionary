@@ -1,15 +1,15 @@
 from django.db import models
-from user.models import User
-from dictionary.models import Sentence
+from user.models import UserTable
+from dictionary.models import SentenceTable
 
 
-class StudySentence(models.Model):
+class StudySentenceTable(models.Model):
     """
     句子学习表
     """
     ss_id = models.AutoField(primary_key=True)
-    ss_user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    ss_sentence = models.ForeignKey(to=Sentence, on_delete=models.CASCADE)
+    ss_user = models.ForeignKey(to=UserTable, on_delete=models.CASCADE)
+    ss_sentence = models.ForeignKey(to=SentenceTable, on_delete=models.CASCADE)
     ss_collect = models.JSONField()        # 单词本 [a,b]
     ss_familiarity = models.IntegerField() # 0 ~ 5
     ss_repeats = models.IntegerField()
@@ -18,5 +18,3 @@ class StudySentence(models.Model):
     ss_new_words = models.JSONField()   # 生词 [w1,w2]
     ss_next_sentences = models.JSONField() # 下个句子id [id1, id2]
     ss_comments = models.CharField(max_length=256)  # markdown
-    class Meta:
-        db_table = "study_sentence"
