@@ -1,6 +1,7 @@
 from django.db import models
 from dictionary.models import WordTable, SentenceTable
 
+
 class GrammarTable(models.Model):
     """
     语法表

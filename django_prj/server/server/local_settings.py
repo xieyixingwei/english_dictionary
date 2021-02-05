@@ -42,6 +42,9 @@ REST_FRAMEWORK = {
                                                                   #  否则只能get读取
         'server.permissions.AllowAny',
     ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
 }
 
 ROOT_USERS = ['root']

@@ -8,6 +8,7 @@ from server.settings import LOGIN_TIMEOUT, ROOT_USERS
 import uuid
 from server import permissions
 from rest_framework.permissions import BasePermission
+from server.views import ModelViewSetPermissionSerializerMap as ModelViewSetPSM
 
 
 class _UsersSerializer(serializers.ModelSerializer):
@@ -28,6 +29,18 @@ class _UsersSerializer(serializers.ModelSerializer):
      #   return attrs
 
 
+class _UpdateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserTable
+        exclude = ('u_uname','u_is_admin',) # 除去指定的某些字段
+
+
+class _ChangeAdminUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserTable
+        fields = ('u_uname','u_is_admin')
+
+
 class _IsAuthenticatedAndSelf(BasePermission):
     """
     Allows access only to authenticated users and self.
@@ -38,43 +51,18 @@ class _IsAuthenticatedAndSelf(BasePermission):
                     request._request.resolver_match.kwargs['u_uname'] == request.user.u_uname)
 
 
-class ListUsersView(generics.ListAPIView):
-    serializer_class = _UsersSerializer
+class UsersView(ModelViewSetPSM):
     queryset = UserTable.objects.all()
+    serializer_class = _UsersSerializer
+    serializer_class_map = {
+        'update': _UpdateUserSerializer,
+    }
     permission_classes = (permissions.IsRootUser,)
-
-
-class RetrieveUserView(generics.RetrieveAPIView):
-    serializer_class = _UsersSerializer
-    queryset = UserTable.objects.all()
-    permission_classes = (_IsAuthenticatedAndSelf,)
+    permission_classes_map = {
+        'retrieve': (_IsAuthenticatedAndSelf,),
+        'update': (_IsAuthenticatedAndSelf),
+    }
     lookup_field = 'u_uname'
-
-
-class DeleteUserView(generics.DestroyAPIView):
-    serializer_class = _UsersSerializer
-    queryset = UserTable.objects.all()
-    permission_classes = (permissions.IsRootUser,)
-    lookup_field = 'u_uname'
-
-
-class _UpdateUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserTable
-        exclude = ('u_uname','u_is_admin',) # 除去指定的某些字段
-
-
-class UpdateUserView(generics.UpdateAPIView):
-    serializer_class = _UpdateUserSerializer
-    queryset = UserTable.objects.all()
-    permission_classes = (_IsAuthenticatedAndSelf,)
-    lookup_field = 'u_uname'
-
-
-class _ChangeAdminUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserTable
-        fields = ('u_uname','u_is_admin')
 
 
 class ChangeAmindUserView(generics.UpdateAPIView):

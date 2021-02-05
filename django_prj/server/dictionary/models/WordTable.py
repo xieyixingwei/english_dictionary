@@ -69,3 +69,59 @@ class WordTable(models.Model):
 # 4. 常用句型
 #     1. It is that ....
 #        It is that very much.
+
+
+class EtymaTable(models.Model):
+    """
+    词根词缀表
+    """
+    e_name = models.CharField(max_length=32, primary_key=True) # 词根 (primary key)
+    e_meaning = models.TextField(max_length=512, null=True) # 含义 markdown
+    e_type = models.IntegerField(null=True) # 类型: 前缀|后缀|词根
+    #e_image = models.ImageField(null=True) # 图片讲解
+    #e_vedio = models.FilePathField(max_length=128, null=True) # 视频讲解
+    def type(self) -> str:
+        if self.e_type == 0:
+            return "prefix"
+        elif self.e_type == 1:
+            return "etyma"
+        elif self.e_type == 2:
+            return "suffix"
+        else:
+            return "unkown"
+
+
+class WordTagsTable(models.Model):
+    """
+    单词 Tags
+    """
+    t_name = models.CharField(max_length=32, primary_key=True)
+
+
+class PartOfSpeech(models.Model):
+    """
+    单词 词性
+    """
+    t_name = models.CharField(max_length=32, primary_key=True)
+
+
+class RelativeWordTable(models.Model):
+    """
+    近义词/反义词表
+    """
+    r_id = models.AutoField(primary_key=True)
+    r_word_a = models.ForeignKey(to=WordTable, related_name='master_word', on_delete=models.CASCADE)
+    r_word_b = models.ForeignKey(to=WordTable, on_delete=models.CASCADE)
+    r_type = models.BooleanField(default=True) # True 近义词 | False 反义词
+
+
+class DistinguishWordTable(models.Model):
+    """
+    词义辨析表
+    """
+    d_id = models.AutoField(primary_key=True)
+    d_words = models.JSONField(null=True)   # 单词列表 [word1,word2,...]
+    d_content = models.TextField(null=True) # 内容 markdown文本
+    d_word = models.ManyToManyField(to=WordTable, related_name='distinguish')
+    #d_image = models.ImageField(null=True) # 图片讲解
+    #d_vedio = models.FilePathField(max_length=128, null=True) # 视频讲解
