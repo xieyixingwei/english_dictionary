@@ -1,3 +1,3 @@
-from .UserView import ListUsersView, RetrieveUserView, DeleteUserView, UpdateUserView, ChangeAmindUserView
+from .UserView import *
 from .RegisterView import RegisterView, CreateAdminUserView
 from .LoginView import LoginView
