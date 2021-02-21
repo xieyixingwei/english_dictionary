@@ -1,0 +1,16 @@
+{
+    "u_id": 0,
+    "u_uname": "",
+    "u_passwd": "",
+    "u_is_admin": false,
+    "u_register_date": "",
+    "u_name": "",
+    "u_gender": true,
+    "u_birthday": "",
+    "u_education": 0,
+    "u_wechart": "",
+    "u_qq": "",
+    "u_email": "",
+    "u_telephone": "",
+    "u_status": ""
+}

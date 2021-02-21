@@ -1,0 +1,17 @@
+{
+    "w_name": "",
+    "w_voice_us": "",
+    "w_voice_uk": "",
+    "w_morph": {},
+    "w_tags": [""],
+    "w_etyma": [""],
+    //# w_synonym: models.JSONField(null=True)  # 近义词 [word1,word2,...]
+    //# w_antonym: models.JSONField(null=True)  # 反义词 [word1,word2,...]
+    //# w_distinguish_id: models.JSONField()     # 词义辨析id [id1,id2,...]
+    //# w_grammar_id: models.JSONField() # 语法id [id1,id2,...]
+    "w_origin": "",
+    "w_shorthand": "",
+    "w_partofspeech": [{}],
+    "w_sentence_pattern": [{}],
+    "w_word_collocation": [{}]
+}

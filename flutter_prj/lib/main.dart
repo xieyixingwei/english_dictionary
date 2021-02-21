@@ -1,112 +1,39 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'dart:async';
-import 'package:path_provider/path_provider.dart';
-import 'dart:html';
-import 'dart:convert' as convert;
-import 'package:http/http.dart' as http;
-void main() {
-  runApp(MyApp());
-}
+import 'package:flutter_prj/routes/Routes.dart';
+import 'package:flutter_prj/states/sentence_state.dart';
+import 'package:flutter_prj/states/word_state.dart';
+import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
+import 'common/global.dart';
+import 'dictionary_app.dart';
+import 'states/store.dart';
+import 'states/user_model.dart';
+
+
+void main() => Global.init().then((e) => runApp(MyApp()));
+
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
+  final _appTheme = ThemeData.light(); // 定义APP的全局主题
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  String _pathname = window.location.pathname;
-  String _content = "null";
-
-  void _loadLocalFile(String url) async {
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      setState(() {
-        _content = response.body.toString();
-      });
-    } else {
-      setState(() {
-        _content = "Load " + url + " failed";
-      });
-    }
-  }
-
-  void _incrementCounter() {
-    var index = _pathname.lastIndexOf("/");
-    if(index != -1) {
-      var fileName = 'file://' + _pathname.substring(0, index) + '/version.json';
-      print(fileName);
-      _loadLocalFile(fileName);
-    }
-
-  // Await the http get response, then decode the json-formatted response.
-  
-
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    // window.location.href = "/home/study";
-  }
+  final _providers = <SingleChildWidget>[
+      ChangeNotifierProvider.value(value: UserModel()),
+      ChangeNotifierProvider.value(value: WordState()),
+      ChangeNotifierProvider.value(value: SentenceState()),
+      ChangeNotifierProvider.value(value: Store()),
+    ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
+    return MultiProvider(
+      providers: _providers,
+      child: MaterialApp(
+        //initialRoute: "/",
+        home: DictionaryApp(),
+        onGenerateRoute: onGenerateRoute,  // 生成器路由(可以实现 命名路由传参)
+        debugShowCheckedModeBanner: false, // 去掉debug图标
+        theme: _appTheme,                  // 设置App的主题
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            Text(_content),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
