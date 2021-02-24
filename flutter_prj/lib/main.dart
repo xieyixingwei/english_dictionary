@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_prj/models/misc_model.dart';
+import 'package:flutter_prj/models/sentence_model.dart';
 import 'package:flutter_prj/routes/Routes.dart';
-import 'package:flutter_prj/states/sentence_state.dart';
-import 'package:flutter_prj/states/word_state.dart';
+import 'package:flutter_prj/models/word_model.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'common/global.dart';
 import 'dictionary_app.dart';
-import 'states/store.dart';
-import 'states/user_model.dart';
+import 'models/user_model.dart';
 
 
 void main() => Global.init().then((e) => runApp(MyApp()));
@@ -18,9 +18,9 @@ class MyApp extends StatelessWidget {
 
   final _providers = <SingleChildWidget>[
       ChangeNotifierProvider.value(value: UserModel()),
-      ChangeNotifierProvider.value(value: WordState()),
-      ChangeNotifierProvider.value(value: SentenceState()),
-      ChangeNotifierProvider.value(value: Store()),
+      ChangeNotifierProvider.value(value: WordModel()),
+      ChangeNotifierProvider.value(value: SentenceModel()),
+      ChangeNotifierProvider.value(value: MiscModel()),
     ];
 
   @override

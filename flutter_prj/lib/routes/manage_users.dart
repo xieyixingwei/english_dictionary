@@ -19,30 +19,31 @@ class _ManageUsersState extends State<ManageUsers> {
   }
 
   _children(List users) {
-  var children = users.map((e) =>
+    if(users == null) return [Text("")];
+    var children = users.map((e) =>
+        ListTile(
+          title: Text(e['u_uname']),
+          trailing: IconButton(
+            splashRadius: 1.0,
+            icon: Icon(Icons.clear),
+            onPressed: () {
+              Http().deleteUser(e['u_uname']);
+            },
+          ),
+        )
+      ).toList();
+    children.add(
       ListTile(
-        title: Text(e['u_uname']),
-        trailing: IconButton(
-          splashRadius: 1.0,
-          icon: Icon(Icons.clear),
-          onPressed: () {
-            Http().deleteUser(e['u_uname']);
+        title: Text("创建用户"),
+        leading: InputDialog(
+          title: "创建用户",
+          icon: Icon(Icons.add),
+          close: (String value) {
           },
         ),
-      )
-    ).toList();
-  children.add(
-     ListTile(
-      title: Text("创建用户"),
-      leading: InputDialog(
-        title: "创建用户",
-        icon: Icon(Icons.add),
-        close: (String value) {
-        },
       ),
-    ),
-  );
-  return children;
+    );
+    return children;
   }
 
   @override

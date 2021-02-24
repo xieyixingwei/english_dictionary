@@ -1,0 +1,5 @@
+{
+    "user":"$user",
+    "token":"",
+    "netCacheConfig":"$net_cache_config"
+}

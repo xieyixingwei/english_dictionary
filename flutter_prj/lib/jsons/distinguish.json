@@ -1,0 +1,8 @@
+{ // 词义辨析
+    "d_id": -1,
+    "d_words": [""], // 相关单词列表
+    "d_content": ""
+    //"d_word": models.ManyToManyField(to=WordTable, related_name='distinguish')
+    //#d_image: models.ImageField(null=True) # 图片讲解
+    //#d_vedio: models.FilePathField(max_length=128, null=True) # 视频讲解
+}

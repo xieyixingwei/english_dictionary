@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_prj/serializers/index.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 import '../common/http.dart';
-import '../models/index.dart';
-import '../states/user_model.dart';
 
 
 class RegisterPage extends StatelessWidget {
@@ -19,7 +16,7 @@ class RegisterPage extends StatelessWidget {
     // 提交前，先验证各个表单字段是否合法
     if ((_formKey.currentState as FormState).validate()) {
       ///showLoading(context);
-      User user;
+      UserSerializer user;
       try {
         user = await Http(context).register(_unameController.text, _pwdController1.text);
         // 因为登录页返回后，首页会build，所以我们传false，更新user后不触发更新

@@ -2,7 +2,7 @@
     "user":"$user",
     "token":"",
     "theme":5678,
-    "cache":"$cache_config",
+    "cacheConfig":"$cache_config",
     "lastLogin":"",
     "locale":""
 }

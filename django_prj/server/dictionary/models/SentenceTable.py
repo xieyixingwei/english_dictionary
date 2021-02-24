@@ -33,3 +33,10 @@ class RelativeSentenceTable(models.Model):
     r_sentence_a = models.ForeignKey(to=SentenceTable, related_name='master_sentence', on_delete=models.CASCADE)
     r_sentence_b = models.ForeignKey(to=SentenceTable, on_delete=models.CASCADE)
     r_type = models.BooleanField(default=True) # True 近义句 | False 反义句
+
+
+class SentenceTagsTable(models.Model):
+    """
+    句子 Tags
+    """
+    t_name = models.CharField(max_length=32, primary_key=True)

@@ -98,13 +98,6 @@ class WordTagsTable(models.Model):
     t_name = models.CharField(max_length=32, primary_key=True)
 
 
-class PartOfSpeech(models.Model):
-    """
-    单词 词性
-    """
-    t_name = models.CharField(max_length=32, primary_key=True)
-
-
 class RelativeWordTable(models.Model):
     """
     近义词/反义词表

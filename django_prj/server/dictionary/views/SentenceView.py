@@ -33,6 +33,27 @@ class SentenceView(ModelViewSetPermissionSerializerMap):
     }
 
 
+from dictionary.models import SentenceTagsTable
+
+
+class _SentenceTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SentenceTagsTable
+        fields = '__all__'
+
+
+class SentenceTagsView(ModelViewSetPermissionSerializerMap):
+    """
+    句子 tags 视图
+    """
+    queryset = SentenceTagsTable.objects.all()
+    serializer_class = _SentenceTagSerializer
+    permission_classes = (permissions.IsRootUser,)
+    permission_classes_map = {
+        'list': (permissions.AllowAny,),
+    }
+
+
 from dictionary.models import RelativeSentenceTable
 
 

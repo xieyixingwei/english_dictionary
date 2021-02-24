@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_prj/models/sentence.dart';
+import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/common/http.dart';
+import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/SelectDialog.dart';
 import 'dart:math' as math;
 
@@ -7,7 +9,7 @@ import 'package:flutter_prj/widgets/Tag.dart';
 
 
 class SentencePatternEdit extends StatefulWidget {
-  final Sentence _data;
+  final SentenceSerializer _data;
   final Function(Object) _delete;
   final List<Function(String)> _onChanged;
   final TextEditingController _controllerA = new TextEditingController();
@@ -15,7 +17,7 @@ class SentencePatternEdit extends StatefulWidget {
 
     SentencePatternEdit({
       Key key,
-      Sentence data,
+      SentenceSerializer data,
       Function(Object) delete,
       List<Function(String)> onChanged})
     : _data = data,
@@ -33,7 +35,7 @@ class SentencePatternEdit extends StatefulWidget {
 class _SentencePatternEditState extends State<SentencePatternEdit> {
   bool status = true;
   final List<String> options = ["删除", "设置类型", "添加tag", "选择时态", "选择句型", "设置同义句", "设置反义句"];
-  final List<String> _types = ["句子","短语"];
+  final List<String> _types = ["句子", "短语"];
   final TextStyle _textStyle = const TextStyle(fontSize: 14,);
 
   _onSelected(String value) {
@@ -51,21 +53,21 @@ class _SentencePatternEditState extends State<SentencePatternEdit> {
       popSelectDialog(
         context: context,
         title: value,
-        options: ["日常","商务","问候"],
+        options: Global.sentenceTagOptions,
         close: (String val) => widget._data.s_tags.add(val),
       );
     } else if(value == "选择时态") {
       popSelectDialog(
         context: context,
         title: value,
-        options: ["一般现在时","一般过去时","将来时"],
+        options: Global.tenseOptions,
         close: (String val) => widget._data.s_tense.add(val),
       );
     } else if(value == "选择句型") {
       popSelectDialog(
         context: context,
         title: value,
-        options: ["定语从句","主语从句","被动句"],
+        options: Global.sentenceFormOptions,
         close: (String val) => widget._data.s_form.add(val) ,
       );
     }
@@ -96,7 +98,7 @@ class _SentencePatternEditState extends State<SentencePatternEdit> {
   List<Widget> _buildTags(BuildContext context) {
     final TextStyle style = TextStyle(fontSize: 12.0, color: Theme.of(context).primaryColor);
     List<Widget> tags = [];
-    if(widget._data.s_tags.length == 0) return tags;
+    if(widget._data.s_tags == null || widget._data.s_tags.length == 0) return tags;
     tags.add(Text("Tags:", style: style));
     tags.addAll(
       widget._data.s_tags.map((e) => 
@@ -112,7 +114,7 @@ class _SentencePatternEditState extends State<SentencePatternEdit> {
   List<Widget> _buildTense(BuildContext context) {
     final TextStyle style = TextStyle(fontSize: 12.0, color: Colors.blueGrey);
     List<Widget> tense = [];
-    if(widget._data.s_tense.length == 0) return tense;
+    if(widget._data.s_tense == null || widget._data.s_tense.length == 0) return tense;
     tense.add(Text("时态:", style: style));
     tense.addAll(
       widget._data.s_tense.map((e) => 
@@ -128,7 +130,7 @@ class _SentencePatternEditState extends State<SentencePatternEdit> {
   List<Widget> _buildForm(BuildContext context) {
     final TextStyle style = TextStyle(fontSize: 12.0, color: Colors.orange);
     List<Widget> form = [];
-    if(widget._data.s_form.length == 0) return form;
+    if(widget._data.s_form == null || widget._data.s_form.length == 0) return form;
     form.add(Text("句型:", style: style));
     form.addAll(
       widget._data.s_form.map((e) => 
@@ -169,7 +171,7 @@ class _SentencePatternEditState extends State<SentencePatternEdit> {
           ),
         ),
         onChanged: (String value){
-          if(widget._onChanged != null) widget._onChanged[0](value);
+          widget._data.s_en = value;
         }
     )
   );
@@ -180,9 +182,13 @@ class _SentencePatternEditState extends State<SentencePatternEdit> {
         style: _textStyle,
         decoration: InputDecoration(
           hintText: "中文例句",
+          suffix: InkWell(
+            child: Text('保存', style: TextStyle(color: Theme.of(context).primaryColor)),
+            onTap: () => Http().createSentence(widget._data),
+          ),
         ),
         onChanged: (String value){
-          if(widget._onChanged != null) widget._onChanged[1](value);
+          widget._data.s_ch = value;
         }
   );
 

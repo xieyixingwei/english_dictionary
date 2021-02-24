@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_prj/states/word_state.dart';
+import 'package:flutter_prj/models/word_model.dart';
 import 'package:flutter_prj/widgets/RatingStar.dart';
 import 'package:provider/provider.dart';
 
@@ -44,7 +44,7 @@ class HomeBody extends StatelessWidget {
     Row(
       children: [
         Text(
-          Provider.of<WordState>(context, listen:false).word.w_name,
+          Provider.of<WordModel>(context, listen:false).word.w_name,
           style: TextStyle(
             color: Color.fromRGBO(0,153,68,1),
             fontWeight: FontWeight.w700,

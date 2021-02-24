@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_prj/states/word_state.dart';
+import 'package:flutter_prj/models/user_model.dart';
+import 'package:flutter_prj/models/word_model.dart';
 import 'package:provider/provider.dart';
-
 import '../login.dart';
-import '../../states/user_model.dart';
 
 
 class UserTab extends StatelessWidget {
@@ -39,9 +38,14 @@ class UserTab extends StatelessWidget {
       "route": "/edit_grammer",
     },
     {
-      "title": "编辑单词Tag",
+      "title": "编辑单词 Tags",
       "icon": Icon(Icons.label),
       "route": "/edit_word_tags",
+    },
+    {
+      "title": "编辑例句 Tags",
+      "icon": Icon(Icons.label),
+      "route": "/edit_sentence_tags",
     },
   ];
   final statistics = [
@@ -195,8 +199,8 @@ class UserTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print("--- UserTab build");
-    return Consumer2<UserModel, WordState>(
-      builder: (BuildContext context, UserModel user, WordState word, Widget child) =>
+    return Consumer2<UserModel, WordModel>(
+      builder: (BuildContext context, UserModel user, WordModel word, Widget child) =>
         user.isLogin ? _buildCustomScrollView(context, user) : LoginPage()
     );
   }
