@@ -21,7 +21,7 @@ void popSelectDialog({BuildContext context, String title, List<String> options, 
       },
     );
 
-    if(close != null) close(res);
+    if(close != null && res != null) close(res);
   }
 
 

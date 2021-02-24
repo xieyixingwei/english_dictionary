@@ -30,7 +30,7 @@ class UserTab extends StatelessWidget {
     {
       "title": "编辑例句",
       "icon": Icon(Icons.edit),
-      "route": "/edit_sentence",
+      "route": "/list_sentences",
     },
     {
       "title": "编辑语法",

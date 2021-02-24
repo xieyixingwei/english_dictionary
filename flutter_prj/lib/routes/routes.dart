@@ -3,6 +3,7 @@ import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/common/http.dart';
 import 'package:flutter_prj/routes/edit/edit_sentence.dart';
 import 'package:flutter_prj/routes/edit/edit_tags.dart';
+import 'package:flutter_prj/routes/edit/list_sentences.dart';
 import 'package:flutter_prj/routes/login.dart';
 import 'package:flutter_prj/routes/manage_users.dart';
 import 'package:flutter_prj/routes/register.dart';
@@ -25,7 +26,8 @@ final _routes = {
     add: (String tag) => Http().createWordTag(tag),
     remove: (String tag) => Http().deleteWordTag(tag),
     ),
-  "/edit_sentence": (context) => EditSentence(),
+  "/edit_sentence": (context, {arguments}) => EditSentence(data:arguments),
+  "/list_sentences": (context) => ListSentence(),
   "/edit_sentence_tags": (context) => EditTags(
     title: Text("编辑句子 Tags",),
     data: Global.sentenceTagOptions,

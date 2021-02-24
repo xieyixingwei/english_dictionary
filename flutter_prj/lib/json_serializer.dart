@@ -9,8 +9,8 @@ class JsonSerializer {
   String _indexFile = 'index.dart';
   List<String> _relatedSerializers = [];
 
-  String _serializerTemplate = """
-// GENERATED CODE BY json_serializer.py - DO NOT MODIFY BY HAND
+  static const String _serializerTemplate = """
+// GENERATED CODE BY json_serializer.dart - DO NOT MODIFY BY HAND
 import 'package:json_annotation/json_annotation.dart';
 %importRelatedSerializers
 part '%name.g.dart';
@@ -26,8 +26,8 @@ class %Name {
 }
 """;
 
-  String _serializerTemplate_g = """
-// GENERATED CODE BY json_serializer.py - DO NOT MODIFY BY HAND
+  static const String _serializerTemplate_g = """
+// GENERATED CODE BY json_serializer.dart - DO NOT MODIFY BY HAND
 part of '%name.dart';
 
 // **************************************************************************
@@ -89,6 +89,8 @@ Map<String, dynamic> _\$%NameToJson(%Name instance) => <String, dynamic>{
     return '${name}Serializer';
   }
 
+  bool _isSerializer(String type) => type.contains('Serializer');
+
   void _addRelatedSerializer(String name) {
     if(!_relatedSerializers.contains(name))
       _relatedSerializers.add(name);
@@ -98,7 +100,6 @@ Map<String, dynamic> _\$%NameToJson(%Name instance) => <String, dynamic>{
     Map<String, String> result = {
       'type': '',
       'value': '',
-      'serializerClassName': '',
     };
     if(value is bool) {
       result['type'] = 'bool';
@@ -119,7 +120,6 @@ Map<String, dynamic> _\$%NameToJson(%Name instance) => <String, dynamic>{
         String serializerClassName = _serializerClassName(relatedSerializer);
         result['type'] = 'List<$serializerClassName>';
         result['value'] = '[]';
-        result['serializerClassName'] = serializerClassName;
       }
       else if (value.startsWith('\$')) {
         String relatedSerializer = value.substring(1);
@@ -127,7 +127,6 @@ Map<String, dynamic> _\$%NameToJson(%Name instance) => <String, dynamic>{
         String serializerClassName = _serializerClassName(relatedSerializer);
         result['type'] = serializerClassName;
         result['value'] = '$serializerClassName()';
-        result['serializerClassName'] = serializerClassName;
       }
       else {
         result['type'] = 'String';
@@ -156,27 +155,28 @@ Map<String, dynamic> _\$%NameToJson(%Name instance) => <String, dynamic>{
     String name = key;
     if(name.startsWith('_')) return null; // ignore member which name start with '_'
     Map<String, String> res = _typeValue(value);
-    String serializerClassName = res['serializerClassName'];
-    if(res['type'].startsWith('List')) {
-      if(serializerClassName.length > 0) {
+    String type = res['type'];
+
+    if(type.startsWith('List')) {
+      type = type.replaceAll('List<', '').replaceAll('>', '');
+      if(_isSerializer(type)) {
         return '..$name = json[\'$name\'] == null\n' +
                '        ? null\n' +
-               '        : json[\'$name\'].map<$serializerClassName>((e) => $serializerClassName.fromJson(e as Map<String, dynamic>)).toList()';
+               '        : json[\'$name\'].map<$type>((e) => $type.fromJson(e as Map<String, dynamic>)).toList()';
       }
       else {
-        String type = res['type'].replaceAll('List<', '').replaceAll('>', '');
         return '..$name = json[\'$name\'] == null\n' + 
                '        ? null\n' +
                '        : json[\'$name\'].map<$type>((e) => e as $type).toList()';
       }
     }
-    else if(serializerClassName.length > 0) {
+    else if(_isSerializer(type)) {
       return '..$name = json[\'$name\'] == null\n' +
              '        ? null\n' +
-             '        : ${res['type']}.fromJson(json[\'$name\'] as Map<String, dynamic>)';
+             '        : $type.fromJson(json[\'$name\'] as Map<String, dynamic>)';
     }
     else
-      return '..$name = json[\'$name \'] as ${res['type']}';
+      return '..$name = json[\'$name\'] as $type';
   }
 
   String _jsonMember(String key, dynamic value) {
@@ -223,9 +223,9 @@ Map<String, dynamic> _\$%NameToJson(%Name instance) => <String, dynamic>{
       (FileSystemEntity entity) async {
         if('.json' != path.extension(entity.path)) return;
         if(path.basename(entity.path).startsWith('_')) return;
-        //if(path.basename(entity.path) != 'test.json') return;
         List<String> lines = await File(entity.path).readAsLines();
         Map<String, dynamic> obj = json.decode(_removeComments(lines), );
+        _relatedSerializers.clear();
         _generateSerializerFromJson(path.basenameWithoutExtension(entity.path), obj);
       }
     );
@@ -236,12 +236,3 @@ void main(List<String> args) {
   var js = JsonSerializer();
   js.run(args);
 }
-
-/*
-reviver: (Object key, Object value) {
-          if(key != null && key != 0) {
-            print('$key $value');
-          }
-            
-        }
-        */

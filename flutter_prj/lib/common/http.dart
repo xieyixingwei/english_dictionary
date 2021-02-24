@@ -11,7 +11,7 @@ class Http {
   Options _options;
   static Dio _dio = new Dio(
     BaseOptions(
-      baseUrl: 'http://192.168.2.10:5005',
+      baseUrl: 'http://192.168.1.10:5005',
     )
   );
 
@@ -49,7 +49,6 @@ class Http {
         }
       ),
     );
-    print(res.data);
     return UserSerializer.fromJson(res.data);
   }
 
@@ -78,7 +77,6 @@ class Http {
         }
       ),
     );
-
     Global.netCache.clear(); //清空所有缓存
     Global.localStore.token = token; // 更新token信息
     return UserSerializer.fromJson(res.data);
@@ -158,7 +156,7 @@ class Http {
     );
   }
 
-  Future<List<SentenceSerializer>> listSentences({num page_size, num page_index}) async {
+  Future<ListSentecesSerializer> listSentences({num page_size, num page_index}) async {
     var res = await _dio.get(
       "/dictionary/sentence/",
       queryParameters: {"page_size": page_size, "page_index": page_index},
@@ -168,10 +166,30 @@ class Http {
         }
       ),
     );
+    return ListSentecesSerializer.fromJson(res.data);
+  }
 
-    return res.data["results"].map<SentenceSerializer>((e) =>
-      SentenceSerializer.fromJson(e) as SentenceSerializer
-    ).toList();
+  deleteSentence(num id) async {
+    await _dio.delete(
+      "/dictionary/sentence/delete/$id",
+      options: _options.merge(
+        extra: {
+          "noCache": true, //本接口禁用缓存
+        }
+      ),
+    );
+  }
+
+  updateSentence(SentenceSerializer sentence) async {
+    await _dio.put(
+      "/dictionary/sentence/update/${sentence.s_id}/",
+      data: sentence.toJson(),
+      options: _options.merge(
+        extra: {
+          "noCache": true, //本接口禁用缓存
+        }
+      ),
+    );
   }
 
   Future<List<String>> listSentenceTags() async {

@@ -4,25 +4,20 @@ import 'package:flutter_prj/common/http.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/SelectDialog.dart';
 import 'dart:math' as math;
-
-import 'package:flutter_prj/widgets/Tag.dart';
+import 'package:flutter_prj/widgets/sentence_details.dart';
 
 
 class SentencePatternEdit extends StatefulWidget {
   final SentenceSerializer _data;
-  final Function(Object) _delete;
-  final List<Function(String)> _onChanged;
   final TextEditingController _controllerA = new TextEditingController();
   final TextEditingController _controllerB = new TextEditingController();
 
-    SentencePatternEdit({
+  SentencePatternEdit({
       Key key,
       SentenceSerializer data,
       Function(Object) delete,
       List<Function(String)> onChanged})
     : _data = data,
-      _delete = delete,
-      _onChanged = onChanged,
       super(key:key) {
         _controllerA.text = _data.s_en;
         _controllerB.text = _data.s_ch;
@@ -40,35 +35,37 @@ class _SentencePatternEditState extends State<SentencePatternEdit> {
 
   _onSelected(String value) {
     print(value);
-    if(value == "删除" && widget._delete != null) {
-      widget._delete(widget._data);
+    if(value == "删除") {
+      if(widget._data.s_id != -1) {
+        Http().deleteSentence(widget._data.s_id);
+      }
     } else if(value == "设置类型") {
       popSelectDialog(
         context: context,
         title: value,
         options: _types,
-        close: (String val) => widget._data.s_type = _types.indexOf(val),
+        close: (String val) => setState(() => widget._data.s_type = _types.indexOf(val)),
       );
     } else if(value == "添加tag") {
       popSelectDialog(
         context: context,
         title: value,
         options: Global.sentenceTagOptions,
-        close: (String val) => widget._data.s_tags.add(val),
+        close: (String val) => setState(() => widget._data.s_tags.add(val)),
       );
     } else if(value == "选择时态") {
       popSelectDialog(
         context: context,
         title: value,
         options: Global.tenseOptions,
-        close: (String val) => widget._data.s_tense.add(val),
+        close: (String val) => setState(() => widget._data.s_tense.add(val)),
       );
     } else if(value == "选择句型") {
       popSelectDialog(
         context: context,
         title: value,
         options: Global.sentenceFormOptions,
-        close: (String val) => widget._data.s_form.add(val) ,
+        close: (String val) => setState(() => widget._data.s_form.add(val)),
       );
     }
   }
@@ -89,72 +86,6 @@ class _SentencePatternEditState extends State<SentencePatternEdit> {
       onCanceled: () => print("---- cancel"), // 没有选择任何值的回调函数
       onSelected: _onSelected,              // 选中某个值退出的回调函数,
     );
-
-  Widget _buildType(BuildContext context) {
-    final TextStyle style = TextStyle(fontSize: 12.0, color: Colors.green);
-    return Text(_types[widget._data.s_type], style: style);
-  }
-
-  List<Widget> _buildTags(BuildContext context) {
-    final TextStyle style = TextStyle(fontSize: 12.0, color: Theme.of(context).primaryColor);
-    List<Widget> tags = [];
-    if(widget._data.s_tags == null || widget._data.s_tags.length == 0) return tags;
-    tags.add(Text("Tags:", style: style));
-    tags.addAll(
-      widget._data.s_tags.map((e) => 
-        Tag(
-          label: Text(e, style: style,),
-          onDeleted: () => widget._data.s_tags.remove(e),
-        )
-      ).toList()
-    );
-    return tags;
-  }
-
-  List<Widget> _buildTense(BuildContext context) {
-    final TextStyle style = TextStyle(fontSize: 12.0, color: Colors.blueGrey);
-    List<Widget> tense = [];
-    if(widget._data.s_tense == null || widget._data.s_tense.length == 0) return tense;
-    tense.add(Text("时态:", style: style));
-    tense.addAll(
-      widget._data.s_tense.map((e) => 
-        Tag(
-          label: Text(e, style: style,),
-          onDeleted: () => widget._data.s_tense.remove(e),
-        )
-      ).toList()
-    );
-    return tense;
-  }
-
-  List<Widget> _buildForm(BuildContext context) {
-    final TextStyle style = TextStyle(fontSize: 12.0, color: Colors.orange);
-    List<Widget> form = [];
-    if(widget._data.s_form == null || widget._data.s_form.length == 0) return form;
-    form.add(Text("句型:", style: style));
-    form.addAll(
-      widget._data.s_form.map((e) => 
-        Tag(
-          label: Text(e, style: style,),
-          onDeleted: () => widget._data.s_form.remove(e),
-        )
-      ).toList()
-    );
-    return form;
-  }
-
-  _buildDetail(BuildContext context) {
-    List<Widget> children = [];
-    children.add(_buildType(context));
-    children.addAll(_buildTags(context));
-    children.addAll(_buildTense(context));
-    children.addAll(_buildForm(context));
-    return Wrap(
-            spacing: 8.0,
-            runSpacing: 8.0, 
-            children: children,
-          );
-  }
 
   _buildEnglishSentence(BuildContext context) => MouseRegion(
       onEnter: (e) => setState((){ status = !status;}),
@@ -184,7 +115,10 @@ class _SentencePatternEditState extends State<SentencePatternEdit> {
           hintText: "中文例句",
           suffix: InkWell(
             child: Text('保存', style: TextStyle(color: Theme.of(context).primaryColor)),
-            onTap: () => Http().createSentence(widget._data),
+            onTap: () {
+              if(widget._data.s_id == -1) Http().createSentence(widget._data);
+              else Http().updateSentence(widget._data);
+            } 
           ),
         ),
         onChanged: (String value){
@@ -205,7 +139,7 @@ class _SentencePatternEditState extends State<SentencePatternEdit> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildEnglishSentence(context),
-              _buildDetail(context),
+              SentenceDetails(sentence: widget._data),
               _buildChineseSentence(context),
             ],
           ),
@@ -214,67 +148,3 @@ class _SentencePatternEditState extends State<SentencePatternEdit> {
     );
   }
 }
-
-/*
-class SentencePatternEdit extends StatelessWidget {
-  final int _index;
-  final int _indent;
-  final Function(Object) _delete;
-  final List<Function(String)> _onChanged;
-  final TextEditingController _controllerA = new TextEditingController();
-  final TextEditingController _controllerB = new TextEditingController();
-
-  SentencePatternEdit({
-    Key key,
-    List<String> data=const ["", ""],
-    int index=0,
-    int indent=1,
-    Function(Object) delete,
-    List<Function(String)> onChanged})
-    : _index = index,
-      _indent = indent,
-      _delete = delete,
-      _onChanged = onChanged,
-      super(key:key) {
-        _controllerA.text = data[0];
-        _controllerB.text = data[1];
-      }
-
-  @override
-  Widget build(BuildContext context) {
-    //print("----- PatternLineEdit build ${_hintText[0]}");
-
-    return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextField(
-                    maxLines: 1,
-                    controller: _controllerA,
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: "英文例句",
-                    ),
-                    onChanged: (String value){
-                      if(_onChanged != null) _onChanged[0](value);
-                    }
-                  ),
-                  TextField(
-                    maxLines: 1,
-                    controller: _controllerB,
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: "中文例句",
-                    ),
-                    onChanged: (String value){
-                      if(_onChanged != null) _onChanged[1](value);
-                    }
-                  ),
-              ],
-        );
-  }
-}
-*/
