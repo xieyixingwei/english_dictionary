@@ -12,7 +12,6 @@ class TokenAuthentication(authentication.BaseAuthentication):
         token = request.query_params.get('token')
         if not token:
             token = request.headers.get('authorization')
-
         try:
             id = cache.get(token)
             user = UserTable.objects.get(pk=id)
