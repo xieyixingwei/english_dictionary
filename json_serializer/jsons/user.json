@@ -1,0 +1,10 @@
+{ // 用户
+    "name": "John Smith", // 姓名
+    "height": 175.8,
+    "age": 22,
+    "email": "john@example.com",
+    "likes": ["$person"],
+    "grade": {},
+    "mother":"$person",
+    "friends":"$[]person"
+}

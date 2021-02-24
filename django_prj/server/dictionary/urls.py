@@ -16,6 +16,11 @@ urlpatterns = [
     url(r'^sentence/(?P<pk>\d+)/update/$', views.SentenceView.as_view({'put': 'update'})),
     url(r'^sentence/delete/(?P<pk>\w+)/$', views.SentenceView.as_view({'delete': 'destroy'})),
     url(r'^sentence/(?P<pk>\d+)/$', views.SentenceView.as_view({'get': 'retrieve'})),
+    url(r'^sentence/$', views.SentenceView.as_view({'get': 'list'})),
+
+    url(r'^sentencetags/create/$', views.SentenceTagsView.as_view({'post': 'create'})),
+    url(r'^sentencetags/delete/(?P<pk>\w+)/$', views.SentenceTagsView.as_view({'delete': 'destroy'})),
+    url(r'^sentencetags/$', views.SentenceTagsView.as_view({'get': 'list'})),
 
     url(r'^sentencetags/create/$', views.SentenceTagsView.as_view({'post': 'create'})),
     url(r'^sentencetags/delete/(?P<pk>\w+)/$', views.SentenceTagsView.as_view({'delete': 'destroy'})),
