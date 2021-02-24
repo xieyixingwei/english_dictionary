@@ -13,7 +13,7 @@ urlpatterns = [
     url(r'^wordtags/$', views.WordTagsView.as_view({'get': 'list'})),
 
     url(r'^sentence/create/$', views.SentenceView.as_view({'post': 'create'})),
-    url(r'^sentence/(?P<pk>\d+)/update/$', views.SentenceView.as_view({'put': 'update'})),
+    url(r'^sentence/update/(?P<pk>\d+)/$', views.SentenceView.as_view({'put': 'update'})),
     url(r'^sentence/delete/(?P<pk>\w+)/$', views.SentenceView.as_view({'delete': 'destroy'})),
     url(r'^sentence/(?P<pk>\d+)/$', views.SentenceView.as_view({'get': 'retrieve'})),
     url(r'^sentence/$', views.SentenceView.as_view({'get': 'list'})),
