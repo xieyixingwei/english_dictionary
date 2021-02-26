@@ -1,16 +1,29 @@
+// **************************************************************************
 // GENERATED CODE BY json_serializer.dart - DO NOT MODIFY BY HAND
-import 'package:json_annotation/json_annotation.dart';
+// JsonSerializer
+// **************************************************************************
 
-part 'net_cache_config.g.dart';
 
-@JsonSerializable()
+
 class NetCacheConfigSerializer {
-    NetCacheConfigSerializer();
+  NetCacheConfigSerializer();
 
-    bool enable = true;
-    num maxAge = 1000;
-    num maxCount = 100;
+  bool enable = true;
+  num maxAge = 1000;
+  num maxCount = 100;
 
-    factory NetCacheConfigSerializer.fromJson(Map<String,dynamic> json) => _$NetCacheConfigSerializerFromJson(json);
-    Map<String, dynamic> toJson() => _$NetCacheConfigSerializerToJson(this);
+
+  NetCacheConfigSerializer fromJson(Map<String, dynamic> json) {
+    enable = json['enable'] as bool;
+    maxAge = json['maxAge'] as num;
+    maxCount = json['maxCount'] as num;
+    return this;
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'enable': enable,
+    'maxAge': maxAge,
+    'maxCount': maxCount,
+  };
+
 }

@@ -1,15 +1,28 @@
+// **************************************************************************
 // GENERATED CODE BY json_serializer.dart - DO NOT MODIFY BY HAND
-import 'package:json_annotation/json_annotation.dart';
+// JsonSerializer
+// **************************************************************************
 import 'sentence.dart';
-part 'paraphrase.g.dart';
 
-@JsonSerializable()
+
 class ParaphraseSerializer {
-    ParaphraseSerializer();
+  ParaphraseSerializer();
 
-    String paraphrase = '';
-    List<SentenceSerializer> exampleSentences = [];
+  String paraphrase = '';
+  List<SentenceSerializer> exampleSentences = [SentenceSerializer()];
 
-    factory ParaphraseSerializer.fromJson(Map<String,dynamic> json) => _$ParaphraseSerializerFromJson(json);
-    Map<String, dynamic> toJson() => _$ParaphraseSerializerToJson(this);
+
+  ParaphraseSerializer fromJson(Map<String, dynamic> json) {
+    paraphrase = json['paraphrase'] as String;
+    exampleSentences = json['exampleSentences'] == null
+        ? []
+        : json['exampleSentences'].map<SentenceSerializer>((e) => SentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
+    return this;
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'paraphrase': paraphrase,
+    'exampleSentences': exampleSentences,
+  };
+
 }

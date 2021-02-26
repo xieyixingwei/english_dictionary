@@ -42,11 +42,6 @@ class UserTab extends StatelessWidget {
       "icon": Icon(Icons.label),
       "route": "/edit_word_tags",
     },
-    {
-      "title": "编辑例句 Tags",
-      "icon": Icon(Icons.label),
-      "route": "/edit_sentence_tags",
-    },
   ];
   final statistics = [
     {

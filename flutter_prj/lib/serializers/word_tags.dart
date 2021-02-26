@@ -1,14 +1,23 @@
+// **************************************************************************
 // GENERATED CODE BY json_serializer.dart - DO NOT MODIFY BY HAND
-import 'package:json_annotation/json_annotation.dart';
+// JsonSerializer
+// **************************************************************************
 
-part 'word_tags.g.dart';
 
-@JsonSerializable()
+
 class WordTagsSerializer {
-    WordTagsSerializer();
+  WordTagsSerializer();
 
-    String t_name = '';
+  String t_name = '';
 
-    factory WordTagsSerializer.fromJson(Map<String,dynamic> json) => _$WordTagsSerializerFromJson(json);
-    Map<String, dynamic> toJson() => _$WordTagsSerializerToJson(this);
+
+  WordTagsSerializer fromJson(Map<String, dynamic> json) {
+    t_name = json['t_name'] as String;
+    return this;
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    't_name': t_name,
+  };
+
 }

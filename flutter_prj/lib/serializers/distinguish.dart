@@ -1,16 +1,31 @@
+// **************************************************************************
 // GENERATED CODE BY json_serializer.dart - DO NOT MODIFY BY HAND
-import 'package:json_annotation/json_annotation.dart';
+// JsonSerializer
+// **************************************************************************
 
-part 'distinguish.g.dart';
 
-@JsonSerializable()
+
 class DistinguishSerializer {
-    DistinguishSerializer();
+  DistinguishSerializer();
 
-    num d_id = -1;
-    List<String> d_words = [];
-    String d_content = '';
+  num d_id = -1;
+  List<String> d_words = [''];
+  String d_content = '';
 
-    factory DistinguishSerializer.fromJson(Map<String,dynamic> json) => _$DistinguishSerializerFromJson(json);
-    Map<String, dynamic> toJson() => _$DistinguishSerializerToJson(this);
+
+  DistinguishSerializer fromJson(Map<String, dynamic> json) {
+    d_id = json['d_id'] as num;
+    d_words = json['d_words'] == null
+        ? []
+        : json['d_words'].map<String>((e) => e as String).toList();
+    d_content = json['d_content'] as String;
+    return this;
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'd_id': d_id,
+    'd_words': d_words,
+    'd_content': d_content,
+  };
+
 }

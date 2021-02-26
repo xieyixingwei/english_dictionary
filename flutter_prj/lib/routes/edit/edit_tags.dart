@@ -3,14 +3,14 @@ import 'package:flutter_prj/widgets/InputDialog.dart';
 
 
 class EditTags extends StatefulWidget {
-  final List<String> _data;
+  final List<String> _tags;
   final Widget _title;
   final Function(String) _add;
   final Function(String) _remove;
 
-  EditTags({Key key, Widget title, List<String> data, Function(String) add, Function(String) remove})
+  EditTags({Key key, Widget title, List<String> tags, Function(String) add, Function(String) remove})
     :
-      _data = data,
+      _tags = tags,
       _title = title,
       _add = add,
       _remove = remove,
@@ -22,36 +22,40 @@ class EditTags extends StatefulWidget {
 
 class _EditTagsState extends State<EditTags> {
 
-  _children() {
-  var children = widget._data.map((e) =>
-      ListTile(
-        title: Text(e),
-        trailing: IconButton(
-          splashRadius: 1.0,
-          icon: Icon(Icons.clear),
-          onPressed: () => setState(() {
-            widget._data.remove(e);
-            widget._remove(e);
-            },
+  _children(BuildContext context) {
+    var children = widget._tags.map((e) =>
+        ListTile(
+          title: Text(e),
+          trailing: IconButton(
+            splashRadius: 1.0,
+            icon: Icon(Icons.clear),
+            onPressed: () => setState(() {
+              widget._tags.remove(e);
+              widget._remove(e);
+              },
+            ),
           ),
-        ),
+        )
+      ).toList();
+    children.add(
+      ListTile(
+        title: RaisedButton(
+            color: Theme.of(context).primaryColor,
+            child: Text("添加 Tag"),
+            onPressed: () => popInputDialog(
+              context: context,
+              title: Text("添加 Tag"),
+              close: (String value) => setState(
+                () {
+                  widget._tags.add(value);
+                  widget._add(value);
+                }
+              ),
+            ),
+          ),
       )
-    ).toList();
-  children.add(
-     ListTile(
-      title: Text("添加 Tag"),
-      leading: InputDialog(
-        title: "添加 Tag",
-        icon: Icon(Icons.add),
-        close: (String value) => setState(() {
-          widget._data.add(value);
-          widget._add(value);
-          },
-        ),
-      ),
-    ),
-  );
-  return children;
+    );
+    return children;
   }
 
   @override
@@ -62,7 +66,7 @@ class _EditTagsState extends State<EditTags> {
           ),
           body: ListView(
             padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-              children: _children(),
+              children: _children(context),
             ),
     );
   }

@@ -1,10 +1,37 @@
 { // 语法表
-    "g_id": -1, //models.AutoField(primary_key=True)
+    "g_id @primary": "num=null", //models.AutoField(primary_key=True)
     "g_type": [""], // models.JSONField(null=True) # [时态,从句]
     "g_tags": [""], // models.JSONField(null=True) # [重要]
     "g_content": "", // models.TextField(null=False, blank=True) # 内容 markdown文本
-    "_g_word": ["$word"],//models.ForeignKey(to=WordTable, related_name='word_grammar', null=True, on_delete=models.CASCADE)
-    "_g_sentence": ["$sentence"]// models.ForeignKey(to=SentenceTable, related_name='sentence_grammar', null=True, on_delete=models.CASCADE)
+    "g_word": "String=null",//models.ForeignKey(to=WordTable, related_name='word_grammar', null=True, on_delete=models.CASCADE)
+    "g_sentence @foreign=sentence": "num=null",// models.ForeignKey(to=SentenceTable, related_name='sentence_grammar', null=True, on_delete=models.CASCADE)
     //"g_image": models.ImageField(null=True) # 图片讲解
     //#"g_vedio": models.FilePathField(max_length=128, null=True) # 视频讲解
+    "__http": {
+        "url": "/dictionary/grammar/",
+        "http_package": "package:flutter_prj/common/http.dart",
+        "methods": [
+            {
+                "name": "create",
+                "url": "create/"
+            },
+            {
+                "name": "update",
+                "requst": "put",
+                "url": "update/$g_id/"
+            },
+            {
+                "name": "retrieve",
+                "requst": "get",
+                "url": "$g_id/"
+            },
+            {
+                "name": "delete",
+                "url": "delete/$g_id/"
+            },
+			{
+                "name": "save"
+            }
+        ]
+    }
 }

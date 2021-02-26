@@ -56,3 +56,25 @@ class InputDialog extends StatelessWidget {
           );
   }
 }
+
+
+void popInputDialog({BuildContext context, Widget title, Function(String value) close}) async {
+  final TextEditingController textFeildCtrl = TextEditingController();
+  await showDialog(
+    context: context,
+    builder: (context) =>
+      SimpleDialog(
+        title: title,
+        contentPadding: EdgeInsets.fromLTRB(10,10,10,10),
+        children: [
+          TextField(
+            maxLines: null,
+            controller: textFeildCtrl,
+          ),
+        ],
+      ),
+  );
+
+  String value = textFeildCtrl.text.trim();
+  close != null && value.length > 0 ? close(textFeildCtrl.text.trim()) : null;
+}

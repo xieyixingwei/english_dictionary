@@ -1,17 +1,39 @@
+// **************************************************************************
 // GENERATED CODE BY json_serializer.dart - DO NOT MODIFY BY HAND
-import 'package:json_annotation/json_annotation.dart';
+// JsonSerializer
+// **************************************************************************
 import 'sentence.dart';
-part 'list_senteces.g.dart';
+import 'package:flutter_prj/common/http.dart';
 
-@JsonSerializable()
+
 class ListSentecesSerializer {
-    ListSentecesSerializer();
+  ListSentecesSerializer();
 
-    num count = 0;
-    String next = '';
-    String previous = '';
-    List<SentenceSerializer> results = [];
+  num count = 0;
+  String next = '';
+  String previous = '';
+  List<SentenceSerializer> results = [SentenceSerializer()];
 
-    factory ListSentecesSerializer.fromJson(Map<String,dynamic> json) => _$ListSentecesSerializerFromJson(json);
-    Map<String, dynamic> toJson() => _$ListSentecesSerializerToJson(this);
+  Future<ListSentecesSerializer> list({Map<String, dynamic> queryParameters, bool cache=false}) async {
+    var res = await Http().request(HttpType.GET, '/dictionary/sentence', queryParameters:queryParameters, cache:cache);
+    return this.fromJson(res.data);
+  }
+
+  ListSentecesSerializer fromJson(Map<String, dynamic> json) {
+    count = json['count'] as num;
+    next = json['next'] as String;
+    previous = json['previous'] as String;
+    results = json['results'] == null
+        ? []
+        : json['results'].map<SentenceSerializer>((e) => SentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
+    return this;
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'count': count,
+    'next': next,
+    'previous': previous,
+    'results': results,
+  };
+
 }

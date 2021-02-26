@@ -1,0 +1,14 @@
+[
+    "$sentence_tags tags",
+    {
+        "__type": "__http",
+        "url": "/dictionary/sentencetags/",
+        "http_package": "package:flutter_prj/common/http.dart",
+        "methods": [
+            {
+                "name": "list",
+                "requst": "get"
+            }
+        ]
+    }
+]

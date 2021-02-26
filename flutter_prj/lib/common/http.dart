@@ -7,11 +7,19 @@ import 'package:flutter_prj/serializers/index.dart';
 import './global.dart';
 import 'dart:convert';
 
+enum HttpType {
+  POST,
+  PUT,
+  GET,
+  DELETE
+}
+
 class Http {
+  
   Options _options;
   static Dio _dio = new Dio(
     BaseOptions(
-      baseUrl: 'http://192.168.1.10:5005',
+      baseUrl: 'http://192.168.2.10:5005',
     )
   );
 
@@ -49,7 +57,7 @@ class Http {
         }
       ),
     );
-    return UserSerializer.fromJson(res.data);
+    return UserSerializer().fromJson(res.data);
   }
 
   Future<UserSerializer> login(String uname, String pwd) async {
@@ -79,7 +87,7 @@ class Http {
     );
     Global.netCache.clear(); //清空所有缓存
     Global.localStore.token = token; // 更新token信息
-    return UserSerializer.fromJson(res.data);
+    return UserSerializer().fromJson(res.data);
   }
 
   Future<List<String>> listWordTags() async {
@@ -144,89 +152,26 @@ class Http {
     );
   }
 
-  void createSentence(SentenceSerializer sentence) async {
-    await _dio.post(
-      "/dictionary/sentence/create/",
-      data: sentence.toJson(),
-      options: _options.merge(
-        extra: {
-          "noCache": true, //本接口禁用缓存
-        }
-      ),
-    );
-  }
-
-  Future<ListSentecesSerializer> listSentences({num page_size, num page_index}) async {
-    var res = await _dio.get(
-      "/dictionary/sentence/",
-      queryParameters: {"page_size": page_size, "page_index": page_index},
-      options: _options.merge(
-        extra: {
-          "noCache": true, //本接口禁用缓存
-        }
-      ),
-    );
-    return ListSentecesSerializer.fromJson(res.data);
-  }
-
-  deleteSentence(num id) async {
-    await _dio.delete(
-      "/dictionary/sentence/delete/$id",
-      options: _options.merge(
-        extra: {
-          "noCache": true, //本接口禁用缓存
-        }
-      ),
-    );
-  }
-
-  updateSentence(SentenceSerializer sentence) async {
-    await _dio.put(
-      "/dictionary/sentence/update/${sentence.s_id}/",
-      data: sentence.toJson(),
-      options: _options.merge(
-        extra: {
-          "noCache": true, //本接口禁用缓存
-        }
-      ),
-    );
-  }
-
-  Future<List<String>> listSentenceTags() async {
-    var res = await _dio.get(
-      "/dictionary/sentencetags/",
-      options: _options.merge(
-        extra: {
-          "noCache": true, //本接口禁用缓存
-        }
-      ),
-    );
-    List<String> tmp = [];
-    res.data.forEach((e) => tmp.add(e["t_name"].toString()));
-    return tmp;
-  }
-
-  void createSentenceTag(String tag) async {
-    FormData formData = FormData.fromMap({"t_name":tag});
-    await _dio.post(
-      "/dictionary/sentencetags/create/",
-      data: formData,
-      options: _options.merge(
-        extra: {
-          "noCache": true, //本接口禁用缓存
-        }
-      ),
-    );
-  }
-
-  void deleteSentenceTag(String tag) async {
-    await _dio.delete(
-      "/dictionary/sentencetags/delete/$tag/",
-      options: _options.merge(
-        extra: {
-          "noCache": true, //本接口禁用缓存
-        }
-      ),
-    );
+  Future<Response> request(HttpType type, String path, {dynamic data, Map<String, dynamic> queryParameters, bool cache=true}) async {
+    Options opt = _options.merge(
+            extra: {
+              "noCache": cache, //本接口禁用缓存
+            }
+          );
+    try{
+      switch(type) {
+        case HttpType.GET:
+          return await _dio.get(path, queryParameters: queryParameters, options: opt);
+        case HttpType.POST:
+          return await _dio.post(path, data:data, queryParameters: queryParameters, options: opt);
+        case HttpType.PUT:
+          return await _dio.put(path, data:data, queryParameters: queryParameters, options: opt);
+        case HttpType.DELETE:
+          return await _dio.delete(path, data:data, queryParameters: queryParameters, options: opt);
+      }
+    } catch(e) {
+      print('*** Http Error: $e');
+    }
+    return null;
   }
 }

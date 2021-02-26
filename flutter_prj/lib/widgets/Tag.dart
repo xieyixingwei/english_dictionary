@@ -16,17 +16,22 @@ class Tag extends StatefulWidget {
 
 class _TagState extends State<Tag> {
 
+  List<Widget> _children() {
+    List<Widget> children = [widget._label];
+    widget._onDeleted != null ? children.add(
+      InkWell(
+        child: Icon(Icons.clear, size: 12.0,),
+        onTap: () => widget._onDeleted(),
+      )
+    ) : null;
+    return children;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
         mainAxisSize: MainAxisSize.min,
-        children: [
-          widget._label,
-          InkWell(
-            child: Icon(Icons.clear, size: 12.0,),
-            onTap: () {if(widget._onDeleted != null) widget._onDeleted();},
-          ),
-        ],
+        children: _children(),
   );
   }
 }

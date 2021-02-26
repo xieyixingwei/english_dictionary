@@ -1,17 +1,34 @@
+// **************************************************************************
 // GENERATED CODE BY json_serializer.dart - DO NOT MODIFY BY HAND
-import 'package:json_annotation/json_annotation.dart';
+// JsonSerializer
+// **************************************************************************
 import 'user.dart';
 import 'net_cache_config.dart';
-part 'local_store.g.dart';
 
-@JsonSerializable()
+
 class LocalStoreSerializer {
-    LocalStoreSerializer();
+  LocalStoreSerializer();
 
-    UserSerializer user = UserSerializer();
-    String token = '';
-    NetCacheConfigSerializer netCacheConfig = NetCacheConfigSerializer();
+  UserSerializer user = UserSerializer();
+  String token = '';
+  NetCacheConfigSerializer netCacheConfig = NetCacheConfigSerializer();
 
-    factory LocalStoreSerializer.fromJson(Map<String,dynamic> json) => _$LocalStoreSerializerFromJson(json);
-    Map<String, dynamic> toJson() => _$LocalStoreSerializerToJson(this);
+
+  LocalStoreSerializer fromJson(Map<String, dynamic> json) {
+    user = json['user'] == null
+        ? null
+        : UserSerializer().fromJson(json['user'] as Map<String, dynamic>);
+    token = json['token'] as String;
+    netCacheConfig = json['netCacheConfig'] == null
+        ? null
+        : NetCacheConfigSerializer().fromJson(json['netCacheConfig'] as Map<String, dynamic>);
+    return this;
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'user': user,
+    'token': token,
+    'netCacheConfig': netCacheConfig,
+  };
+
 }

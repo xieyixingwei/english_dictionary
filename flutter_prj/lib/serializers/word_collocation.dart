@@ -1,15 +1,28 @@
+// **************************************************************************
 // GENERATED CODE BY json_serializer.dart - DO NOT MODIFY BY HAND
-import 'package:json_annotation/json_annotation.dart';
+// JsonSerializer
+// **************************************************************************
 import 'sentence.dart';
-part 'word_collocation.g.dart';
 
-@JsonSerializable()
+
 class WordCollocationSerializer {
-    WordCollocationSerializer();
+  WordCollocationSerializer();
 
-    String partOfSpeech = '';
-    List<SentenceSerializer> exampleSentences = [];
+  String partOfSpeech = '';
+  List<SentenceSerializer> exampleSentences = [SentenceSerializer()];
 
-    factory WordCollocationSerializer.fromJson(Map<String,dynamic> json) => _$WordCollocationSerializerFromJson(json);
-    Map<String, dynamic> toJson() => _$WordCollocationSerializerToJson(this);
+
+  WordCollocationSerializer fromJson(Map<String, dynamic> json) {
+    partOfSpeech = json['partOfSpeech'] as String;
+    exampleSentences = json['exampleSentences'] == null
+        ? []
+        : json['exampleSentences'].map<SentenceSerializer>((e) => SentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
+    return this;
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'partOfSpeech': partOfSpeech,
+    'exampleSentences': exampleSentences,
+  };
+
 }

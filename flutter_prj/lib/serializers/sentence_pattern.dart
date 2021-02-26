@@ -1,15 +1,28 @@
+// **************************************************************************
 // GENERATED CODE BY json_serializer.dart - DO NOT MODIFY BY HAND
-import 'package:json_annotation/json_annotation.dart';
+// JsonSerializer
+// **************************************************************************
 import 'sentence.dart';
-part 'sentence_pattern.g.dart';
 
-@JsonSerializable()
+
 class SentencePatternSerializer {
-    SentencePatternSerializer();
+  SentencePatternSerializer();
 
-    String pattern = '';
-    List<SentenceSerializer> exampleSentences = [];
+  String pattern = '';
+  List<SentenceSerializer> exampleSentences = [SentenceSerializer()];
 
-    factory SentencePatternSerializer.fromJson(Map<String,dynamic> json) => _$SentencePatternSerializerFromJson(json);
-    Map<String, dynamic> toJson() => _$SentencePatternSerializerToJson(this);
+
+  SentencePatternSerializer fromJson(Map<String, dynamic> json) {
+    pattern = json['pattern'] as String;
+    exampleSentences = json['exampleSentences'] == null
+        ? []
+        : json['exampleSentences'].map<SentenceSerializer>((e) => SentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
+    return this;
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'pattern': pattern,
+    'exampleSentences': exampleSentences,
+  };
+
 }

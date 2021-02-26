@@ -1,14 +1,38 @@
+// **************************************************************************
 // GENERATED CODE BY json_serializer.dart - DO NOT MODIFY BY HAND
-import 'package:json_annotation/json_annotation.dart';
+// JsonSerializer
+// **************************************************************************
 
-part 'sentence_tags.g.dart';
+import 'package:flutter_prj/common/http.dart';
 
-@JsonSerializable()
+
 class SentenceTagsSerializer {
-    SentenceTagsSerializer();
+  SentenceTagsSerializer();
 
-    String t_name = '';
+  String t_name = '';
 
-    factory SentenceTagsSerializer.fromJson(Map<String,dynamic> json) => _$SentenceTagsSerializerFromJson(json);
-    Map<String, dynamic> toJson() => _$SentenceTagsSerializerToJson(this);
+  Future<SentenceTagsSerializer> create({dynamic data, Map<String, dynamic> queryParameters, bool cache=false}) async {
+    var res = await Http().request(HttpType.POST, '/dictionary/sentencetags/create/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
+    return this.fromJson(res.data);
+  }
+
+  Future<SentenceTagsSerializer> list({Map<String, dynamic> queryParameters, bool cache=false}) async {
+    var res = await Http().request(HttpType.GET, '/dictionary/sentencetags/', queryParameters:queryParameters, cache:cache);
+    return this.fromJson(res.data);
+  }
+
+  Future<bool> delete({dynamic data, Map<String, dynamic> queryParameters, bool cache=false}) async {
+    var res = await Http().request(HttpType.DELETE, '/dictionary/sentencetags/delete/$t_name/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
+    return res.statusCode == 204;
+  }
+
+  SentenceTagsSerializer fromJson(Map<String, dynamic> json) {
+    t_name = json['t_name'] as String;
+    return this;
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    't_name': t_name,
+  };
+
 }

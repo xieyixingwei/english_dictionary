@@ -5,8 +5,10 @@ import 'package:flutter_prj/widgets/Tag.dart';
 
 class SentenceDetails extends StatefulWidget {
   final SentenceSerializer _sentence;
-  SentenceDetails({Key key, SentenceSerializer sentence})
+  final bool _editable;
+  SentenceDetails({Key key, SentenceSerializer sentence, bool editable=false})
     : _sentence = sentence,
+      _editable = editable,
       super(key:key);
 
   @override
@@ -14,7 +16,7 @@ class SentenceDetails extends StatefulWidget {
 }
 
 class _SentenceDetailsState extends State<SentenceDetails> {
-  final List<String> _types = ["句子", "短语"];
+  static const List<String> _types = ["句子", "短语"];
 
   Widget _buildType(BuildContext context) {
     final TextStyle style = TextStyle(fontSize: 12.0, color: Colors.green);
@@ -30,7 +32,7 @@ class _SentenceDetailsState extends State<SentenceDetails> {
       widget._sentence.s_tags.map((e) => 
         Tag(
           label: Text(e, style: style,),
-          onDeleted: () => setState(() => widget._sentence.s_tags.remove(e)),
+          onDeleted: widget._editable ? () => setState(() => widget._sentence.s_tags.remove(e)) : null,
         )
       ).toList()
     );
@@ -46,7 +48,7 @@ class _SentenceDetailsState extends State<SentenceDetails> {
       widget._sentence.s_tense.map((e) => 
         Tag(
           label: Text(e, style: style,),
-          onDeleted: () => setState(() => widget._sentence.s_tense.remove(e)),
+          onDeleted: widget._editable ? () => setState(() => widget._sentence.s_tense.remove(e)) : null,
         )
       ).toList()
     );
@@ -62,7 +64,7 @@ class _SentenceDetailsState extends State<SentenceDetails> {
       widget._sentence.s_form.map((e) => 
         Tag(
           label: Text(e, style: style,),
-          onDeleted: () => setState(() => widget._sentence.s_form.remove(e)),
+          onDeleted: widget._editable ? () => setState(() => widget._sentence.s_form.remove(e)) : null,
         )
       ).toList()
     );

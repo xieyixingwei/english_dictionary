@@ -19,7 +19,7 @@ class _ListSentenceState extends State<ListSentence> {
   }
 
   _init() async {
-    var res = await Http().listSentences(page_size: 10, page_index:1);
+    ListSentecesSerializer res = await ListSentecesSerializer().list(queryParameters:{"page_size": 10, "page_index":1});
     setState(() {
       _listSentences = res;
     });
@@ -48,7 +48,7 @@ class _ListSentenceState extends State<ListSentence> {
             SizedBox(width: 10,),
             InkWell(
               child: Text("删除", style: TextStyle(color: Colors.pink,)),
-              onTap: () {setState(() => _listSentences.results.remove(e)); Http().deleteSentence(e.s_id);},
+              onTap: () {setState(() => _listSentences.results.remove(e)); e.delete();},
             ),
           ],
         )

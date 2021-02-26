@@ -24,7 +24,7 @@ class Global {
     var _localStore = _prefs.getString("localStore");
     if (_localStore != null) {
       try {
-        localStore = LocalStoreSerializer.fromJson(jsonDecode(_localStore));
+        localStore = LocalStoreSerializer().fromJson(jsonDecode(_localStore));
       } catch (e) {
         print('--- $e');
       }
@@ -37,7 +37,8 @@ class Global {
 
     Http.init();
     wordTagOptions = await Http().listWordTags();
-    sentenceTagOptions = await Http().listSentenceTags();
+    //ListSentenceTagsSerializer stes = await ListSentenceTagsSerializer().list();
+    //sentenceTagOptions = stes.t_name.map((e) => e.t_name).toList();
   }
 
   // 持久化本地存储数据

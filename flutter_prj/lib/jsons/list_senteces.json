@@ -2,5 +2,14 @@
     "count": 0,
     "next": "",
     "previous": "",
-    "results": ["$sentence"]
+    "results": ["$sentence"],
+    "__http": {
+        "url": "/dictionary/sentence",
+        "http_package": "package:flutter_prj/common/http.dart",
+        "methods": [
+            {
+                "name": "list"
+            }
+        ]
+    }
 }

@@ -7,6 +7,7 @@ import 'package:flutter_prj/routes/edit/list_sentences.dart';
 import 'package:flutter_prj/routes/login.dart';
 import 'package:flutter_prj/routes/manage_users.dart';
 import 'package:flutter_prj/routes/register.dart';
+import 'package:flutter_prj/serializers/index.dart';
 
 import '../dictionary_app.dart';
 import 'setting.dart';
@@ -22,17 +23,17 @@ final _routes = {
   //"/edit_word": (context) => EditWord(),
   "/edit_word_tags": (context) => EditTags(
     title: Text("编辑单词 Tags",),
-    data: Global.wordTagOptions,
+    tags: Global.wordTagOptions,
     add: (String tag) => Http().createWordTag(tag),
     remove: (String tag) => Http().deleteWordTag(tag),
     ),
-  "/edit_sentence": (context, {arguments}) => EditSentence(data:arguments),
+  "/edit_sentence": (context, {arguments}) => EditSentence(sentence:arguments),
   "/list_sentences": (context) => ListSentence(),
   "/edit_sentence_tags": (context) => EditTags(
     title: Text("编辑句子 Tags",),
-    data: Global.sentenceTagOptions,
-    add: (String tag) => Http().createSentenceTag(tag),
-    remove: (String tag) => Http().deleteSentenceTag(tag),
+    tags: Global.sentenceTagOptions,
+    add: (String tag) => SentenceTagsSerializer().create(data:{"t_name":tag}),
+    remove: (String tag) => SentenceTagsSerializer()..t_name = tag ..delete(),
     ),
 };
 
