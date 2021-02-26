@@ -22,14 +22,11 @@ urlpatterns = [
     url(r'^sentencetags/delete/(?P<pk>\w+)/$', views.SentenceTagsView.as_view({'delete': 'destroy'})),
     url(r'^sentencetags/$', views.SentenceTagsView.as_view({'get': 'list'})),
 
-    url(r'^sentencetags/create/$', views.SentenceTagsView.as_view({'post': 'create'})),
-    url(r'^sentencetags/delete/(?P<pk>\w+)/$', views.SentenceTagsView.as_view({'delete': 'destroy'})),
-    url(r'^sentencetags/$', views.SentenceTagsView.as_view({'get': 'list'})),
-
     url(r'^grammar/create/$', views.GrammarView.as_view({'post': 'create'})),
-    url(r'^grammar/update/(?P<pk>\d+)/update/$', views.GrammarView.as_view({'put': 'update'})),
+    url(r'^grammar/update/(?P<pk>\d+)/$', views.GrammarView.as_view({'put': 'update'})),
     url(r'^grammar/delete/(?P<pk>\d+)/$', views.GrammarView.as_view({'delete': 'destroy'})),
     url(r'^grammar/(?P<pk>\d+)/$', views.GrammarView.as_view({'get': 'retrieve'})),
+    url(r'^grammar/$', views.GrammarView.as_view({'get': 'list'})),
 
     url(r'^distinguish_word/create/$', views.DistinguishWordView.as_view({'post': 'create'})),
     url(r'^distinguish_word/update/(?P<pk>\d+)/$', views.DistinguishWordView.as_view({'put': 'update'})),

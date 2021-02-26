@@ -34,7 +34,8 @@ class SentenceView(ModelViewSetPermissionSerializerMap):
     queryset = SentenceTable.objects.all()
     serializer_class = SentenceSerializer
     serializer_class_map = {
-        'retrieve': _RetrieveSentenceSerializer
+        'retrieve': _RetrieveSentenceSerializer,
+        'list': _RetrieveSentenceSerializer,
     }
     permission_classes = (permissions.IsRootUser,)
     permission_classes_map = {
