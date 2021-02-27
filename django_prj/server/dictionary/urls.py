@@ -53,6 +53,6 @@ urlpatterns = [
     url(r'^relative_word/$', views.RelativeWordView.as_view({'get': 'list'})),
 
     url(r'^relative_sentence/create/$', views.RelativeSentenceView.as_view({'post': 'create'})),
-    url(r'^relative_sentence/(?P<pk>\d+)/update/$', views.RelativeSentenceView.as_view({'delete': 'destroy'})),
+    url(r'^relative_sentence/delete/(?P<pk>\d+)/$', views.RelativeSentenceView.as_view({'delete': 'destroy'})),
     url(r'^relative_sentence/$', views.RelativeSentenceView.as_view({'get': 'list'})),
 ]
