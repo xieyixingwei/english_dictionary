@@ -4,10 +4,10 @@
     "g_tags": [""], // models.JSONField(null=True) # [重要]
     "g_content": "", // models.TextField(null=False, blank=True) # 内容 markdown文本
     "g_word": "String=null",//models.ForeignKey(to=WordTable, related_name='word_grammar', null=True, on_delete=models.CASCADE)
-    "g_sentence @foreign=sentence": "num=null",// models.ForeignKey(to=SentenceTable, related_name='sentence_grammar', null=True, on_delete=models.CASCADE)
+    "g_sentence @foreign": "$sentence",// models.ForeignKey(to=SentenceTable, related_name='sentence_grammar', null=True, on_delete=models.CASCADE)
     //"g_image": models.ImageField(null=True) # 图片讲解
     //#"g_vedio": models.FilePathField(max_length=128, null=True) # 视频讲解
-    "__http": {
+    "__http__": {
         "url": "/dictionary/grammar/",
         "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
@@ -29,8 +29,57 @@
                 "name": "delete",
                 "url": "delete/$g_id/"
             },
+            {
+                "name": "list"
+            },
 			{
                 "name": "save"
+            }
+        ]
+    }
+}
+
+{   "__name__": "grammar_type",
+    "g_name @primary": "",
+    "__http__": {
+        "url": "/dictionary/grammartype/",
+        "http_package": "package:flutter_prj/common/http.dart",
+        "methods": [
+            {
+                "name": "create",
+                "url": "create/"
+            },
+            {
+                "name": "list",
+                "requst": "get"
+            },
+            {
+                "name": "delete",
+                "url": "delete/$g_name/"
+
+            }
+        ]
+    }
+}
+
+{   "__name__": "grammar_tags",
+    "g_name @primary": "",
+    "__http__": {
+        "url": "/dictionary/grammartags/",
+        "http_package": "package:flutter_prj/common/http.dart",
+        "methods": [
+            {
+                "name": "create",
+                "url": "create/"
+            },
+            {
+                "name": "list",
+                "requst": "get"
+            },
+            {
+                "name": "delete",
+                "url": "delete/$g_name/"
+
             }
         ]
     }

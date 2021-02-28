@@ -1,5 +1,5 @@
 {
-    "u_id": 0,
+    "u_id @primary": "num=null",
     "u_uname": "",
     "u_passwd": "",
     "u_is_admin": false,
@@ -12,5 +12,46 @@
     "u_qq": "",
     "u_email": "",
     "u_telephone": "",
-    "u_status": ""
+    "u_status": "",
+    "__http__": {
+        "url": "/user/",
+        "http_package": "package:flutter_prj/common/http.dart",
+        "methods": [
+            {
+                "name": "list",
+                "requst": "get"
+            },
+            {
+                "name": "retrieve",
+                "url": "$u_uname/"
+            },
+            {
+                "name": "delete",
+                "url": "$u_uname/"
+            },
+            {
+                "name": "register",
+                "requst": "post",
+                "url": "register/"
+            }
+        ]
+    }
+}
+
+{
+    "__name__": "login",
+    "msg": "",
+    "status": 0,
+    "token": "String=null",
+    "__http__": {
+        "url": "/user/",
+        "http_package": "package:flutter_prj/common/http.dart",
+        "methods": [
+            {
+                "name": "login",
+                "requst": "post",
+                "url": "login/"
+            }
+        ]
+    }
 }

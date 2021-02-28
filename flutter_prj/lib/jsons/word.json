@@ -1,5 +1,5 @@
 {
-    "w_name": "",
+    "w_name @primary": "",
     "w_voice_us": "",
     "w_voice_uk": "",
     "w_morph": [""],
@@ -14,4 +14,34 @@
     "_w_antonym": [""],// 反义词 [word1,word2,...]
     "_w_distinguish": ["$distinguish"], //models.JSONField()     # 词义辨析id [id1,id2,...]
     "_w_grammar": ["$grammar"] //models.JSONField() # 语法id [id1,id2,...]
+}
+
+{
+    "__name__": "word_tags",
+    "t_name @primary": "",
+    "__http__": {
+        "url": "/dictionary/sentencetags/",
+        "http_package": "package:flutter_prj/common/http.dart",
+        "methods": [
+            {
+                "name": "create",
+                "url": "create/"
+            },
+            {
+                "name": "list",
+                "requst": "get"
+            },
+            {
+                "name": "delete",
+                "url": "delete/$t_name/"
+
+            }
+        ]
+    }
+}
+
+{ // 词汇搭配
+    "__name__": "word_collocation",
+    "partOfSpeech": "",
+    "exampleSentences": ["$sentence"]
 }

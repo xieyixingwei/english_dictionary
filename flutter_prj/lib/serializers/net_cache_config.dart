@@ -20,10 +20,16 @@ class NetCacheConfigSerializer {
     return this;
   }
 
+  factory NetCacheConfigSerializer.newFromJson(Map<String, dynamic> json) {
+    return NetCacheConfigSerializer()
+      ..enable = json['enable'] as bool
+      ..maxAge = json['maxAge'] as num
+      ..maxCount = json['maxCount'] as num;
+  }
+
   Map<String, dynamic> toJson() => <String, dynamic>{
     'enable': enable,
     'maxAge': maxAge,
     'maxCount': maxCount,
   };
-
 }

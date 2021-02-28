@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/http.dart';
+import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/InputDialog.dart';
 
 
@@ -13,21 +14,33 @@ class ManageUsers extends StatefulWidget {
 
 class _ManageUsersState extends State<ManageUsers> {
 
-  Future<List> _init() async {
-    var users = await Http().listUsers();
-    return users;
+  List<UserSerializer> users;
+
+  Future<List<UserSerializer>> _init() async {
+    var res = await UserSerializer.list();
+
+    setState(() {
+      users = res;
+    });
   }
 
-  _children(List users) {
+  @override
+  void initState() { 
+    super.initState();
+    _init();
+  }
+
+  _children() {
     if(users == null) return [Text("")];
     var children = users.map((e) =>
         ListTile(
-          title: Text(e['u_uname']),
+          title: Text(e.u_uname),
           trailing: IconButton(
             splashRadius: 1.0,
             icon: Icon(Icons.clear),
             onPressed: () {
-              Http().deleteUser(e['u_uname']);
+              e.delete();
+              setState(() => users.remove(e));
             },
           ),
         )
@@ -48,18 +61,14 @@ class _ManageUsersState extends State<ManageUsers> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-            future: _init(),
-            builder: (BuildContext context, AsyncSnapshot<List> snapshot) =>
-              Scaffold(
+    return Scaffold(
                 appBar: AppBar(
                   title: Text("管理用户"),
                 ),
                 body: ListView(
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                    children: _children(snapshot.data),
+                    children: _children(),
                   ),
-              )
-    );
+              );
   }
 }

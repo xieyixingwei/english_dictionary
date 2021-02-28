@@ -1,7 +1,12 @@
-[
-    "$sentence_tags tags",
-    {
-        "__type": "__http",
+{
+    "__json__": {
+        "type": [],
+        "member": {
+            "tags": ["String=null"]
+        }
+    },
+
+    "__http__": {
         "url": "/dictionary/sentencetags/",
         "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
@@ -11,4 +16,4 @@
             }
         ]
     }
-]
+}

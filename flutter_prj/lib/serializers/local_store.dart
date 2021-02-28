@@ -3,6 +3,7 @@
 // JsonSerializer
 // **************************************************************************
 import 'user.dart';
+
 import 'net_cache_config.dart';
 
 
@@ -16,19 +17,29 @@ class LocalStoreSerializer {
 
   LocalStoreSerializer fromJson(Map<String, dynamic> json) {
     user = json['user'] == null
-        ? null
-        : UserSerializer().fromJson(json['user'] as Map<String, dynamic>);
+                ? null
+                : UserSerializer().fromJson(json['user'] as Map<String, dynamic>);
     token = json['token'] as String;
     netCacheConfig = json['netCacheConfig'] == null
-        ? null
-        : NetCacheConfigSerializer().fromJson(json['netCacheConfig'] as Map<String, dynamic>);
+                ? null
+                : NetCacheConfigSerializer().fromJson(json['netCacheConfig'] as Map<String, dynamic>);
     return this;
   }
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-    'user': user,
-    'token': token,
-    'netCacheConfig': netCacheConfig,
-  };
+  factory LocalStoreSerializer.newFromJson(Map<String, dynamic> json) {
+    return LocalStoreSerializer()
+      ..user = json['user'] == null
+                ? null
+                : UserSerializer().fromJson(json['user'] as Map<String, dynamic>)
+      ..token = json['token'] as String
+      ..netCacheConfig = json['netCacheConfig'] == null
+                ? null
+                : NetCacheConfigSerializer().fromJson(json['netCacheConfig'] as Map<String, dynamic>);
+  }
 
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'user': user == null ? null : user.toJson(),
+    'token': token,
+    'netCacheConfig': netCacheConfig == null ? null : netCacheConfig.toJson(),
+  };
 }

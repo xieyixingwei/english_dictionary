@@ -33,14 +33,14 @@ class UserTab extends StatelessWidget {
       "route": "/list_sentences",
     },
     {
-      "title": "编辑语法",
-      "icon": Icon(Icons.border_color),
-      "route": "/edit_grammer",
-    },
-    {
       "title": "编辑单词 Tags",
       "icon": Icon(Icons.label),
       "route": "/edit_word_tags",
+    },
+    {
+      "title": "编辑语法",
+      "icon": Icon(Icons.g_translate_sharp),
+      "route": "/list_grammar",
     },
   ];
   final statistics = [
@@ -193,7 +193,6 @@ class UserTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("--- UserTab build");
     return Consumer2<UserModel, WordModel>(
       builder: (BuildContext context, UserModel user, WordModel word, Widget child) =>
         user.isLogin ? _buildCustomScrollView(context, user) : LoginPage()

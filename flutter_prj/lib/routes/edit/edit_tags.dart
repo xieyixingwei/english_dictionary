@@ -41,10 +41,10 @@ class _EditTagsState extends State<EditTags> {
       ListTile(
         title: RaisedButton(
             color: Theme.of(context).primaryColor,
-            child: Text("添加 Tag"),
+            child: Text("添加"),
             onPressed: () => popInputDialog(
               context: context,
-              title: Text("添加 Tag"),
+              title: Text("输入内容"),
               close: (String value) => setState(
                 () {
                   widget._tags.add(value);

@@ -1,6 +1,0 @@
-{ // 近义句/反义句表
-    "r_id": -1, //models.AutoField(primary_key=True)
-    "r_sentence_a": "$sentence",
-    "r_sentence_b": "$sentence",
-    "r_type": true
-}

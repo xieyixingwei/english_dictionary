@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_prj/routes/edit/edit_grammar.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/SentencePatternEdit.dart';
 
@@ -19,34 +20,25 @@ class _EditSentenceState extends State<EditSentence> {
 
   _buildGrammer(BuildContext context) {
     List<Widget> children = widget._sentence.sentence_grammar.map<Widget>(
-      (GrammarSerializer e) => Padding(
-        padding: EdgeInsets.only(top:20),
-        child: TextField(
-          maxLines: null,
-          controller: TextEditingController(text: e.g_content),
-          decoration: InputDecoration(
-            labelText: "相关语法",
-            border: OutlineInputBorder(),
-            suffixIcon: IconButton(
-              icon: Icon(Icons.clear),
-              onPressed: () => setState(() => widget._sentence.sentence_grammar.remove(e)),
+      (e) => ListTile(
+        title: Text(e.g_content),
+        subtitle: GrammarDetails(e, false),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            InkWell(
+              child: Text('编辑', style: TextStyle(color: Theme.of(context).primaryColor),),
+              onTap: () {Navigator.pushNamed(context, '/edit_grammar', arguments:e);},
             ),
-          ),
-          onChanged: (String value) => e.g_content = value,
+            SizedBox(width: 10,),
+            InkWell(
+              child: Text('删除', style: TextStyle(color: Colors.pink,)),
+              onTap: () {e.delete(); setState(() => widget._sentence.sentence_grammar.remove(e));},
+            ),
+          ],
         )
-      )
+      ),
     ).toList();
-
-    children.add(
-      Padding(
-        padding: EdgeInsets.only(top:20),
-        child: RaisedButton(
-          color: Theme.of(context).primaryColor,
-          child: Text('添加相关语法'),
-          onPressed: () => setState(() => widget._sentence.sentence_grammar.add(GrammarSerializer())),
-        ),
-      )
-    );
     return Expanded(
             child: ListView(
               padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
@@ -72,28 +64,9 @@ class _EditSentenceState extends State<EditSentence> {
                     children: [
                       Expanded(
                         child: RaisedButton(
+                          color: Theme.of(context).primaryColor,
                           child: Text("保存"),
-                          onPressed: () async {
-                            if(widget._sentence.s_id == -1) {
-                              await widget._sentence.create();
-                              widget._sentence.s_id = widget._sentence.s_id;
-                              widget._sentence.sentence_grammar.forEach(
-                                (GrammarSerializer e) async {
-                                  e.g_sentence = widget._sentence.s_id;
-                                  e.g_id == -1 ? e.create() : e.update();
-                                }
-                              );
-                            }
-                            else {
-                              widget._sentence.update();
-                              widget._sentence.sentence_grammar.forEach(
-                                (GrammarSerializer e) async {
-                                  e.g_sentence = widget._sentence.s_id;
-                                  e.g_id == -1 ? e.create() : e.update();
-                                }
-                              );
-                            }
-                          },
+                          onPressed: () => widget._sentence.save(),
                         ),
                       ),
                     ]

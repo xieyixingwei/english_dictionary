@@ -1,15 +1,18 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_prj/routes/edit/edit_grammar.dart';
 import 'package:flutter_prj/serializers/index.dart';
-import 'package:flutter_prj/widgets/sentence_details.dart';
 
 
-class ListSentence extends StatefulWidget {
+class ListGrammer extends StatefulWidget {
+
   @override
-  _ListSentenceState createState() => _ListSentenceState();
+  _ListGrammerState createState() => _ListGrammerState();
 }
 
-class _ListSentenceState extends State<ListSentence> {
-  ListSentencesSerializer _listSentences;
+class _ListGrammerState extends State<ListGrammer> {
+
+  List<GrammarSerializer> grammars;
 
   @override
   void initState() { 
@@ -18,36 +21,30 @@ class _ListSentenceState extends State<ListSentence> {
   }
 
   _init() async {
-    ListSentencesSerializer res = await ListSentencesSerializer().retrieve(queryParameters:{"page_size": 10, "page_index":1});
+    List<GrammarSerializer> res = await GrammarSerializer.list();
     setState(() {
-      _listSentences = res;
+      grammars = res;
     });
   }
 
-  Widget _buildListSentences(BuildContext context) {
-    if(_listSentences == null) return Text("hello");
+  Widget _buildListGrammars(BuildContext context) {
+    if(grammars == null) return Text('hello');
 
-    List<Widget> children = _listSentences.results.map<ListTile>((e) => 
+    List<Widget> children = grammars.map<ListTile>((e) => 
       ListTile(
-        title: Text(e.s_en),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(e.s_ch),
-            SentenceDetails(sentence: e),
-          ],
-        ),
+        title: Text(e.g_content),
+        subtitle: GrammarDetails(e, false),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             InkWell(
-              child: Text("编辑", style: TextStyle(color: Theme.of(context).primaryColor),),
-              onTap: () {Navigator.pushNamed(context, "/edit_sentence", arguments:e);},
+              child: Text('编辑', style: TextStyle(color: Theme.of(context).primaryColor),),
+              onTap: () {Navigator.pushNamed(context, '/edit_grammar', arguments:e);},
             ),
             SizedBox(width: 10,),
             InkWell(
-              child: Text("删除", style: TextStyle(color: Colors.pink,)),
-              onTap: () {e.delete(); setState(() => _listSentences.results.remove(e));},
+              child: Text('删除', style: TextStyle(color: Colors.pink,)),
+              onTap: () {e.delete(); setState(() => grammars.remove(e));},
             ),
           ],
         )
@@ -70,9 +67,9 @@ class _ListSentenceState extends State<ListSentence> {
             child: RaisedButton(
               color: Theme.of(context).primaryColor,
               padding: EdgeInsets.all(15.0),
-              child: Text("添加句子"),
+              child: Text('添加语法'),
               onPressed: () {
-                Navigator.pushNamed(context, "/edit_sentence", arguments:SentenceSerializer());
+                Navigator.pushNamed(context, '/edit_grammar', arguments:GrammarSerializer());
               },
             ),
           ),
@@ -84,7 +81,7 @@ class _ListSentenceState extends State<ListSentence> {
   Widget build(BuildContext context) {
     return Scaffold(
                 appBar: AppBar(
-                  title: Text("编辑例句"),
+                  title: Text('编辑语法'),
                 ),
                 body: Container(
                     padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
@@ -99,7 +96,7 @@ class _ListSentenceState extends State<ListSentence> {
                             indent: 1.0,
                           ),
                         ),
-                        _buildListSentences(context),
+                        _buildListGrammars(context),
                       ],
                     ),
                   ),

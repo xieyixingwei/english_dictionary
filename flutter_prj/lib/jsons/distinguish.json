@@ -1,5 +1,5 @@
 { // 词义辨析
-    "d_id": -1,
+    "d_id @primary": -1,
     "d_words": [""], // 相关单词列表
     "d_content": ""
     //"d_word": models.ManyToManyField(to=WordTable, related_name='distinguish')

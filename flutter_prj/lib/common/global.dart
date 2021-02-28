@@ -13,6 +13,8 @@ class Global {
   static NetCache netCache = NetCache(); // 网络缓存对象
   static List<String> wordTagOptions = [];//["现在分词", "过去分词", "完成时", "第三人称单数", "名词形式", "副词形式", "形容词形式"]
   static List<String> sentenceTagOptions = [];
+  static List<String> grammarTypeOptions = [];
+  static List<String> grammarTagOptions = [];
   static const List<String> partOfSpeechOptions = const ["n.", "vt.", "vi.", "v.", "adj."];
   static const List<String> tenseOptions = const ["一般现在时", "一般过去时", "一般过去时", "将来时"];
   static const List<String> sentenceFormOptions = const ["定语从句","主语从句","被动句"];
@@ -36,9 +38,14 @@ class Global {
       ..maxCount = 100;
 
     Http.init();
-    wordTagOptions = await Http().listWordTags();
-    //ListSentenceTagsSerializer stes = await ListSentenceTagsSerializer().list();
-    //sentenceTagOptions = stes.t_name.map((e) => e.t_name).toList();
+    List<WordTagsSerializer> wTags = await WordTagsSerializer.list();
+    wordTagOptions = wTags.map((e) => e.t_name).toList();
+    List<SentenceTagsSerializer> sTags = await SentenceTagsSerializer.list();
+    sentenceTagOptions = sTags.map((e) => e.t_name).toList();
+    List<GrammarTypeSerializer> gTypes = await GrammarTypeSerializer.list();
+    grammarTypeOptions = gTypes.map((e) => e.g_name).toList();
+    List<GrammarTagsSerializer> gTags = await GrammarTagsSerializer.list();
+    grammarTagOptions = gTags.map((e) => e.g_name).toList();
   }
 
   // 持久化本地存储数据

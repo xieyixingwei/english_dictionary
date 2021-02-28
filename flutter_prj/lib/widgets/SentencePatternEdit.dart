@@ -3,6 +3,7 @@ import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/common/http.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/SelectDialog.dart';
+import 'package:flutter_prj/widgets/popup_memu_button.dart';
 import 'dart:math' as math;
 import 'package:flutter_prj/widgets/sentence_details.dart';
 
@@ -23,14 +24,13 @@ class SentencePatternEdit extends StatefulWidget {
 }
 
 class _SentencePatternEditState extends State<SentencePatternEdit> {
-  static const List<String> options = ["删除", "设置类型", "添加Tag", "选择时态", "选择句型", "设置同义句", "设置反义句", "编辑Tags"];
+  static const List<String> _options = ["删除", "设置类型", "添加Tag", "选择时态", "选择句型", "添加相关语法", "设置同义句", "设置反义句", "编辑Tags"];
   static const List<String> _types = ["句子", "短语"];
   final TextStyle _textStyle = const TextStyle(fontSize: 14,);
 
   _onSelected(String value) {
-    print(value);
     if(value == "删除") {
-      widget._sentence.s_id != -1 ? widget._sentence.delete() : null;
+      widget._sentence.delete();
     } else if(value == "设置类型") {
       popSelectDialog(
         context: context,
@@ -59,27 +59,15 @@ class _SentencePatternEditState extends State<SentencePatternEdit> {
         options: Global.sentenceFormOptions,
         close: (String val) => setState(() => widget._sentence.s_form.add(val)),
       );
-    } else if(value == "编辑Tags") {
+    }
+    else if(value == "添加相关语法") {
+      widget._sentence.sentence_grammar.add(GrammarSerializer());
+      Navigator.pushNamed(context, "/edit_grammar", arguments:widget._sentence.sentence_grammar.last);
+    }
+    else if(value == "编辑Tags") {
       Navigator.pushNamed(context, "/edit_sentence_tags");
     }
   }
-
-  _buildPopupMenuButton(BuildContext context) =>
-    PopupMenuButton<String> (
-      elevation: 5,               // 设置立体效果的阴影
-      padding: EdgeInsets.all(5), // 菜单项的内边距
-      offset: Offset(0, 0),       // 控制菜单弹出的位置()
-      itemBuilder: (context) =>
-        options.map((String e) =>
-          PopupMenuItem<String>(
-            value: e,
-            textStyle: const TextStyle(fontWeight: FontWeight.w600), // 文本样式
-            child: Text(e, style: const TextStyle(color: Colors.blue) ),    // 子控件
-          )
-        ).toList(),
-      // onCanceled: () => print("---- cancel"), // 没有选择任何值的回调函数
-      onSelected: _onSelected,              // 选中某个值退出的回调函数,
-    );
 
   _buildEnglishSentence(BuildContext context) => 
     TextField(
@@ -88,7 +76,7 @@ class _SentencePatternEditState extends State<SentencePatternEdit> {
       style: _textStyle,
       decoration: InputDecoration(
         hintText: "英文例句",
-        suffixIcon: _buildPopupMenuButton(context),
+        suffixIcon: popupMenuButton(context:context, options:_options, onSelected:_onSelected),
       ),
       onChanged: (String value){
         widget._sentence.s_en = value;
@@ -111,9 +99,7 @@ class _SentencePatternEditState extends State<SentencePatternEdit> {
               ],
             ),
             onTap: () {
-              if(widget._sentence.s_en.trim().length == 0) return;
-              else if(widget._sentence.s_id == -1) widget._sentence.create();
-              else widget._sentence.update();
+              widget._sentence.save();
             }
           ),
         ),

@@ -19,9 +19,11 @@ class Http {
   Options _options;
   static Dio _dio = new Dio(
     BaseOptions(
-      baseUrl: 'http://192.168.2.10:5005',
+      baseUrl: 'http://192.168.1.10:5005',
     )
   );
+
+  static set token(String token) => _dio.options.headers[HttpHeaders.authorizationHeader] = token;
 
   // 可能会使用当前的context信息，比如在请求失败时打开一个新路由。
   Http([BuildContext context]) {
@@ -44,112 +46,6 @@ class Http {
         client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
       };
     }
-  }
-
-  Future<UserSerializer> register(String uname, String pwd) async {
-    FormData formData = FormData.fromMap({"u_uname":uname, "u_passwd":pwd});
-    var res = await _dio.post(
-      "/user/register/",
-      data: formData,
-      options: _options.merge(
-        extra: {
-          "noCache": true, //本接口禁用缓存
-        }
-      ),
-    );
-    return UserSerializer().fromJson(res.data);
-  }
-
-  Future<UserSerializer> login(String uname, String pwd) async {
-    FormData formData = FormData.fromMap({"u_uname":uname, "u_passwd":pwd});
-    var res = await _dio.post(
-      "/user/login/",
-      data: formData,
-      options: _options.merge(
-        extra: {
-          "noCache": true, //本接口禁用缓存
-        }
-      ),
-    );
-
-    String token = res.data['token'];
-
-    //登录成功后更新公共头（authorization），此后的所有请求都会带上用户身份信息
-    _dio.options.headers[HttpHeaders.authorizationHeader] = token;
-
-    res = await _dio.get(
-      "/user/$uname/",
-      options: _options.merge(
-        extra: {
-          "noCache": true, //本接口禁用缓存
-        }
-      ),
-    );
-    Global.netCache.clear(); //清空所有缓存
-    Global.localStore.token = token; // 更新token信息
-    return UserSerializer().fromJson(res.data);
-  }
-
-  Future<List<String>> listWordTags() async {
-    var res = await _dio.get(
-      "/dictionary/wordtags/",
-      options: _options.merge(
-        extra: {
-          "noCache": true, //本接口禁用缓存
-        }
-      ),
-    );
-    List<String> tmp = [];
-    res.data.forEach((e) => tmp.add(e["t_name"].toString()));
-    return tmp;
-  }
-
-  void createWordTag(String tag) async {
-    FormData formData = FormData.fromMap({"t_name":tag});
-    await _dio.post(
-      "/dictionary/wordtags/create/",
-      data: formData,
-      options: _options.merge(
-        extra: {
-          "noCache": true, //本接口禁用缓存
-        }
-      ),
-    );
-  }
-
-  void deleteWordTag(String tag) async {
-    await _dio.delete(
-      "/dictionary/wordtags/delete/$tag/",
-      options: _options.merge(
-        extra: {
-          "noCache": true, //本接口禁用缓存
-        }
-      ),
-    );
-  }
-
-  Future listUsers() async {
-    var res = await _dio.get(
-      "/user/",
-      options: _options.merge(
-        extra: {
-          "noCache": true, //本接口禁用缓存
-        }
-      ),
-    );
-
-    return res.data;
-  }
-
-  void deleteUser(String uname) async {
-    await _dio.delete(
-      "/user/$uname",
-      options: _options.merge(
-        extra: {
-          "noCache": true, //本接口禁用缓存
-        }
-      ),
-    );
   }
 
   Future<Response> request(HttpType type, String path, {dynamic data, Map<String, dynamic> queryParameters, bool cache=true}) async {
