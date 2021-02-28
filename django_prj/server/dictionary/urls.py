@@ -28,6 +28,14 @@ urlpatterns = [
     url(r'^grammar/(?P<pk>\d+)/$', views.GrammarView.as_view({'get': 'retrieve'})),
     url(r'^grammar/$', views.GrammarView.as_view({'get': 'list'})),
 
+    url(r'^grammartype/create/$', views.GrammarTypeView.as_view({'post': 'create'})),
+    url(r'^grammartype/delete/(?P<pk>\w+)/$', views.GrammarTypeView.as_view({'delete': 'destroy'})),
+    url(r'^grammartype/$', views.GrammarTypeView.as_view({'get': 'list'})),
+
+    url(r'^grammartags/create/$', views.GrammarTagView.as_view({'post': 'create'})),
+    url(r'^grammartags/delete/(?P<pk>\w+)/$', views.GrammarTagView.as_view({'delete': 'destroy'})),
+    url(r'^grammartags/$', views.GrammarTagView.as_view({'get': 'list'})),
+
     url(r'^distinguish_word/create/$', views.DistinguishWordView.as_view({'post': 'create'})),
     url(r'^distinguish_word/update/(?P<pk>\d+)/$', views.DistinguishWordView.as_view({'put': 'update'})),
     url(r'^distinguish_word/delete/(?P<pk>\d+)/$', views.DistinguishWordView.as_view({'delete': 'destroy'})),

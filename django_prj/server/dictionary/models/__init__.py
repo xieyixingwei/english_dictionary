@@ -1,6 +1,6 @@
 
 from .WordTable import *
 from .SentenceTable import *
-from .GrammarTable import GrammarTable
+from .GrammarTable import *
 from .PronunciationTable import *
-from .WordToSentenceTable import WordToSentenceTable
+from .WordToSentenceTable import *
