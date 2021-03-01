@@ -10,10 +10,11 @@ class GrammarTagsSerializer {
   GrammarTagsSerializer();
 
   String g_name = '';
+  
 
   Future<GrammarTagsSerializer> create({dynamic data, Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/dictionary/grammartags/create/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
-    return update ? this.fromJson(res.data) : GrammarTagsSerializer.newFromJson(res.data);
+    return update ? this.fromJson(res.data) : GrammarTagsSerializer().fromJson(res.data);
   }
 
   static Future<List<GrammarTagsSerializer>> list({Map<String, dynamic> queryParameters, bool cache=false}) async {
@@ -33,11 +34,6 @@ class GrammarTagsSerializer {
   GrammarTagsSerializer fromJson(Map<String, dynamic> json) {
     g_name = json['g_name'] as String;
     return this;
-  }
-
-  factory GrammarTagsSerializer.newFromJson(Map<String, dynamic> json) {
-    return GrammarTagsSerializer()
-      ..g_name = json['g_name'] as String;
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{

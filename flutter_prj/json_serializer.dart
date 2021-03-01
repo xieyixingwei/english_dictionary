@@ -21,6 +21,17 @@ String _serializerType(String name) {
   return '${name}Serializer';
 }
 
+/*
+String _filterMemberName(String name) {
+  if(name.indexOf('_') > 0) {
+    List<String> tmp = name.split('_').where((e) => e.trim() != '' ? e.trim() : false);
+    String suffix = tmp.sublist(1).map<String>((e) => _capitalize(e)).toList().join('');
+    return 'filter_${tmp[0]}$suffix';
+  }
+  return name.trim();
+}
+*/
+
 class Member {
   String type;
   String name;
@@ -184,6 +195,12 @@ class Member {
     String memberToJson = isList ? listToJson : unListToJson;
     return jsonType == JsonType.Map ? '\'$name\': $memberToJson,' : '$memberToJson;';
   }
+
+  String get filter {
+    if(fatherSerializer.filter == null) return null;
+    String filterName = fatherSerializer.filter.filterName(name);
+    return filterName != null ? '$type $filterName;' : null;
+  }
 }
 
 
@@ -239,7 +256,7 @@ class HttpMethods {
 """
   Future<$serializerType> $methodName({dynamic data, Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '$requestUrl', $data, $queryParameters, $cache);
-    return update ? this.fromJson(res.data) : $serializerType.newFromJson(res.data);
+    return update ? this.fromJson(res.data) : $serializerType().fromJson(res.data);
   }
 """;
       }
@@ -248,7 +265,7 @@ class HttpMethods {
 """
   Future<$serializerType> $methodName({dynamic data, Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
     var res = await Http().request(HttpType.PUT, '$requestUrl', $data, $queryParameters, $cache);
-    return update ? this.fromJson(res.data) : $serializerType.newFromJson(res.data);
+    return update ? this.fromJson(res.data) : $serializerType().fromJson(res.data);
   }
 """;
       }else if(methodName == "list") {
@@ -265,7 +282,7 @@ class HttpMethods {
 """
   Future<$serializerType> $methodName({Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '$requestUrl', $queryParameters, $cache);
-    return update ? this.fromJson(res.data) : $serializerType.newFromJson(res.data);
+    return update ? this.fromJson(res.data) : $serializerType().fromJson(res.data);
   }
 """;
       }
@@ -285,6 +302,30 @@ class HttpMethods {
     }).toList();
 }
 
+class Filter {
+  List<Map<String, String>> filters = [];
+
+  Filter(Map<String, dynamic> obj) {
+    obj.forEach((String key, dynamic values) {
+        key = key.trim();
+        values.forEach((e) {
+          e = e.trim();
+          if(e == 'exact')
+            filters.add({'$key': 'filter_$key'});
+          else if(e == 'icontains')
+            filters.add({'$key': 'filter_${key}__icontains'});
+          else
+            filters.add({'$key': 'filter_${key}__$e'});
+        });
+      });
+  }
+
+  String filterName(String memberName) {
+    List<Map<String, String>> tmp = filters.where((e) => e.keys.first == memberName).toList();
+    return tmp.length == 1 ? tmp.first.values.first : null;
+  }
+}
+
 class JsonSerializer {
   List<Member> members = [];
   HttpMethods httpMethodsObj;
@@ -292,6 +333,7 @@ class JsonSerializer {
   String serializerType;
   JsonType jsonType = JsonType.Map;
   String jsonSrc;
+  Filter filter;
 
   JsonSerializer(this.name, this.jsonSrc) {
     var obj;
@@ -308,6 +350,11 @@ class JsonSerializer {
     }
 
     serializerType = _serializerType(name);
+
+    if(obj['__filter__'] != null) {
+      filter = Filter(obj['__filter__']);
+      obj.remove('__filter__');
+    }
 
     Map<String, dynamic> http;
     if(obj['__http__'] != null) {
@@ -348,14 +395,6 @@ class JsonSerializer {
     return this;
   }""";
 
-  String get newFromJsonMembers => members.map((e) => e.fromJson).toList().where((e) => e != null).join('\n      ..');
-  String get newFromJson =>
-"""
-  factory $serializerType.newFromJson(${_jsonType(jsonType)} json) {
-    return $serializerType()
-      ..$newFromJsonMembers;
-  }""";
-
   String get toJsonMembers => members.map((e) => e.toJson).toList().where((e) => e != null).join('\n    ');
 
   String get toJson =>
@@ -371,6 +410,7 @@ class JsonSerializer {
   String get importSerializers => members.map((e) => e.importSerializer).toSet().join('\n');
   String get importHttpPackage => httpMethodsObj != null ? httpMethodsObj.importHttpPackage : '';
   String get serializerMembers => members.map((e) => e.member).toList().join('\n  ');
+  String get filterMembers => members.map((e) => e.filter).toList().where((e) => e != null).join('\n  ');
   String get httpMethods => httpMethodsObj != null ? httpMethodsObj.methods.join('\n') : '';
 
   String get content =>
@@ -386,11 +426,10 @@ class $serializerType {
   $serializerType();
 
   $serializerMembers
+  $filterMembers
 
 $httpMethods
 $fromJson
-
-$newFromJson
 
 $toJson
 }
@@ -487,7 +526,6 @@ class JsonSerializeTool {
     }
 
     serializers.forEach((e) => e.linkForeign(serializers));
-    print(serializers.length);
     serializers.forEach(
       (e) {
         e.save(distDir);

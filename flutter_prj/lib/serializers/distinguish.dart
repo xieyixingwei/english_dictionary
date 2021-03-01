@@ -11,6 +11,7 @@ class DistinguishSerializer {
   num d_id = -1;
   List<String> d_words = [];
   String d_content = '';
+  
 
 
   DistinguishSerializer fromJson(Map<String, dynamic> json) {
@@ -20,15 +21,6 @@ class DistinguishSerializer {
                 : json['d_words'].map<String>((e) => e as String).toList();
     d_content = json['d_content'] as String;
     return this;
-  }
-
-  factory DistinguishSerializer.newFromJson(Map<String, dynamic> json) {
-    return DistinguishSerializer()
-      ..d_id = json['d_id'] as num
-      ..d_words = json['d_words'] == null
-                ? []
-                : json['d_words'].map<String>((e) => e as String).toList()
-      ..d_content = json['d_content'] as String;
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{

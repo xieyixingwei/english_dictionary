@@ -10,10 +10,11 @@ class GrammarTypeSerializer {
   GrammarTypeSerializer();
 
   String g_name = '';
+  
 
   Future<GrammarTypeSerializer> create({dynamic data, Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/dictionary/grammartype/create/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
-    return update ? this.fromJson(res.data) : GrammarTypeSerializer.newFromJson(res.data);
+    return update ? this.fromJson(res.data) : GrammarTypeSerializer().fromJson(res.data);
   }
 
   static Future<List<GrammarTypeSerializer>> list({Map<String, dynamic> queryParameters, bool cache=false}) async {
@@ -33,11 +34,6 @@ class GrammarTypeSerializer {
   GrammarTypeSerializer fromJson(Map<String, dynamic> json) {
     g_name = json['g_name'] as String;
     return this;
-  }
-
-  factory GrammarTypeSerializer.newFromJson(Map<String, dynamic> json) {
-    return GrammarTypeSerializer()
-      ..g_name = json['g_name'] as String;
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{

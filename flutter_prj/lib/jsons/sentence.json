@@ -45,6 +45,14 @@
     "next": "",
     "previous": "",
     "results": ["$sentence=null"],
+    "__filter__": {
+        "s_en": ["icontains"],
+        "s_ch": ["icontains"],
+        "s_type": ["icontains"],
+        "s_tags": ["icontains"],
+        "s_tense": ["icontains"],
+        "s_form": ["icontains"]
+    },
     "__http__": {
         "url": "/dictionary/sentence",
         "http_package": "package:flutter_prj/common/http.dart",

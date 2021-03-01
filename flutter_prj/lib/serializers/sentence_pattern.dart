@@ -11,6 +11,7 @@ class SentencePatternSerializer {
 
   String pattern = '';
   List<SentenceSerializer> exampleSentences = [];
+  
 
 
   SentencePatternSerializer fromJson(Map<String, dynamic> json) {
@@ -19,14 +20,6 @@ class SentencePatternSerializer {
                 ? []
                 : json['exampleSentences'].map<SentenceSerializer>((e) => SentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
     return this;
-  }
-
-  factory SentencePatternSerializer.newFromJson(Map<String, dynamic> json) {
-    return SentencePatternSerializer()
-      ..pattern = json['pattern'] as String
-      ..exampleSentences = json['exampleSentences'] == null
-                ? []
-                : json['exampleSentences'].map<SentenceSerializer>((e) => SentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{

@@ -17,7 +17,7 @@ class ListSentencesSerializer {
 
   Future<ListSentencesSerializer> retrieve({Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/dictionary/sentence', queryParameters:queryParameters, cache:cache);
-    return update ? this.fromJson(res.data) : ListSentencesSerializer.newFromJson(res.data);
+    return update ? this.fromJson(res.data) : ListSentencesSerializer().fromJson(res.data);
   }
 
   ListSentencesSerializer fromJson(Map<String, dynamic> json) {
@@ -28,16 +28,6 @@ class ListSentencesSerializer {
                 ? []
                 : json['results'].map<SentenceSerializer>((e) => SentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
     return this;
-  }
-
-  factory ListSentencesSerializer.newFromJson(Map<String, dynamic> json) {
-    return ListSentencesSerializer()
-      ..count = json['count'] as num
-      ..next = json['next'] as String
-      ..previous = json['previous'] as String
-      ..results = json['results'] == null
-                ? []
-                : json['results'].map<SentenceSerializer>((e) => SentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{

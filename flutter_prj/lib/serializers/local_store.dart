@@ -13,6 +13,7 @@ class LocalStoreSerializer {
   UserSerializer user = UserSerializer();
   String token = '';
   NetCacheConfigSerializer netCacheConfig = NetCacheConfigSerializer();
+  
 
 
   LocalStoreSerializer fromJson(Map<String, dynamic> json) {
@@ -24,17 +25,6 @@ class LocalStoreSerializer {
                 ? null
                 : NetCacheConfigSerializer().fromJson(json['netCacheConfig'] as Map<String, dynamic>);
     return this;
-  }
-
-  factory LocalStoreSerializer.newFromJson(Map<String, dynamic> json) {
-    return LocalStoreSerializer()
-      ..user = json['user'] == null
-                ? null
-                : UserSerializer().fromJson(json['user'] as Map<String, dynamic>)
-      ..token = json['token'] as String
-      ..netCacheConfig = json['netCacheConfig'] == null
-                ? null
-                : NetCacheConfigSerializer().fromJson(json['netCacheConfig'] as Map<String, dynamic>);
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{

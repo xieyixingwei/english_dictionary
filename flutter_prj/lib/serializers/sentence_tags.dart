@@ -10,10 +10,11 @@ class SentenceTagsSerializer {
   SentenceTagsSerializer();
 
   String t_name = '';
+  
 
   Future<SentenceTagsSerializer> create({dynamic data, Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/dictionary/sentencetags/create/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
-    return update ? this.fromJson(res.data) : SentenceTagsSerializer.newFromJson(res.data);
+    return update ? this.fromJson(res.data) : SentenceTagsSerializer().fromJson(res.data);
   }
 
   static Future<List<SentenceTagsSerializer>> list({Map<String, dynamic> queryParameters, bool cache=false}) async {
@@ -33,11 +34,6 @@ class SentenceTagsSerializer {
   SentenceTagsSerializer fromJson(Map<String, dynamic> json) {
     t_name = json['t_name'] as String;
     return this;
-  }
-
-  factory SentenceTagsSerializer.newFromJson(Map<String, dynamic> json) {
-    return SentenceTagsSerializer()
-      ..t_name = json['t_name'] as String;
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{

@@ -13,10 +13,11 @@ class RelativeSentenceSerializer {
   num r_sentence_a;
   num r_sentence_b;
   bool r_type = true;
+  
 
   Future<RelativeSentenceSerializer> create({dynamic data, Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/dictionary/relative_sentence/create/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
-    return update ? this.fromJson(res.data) : RelativeSentenceSerializer.newFromJson(res.data);
+    return update ? this.fromJson(res.data) : RelativeSentenceSerializer().fromJson(res.data);
   }
 
   static Future<List<RelativeSentenceSerializer>> list({Map<String, dynamic> queryParameters, bool cache=false}) async {
@@ -47,14 +48,6 @@ class RelativeSentenceSerializer {
     r_sentence_b = json['r_sentence_b'] as num;
     r_type = json['r_type'] as bool;
     return this;
-  }
-
-  factory RelativeSentenceSerializer.newFromJson(Map<String, dynamic> json) {
-    return RelativeSentenceSerializer()
-      ..r_id = json['r_id'] as num
-      ..r_sentence_a = json['r_sentence_a'] as num
-      ..r_sentence_b = json['r_sentence_b'] as num
-      ..r_type = json['r_type'] as bool;
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
