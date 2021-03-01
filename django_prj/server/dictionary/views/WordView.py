@@ -107,7 +107,7 @@ class RelativeWordView(ModelViewSetPermissionSerializerMap):
     }
     # django-filter:
     #   1. pip3 intall django-filter
-    #   2. INSTALLED_APPS = [ 'rest_framework', ]
+    #   2. INSTALLED_APPS = [ 'django_filters', ]
     #   3. REST_FRAMEWORK = {
     #          'DEFAULT_FILTER_BACKENDS': (
     #              'django_filters.rest_framework.DjangoFilterBackend',
