@@ -4,8 +4,8 @@
     "s_ch": "", // 中文
     //# s_word:  models.JSONField() # 所属word ["word1:n.:1", "word2:v.:2"]
     "s_type": 0, //  models.IntegerField(default=0)  # sentence|phrase
-    "s_tags": ["String=null"], // models.JSONField(null=True)    # 标记 [日常用语,商务用语]
-    "s_tense": "List<String>=null", //  models.JSONField(null=True)   # 时态 [一般过去式,被动语态]
+    "s_tags": [""], // models.JSONField(null=True)    # 标记 [日常用语,商务用语]
+    "s_tense": [""], //  models.JSONField(null=True)   # 时态 [一般过去式,被动语态]
     "s_form": [""], // models.JSONField(null=True)    # 句型 [复合句,问候语,从句,陈述句]
     "_s_synonym": ["$relative_sentence=null"], //models.JSONField(null=True) # 同义句 [Sentence.id,Sentence.id,...]
     "_s_antonym": ["$relative_sentence=null"], //models.JSONField(null=True) # 反义句 [Sentence.id,Sentence.id,...]

@@ -15,8 +15,8 @@ class SentenceSerializer {
   String s_en = '';
   String s_ch = '';
   num s_type = 0;
-  List<String> s_tags;
-  List<String> s_tense;
+  List<String> s_tags = [];
+  List<String> s_tense = [];
   List<String> s_form = [];
   List<RelativeSentenceSerializer> s_synonym;
   List<RelativeSentenceSerializer> s_antonym;
