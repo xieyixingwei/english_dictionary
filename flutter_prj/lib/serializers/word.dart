@@ -84,3 +84,5 @@ class WordSerializer {
     'w_word_collocation': w_word_collocation == null ? null : w_word_collocation.map((e) => e.toJson()).toList(),
   };
 }
+
+

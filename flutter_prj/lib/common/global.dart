@@ -16,7 +16,7 @@ class Global {
   static List<String> grammarTypeOptions = [];
   static List<String> grammarTagOptions = [];
   static const List<String> partOfSpeechOptions = const ["n.", "vt.", "vi.", "v.", "adj."];
-  static const List<String> tenseOptions = const ["一般现在时", "一般过去时", "一般过去时", "将来时"];
+  static const List<String> tenseOptions = const ["一般现在时", "一般过去时", "将来时"];
   static const List<String> sentenceFormOptions = const ["定语从句","主语从句","被动句"];
   static List<bool> onOffWidget = [true, true, true];
 

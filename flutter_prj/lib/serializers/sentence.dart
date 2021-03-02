@@ -55,7 +55,7 @@ class SentenceSerializer {
                                : await this.update(data:data, queryParameters:queryParameters, update:update, cache:cache);
     if(s_synonym != null){s_synonym.forEach((e){ e.save();});}
     if(s_antonym != null){s_antonym.forEach((e){ e.save();});}
-    if(sentence_grammar != null){sentence_grammar.forEach((e){e.g_sentence = res.s_id; e.save();});}
+    if(sentence_grammar != null){sentence_grammar.forEach((e){ e.save();});}
     return res;
   }
 
@@ -95,3 +95,5 @@ class SentenceSerializer {
     's_form': s_form == null ? null : s_form.map((e) => e).toList(),
   };
 }
+
+

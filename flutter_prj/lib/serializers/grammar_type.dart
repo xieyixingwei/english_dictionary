@@ -40,3 +40,5 @@ class GrammarTypeSerializer {
     'g_name': g_name,
   };
 }
+
+

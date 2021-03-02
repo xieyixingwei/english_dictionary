@@ -46,9 +46,10 @@
     "previous": "",
     "results": ["$sentence=null"],
     "__filter__": {
+        "__serializer__": "$sentence",
         "s_en": ["icontains"],
         "s_ch": ["icontains"],
-        "s_type": ["icontains"],
+        "s_type": ["exact"],
         "s_tags": ["icontains"],
         "s_tense": ["icontains"],
         "s_form": ["icontains"]
@@ -58,7 +59,8 @@
         "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
-                "name": "retrieve"
+                "name": "retrieve",
+                "filter": true
             }
         ]
     }

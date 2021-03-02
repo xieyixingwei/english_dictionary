@@ -33,3 +33,5 @@ class LocalStoreSerializer {
     'netCacheConfig': netCacheConfig == null ? null : netCacheConfig.toJson(),
   };
 }
+
+

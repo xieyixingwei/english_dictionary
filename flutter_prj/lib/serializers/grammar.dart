@@ -3,7 +3,6 @@
 // JsonSerializer
 // **************************************************************************
 
-import 'sentence.dart';
 import 'package:flutter_prj/common/http.dart';
 
 
@@ -78,3 +77,5 @@ class GrammarSerializer {
     'g_sentence': g_sentence,
   };
 }
+
+

@@ -40,3 +40,5 @@ class SentenceTagsSerializer {
     't_name': t_name,
   };
 }
+
+

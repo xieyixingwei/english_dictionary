@@ -40,3 +40,5 @@ class WordTagsSerializer {
     't_name': t_name,
   };
 }
+
+
