@@ -44,7 +44,7 @@ class _SentenceFilter(filterset.FilterSet):
         fields = {
             's_en': ['icontains'],
             's_ch': ['icontains'],
-            's_type': ['icontains'],
+            's_type': ['exact'],
             's_tags': ['icontains'],
             's_tense': ['icontains'],
             's_form': ['icontains']
