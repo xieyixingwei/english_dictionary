@@ -67,6 +67,11 @@ class _ListSentenceState extends State<ListSentence> {
   Widget _buildFilter(BuildContext context) =>
     Row(
       children: [
+        Expanded(
+          child: TextField(
+            onChanged: (val) => _listSentences.filter.s_ch__icontains = val,
+          ),
+        ),
         DropdownButton(
           //hint: Text(filterTypeOptions.first),
           value: ddBtnValues.first,
@@ -101,7 +106,8 @@ class _ListSentenceState extends State<ListSentence> {
           icon: Icon(Icons.search),
           onPressed: () async {
             var tmp = await _listSentences.retrieve(queryParameters:{"page_size": 10, "page_index":1});
-            setState(() => _listSentences = tmp);
+            var filter = _listSentences.filter;
+            setState(() { _listSentences = tmp; _listSentences.filter = filter;});
           },
         ),
         SizedBox(width: 10,),
