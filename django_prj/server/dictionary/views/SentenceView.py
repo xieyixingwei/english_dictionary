@@ -72,23 +72,6 @@ class SentenceView(ModelViewSetPermissionSerializerMap):
     # filter_backends = (django_filters.rest_framework.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter, )
     filter_class = _SentenceFilter
 
-    def list(self, request:request.Request, *args, **kwargs):
-        tag = '重要'#.encode('utf8')#request.GET.get('s_tags__icontains')
-        if tag:
-            print(tag)
-            ses = SentenceTable.objects.all()
-            for s in ses:
-                print(s.s_en, s.s_ch, s.s_tags)
-            s = SentenceTable.objects.filter(s_tags__icontains=tag)
-            print(s)
-        queryset = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
 
 from dictionary.models import SentenceTagsTable
 

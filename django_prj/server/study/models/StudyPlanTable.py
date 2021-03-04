@@ -1,5 +1,6 @@
 from django.db import models
 from user.models import UserTable
+from server.models  import JSONFieldUtf8
 
 
 class StudyPlanTable(models.Model):
@@ -11,4 +12,4 @@ class StudyPlanTable(models.Model):
     sp_once_words = models.IntegerField()
     sp_once_sentences = models.IntegerField()
     sp_once_grammers = models.IntegerField()
-    sp_other_settings = models.JSONField()
+    sp_other_settings = JSONFieldUtf8()

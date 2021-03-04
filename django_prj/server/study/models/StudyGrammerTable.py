@@ -1,6 +1,7 @@
 from django.db import models
 from user.models import UserTable
 from dictionary.models import GrammarTable
+from server.models  import JSONFieldUtf8
 
 
 class StudyGrammerTable(models.Model):
@@ -12,6 +13,6 @@ class StudyGrammerTable(models.Model):
     sg_grammer = models.ForeignKey(to=GrammarTable, on_delete=models.CASCADE)
     sg_familiarity = models.IntegerField() # 0 ~ 5
     sg_repeats = models.IntegerField()
-    sg_learn_record = models.JSONField() # [09122030,09112030,09102030]
+    sg_learn_record = JSONFieldUtf8() # [09122030,09112030,09102030]
     sg_inplan = models.BooleanField()
     sg_comments = models.CharField(max_length=256)  # markdown

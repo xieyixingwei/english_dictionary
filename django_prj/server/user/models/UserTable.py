@@ -1,4 +1,5 @@
 from django.db import models
+from server.models  import JSONFieldUtf8
 
 
 class UserTable(models.Model):
@@ -18,7 +19,7 @@ class UserTable(models.Model):
     u_qq = models.CharField(max_length=64, null=True) # QQ号
     u_email = models.CharField(max_length=64, null=True) # email
     u_telephone = models.CharField(max_length=16, null=True) # 电话
-    u_status = models.JSONField(null=True) # 状态
+    u_status = JSONFieldUtf8(null=True) # 状态
 
     def gender(self) -> str:
         return '男' if self.u_gender else '女'

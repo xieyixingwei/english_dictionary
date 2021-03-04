@@ -1,5 +1,6 @@
 from django.db import models
 from dictionary.models import WordTable, SentenceTable
+from server.models  import JSONFieldUtf8
 
 
 class GrammarTable(models.Model):
@@ -7,8 +8,8 @@ class GrammarTable(models.Model):
     语法表
     """
     g_id = models.AutoField(primary_key=True)
-    g_type = models.JSONField(null=True) # [时态,从句]
-    g_tags = models.JSONField(null=True) # [重要]
+    g_type = JSONFieldUtf8(null=True) # [时态,从句]
+    g_tags = JSONFieldUtf8(null=True) # [重要]
     g_content = models.TextField(null=False, blank=True) # 内容 markdown文本
     g_word = models.ForeignKey(to=WordTable, related_name='word_grammar', null=True, on_delete=models.CASCADE)
     g_sentence = models.ForeignKey(to=SentenceTable, related_name='sentence_grammar', null=True, on_delete=models.CASCADE)
