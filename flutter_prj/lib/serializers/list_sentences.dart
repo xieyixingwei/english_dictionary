@@ -3,8 +3,6 @@
 // JsonSerializer
 // **************************************************************************
 
-import 'package:dio/dio.dart';
-
 import 'sentence.dart';
 import 'package:flutter_prj/common/http.dart';
 
@@ -15,7 +13,7 @@ class ListSentencesSerializer {
   num count = 0;
   String next = '';
   String previous = '';
-  List<SentenceSerializer> results;
+  List<SentenceSerializer> results = [];
   SentenceSerializerFilter filter = SentenceSerializerFilter();
 
   Future<ListSentencesSerializer> retrieve({Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {

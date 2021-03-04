@@ -44,7 +44,7 @@
     "count": 0,
     "next": "",
     "previous": "",
-    "results": ["$sentence=null"],
+    "results": ["$sentence"],
     "__filter__": {
         "__serializer__": "$sentence",
         "s_en": ["icontains"],

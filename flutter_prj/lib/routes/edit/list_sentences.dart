@@ -10,27 +10,37 @@ class ListSentence extends StatefulWidget {
 }
 
 class _ListSentenceState extends State<ListSentence> {
-  ListSentencesSerializer _listSentences;
-  static final List<String> filterTypeOptions = ["所有的类型", "句子", "短语"];
-  List<String> ddBtnValues = [filterTypeOptions.first, "请选择Tags", "请选择Tense", "请选择句型"];
+  ListSentencesSerializer sentences = ListSentencesSerializer();
+  static final List<String> typeOptions = ["所有的类型", "句子", "短语"];
+  static final List<String> tagOptions = ["请选择Tags"] + Global.sentenceTagOptions;
+  static final List<String> tenseOptions = ["请选择Tense"] + Global.tenseOptions;
+  static final List<String> formOptions = ["请选择句型"] + Global.sentenceFormOptions;
+  List<String> ddBtnValues = [typeOptions.first, tagOptions.first, tenseOptions.first, formOptions.first];
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
-    _init();
+
+    retrieve();
   }
 
-  _init() async {
-    ListSentencesSerializer res = await ListSentencesSerializer().retrieve(queryParameters:{"page_size": 10, "page_index":1});
+  void retrieve() async {
+    var tmp = await sentences.retrieve(queryParameters:{"page_size": 10, "page_index":1}, update: true);
     setState(() {
-      _listSentences = res;
+      sentences = tmp;
+      /*
+      ddBtnValues[0] = typeOptions[sentences.filter.s_type == null ? 0 : sentences.filter.s_type + 1];
+      ddBtnValues[1] = sentences.filter.s_tags__icontains == null ? "请选择Tags" : sentences.filter.s_tags__icontains;
+      ddBtnValues[2] = sentences.filter.s_tense__icontains == null ? "请选择Tense" : sentences.filter.s_tense__icontains;
+      ddBtnValues[3] = sentences.filter.s_form__icontains == null ? "请选择句型" : sentences.filter.s_form__icontains;
+      */
     });
   }
 
   Widget _buildListSentences(BuildContext context) {
-    if(_listSentences == null) return Text("hello");
+    if(sentences == null) return Text("hello");
 
-    List<Widget> children = _listSentences.results.map<ListTile>((e) => 
+    List<Widget> children = sentences.results.map<ListTile>((e) => 
       ListTile(
         title: Text(e.s_en),
         subtitle: Column(
@@ -50,7 +60,7 @@ class _ListSentenceState extends State<ListSentence> {
             SizedBox(width: 10,),
             InkWell(
               child: Text("删除", style: TextStyle(color: Colors.pink,)),
-              onTap: () {e.delete(); setState(() => _listSentences.results.remove(e));},
+              onTap: () {e.delete(); setState(() => sentences.results.remove(e));},
             ),
           ],
         )
@@ -69,45 +79,57 @@ class _ListSentenceState extends State<ListSentence> {
       children: [
         Expanded(
           child: TextField(
-            onChanged: (val) => _listSentences.filter.s_ch__icontains = val,
+            onChanged: (val) => sentences.filter.s_en__icontains = val.trim().length == 0 ? null : val.trim(),
+            decoration: InputDecoration(
+              labelText: '英文关键字',
+            ),
           ),
         ),
+        SizedBox(width: 10,),
+        Expanded(
+          child: TextField(
+            onChanged: (val) => sentences.filter.s_ch__icontains = val.trim().length == 0 ? null : val.trim(),
+            decoration: InputDecoration(
+              labelText: '中文关键字',
+            ),
+          ),
+        ),
+        SizedBox(width: 10,),
         DropdownButton(
           //hint: Text(filterTypeOptions.first),
           value: ddBtnValues.first,
-          items: filterTypeOptions.map<DropdownMenuItem>((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
+          items: typeOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
           onChanged: (v) {
-            num index = filterTypeOptions.indexOf(v);
-            _listSentences.filter.s_type = index == 0 ? null : index - 1;
+            num index = typeOptions.indexOf(v);
+            sentences.filter.s_type = index == 0 ? null : index - 1;
             setState(() => ddBtnValues.first = v);
           },
         ),
         SizedBox(width: 10,),
         DropdownButton(
           value: ddBtnValues[1],
-          items: (["请选择Tags"] + Global.sentenceTagOptions).map<DropdownMenuItem<String>>((e)=>DropdownMenuItem<String>(child: Text(e), value: e,)).toList(),
-          onChanged: (v) {print(v); setState(() => ddBtnValues[1] = v); _listSentences.filter.s_tags__icontains = v != "请选择Tags" ? v : null;},
+          items: tagOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
+          onChanged: (v) {setState(() => ddBtnValues[1] = v); sentences.filter.s_tags__icontains = v != tagOptions.first ? v : null;},
         ),
         SizedBox(width: 10,),
         DropdownButton(
           value: ddBtnValues[2],
-          items: (["请选择Tense"] + Global.tenseOptions).map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
-          onChanged: (v) {setState(() => ddBtnValues[2] = v); _listSentences.filter.s_tense__icontains = v != "请选择Tense" ? v : null;},
+          items: tenseOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
+          onChanged: (v) {setState(() => ddBtnValues[2] = v); sentences.filter.s_tense__icontains = v != tenseOptions.first ? v : null;},
         ),
         SizedBox(width: 10,),
         DropdownButton(
           value: ddBtnValues[3],
-          items: (["请选择句型"] + Global.sentenceFormOptions).map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
-          onChanged: (v) {setState(() => ddBtnValues[3] = v); _listSentences.filter.s_form__icontains = v != "请选择句型" ? v : null;},
+          items: formOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
+          onChanged: (v) {setState(() => ddBtnValues[3] = v); sentences.filter.s_form__icontains = v != formOptions.first ? v : null;},
         ),
         SizedBox(width: 10,),
         IconButton(
           splashRadius: 1.0,
           icon: Icon(Icons.search),
           onPressed: () async {
-            var tmp = await _listSentences.retrieve(queryParameters:{"page_size": 10, "page_index":1});
-            var filter = _listSentences.filter;
-            setState(() { _listSentences = tmp; _listSentences.filter = filter;});
+            var tmp = await sentences.retrieve(queryParameters:{"page_size": 10, "page_index":1}, update: true);
+            setState(() => sentences = tmp);
           },
         ),
         SizedBox(width: 10,),
@@ -115,7 +137,9 @@ class _ListSentenceState extends State<ListSentence> {
           //color: Theme.of(context).primaryColor,
           child: Text("添加句子"),
           onTap: () {
-            Navigator.pushNamed(context, "/edit_sentence", arguments:SentenceSerializer());
+            var s = SentenceSerializer();
+            Navigator.pushNamed(context, "/edit_sentence", arguments:s);
+            setState(() => sentences.results.add(s));
           },
         ),
       ],
