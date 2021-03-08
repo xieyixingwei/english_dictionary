@@ -32,6 +32,7 @@ class _SentencePagination(PageNumberPagination):
     page_query_param = 'page_index' # 表示url中的页码参数
     max_page_size = 100
 
+
 class _SentenceFilter(filterset.FilterSet):
     class Meta:
         model = SentenceTable

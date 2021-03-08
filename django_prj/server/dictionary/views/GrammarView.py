@@ -2,12 +2,42 @@ from rest_framework import serializers, response, request, generics
 from server import permissions
 from dictionary.models import GrammarTable
 from server.views import ModelViewSetPermissionSerializerMap
+from rest_framework.pagination import PageNumberPagination
+from django_filters import filterset, fields
+from django.db import models
+import django_filters
 
 
 class GrammarSerializer(serializers.ModelSerializer):
     class Meta:
         model = GrammarTable
         fields = '__all__'
+
+
+# 分页自定义
+class _GrammarPagination(PageNumberPagination):
+    page_size = 4 # 表示每页的默认显示数量
+    page_size_query_param = 'page_size' # 表示url中每页数量参数
+    page_query_param = 'page_index' # 表示url中的页码参数
+    max_page_size = 100
+
+
+class _GrammarFilter(filterset.FilterSet):
+    class Meta:
+        model = GrammarTable
+        filter_overrides = {
+            models.JSONField: {
+                'filter_class': django_filters.CharFilter,
+                'extra': lambda f: {
+                    'lookup_expr': 'icontains',
+                }
+            }
+        }
+        fields = {
+            'g_type': ['icontains'],
+            'g_tags': ['icontains'],
+            'g_content': ['icontains'],
+        }
 
 
 class GrammarView(ModelViewSetPermissionSerializerMap):
@@ -17,6 +47,8 @@ class GrammarView(ModelViewSetPermissionSerializerMap):
     permission_classes_map = {
         'retrieve': (permissions.AllowAny,),
     }
+    pagination_class = _GrammarPagination   # 自定义分页会覆盖settings全局配置的
+    filter_class = _GrammarFilter
 
 
 from dictionary.models import GrammarTypeTable
