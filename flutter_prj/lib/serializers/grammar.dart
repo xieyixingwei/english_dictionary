@@ -41,11 +41,6 @@ class GrammarSerializer {
     return res != null ? res.statusCode == 204 : false;
   }
 
-  static Future<List<GrammarSerializer>> list({Map<String, dynamic> queryParameters, bool cache=false}) async {
-    var res = await Http().request(HttpType.GET, '/dictionary/grammar/', queryParameters:queryParameters, cache:cache);
-    return res.data.map<GrammarSerializer>((e) => GrammarSerializer().fromJson(e)).toList();
-  }
-
   Future<GrammarSerializer> save({dynamic data, Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
     GrammarSerializer res = g_id == null
                                ? await this.create(data:data, queryParameters:queryParameters, update:update, cache:cache)

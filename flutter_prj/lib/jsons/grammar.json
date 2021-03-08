@@ -29,11 +29,32 @@
                 "name": "delete",
                 "url": "delete/$g_id/"
             },
-            {
-                "name": "list"
-            },
 			{
                 "name": "save"
+            }
+        ]
+    }
+}
+
+{ // 分页查询 语法
+    "__name__": "grammars_pagination",
+    "count": 0,
+    "next": "",
+    "previous": "",
+    "results": ["$grammar"],
+    "__filter__": {
+        "__serializer__": "$grammar",
+        "g_type": ["icontains"],
+        "g_tags": ["icontains"],
+        "g_content": ["icontains"]
+    },
+    "__http__": {
+        "url": "/dictionary/grammar/",
+        "http_package": "package:flutter_prj/common/http.dart",
+        "methods": [
+            {
+                "name": "retrieve",
+                "filter": true
             }
         ]
     }

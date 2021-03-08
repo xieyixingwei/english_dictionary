@@ -40,7 +40,7 @@
 }
 
 { // 分页查询 句子
-    "__name__": "list_sentences",
+    "__name__": "sentences_pagination",
     "count": 0,
     "next": "",
     "previous": "",

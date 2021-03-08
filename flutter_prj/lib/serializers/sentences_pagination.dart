@@ -7,8 +7,8 @@ import 'sentence.dart';
 import 'package:flutter_prj/common/http.dart';
 
 
-class ListSentencesSerializer {
-  ListSentencesSerializer();
+class SentencesPaginationSerializer {
+  SentencesPaginationSerializer();
 
   num count = 0;
   String next = '';
@@ -16,13 +16,13 @@ class ListSentencesSerializer {
   List<SentenceSerializer> results = [];
   SentenceSerializerFilter filter = SentenceSerializerFilter();
 
-  Future<ListSentencesSerializer> retrieve({Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
+  Future<SentencesPaginationSerializer> retrieve({Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
     (queryParameters != null && filter.queryset != null) ? queryParameters.addAll(filter.queryset) : queryParameters = filter.queryset;
 var res = await Http().request(HttpType.GET, '/dictionary/sentence', queryParameters:queryParameters, cache:cache);
-    return update ? this.fromJson(res.data) : ListSentencesSerializer().fromJson(res.data);
+    return update ? this.fromJson(res.data) : SentencesPaginationSerializer().fromJson(res.data);
   }
 
-  ListSentencesSerializer fromJson(Map<String, dynamic> json) {
+  SentencesPaginationSerializer fromJson(Map<String, dynamic> json) {
     count = json['count'] as num;
     next = json['next'] as String;
     previous = json['previous'] as String;

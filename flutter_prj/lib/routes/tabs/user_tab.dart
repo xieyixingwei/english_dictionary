@@ -30,7 +30,7 @@ class UserTab extends StatelessWidget {
     {
       "title": "编辑例句",
       "icon": Icon(Icons.edit),
-      "route": "/list_sentences",
+      "route": "/edit_sentences",
     },
     {
       "title": "编辑单词 Tags",
@@ -40,7 +40,7 @@ class UserTab extends StatelessWidget {
     {
       "title": "编辑语法",
       "icon": Icon(Icons.g_translate_sharp),
-      "route": "/list_grammar",
+      "route": "/edit_grammars",
     },
   ];
   final statistics = [

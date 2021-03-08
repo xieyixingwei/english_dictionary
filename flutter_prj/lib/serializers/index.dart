@@ -1,12 +1,13 @@
 export 'distinguish.dart';
 export 'grammar.dart';
+export 'grammars_pagination.dart';
 export 'grammar_type.dart';
 export 'grammar_tags.dart';
 export 'local_store.dart';
 export 'net_cache_config.dart';
 export 'paraphrase.dart';
 export 'sentence.dart';
-export 'list_sentences.dart';
+export 'sentences_pagination.dart';
 export 'relative_sentence.dart';
 export 'sentence_tags.dart';
 export 'sentence_pattern.dart';

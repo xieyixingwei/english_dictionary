@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
   final _providers = <SingleChildWidget>[
       ChangeNotifierProvider.value(value: UserModel()),
       ChangeNotifierProvider.value(value: WordModel()),
-      ChangeNotifierProvider.value(value: SentenceModel()),
+      ChangeNotifierProvider.value(value: SentencesModel()),
       ChangeNotifierProvider.value(value: MiscModel()),
     ];
 
