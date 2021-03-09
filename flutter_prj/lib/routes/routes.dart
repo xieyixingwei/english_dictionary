@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/routes/edit/edit_grammars.dart';
-import 'package:flutter_prj/routes/edit/edit_sentences.dart';
+import 'package:flutter_prj/routes/edit/edit_sentence/edit_sentence.dart';
+import 'package:flutter_prj/routes/edit/edit_sentence/edit_sentences.dart';
 import 'package:flutter_prj/routes/edit/edit_tags.dart';
 import 'package:flutter_prj/routes/login.dart';
 import 'package:flutter_prj/routes/manage_users.dart';
@@ -26,7 +27,7 @@ final _routes = {
                                     remove: (String tag) => WordTagsSerializer()..t_name = tag ..delete(),
                                     ),
   '/edit_sentences': (context) => EditSentences(),
-  '/edit_sentence': (context, {arguments}) => EditSentence(sentence:arguments),
+  '/edit_sentence': (context, {arguments}) => EditSentence(title:arguments['title'], sentence:arguments['sentence']),
   '/edit_sentence_tags': (context) => EditTags(
                                         title: Text('编辑句子 Tags',),
                                         tags: Global.sentenceTagOptions,
