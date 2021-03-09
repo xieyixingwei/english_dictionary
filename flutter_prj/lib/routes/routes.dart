@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
-import 'package:flutter_prj/routes/edit/edit_grammars.dart';
 import 'package:flutter_prj/routes/edit/edit_sentence/edit_sentence.dart';
 import 'package:flutter_prj/routes/edit/edit_sentence/edit_sentences.dart';
 import 'package:flutter_prj/routes/edit/edit_tags.dart';
+import 'package:flutter_prj/routes/edit_grammar/edit_grammar.dart';
+import 'package:flutter_prj/routes/edit_grammar/edit_grammars.dart';
 import 'package:flutter_prj/routes/login.dart';
 import 'package:flutter_prj/routes/manage_users.dart';
 import 'package:flutter_prj/routes/register.dart';
@@ -35,7 +36,7 @@ final _routes = {
                                         remove: (String tag) => SentenceTagsSerializer()..t_name = tag ..delete(),
                                         ),
   '/edit_grammars': (context) => EditGrammers(),
-  '/edit_grammar': (context, {arguments}) => EditGrammar(grammar:arguments),
+  '/edit_grammar': (context, {arguments}) => EditGrammar(title:arguments['title'], grammar:arguments['grammar']),
   '/edit_grammar_type': (context) => EditTags(
                                         title: Text('编辑语法 Type',),
                                         tags: Global.grammarTypeOptions,

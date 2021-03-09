@@ -35,34 +35,39 @@ class _EditSentencesState extends State<EditSentences> {
         children: sentences.results.map<Widget>(
           (e) => ShowSentence(
             sentence: e,
-            delete: () {e.delete(); setState(()=>sentences.results.remove(e));},)).toList(),
+            delete: () {e.delete(); setState(()=>sentences.results.remove(e));},
+          )
+        ).toList(),
       )
     );
 
   Widget _buildFilter(BuildContext context) =>
     Wrap(
-      spacing: 8.0,
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.end,
+      spacing: 10.0,
       children: [
-        Expanded(
-          flex: 1,
+        Container(
+          width: 100,
           child: TextField(
+            maxLines: null,
             onChanged: (val) => sentences.filter.s_en__icontains = val.trim().length == 0 ? null : val.trim(),
             decoration: InputDecoration(
               labelText: '英文关键字',
             ),
           ),
         ),
-        SizedBox(width: 10,),
-        Expanded(
-          flex: 1,
+        Container(
+          width: 100,
           child: TextField(
+            maxLines: null,
             onChanged: (val) => sentences.filter.s_ch__icontains = val.trim().length == 0 ? null : val.trim(),
             decoration: InputDecoration(
               labelText: '中文关键字',
             ),
           ),
         ),
-        SizedBox(width: 10,),
         DropdownButton(
           value: ddBtnValues.first,
           items: typeOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
@@ -72,41 +77,41 @@ class _EditSentencesState extends State<EditSentences> {
             setState(() => ddBtnValues.first = v);
           },
         ),
-        SizedBox(width: 10,),
         DropdownButton(
           value: ddBtnValues[1],
           items: tagOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
           onChanged: (v) {setState(() => ddBtnValues[1] = v); sentences.filter.s_tags__icontains = v != tagOptions.first ? v : null;},
         ),
-        SizedBox(width: 10,),
         DropdownButton(
           value: ddBtnValues[2],
           items: tenseOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
           onChanged: (v) {setState(() => ddBtnValues[2] = v); sentences.filter.s_tense__icontains = v != tenseOptions.first ? v : null;},
         ),
-        SizedBox(width: 10,),
         DropdownButton(
           value: ddBtnValues[3],
           items: formOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
           onChanged: (v) {setState(() => ddBtnValues[3] = v); sentences.filter.s_form__icontains = v != formOptions.first ? v : null;},
         ),
-        SizedBox(width: 10,),
         IconButton(
           splashRadius: 1.0,
+          tooltip: '搜索',
           icon: Icon(Icons.search),
           onPressed: () async {
             await sentences.retrieve(queryParameters:{'page_size': 10, 'page_index':1}, update: true);
             setState((){});
           },
         ),
-        SizedBox(width: 10,),
-        InkWell(
-          child: Text('添加句子', style: TextStyle(color: Theme.of(context).primaryColor,),),
-          onTap: () async {
-            SentenceSerializer sentence = SentenceSerializer();
-            var s = await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'添加句子','sentence':sentence});
-            setState(() => sentences.results.add(s));
-            sentence.save();
+        IconButton(
+          splashRadius: 1.0,
+          tooltip: '添加句子',
+          icon: Icon(Icons.add),
+          onPressed: () async {
+            var sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'添加句子'})) as SentenceSerializer;
+            if(sentence != null) {
+              sentences.results.add(sentence);
+              sentence.save();
+            }
+            setState((){});
           },
         ),
       ],

@@ -4,9 +4,8 @@ import 'package:flutter_prj/serializers/index.dart';
 
 
 class ShowSentence extends StatefulWidget {
-
-  SentenceSerializer _sentence;
-  Function _delete;
+  final SentenceSerializer _sentence;
+  final Function _delete;
 
   ShowSentence({Key key, SentenceSerializer sentence, Function delete})
     : _sentence = sentence,
@@ -22,7 +21,6 @@ class _ShowSentenceState extends State<ShowSentence> {
   @override
   Widget build(BuildContext context) =>
   ListTile(
-    isThreeLine: true,
     title: Wrap(
       spacing: 10.0,
       children:[
@@ -37,9 +35,13 @@ class _ShowSentenceState extends State<ShowSentence> {
         InkWell(
           child: Text('编辑', style: TextStyle(color: Theme.of(context).primaryColor),),
           onTap: () async {
-            await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'编辑句子','sentence':widget._sentence});
+            SentenceSerializer sentence = SentenceSerializer().fromJson(widget._sentence.toJson());
+            var s = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'编辑句子','sentence':sentence})) as SentenceSerializer;
+            if(s != null) {
+              widget._sentence.fromJson(s.toJson());
+              widget._sentence.save();
+            }
             setState(() {});
-            widget._sentence.save();
           }
         ),
         SizedBox(width: 10,),

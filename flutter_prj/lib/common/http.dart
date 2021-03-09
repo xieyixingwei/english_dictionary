@@ -3,9 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio/adapter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_prj/serializers/index.dart';
 import './global.dart';
-import 'dart:convert';
 
 enum HttpType {
   POST,
@@ -19,7 +17,7 @@ class Http {
   Options _options;
   static Dio _dio = new Dio(
     BaseOptions(
-      baseUrl: 'http://192.168.2.10:5005',
+      baseUrl: 'http://192.168.1.10:5005',
     )
   );
 

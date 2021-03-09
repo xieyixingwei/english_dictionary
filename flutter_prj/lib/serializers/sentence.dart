@@ -93,6 +93,9 @@ class SentenceSerializer {
     's_tags': s_tags == null ? null : s_tags.map((e) => e).toList(),
     's_tense': s_tense == null ? null : s_tense.map((e) => e).toList(),
     's_form': s_form == null ? null : s_form.map((e) => e).toList(),
+    's_synonym': s_synonym == null ? null : s_synonym.map((e) => e.toJson()).toList(),
+    's_antonym': s_antonym == null ? null : s_antonym.map((e) => e.toJson()).toList(),
+    'sentence_grammar': sentence_grammar == null ? null : sentence_grammar.map((e) => e.toJson()).toList(),
   };
 }
 

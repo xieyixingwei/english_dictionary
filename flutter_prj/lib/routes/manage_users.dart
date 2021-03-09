@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_prj/common/http.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/InputDialog.dart';
 
