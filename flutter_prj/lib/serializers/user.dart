@@ -50,20 +50,20 @@ class UserSerializer {
   }
 
   UserSerializer fromJson(Map<String, dynamic> json) {
-    u_id = json['u_id'] as num;
-    u_uname = json['u_uname'] as String;
-    u_passwd = json['u_passwd'] as String;
-    u_is_admin = json['u_is_admin'] as bool;
-    u_register_date = json['u_register_date'] as String;
-    u_name = json['u_name'] as String;
-    u_gender = json['u_gender'] as bool;
-    u_birthday = json['u_birthday'] as String;
-    u_education = json['u_education'] as num;
-    u_wechart = json['u_wechart'] as String;
-    u_qq = json['u_qq'] as String;
-    u_email = json['u_email'] as String;
-    u_telephone = json['u_telephone'] as String;
-    u_status = json['u_status'] as String;
+    u_id = json['u_id'] == null ? null : json['u_id'] as num;
+    u_uname = json['u_uname'] == null ? null : json['u_uname'] as String;
+    u_passwd = json['u_passwd'] == null ? null : json['u_passwd'] as String;
+    u_is_admin = json['u_is_admin'] == null ? null : json['u_is_admin'] as bool;
+    u_register_date = json['u_register_date'] == null ? null : json['u_register_date'] as String;
+    u_name = json['u_name'] == null ? null : json['u_name'] as String;
+    u_gender = json['u_gender'] == null ? null : json['u_gender'] as bool;
+    u_birthday = json['u_birthday'] == null ? null : json['u_birthday'] as String;
+    u_education = json['u_education'] == null ? null : json['u_education'] as num;
+    u_wechart = json['u_wechart'] == null ? null : json['u_wechart'] as String;
+    u_qq = json['u_qq'] == null ? null : json['u_qq'] as String;
+    u_email = json['u_email'] == null ? null : json['u_email'] as String;
+    u_telephone = json['u_telephone'] == null ? null : json['u_telephone'] as String;
+    u_status = json['u_status'] == null ? null : json['u_status'] as String;
     return this;
   }
 

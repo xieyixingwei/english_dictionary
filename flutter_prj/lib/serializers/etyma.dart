@@ -19,9 +19,9 @@ class EtymaSerializer {
     return update ? this.fromJson(res.data) : EtymaSerializer().fromJson(res.data);
   }
 
-  static Future<List<EtymaSerializer>> list({Map<String, dynamic> queryParameters, bool cache=false}) async {
-    var res = await Http().request(HttpType.GET, '/dictionary/etyma/', queryParameters:queryParameters, cache:cache);
-    return res.data.map<EtymaSerializer>((e) => EtymaSerializer().fromJson(e)).toList();
+  Future<EtymaSerializer> update({dynamic data, Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
+    var res = await Http().request(HttpType.PUT, '/dictionary/etyma/update/$e_name/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
+    return update ? this.fromJson(res.data) : EtymaSerializer().fromJson(res.data);
   }
 
   Future<EtymaSerializer> retrieve({Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
@@ -39,9 +39,9 @@ class EtymaSerializer {
   }
 
   EtymaSerializer fromJson(Map<String, dynamic> json) {
-    e_name = json['e_name'] as String;
-    e_meaning = json['e_meaning'] as String;
-    e_type = json['e_type'] as num;
+    e_name = json['e_name'] == null ? null : json['e_name'] as String;
+    e_meaning = json['e_meaning'] == null ? null : json['e_meaning'] as String;
+    e_type = json['e_type'] == null ? null : json['e_type'] as num;
     return this;
   }
 

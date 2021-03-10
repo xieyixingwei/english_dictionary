@@ -15,7 +15,7 @@ class WordCollocationSerializer {
 
 
   WordCollocationSerializer fromJson(Map<String, dynamic> json) {
-    partOfSpeech = json['partOfSpeech'] as String;
+    partOfSpeech = json['partOfSpeech'] == null ? null : json['partOfSpeech'] as String;
     exampleSentences = json['exampleSentences'] == null
                 ? []
                 : json['exampleSentences'].map<SentenceSerializer>((e) => SentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();

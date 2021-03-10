@@ -15,7 +15,7 @@ class ParaphraseSerializer {
 
 
   ParaphraseSerializer fromJson(Map<String, dynamic> json) {
-    paraphrase = json['paraphrase'] as String;
+    paraphrase = json['paraphrase'] == null ? null : json['paraphrase'] as String;
     exampleSentences = json['exampleSentences'] == null
                 ? []
                 : json['exampleSentences'].map<SentenceSerializer>((e) => SentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();

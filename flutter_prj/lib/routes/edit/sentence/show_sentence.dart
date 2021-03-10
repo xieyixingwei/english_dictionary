@@ -155,7 +155,7 @@ class _ShowSentenceState extends State<ShowSentence> {
         widget._delete != null ?
         InkWell(
           child: Text('删除', style: TextStyle(color: Colors.pink,)),
-          onTap: () {widget._sentence.delete(); widget._delete();},
+          onTap: () {widget._delete();},
         ) : SizedBox(width: 0,),
       ],
     )

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/edit/etyma/edit_etymas.dart';
 import 'package:flutter_prj/routes/edit/sentence/edit_sentence.dart';
 import 'package:flutter_prj/routes/edit/sentence/edit_sentences.dart';
 import 'package:flutter_prj/routes/edit/edit_tags.dart';
 import 'package:flutter_prj/routes/edit/grammar/edit_grammar.dart';
 import 'package:flutter_prj/routes/edit/grammar/edit_grammars.dart';
-import 'package:flutter_prj/routes/edit/word/edit_etyma.dart';
+import 'package:flutter_prj/routes/edit/etyma/edit_etyma.dart';
 import 'package:flutter_prj/routes/edit/word/edit_word.dart';
 import 'package:flutter_prj/routes/edit/word/edit_words.dart';
 import 'package:flutter_prj/routes/login.dart';
@@ -53,6 +54,7 @@ final _routes = {
                                         add: (String tag) => GrammarTagsSerializer().create(data:{'g_name':tag}),
                                         remove: (String tag) => GrammarTagsSerializer()..g_name = tag ..delete(),
                                         ),
+  '/edit_etymas': (context) => EditEtymas(),
   '/edit_etyma': (context, {arguments}) => EditEtyma(title:arguments['title'], etyma:arguments['etyma']),
 };
 

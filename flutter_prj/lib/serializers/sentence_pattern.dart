@@ -15,7 +15,7 @@ class SentencePatternSerializer {
 
 
   SentencePatternSerializer fromJson(Map<String, dynamic> json) {
-    pattern = json['pattern'] as String;
+    pattern = json['pattern'] == null ? null : json['pattern'] as String;
     exampleSentences = json['exampleSentences'] == null
                 ? []
                 : json['exampleSentences'].map<SentenceSerializer>((e) => SentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();

@@ -176,7 +176,7 @@ class Member {
     String unListFromJson = isSerializerType ? 
 """$jsonMember == null
                 ? null
-                : $unListType().fromJson($jsonMember as Map<String, dynamic>)""" : '$jsonMember as $unListType';
+                : $unListType().fromJson($jsonMember as Map<String, dynamic>)""" : '$jsonMember == null ? null : $jsonMember as $unListType';
 
     String listFromJson = 
 """$jsonMember == null

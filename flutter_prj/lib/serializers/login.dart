@@ -20,9 +20,9 @@ class LoginSerializer {
   }
 
   LoginSerializer fromJson(Map<String, dynamic> json) {
-    msg = json['msg'] as String;
-    status = json['status'] as num;
-    token = json['token'] as String;
+    msg = json['msg'] == null ? null : json['msg'] as String;
+    status = json['status'] == null ? null : json['status'] as num;
+    token = json['token'] == null ? null : json['token'] as String;
     return this;
   }
 

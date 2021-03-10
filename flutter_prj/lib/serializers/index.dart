@@ -19,3 +19,4 @@ export 'paraphrase.dart';
 export 'word_collocation.dart';
 export 'word_tags.dart';
 export 'etyma.dart';
+export 'etyma_pagination.dart';

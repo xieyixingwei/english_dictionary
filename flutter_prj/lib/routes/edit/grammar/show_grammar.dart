@@ -43,7 +43,7 @@ class _ShowGrammarState extends State<ShowGrammar> {
           widget._delete != null ?
           InkWell(
             child: Text('删除', style: TextStyle(color: Colors.pink,)),
-            onTap: () {widget._grammar.delete(); widget._delete();},
+            onTap: () {widget._delete();},
           ) : SizedBox(width: 0,),
         ],
       )

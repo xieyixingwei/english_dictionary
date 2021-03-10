@@ -64,9 +64,9 @@ class WordSerializer {
   }
 
   WordSerializer fromJson(Map<String, dynamic> json) {
-    w_name = json['w_name'] as String;
-    w_voice_us = json['w_voice_us'] as String;
-    w_voice_uk = json['w_voice_uk'] as String;
+    w_name = json['w_name'] == null ? null : json['w_name'] as String;
+    w_voice_us = json['w_voice_us'] == null ? null : json['w_voice_us'] as String;
+    w_voice_uk = json['w_voice_uk'] == null ? null : json['w_voice_uk'] as String;
     w_morph = json['w_morph'] == null
                 ? []
                 : json['w_morph'].map<String>((e) => e as String).toList();
@@ -76,8 +76,8 @@ class WordSerializer {
     w_etyma = json['w_etyma'] == null
                 ? []
                 : json['w_etyma'].map<String>((e) => e as String).toList();
-    w_origin = json['w_origin'] as String;
-    w_shorthand = json['w_shorthand'] as String;
+    w_origin = json['w_origin'] == null ? null : json['w_origin'] as String;
+    w_shorthand = json['w_shorthand'] == null ? null : json['w_shorthand'] as String;
     w_partofspeech = json['w_partofspeech'] == null
                 ? []
                 : json['w_partofspeech'].map<PartOfSpeechSerializer>((e) => PartOfSpeechSerializer().fromJson(e as Map<String, dynamic>)).toList();

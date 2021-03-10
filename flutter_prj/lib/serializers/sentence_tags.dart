@@ -32,7 +32,7 @@ class SentenceTagsSerializer {
   }
 
   SentenceTagsSerializer fromJson(Map<String, dynamic> json) {
-    t_name = json['t_name'] as String;
+    t_name = json['t_name'] == null ? null : json['t_name'] as String;
     return this;
   }
 

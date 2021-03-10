@@ -55,10 +55,10 @@ class SentenceSerializer {
   }
 
   SentenceSerializer fromJson(Map<String, dynamic> json) {
-    s_id = json['s_id'] as num;
-    s_en = json['s_en'] as String;
-    s_ch = json['s_ch'] as String;
-    s_type = json['s_type'] as num;
+    s_id = json['s_id'] == null ? null : json['s_id'] as num;
+    s_en = json['s_en'] == null ? null : json['s_en'] as String;
+    s_ch = json['s_ch'] == null ? null : json['s_ch'] as String;
+    s_type = json['s_type'] == null ? null : json['s_type'] as num;
     s_tags = json['s_tags'] == null
                 ? []
                 : json['s_tags'].map<String>((e) => e as String).toList();

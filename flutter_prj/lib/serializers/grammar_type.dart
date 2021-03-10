@@ -32,7 +32,7 @@ class GrammarTypeSerializer {
   }
 
   GrammarTypeSerializer fromJson(Map<String, dynamic> json) {
-    g_name = json['g_name'] as String;
+    g_name = json['g_name'] == null ? null : json['g_name'] as String;
     return this;
   }
 

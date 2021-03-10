@@ -106,7 +106,6 @@
             {
                 "name": "delete",
                 "url": "delete/$t_name/"
-
             }
         ]
     }
@@ -116,8 +115,8 @@
 {  // 词根词缀表
     "__name__": "etyma",
     "e_name @primary": "",
-	"e_meaning": "",
-	"e_type": "num=null",
+    "e_meaning": "",
+    "e_type": "num=null",
     "__http__": {
         "url": "/dictionary/etyma/",
         "http_package": "package:flutter_prj/common/http.dart",
@@ -127,16 +126,39 @@
                 "url": "create/"
             },
             {
-                "name": "list"
+                "name": "update",
+                "url": "update/$e_name/"
             },
-			{
+            {
                 "name": "retrieve",
                 "url": "$e_name/"
             },
             {
                 "name": "delete",
                 "url": "delete/$e_name/"
+            }
+        ]
+    }
+}
 
+{ // 分页查询 词根词缀
+    "__name__": "etyma_pagination",
+    "count": 0,
+    "next": "",
+    "previous": "",
+    "results": ["$etyma"],
+    "__filter__": {
+        "__serializer__": "$etyma",
+        "e_name": ["exact","icontains"],
+        "e_type": ["exact"]
+    },
+    "__http__": {
+        "url": "/dictionary/etyma",
+        "http_package": "package:flutter_prj/common/http.dart",
+        "methods": [
+            {
+                "name": "retrieve",
+                "filter": true
             }
         ]
     }

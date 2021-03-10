@@ -154,7 +154,7 @@ class _ShowWordState extends State<ShowWord> {
         widget._delete != null ?
         InkWell(
           child: Text('删除', style: TextStyle(color: Colors.pink,)),
-          onTap: () {widget._word.delete(); widget._delete();},
+          onTap: () => widget._delete(),
         ) : SizedBox(width: 0,),
       ],
     )

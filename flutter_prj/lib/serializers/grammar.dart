@@ -50,16 +50,16 @@ class GrammarSerializer {
   }
 
   GrammarSerializer fromJson(Map<String, dynamic> json) {
-    g_id = json['g_id'] as num;
+    g_id = json['g_id'] == null ? null : json['g_id'] as num;
     g_type = json['g_type'] == null
                 ? []
                 : json['g_type'].map<String>((e) => e as String).toList();
     g_tags = json['g_tags'] == null
                 ? []
                 : json['g_tags'].map<String>((e) => e as String).toList();
-    g_content = json['g_content'] as String;
-    g_word = json['g_word'] as String;
-    g_sentence = json['g_sentence'] as num;
+    g_content = json['g_content'] == null ? null : json['g_content'] as String;
+    g_word = json['g_word'] == null ? null : json['g_word'] as String;
+    g_sentence = json['g_sentence'] == null ? null : json['g_sentence'] as num;
     return this;
   }
 

@@ -20,7 +20,7 @@ class LocalStoreSerializer {
     user = json['user'] == null
                 ? null
                 : UserSerializer().fromJson(json['user'] as Map<String, dynamic>);
-    token = json['token'] as String;
+    token = json['token'] == null ? null : json['token'] as String;
     netCacheConfig = json['netCacheConfig'] == null
                 ? null
                 : NetCacheConfigSerializer().fromJson(json['netCacheConfig'] as Map<String, dynamic>);

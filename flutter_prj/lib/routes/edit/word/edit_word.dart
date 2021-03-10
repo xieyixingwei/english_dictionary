@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/routes/edit/word/word_details.dart';
 import 'package:flutter_prj/serializers/index.dart';
-import 'package:flutter_prj/widgets/InputDialog.dart';
 import 'package:flutter_prj/widgets/SelectDialog.dart';
 import 'package:flutter_prj/widgets/Tag.dart';
 import 'package:flutter_prj/widgets/popup_memu_button.dart';

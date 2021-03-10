@@ -15,7 +15,7 @@ class PartOfSpeechSerializer {
 
 
   PartOfSpeechSerializer fromJson(Map<String, dynamic> json) {
-    type = json['type'] as String;
+    type = json['type'] == null ? null : json['type'] as String;
     means = json['means'] == null
                 ? []
                 : json['means'].map<ParaphraseSerializer>((e) => ParaphraseSerializer().fromJson(e as Map<String, dynamic>)).toList();

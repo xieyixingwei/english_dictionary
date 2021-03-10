@@ -8,7 +8,7 @@ class EditEtyma extends StatefulWidget {
 
   EditEtyma({Key key, String title, EtymaSerializer etyma})
     : _title = title,
-      _etyma = etyma,
+      _etyma = etyma ?? EtymaSerializer(),
       super(key: key);
 
   @override
@@ -45,7 +45,7 @@ class _EditEtymaState extends State<EditEtyma> {
                     Container(
                       width: 100.0,
                       child: TextField(
-                        controller: TextEditingController(text:widget._etyma.e_name),
+                        controller: TextEditingController(text:widget._etyma.e_name ?? ''),
                         maxLines: 1,
                         style: TextStyle(
                           fontSize: 14,

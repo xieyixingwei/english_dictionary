@@ -43,10 +43,10 @@ class RelativeSentenceSerializer {
   }
 
   RelativeSentenceSerializer fromJson(Map<String, dynamic> json) {
-    r_id = json['r_id'] as num;
-    r_sentence_a = json['r_sentence_a'] as num;
-    r_sentence_b = json['r_sentence_b'] as num;
-    r_type = json['r_type'] as bool;
+    r_id = json['r_id'] == null ? null : json['r_id'] as num;
+    r_sentence_a = json['r_sentence_a'] == null ? null : json['r_sentence_a'] as num;
+    r_sentence_b = json['r_sentence_b'] == null ? null : json['r_sentence_b'] as num;
+    r_type = json['r_type'] == null ? null : json['r_type'] as bool;
     return this;
   }
 

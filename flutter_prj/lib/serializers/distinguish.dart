@@ -15,11 +15,11 @@ class DistinguishSerializer {
 
 
   DistinguishSerializer fromJson(Map<String, dynamic> json) {
-    d_id = json['d_id'] as num;
+    d_id = json['d_id'] == null ? null : json['d_id'] as num;
     d_words = json['d_words'] == null
                 ? []
                 : json['d_words'].map<String>((e) => e as String).toList();
-    d_content = json['d_content'] as String;
+    d_content = json['d_content'] == null ? null : json['d_content'] as String;
     return this;
   }
 

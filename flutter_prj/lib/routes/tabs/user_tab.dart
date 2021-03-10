@@ -8,54 +8,59 @@ import '../login.dart';
 class UserTab extends StatelessWidget {
   final listItems = [
     {
-      "title": "我的课程",
-      "icon": Icon(Icons.subtitles),
+      'title': '我的课程',
+      'icon': Icon(Icons.subtitles),
     },
     {
-      "title": "我的收藏",
-      "icon": Icon(Icons.favorite),
+      'title': '我的收藏',
+      'icon': Icon(Icons.favorite),
     },
   ];
   final listItemsOfRoot = [
     {
-      "title": "用户管理",
-      "icon": Icon(Icons.person_add_disabled),
-      "route": "/manage_users",
+      'title': '用户管理',
+      'icon': Icon(Icons.person_add_disabled),
+      'route': '/manage_users',
     },
     {
-      "title": "编辑单词",
-      "icon": Icon(Icons.drive_file_rename_outline),
-      "route": "/edit_words",
+      'title': '编辑单词',
+      'icon': Icon(Icons.drive_file_rename_outline),
+      'route': '/edit_words',
     },
     {
-      "title": "编辑例句",
-      "icon": Icon(Icons.edit),
-      "route": "/edit_sentences",
+      'title': '编辑例句',
+      'icon': Icon(Icons.edit),
+      'route': '/edit_sentences',
     },
     {
-      "title": "编辑语法",
-      "icon": Icon(Icons.g_translate_sharp),
-      "route": "/edit_grammars",
+      'title': '编辑语法',
+      'icon': Icon(Icons.g_translate_sharp),
+      'route': '/edit_grammars',
     },
+    {
+      'title': '编辑词根词缀',
+      'icon': Icon(Icons.g_translate_sharp),
+      'route':'/edit_etymas',
+    }
   ];
   final statistics = [
     {
-      "title": "已学单词",
-      "value": 1000,
+      'title': '已学单词',
+      'value': 1000,
     },
   ];
   final statisticsOfRoot = [
     {
-      "title": "单词数",
-      "value": 12560,
+      'title': '单词数',
+      'value': 12560,
     },
     {
-      "title": "例句数",
-      "value": 454,
+      'title': '例句数',
+      'value': 454,
     },
     {
-      "title": "语法数",
-      "value": 560,
+      'title': '语法数',
+      'value': 560,
     },
   ];
 
@@ -65,15 +70,15 @@ class UserTab extends StatelessWidget {
   _buildStatistics(UserModel user) {
     List statisticsTotal = [];
     statisticsTotal.addAll(statistics);
-    if(user.user.u_uname == "root") {
+    if(user.user.u_uname == 'root') {
       statisticsTotal.addAll(statisticsOfRoot);
     }
     return statisticsTotal.map((e) => 
         Expanded(
           flex: 1,
           child: ListTile(
-            title:  Text(e["value"].toString(), style: const TextStyle(color: Colors.white, fontSize: 18.0)),
-            subtitle: Text(e["title"], style: const TextStyle(color: Colors.white, fontSize: 10.0)),
+            title:  Text(e['value'].toString(), style: const TextStyle(color: Colors.white, fontSize: 18.0)),
+            subtitle: Text(e['title'], style: const TextStyle(color: Colors.white, fontSize: 10.0)),
           ),
         )
       ).toList();
@@ -101,7 +106,7 @@ class UserTab extends StatelessWidget {
                     padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
                     child: InkWell(
                         child: Icon(Icons.settings, size: 20, color: Colors.white,),
-                        onTap: () => Navigator.pushNamed(context, "/setting"),
+                        onTap: () => Navigator.pushNamed(context, '/setting'),
                       ),
                     )
                 ]
@@ -133,7 +138,7 @@ class UserTab extends StatelessWidget {
   _buildSliverChildBuilderDelegate(BuildContext context, UserModel user) {
     List listItemsTotal = [];
     listItemsTotal.addAll(listItems);
-    if(user.user.u_uname == "root") {
+    if(user.user.u_uname == 'root') {
       listItemsTotal.addAll(listItemsOfRoot);
     }
     return SliverChildBuilderDelegate(
@@ -142,18 +147,18 @@ class UserTab extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: InkWell(
             onTap: () =>
-              Navigator.pushNamed(context, listItemsTotal[index]["route"]),
+              Navigator.pushNamed(context, listItemsTotal[index]['route']),
             child: Column(
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 15.0),
                   child: Row(
                     children: <Widget>[
-                      listItemsTotal[index]["icon"],
+                      listItemsTotal[index]['icon'],
                       SizedBox(width: 20,),
                       Expanded(
                         child: Text(
-                          listItemsTotal[index]["title"],
+                          listItemsTotal[index]['title'],
                           style: titleTextStyle,
                         ),
                       ),
