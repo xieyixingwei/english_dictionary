@@ -13,18 +13,18 @@ class WordTagsSerializer {
   
 
   Future<WordTagsSerializer> create({dynamic data, Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/dictionary/sentencetags/create/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
+    var res = await Http().request(HttpType.POST, '/dictionary/wordtags/create/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
     return update ? this.fromJson(res.data) : WordTagsSerializer().fromJson(res.data);
   }
 
   static Future<List<WordTagsSerializer>> list({Map<String, dynamic> queryParameters, bool cache=false}) async {
-    var res = await Http().request(HttpType.GET, '/dictionary/sentencetags/', queryParameters:queryParameters, cache:cache);
+    var res = await Http().request(HttpType.GET, '/dictionary/wordtags/', queryParameters:queryParameters, cache:cache);
     return res.data.map<WordTagsSerializer>((e) => WordTagsSerializer().fromJson(e)).toList();
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queryParameters, bool cache=false}) async {
     if(t_name == null) return false;
-    var res = await Http().request(HttpType.DELETE, '/dictionary/sentencetags/delete/$t_name/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
+    var res = await Http().request(HttpType.DELETE, '/dictionary/wordtags/delete/$t_name/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
     /*
     
     */

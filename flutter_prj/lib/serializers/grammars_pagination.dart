@@ -18,7 +18,7 @@ class GrammarsPaginationSerializer {
 
   Future<GrammarsPaginationSerializer> retrieve({Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
     (queryParameters != null && filter.queryset != null) ? queryParameters.addAll(filter.queryset) : queryParameters = filter.queryset;
-var res = await Http().request(HttpType.GET, '/dictionary/grammar/', queryParameters:queryParameters, cache:cache);
+    var res = await Http().request(HttpType.GET, '/dictionary/grammar/', queryParameters:queryParameters, cache:cache);
     return update ? this.fromJson(res.data) : GrammarsPaginationSerializer().fromJson(res.data);
   }
 

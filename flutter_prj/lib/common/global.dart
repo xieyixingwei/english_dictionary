@@ -15,6 +15,7 @@ class Global {
   static List<String> sentenceTagOptions = [];
   static List<String> grammarTypeOptions = [];
   static List<String> grammarTagOptions = [];
+  static List<String> etymaOptions = [];
   static const List<String> partOfSpeechOptions = const ["n.", "vt.", "vi.", "v.", "adj."];
   static const List<String> tenseOptions = const ["一般现在时", "一般过去时", "将来时"];
   static const List<String> sentenceFormOptions = const ["定语从句","主语从句","被动句"];
@@ -46,6 +47,8 @@ class Global {
     grammarTypeOptions = gTypes.map((e) => e.g_name).toList();
     List<GrammarTagsSerializer> gTags = await GrammarTagsSerializer.list();
     grammarTagOptions = gTags.map((e) => e.g_name).toList();
+    List<EtymaSerializer> etymas = await EtymaSerializer.list();
+    etymaOptions = etymas.map((e) => e.e_name).toList();
   }
 
   // 持久化本地存储数据

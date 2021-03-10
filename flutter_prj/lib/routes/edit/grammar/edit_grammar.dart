@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
-import 'package:flutter_prj/routes/edit_grammar/grammar_details.dart';
+import 'package:flutter_prj/routes/edit/grammar/grammar_details.dart';
 import 'package:flutter_prj/serializers/grammar.dart';
 import 'package:flutter_prj/widgets/SelectDialog.dart';
 import 'package:flutter_prj/widgets/popup_memu_button.dart';

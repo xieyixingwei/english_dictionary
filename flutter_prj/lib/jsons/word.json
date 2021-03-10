@@ -10,17 +10,89 @@
     "w_partofspeech": ["$part_of_speech"], // 词性
     "w_sentence_pattern": ["$sentence_pattern"], // 常用句型
     "w_word_collocation": ["$word_collocation"], // 词汇搭配
-    "_w_synonym": [""], //  # 近义词 [word1,word2,...]
-    "_w_antonym": [""],// 反义词 [word1,word2,...]
-    "_w_distinguish": ["$distinguish"], //models.JSONField()     # 词义辨析id [id1,id2,...]
-    "_w_grammar": ["$grammar"] //models.JSONField() # 语法id [id1,id2,...]
+    "w_synonym": [""], //  # 近义词 [word1,word2,...]
+    "w_antonym": [""],// 反义词 [word1,word2,...]
+    "distinguish": ["$distinguish"], //models.JSONField()     # 词义辨析id [id1,id2,...]
+    "word_grammar": ["$grammar"], //models.JSONField() # 语法id [id1,id2,...]
+	"__http__": {
+        "url": "/dictionary/word/",
+        "http_package": "package:flutter_prj/common/http.dart",
+        "methods": [
+            {
+                "name": "create",
+                "url": "create/"
+            },
+            {
+                "name": "update",
+                "requst": "put",
+                "url": "update/$w_name/"
+            },
+            {
+                "name": "retrieve",
+                "requst": "get",
+                "url": "$w_name/"
+            },
+            {
+                "name": "delete",
+                "url": "delete/$w_name/"
+            },
+			{
+                "name": "save"
+            }
+        ]
+    }
+}
+
+
+{ // 分页查询 单词
+    "__name__": "words_pagination",
+    "count": 0,
+    "next": "",
+    "previous": "",
+    "results": ["$word"],
+    "__filter__": {
+        "__serializer__": "$word",
+        "w_name": ["exact","icontains"],
+        "w_tags": ["icontains"],
+        "w_etyma": ["icontains"]
+        //"w_partofspeech": ["icontains"]
+    },
+    "__http__": {
+        "url": "/dictionary/word",
+        "http_package": "package:flutter_prj/common/http.dart",
+        "methods": [
+            {
+                "name": "retrieve",
+                "filter": true
+            }
+        ]
+    }
+}
+
+
+{ // 词性
+    "__name__": "part_of_speech",
+    "type": "",
+    "means": "$[]paraphrase"
+}
+
+{ // 释义
+    "__name__": "paraphrase",
+    "paraphrase": "",
+    "exampleSentences": ["$sentence"]
+}
+
+{ // 词汇搭配
+    "__name__": "word_collocation",
+    "partOfSpeech": "",
+    "exampleSentences": ["$sentence"]
 }
 
 {
     "__name__": "word_tags",
     "t_name @primary": "",
     "__http__": {
-        "url": "/dictionary/sentencetags/",
+        "url": "/dictionary/wordtags/",
         "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
@@ -40,8 +112,32 @@
     }
 }
 
-{ // 词汇搭配
-    "__name__": "word_collocation",
-    "partOfSpeech": "",
-    "exampleSentences": ["$sentence"]
+
+{  // 词根词缀表
+    "__name__": "etyma",
+    "e_name @primary": "",
+	"e_meaning": "",
+	"e_type": "num=null",
+    "__http__": {
+        "url": "/dictionary/etyma/",
+        "http_package": "package:flutter_prj/common/http.dart",
+        "methods": [
+            {
+                "name": "create",
+                "url": "create/"
+            },
+            {
+                "name": "list"
+            },
+			{
+                "name": "retrieve",
+                "url": "$e_name/"
+            },
+            {
+                "name": "delete",
+                "url": "delete/$e_name/"
+
+            }
+        ]
+    }
 }

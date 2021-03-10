@@ -25,17 +25,12 @@ class UserTab extends StatelessWidget {
     {
       "title": "编辑单词",
       "icon": Icon(Icons.drive_file_rename_outline),
-      "route": "/edit_word",
+      "route": "/edit_words",
     },
     {
       "title": "编辑例句",
       "icon": Icon(Icons.edit),
       "route": "/edit_sentences",
-    },
-    {
-      "title": "编辑单词 Tags",
-      "icon": Icon(Icons.label),
-      "route": "/edit_word_tags",
     },
     {
       "title": "编辑语法",

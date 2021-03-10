@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
-import 'package:flutter_prj/routes/edit/edit_sentence/show_sentence.dart';
+import 'package:flutter_prj/routes/edit/sentence/show_sentence.dart';
 import 'package:flutter_prj/serializers/index.dart';
 
 
@@ -16,6 +16,8 @@ class _EditSentencesState extends State<EditSentences> {
   static final List<String> tenseOptions = ['请选择Tense'] + Global.tenseOptions;
   static final List<String> formOptions = ['请选择句型'] + Global.sentenceFormOptions;
   List<String> ddBtnValues = [typeOptions.first, tagOptions.first, tenseOptions.first, formOptions.first];
+  num _pageSize = 10;
+  num _pageIndex = 1;
 
   @override
   void initState() {
@@ -25,21 +27,24 @@ class _EditSentencesState extends State<EditSentences> {
   }
 
   void retrieve() async {
-    await sentences.retrieve(queryParameters:{'page_size': 10, 'page_index':1}, update: true);
+    await sentences.retrieve(queryParameters:{'page_size':_pageSize, 'page_index':_pageIndex}, update: true);
     setState((){});
   }
 
-  Widget _buildListSentences(BuildContext context) =>
-    Expanded(
-      child: ListView(
-        children: sentences.results.map<Widget>(
+  Widget _buildListSentences(BuildContext context) {
+    List<Widget> children = sentences.results.map<Widget>(
           (e) => ShowSentence(
             sentence: e,
             delete: () {e.delete(); setState(()=>sentences.results.remove(e));},
           )
-        ).toList(),
+        ).toList();
+
+    return Expanded(
+      child: ListView(
+        children: children,
       )
     );
+  }
 
   Widget _buildFilter(BuildContext context) =>
     Wrap(

@@ -47,9 +47,7 @@ class _ManageUsersState extends State<ManageUsers> {
     children.add(
       ListTile(
         title: Text("创建用户"),
-        leading: InputDialog(
-          title: "创建用户",
-          icon: Icon(Icons.add),
+        leading: PopInputDialog(
           close: (String value) {
           },
         ),

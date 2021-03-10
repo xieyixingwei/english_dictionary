@@ -128,7 +128,12 @@ class Member {
 
   void linkForeign(List<JsonSerializer> serializers) {
     if(!isSerializerType) return;
-    typeSerializer = serializers.singleWhere((e) => e.name == serializerJsonName, orElse: () => null);
+
+    try{
+      typeSerializer = serializers.singleWhere((e) => e.name == serializerJsonName, orElse: () => null);
+    } catch(e) {
+      print('*** ERROR: find more than one \'$serializerJsonName\', ${e.toString()}');
+    }
 
     if(isForeign) {
       unListType = typeSerializer.primaryMember.type;
@@ -220,7 +225,7 @@ class HttpMethods {
   List<String> get methods =>
      
     methodsConfig.map((e) {
-      String queryset = e['filter'] == true ? '(queryParameters != null && filter.queryset != null) ? queryParameters.addAll(filter.queryset) : queryParameters = filter.queryset;\n' : '';
+      String queryset = e['filter'] == true ? '(queryParameters != null && filter.queryset != null) ? queryParameters.addAll(filter.queryset) : queryParameters = filter.queryset;\n    ' : '';
       String methodName = e['name'];
 
       if(methodName == 'save') {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/widgets/popup_memu_button.dart';
-import 'package:flutter_prj/routes/edit/edit_sentence/sentence_details.dart';
-import 'package:flutter_prj/routes/edit_grammar/show_grammar.dart';
+import 'package:flutter_prj/routes/edit/sentence/sentence_details.dart';
+import 'package:flutter_prj/routes/edit/grammar/show_grammar.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/SelectDialog.dart';
 import 'dart:math' as math;
@@ -58,13 +58,19 @@ class _EditSentenceState extends State<EditSentence> {
     }
     else if(value == '设置同义句') {
       var sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'设置同义句'})) as SentenceSerializer;
-      sentence.save();
-      //setState(() => widget._sentence.s_synonym.add();
+      if(sentence != null) {
+        await sentence.save(update: true);
+        widget._sentence.s_synonym.add(sentence.s_id);
+        setState((){});
+      }
     }
     else if(value == '设置反义句') {
       var sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'设置反义句'})) as SentenceSerializer;
-      sentence.save();
-      //setState(() => widget._sentence.s_synonym.add();
+      if(sentence != null) {
+        await sentence.save(update: true);
+        widget._sentence.s_antonym.add(sentence.s_id);
+        setState((){});
+      }
     }
     else if(value == '编辑Tags') {
       Navigator.pushNamed(context, '/edit_sentence_tags');
@@ -142,7 +148,6 @@ class _EditSentenceState extends State<EditSentence> {
                 var g = (await Navigator.pushNamed(context, '/edit_grammar', arguments:{'title':'添加句子相关语法','grammar':grammar})) as GrammarSerializer;
                 if(g != null) {
                   g.g_sentence = widget._sentence.s_id;
-                  print(g.toJson());
                   widget._sentence.sentence_grammar.add(g);
                   g.save();
                 }

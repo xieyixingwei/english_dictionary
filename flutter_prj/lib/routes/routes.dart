@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
-import 'package:flutter_prj/routes/edit/edit_sentence/edit_sentence.dart';
-import 'package:flutter_prj/routes/edit/edit_sentence/edit_sentences.dart';
+import 'package:flutter_prj/routes/edit/sentence/edit_sentence.dart';
+import 'package:flutter_prj/routes/edit/sentence/edit_sentences.dart';
 import 'package:flutter_prj/routes/edit/edit_tags.dart';
-import 'package:flutter_prj/routes/edit_grammar/edit_grammar.dart';
-import 'package:flutter_prj/routes/edit_grammar/edit_grammars.dart';
+import 'package:flutter_prj/routes/edit/grammar/edit_grammar.dart';
+import 'package:flutter_prj/routes/edit/grammar/edit_grammars.dart';
+import 'package:flutter_prj/routes/edit/word/edit_etyma.dart';
+import 'package:flutter_prj/routes/edit/word/edit_word.dart';
+import 'package:flutter_prj/routes/edit/word/edit_words.dart';
 import 'package:flutter_prj/routes/login.dart';
 import 'package:flutter_prj/routes/manage_users.dart';
 import 'package:flutter_prj/routes/register.dart';
@@ -20,7 +23,8 @@ final _routes = {
   '/register': (context) => RegisterPage(),
   '/setting': (context) => Setting(),
   '/manage_users': (context) => ManageUsers(),
-  //'/edit_word': (context) => EditWord(),
+  '/edit_words': (context) => EditWords(),
+  '/edit_word': (context, {arguments}) => EditWord(title:arguments['title'], word:arguments['word']),
   '/edit_word_tags': (context) => EditTags(
                                     title: Text('编辑单词 Tags',),
                                     tags: Global.wordTagOptions,
@@ -49,6 +53,7 @@ final _routes = {
                                         add: (String tag) => GrammarTagsSerializer().create(data:{'g_name':tag}),
                                         remove: (String tag) => GrammarTagsSerializer()..g_name = tag ..delete(),
                                         ),
+  '/edit_etyma': (context, {arguments}) => EditEtyma(title:arguments['title'], etyma:arguments['etyma']),
 };
 
 // 实现命名路由传参的函数

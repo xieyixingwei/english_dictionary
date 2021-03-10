@@ -3,7 +3,6 @@
 // JsonSerializer
 // **************************************************************************
 
-import 'relative_sentence.dart';
 import 'grammar.dart';
 import 'package:flutter_prj/common/http.dart';
 
@@ -18,8 +17,8 @@ class SentenceSerializer {
   List<String> s_tags = [];
   List<String> s_tense = [];
   List<String> s_form = [];
-  List<RelativeSentenceSerializer> s_synonym;
-  List<RelativeSentenceSerializer> s_antonym;
+  List<num> s_synonym = [];
+  List<num> s_antonym = [];
   List<GrammarSerializer> sentence_grammar = [];
   
 
@@ -42,8 +41,6 @@ class SentenceSerializer {
     if(s_id == null) return false;
     var res = await Http().request(HttpType.DELETE, '/dictionary/sentence/delete/$s_id/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
     /*
-    if(s_synonym != null){s_synonym.forEach((e){e.delete();});}
-    if(s_antonym != null){s_antonym.forEach((e){e.delete();});}
     if(sentence_grammar != null){sentence_grammar.forEach((e){e.delete();});}
     */
     return res != null ? res.statusCode == 204 : false;
@@ -53,8 +50,6 @@ class SentenceSerializer {
     SentenceSerializer res = s_id == null
                                ? await this.create(data:data, queryParameters:queryParameters, update:update, cache:cache)
                                : await this.update(data:data, queryParameters:queryParameters, update:update, cache:cache);
-    if(s_synonym != null){s_synonym.forEach((e){ e.save();});}
-    if(s_antonym != null){s_antonym.forEach((e){ e.save();});}
     if(sentence_grammar != null){sentence_grammar.forEach((e){ e.save();});}
     return res;
   }
@@ -75,10 +70,10 @@ class SentenceSerializer {
                 : json['s_form'].map<String>((e) => e as String).toList();
     s_synonym = json['s_synonym'] == null
                 ? []
-                : json['s_synonym'].map<RelativeSentenceSerializer>((e) => RelativeSentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
+                : json['s_synonym'].map<num>((e) => e as num).toList();
     s_antonym = json['s_antonym'] == null
                 ? []
-                : json['s_antonym'].map<RelativeSentenceSerializer>((e) => RelativeSentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
+                : json['s_antonym'].map<num>((e) => e as num).toList();
     sentence_grammar = json['sentence_grammar'] == null
                 ? []
                 : json['sentence_grammar'].map<GrammarSerializer>((e) => GrammarSerializer().fromJson(e as Map<String, dynamic>)).toList();
@@ -93,8 +88,8 @@ class SentenceSerializer {
     's_tags': s_tags == null ? null : s_tags.map((e) => e).toList(),
     's_tense': s_tense == null ? null : s_tense.map((e) => e).toList(),
     's_form': s_form == null ? null : s_form.map((e) => e).toList(),
-    's_synonym': s_synonym == null ? null : s_synonym.map((e) => e.toJson()).toList(),
-    's_antonym': s_antonym == null ? null : s_antonym.map((e) => e.toJson()).toList(),
+    's_synonym': s_synonym == null ? null : s_synonym.map((e) => e).toList(),
+    's_antonym': s_antonym == null ? null : s_antonym.map((e) => e).toList(),
     'sentence_grammar': sentence_grammar == null ? null : sentence_grammar.map((e) => e.toJson()).toList(),
   };
 }

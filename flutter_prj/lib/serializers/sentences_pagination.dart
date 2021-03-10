@@ -18,7 +18,7 @@ class SentencesPaginationSerializer {
 
   Future<SentencesPaginationSerializer> retrieve({Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
     (queryParameters != null && filter.queryset != null) ? queryParameters.addAll(filter.queryset) : queryParameters = filter.queryset;
-var res = await Http().request(HttpType.GET, '/dictionary/sentence', queryParameters:queryParameters, cache:cache);
+    var res = await Http().request(HttpType.GET, '/dictionary/sentence', queryParameters:queryParameters, cache:cache);
     return update ? this.fromJson(res.data) : SentencesPaginationSerializer().fromJson(res.data);
   }
 

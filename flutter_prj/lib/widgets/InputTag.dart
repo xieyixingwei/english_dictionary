@@ -5,16 +5,12 @@ import 'package:flutter_prj/widgets/InputDialog.dart';
 class InputTag extends StatelessWidget {
   final List<String> _data;
   final String _lable;
-  final Widget _icon;
-  final String _tooltip;
   final Function(String) _add;
   final Function(String) _delete;
 
   InputTag({Key key, List<String> data, String lable, Widget icon, String tooltip="", Function(String) add, Function(String) delete})
     : _data = data,
       _lable = lable,
-      _icon = icon,
-      _tooltip = tooltip,
       _add = add,
       _delete = delete,
       super(key: key);
@@ -63,9 +59,7 @@ class InputTag extends StatelessWidget {
                 children: [
                   Text(_lable),
                   _chipTheme(context),
-                  InputDialog(
-                    icon: _icon,
-                    tooltip: _tooltip,
+                  PopInputDialog(
                     close: (String value){if(_add != null) _add(value);},
                   ),
                 ],

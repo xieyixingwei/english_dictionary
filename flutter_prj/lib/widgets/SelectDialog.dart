@@ -2,21 +2,19 @@ import 'package:flutter/material.dart';
 
 
 void popSelectDialog({BuildContext context, String title, List<String> options, Function(String) close}) async {
-    var optionWidgets = options.map(
-      (e) => SimpleDialogOption(
-              child: Text(e),
-              onPressed: () {
-                Navigator.pop(context, e); // 关闭Dialog并传值出去
-              }
-            )
-          );
+    var optionWidgets = options.map((e) =>
+      SimpleDialogOption(
+        child: Text(e),
+        onPressed: () => Navigator.pop(context, e), // 关闭Dialog并传值出去
+      )
+    ).toList();
 
     String res = await showDialog(
       context: context,
       builder: (context) {
         return SimpleDialog(
           title: Text(title),
-          children: optionWidgets.toList(),
+          children: optionWidgets,
         );
       },
     );
