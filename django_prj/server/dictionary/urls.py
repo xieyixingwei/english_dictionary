@@ -6,7 +6,9 @@ from . import views
 urlpatterns = [
     url(r'^word/create/$', views.WordView.as_view({'post': 'create'})),
     url(r'^word/update/(?P<w_name>\w+)/$', views.WordView.as_view({'put': 'update'})),
+    url(r'^word/delete/(?P<pk>\w+)/$', views.WordView.as_view({'delete': 'destroy'})),
     url(r'^word/(?P<w_name>\w+)/$', views.WordView.as_view({'get': 'retrieve'})),
+    url(r'^word/$', views.WordView.as_view({'get': 'list'})),
 
     url(r'^wordtags/create/$', views.WordTagsView.as_view({'post': 'create'})),
     url(r'^wordtags/delete/(?P<pk>\w+)/$', views.WordTagsView.as_view({'delete': 'destroy'})),
@@ -47,20 +49,12 @@ urlpatterns = [
     url(r'^word_to_sentence/$', views.WordToSentenceView.as_view({'get': 'list'})),
 
     url(r'^etyma/create/$', views.EtymaView.as_view({'post': 'create'})),
-    url(r'^etyma/update/(?P<pk>\w+)/$', views.EtymaView.as_view({'put': 'update'})),
     url(r'^etyma/delete/(?P<pk>\w+)/$', views.EtymaView.as_view({'delete': 'destroy'})),
     url(r'^etyma/(?P<pk>\w+)/$', views.EtymaView.as_view({'get': 'retrieve'})),
+    url(r'^etyma/$', views.EtymaView.as_view({'get': 'list'})),
 
     url(r'^soundmark/create/$', views.SoundmarkView.as_view({'post': 'create'})),
     url(r'^soundmark/update/(?P<s_name>\w+)/$', views.SoundmarkView.as_view({'put': 'update'})),
     url(r'^soundmark/(?P<s_name>\w+)/$', views.SoundmarkView.as_view({'get': 'retrieve'})),
     url(r'^soundmark/$', views.SoundmarkView.as_view({'get': 'list'})),
-
-    url(r'^relative_word/create/$', views.RelativeWordView.as_view({'post': 'create'})),
-    url(r'^relative_word/delete/(?P<pk>\d+)/$', views.RelativeWordView.as_view({'delete': 'destroy'})),
-    url(r'^relative_word/$', views.RelativeWordView.as_view({'get': 'list'})),
-
-    url(r'^relative_sentence/create/$', views.RelativeSentenceView.as_view({'post': 'create'})),
-    url(r'^relative_sentence/delete/(?P<pk>\d+)/$', views.RelativeSentenceView.as_view({'delete': 'destroy'})),
-    url(r'^relative_sentence/$', views.RelativeSentenceView.as_view({'get': 'list'})),
 ]

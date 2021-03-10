@@ -12,8 +12,8 @@ class WordTable(models.Model):
     w_morph = JSONFieldUtf8(null=True)                 # 单词变形
     w_tags = JSONFieldUtf8(null=True)                  # 标记 [情态动词,动物名词,蔬菜名词]
     w_etyma = JSONFieldUtf8(null=True)    # 词根词缀 [root1,root2,...]
-    # w_synonym = JSONFieldUtf8(null=True)  # 近义词 [word1,word2,...]
-    # w_antonym = JSONFieldUtf8(null=True)  # 反义词 [word1,word2,...]
+    w_synonym = models.ManyToManyField(to='self', blank=True) # 近义词 [word1,word2,...]
+    w_antonym = models.ManyToManyField(to='self', blank=True) # 反义词 [word1,word2,...]
     # w_distinguish_id = JSONFieldUtf8()     # 词义辨析id [id1,id2,...]
     # w_grammar_id = JSONFieldUtf8() # 语法id [id1,id2,...]
     w_origin = models.CharField(max_length=512, null=True) # 词源 markdown "1660年左右进入英语，直接源自中古拉丁语的coordinare，意为同一等级的。"
@@ -84,9 +84,9 @@ class EtymaTable(models.Model):
     def type(self) -> str:
         if self.e_type == 0:
             return "prefix"
-        elif self.e_type == 1:
-            return "etyma"
         elif self.e_type == 2:
+            return "etyma"
+        elif self.e_type == 1:
             return "suffix"
         else:
             return "unkown"
@@ -97,16 +97,6 @@ class WordTagsTable(models.Model):
     单词 Tags
     """
     t_name = models.CharField(max_length=32, primary_key=True)
-
-
-class RelativeWordTable(models.Model):
-    """
-    近义词/反义词表
-    """
-    r_id = models.AutoField(primary_key=True)
-    r_word_a = models.ForeignKey(to=WordTable, related_name='master_word', on_delete=models.CASCADE)
-    r_word_b = models.ForeignKey(to=WordTable, on_delete=models.CASCADE)
-    r_type = models.BooleanField(default=True) # True 近义词 | False 反义词
 
 
 class DistinguishWordTable(models.Model):
