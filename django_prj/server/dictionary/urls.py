@@ -6,7 +6,7 @@ from . import views
 urlpatterns = [
     url(r'^word/create/$', views.WordView.as_view({'post': 'create'})),
     url(r'^word/update/(?P<w_name>\w+)/$', views.WordView.as_view({'put': 'update'})),
-    url(r'^word/delete/(?P<pk>\w+)/$', views.WordView.as_view({'delete': 'destroy'})),
+    url(r'^word/delete/(?P<w_name>\w+)/$', views.WordView.as_view({'delete': 'destroy'})),
     url(r'^word/(?P<w_name>\w+)/$', views.WordView.as_view({'get': 'retrieve'})),
     url(r'^word/$', views.WordView.as_view({'get': 'list'})),
 
@@ -49,8 +49,9 @@ urlpatterns = [
     url(r'^word_to_sentence/$', views.WordToSentenceView.as_view({'get': 'list'})),
 
     url(r'^etyma/create/$', views.EtymaView.as_view({'post': 'create'})),
-    url(r'^etyma/delete/(?P<pk>\w+)/$', views.EtymaView.as_view({'delete': 'destroy'})),
-    url(r'^etyma/(?P<pk>\w+)/$', views.EtymaView.as_view({'get': 'retrieve'})),
+    url(r'^etyma/delete/(?P<e_name>\w+)/$', views.EtymaView.as_view({'delete': 'destroy'})),
+    url(r'^etyma/update/(?P<e_name>\w+)/$', views.EtymaView.as_view({'put': 'update'})),
+    url(r'^etyma/(?P<e_name>\w+)/$', views.EtymaView.as_view({'get': 'retrieve'})),
     url(r'^etyma/$', views.EtymaView.as_view({'get': 'list'})),
 
     url(r'^soundmark/create/$', views.SoundmarkView.as_view({'post': 'create'})),

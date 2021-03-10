@@ -103,6 +103,22 @@ class _EtymaSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+# 分页自定义
+class _EtymaPagination(PageNumberPagination):
+    page_size = 4 # 表示每页的默认显示数量
+    page_size_query_param = 'page_size' # 表示url中每页数量参数
+    page_query_param = 'page_index' # 表示url中的页码参数
+    max_page_size = 100
+
+
+class _EtymaFilter(filterset.FilterSet):
+    class Meta:
+        model = EtymaTable
+        fields = {
+            'e_name': ['exact','icontains'],
+            'e_type': ['exact'],
+        }
+
 class EtymaView(ModelViewSetPermissionSerializerMap):
     """
     词根 视图
@@ -112,7 +128,11 @@ class EtymaView(ModelViewSetPermissionSerializerMap):
     permission_classes = (permissions.IsRootUser,)
     permission_classes_map = {
         'retrieve': (permissions.AllowAny,),
+        'list': (permissions.AllowAny,),
     }
+    lookup_field = 'e_name'
+    pagination_class = _EtymaPagination   # 自定义分页会覆盖settings全局配置的
+    filter_class = _EtymaFilter
 
 
 from dictionary.models import WordTagsTable
