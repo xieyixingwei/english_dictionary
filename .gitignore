@@ -49,3 +49,6 @@ app.*.map.json
 *__pycache__
 **/venv/
 
+# django
+migrations/
+db.sqlite3
