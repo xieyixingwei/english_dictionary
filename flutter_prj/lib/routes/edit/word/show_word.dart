@@ -27,21 +27,21 @@ class _ShowWordState extends State<ShowWord> {
     Wrap(
       spacing: 10.0,
       children: [
-        widget._word.word_grammar.length > 0 ?
+        widget._word.grammarSet.length > 0 ?
         InkWell(
           child:Text('语法>>', style: _style,),
           onTap: () => setState(() => _onoff[0] = !_onoff[0]),
         ) : SizedBox(height: 0, width: 0,),
-        widget._word.w_synonym.length > 0 ?
+        widget._word.synonym.length > 0 ?
         InkWell(
           child: Text('同义词>>', style: _style,),
           onTap: () async {
             _onoff[1] = !_onoff[1];
             if(_onoff[1] == false) {
               _synonymWords.clear();
-              await Future.forEach(widget._word.w_synonym,
+              await Future.forEach(widget._word.synonym,
                 (e) async {
-                  var s = WordSerializer()..w_name = e;
+                  var s = WordSerializer()..name = e;
                   await s.retrieve(update:true);
                   _synonymWords.add(s);
                 }
@@ -51,16 +51,16 @@ class _ShowWordState extends State<ShowWord> {
             setState(() {});
           },
         ) : SizedBox(height: 0, width: 0,),
-        widget._word.w_antonym.length > 0 ?
+        widget._word.antonym.length > 0 ?
         InkWell(
           child: Text('反义词>>', style: _style,),
           onTap: () async {
             _onoff[2] = !_onoff[2];
             if(_onoff[2] == false) {
               _antonymWords.clear();
-              await Future.forEach(widget._word.w_antonym,
+              await Future.forEach(widget._word.antonym,
                 (e) async {
-                  var s = WordSerializer()..w_name = e;
+                  var s = WordSerializer()..name = e;
                   await s.retrieve(update:true);
                   _antonymWords.add(s);
                 }
@@ -78,7 +78,7 @@ class _ShowWordState extends State<ShowWord> {
     title: Wrap(
       spacing: 10.0,
       children:[
-        Text(widget._word.w_name),
+        Text(widget._word.name),
         WordDetails(word: widget._word),
         _buildOthers(),
       ],
@@ -90,12 +90,12 @@ class _ShowWordState extends State<ShowWord> {
           offstage: _onoff[0],
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: widget._word.word_grammar.map<Widget>(
+            children: widget._word.grammarSet.map<Widget>(
               (e) => ShowGrammar(
                 grammar: e,
                 delete: () {
                   e.delete();
-                  setState(() => widget._word.word_grammar.remove(e));
+                  setState(() => widget._word.grammarSet.remove(e));
                 },
                 )
             ).toList(),
@@ -110,7 +110,7 @@ class _ShowWordState extends State<ShowWord> {
                 word: e,
                 delete: () {
                   e.delete();
-                  widget._word.w_synonym.remove(e.w_name);
+                  widget._word.synonym.remove(e.name);
                   setState(() => _synonymWords.remove(e));
                 },
                 )
@@ -126,7 +126,7 @@ class _ShowWordState extends State<ShowWord> {
                 word: e,
                 delete: () {
                   e.delete();
-                  widget._word.w_antonym.remove(e.w_name);
+                  widget._word.antonym.remove(e.name);
                   setState(() => _antonymWords.remove(e));
                 },
                 )

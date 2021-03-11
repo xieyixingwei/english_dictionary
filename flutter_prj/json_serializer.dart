@@ -374,7 +374,7 @@ class JsonSerializer {
     try{
       obj = json.decode(jsonSrc);
     } catch(e) {
-      print('****** Parse Json Error: $e');
+      print('*** ERROR: from \'${this.name}.json\' parse Json Error: $e');
       return;
     }
 

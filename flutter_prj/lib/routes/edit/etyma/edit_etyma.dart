@@ -36,7 +36,7 @@ class _EditEtymaState extends State<EditEtyma> {
                       items: _options.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
                       onChanged: (v) {
                         if(v != _options.first) {
-                          widget._etyma.e_type = _options.indexOf(v) - 1;
+                          widget._etyma.type = _options.indexOf(v) - 1;
                         }
                         setState(() => _select = v);
                       },
@@ -45,7 +45,7 @@ class _EditEtymaState extends State<EditEtyma> {
                     Container(
                       width: 100.0,
                       child: TextField(
-                        controller: TextEditingController(text:widget._etyma.e_name ?? ''),
+                        controller: TextEditingController(text:widget._etyma.name ?? ''),
                         maxLines: 1,
                         style: TextStyle(
                           fontSize: 14,
@@ -53,14 +53,14 @@ class _EditEtymaState extends State<EditEtyma> {
                         decoration: InputDecoration(
                           labelText: "词根词缀",
                         ),
-                        onChanged: (value) => widget._etyma.e_name = value.trim(),
+                        onChanged: (value) => widget._etyma.name = value.trim(),
                       ),
                     ),
                   ],
                 ),
                 SizedBox(height: 20,),
                 TextField(
-                  controller: TextEditingController(text:widget._etyma.e_meaning),
+                  controller: TextEditingController(text:widget._etyma.interpretation),
                   minLines: 2,
                   maxLines: null,
                   style: TextStyle(
@@ -70,7 +70,7 @@ class _EditEtymaState extends State<EditEtyma> {
                     labelText: "含义",
                     border: OutlineInputBorder(),
                   ),
-                  onChanged: (value) => widget._etyma.e_meaning = value.trim(),
+                  onChanged: (value) => widget._etyma.interpretation = value.trim(),
                 ),
                 SizedBox(height: 20,),
                 Row(

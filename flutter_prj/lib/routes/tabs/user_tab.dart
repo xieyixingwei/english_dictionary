@@ -70,7 +70,7 @@ class UserTab extends StatelessWidget {
   _buildStatistics(UserModel user) {
     List statisticsTotal = [];
     statisticsTotal.addAll(statistics);
-    if(user.user.u_uname == 'root') {
+    if(user.user.uname == 'root') {
       statisticsTotal.addAll(statisticsOfRoot);
     }
     return statisticsTotal.map((e) => 
@@ -116,8 +116,8 @@ class UserTab extends StatelessWidget {
                   Expanded(
                     flex: 1,
                     child: ListTile(
-                      title:  Text(user.user.u_uname, style: const TextStyle(color: Colors.white, fontSize: 24.0)),
-                      subtitle: Text('RegID: ' + user.user.u_id.toString(), style: const TextStyle(color: Colors.white, fontSize: 10.0)),
+                      title:  Text(user.user.uname, style: const TextStyle(color: Colors.white, fontSize: 24.0)),
+                      subtitle: Text('RegID: ' + user.user.id.toString(), style: const TextStyle(color: Colors.white, fontSize: 10.0)),
                     ),
                   ),
                   Padding(
@@ -138,7 +138,7 @@ class UserTab extends StatelessWidget {
   _buildSliverChildBuilderDelegate(BuildContext context, UserModel user) {
     List listItemsTotal = [];
     listItemsTotal.addAll(listItems);
-    if(user.user.u_uname == 'root') {
+    if(user.user.uname == 'root') {
       listItemsTotal.addAll(listItemsOfRoot);
     }
     return SliverChildBuilderDelegate(

@@ -44,7 +44,7 @@ class HomeBody extends StatelessWidget {
     Row(
       children: [
         Text(
-          Provider.of<WordModel>(context, listen:false).word.w_name,
+          Provider.of<WordModel>(context, listen:false).word.name,
           style: TextStyle(
             color: Color.fromRGBO(0,153,68,1),
             fontWeight: FontWeight.w700,

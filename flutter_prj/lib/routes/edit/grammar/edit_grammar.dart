@@ -28,33 +28,33 @@ class _EditGrammarState extends State<EditGrammar> {
         context: context,
         title: value,
         options: Global.grammarTypeOptions,
-        close: (String val) => setState(() => widget._grammar.g_type.add(val)),
+        close: (String val) => setState(() => widget._grammar.type.add(val)),
       );
     } else if(value == '添加Tag') {
       popSelectDialog(
         context: context,
         title: value,
         options: Global.grammarTagOptions,
-        close: (String val) => setState(() => widget._grammar.g_tags.add(val)),
+        close: (String val) => setState(() => widget._grammar.tag.add(val)),
       );
     } else if(value == '编辑类型') {
       Navigator.pushNamed(context, '/edit_grammar_type');
     }
      else if(value == '编辑Tags') {
-      Navigator.pushNamed(context, '/edit_grammar_tags');
+      Navigator.pushNamed(context, '/edit_grammar_tag');
     }
   }
 
   _buildTextField(BuildContext context) =>
     TextField(
       maxLines: null,
-      controller: TextEditingController(text: widget._grammar.g_content),
+      controller: TextEditingController(text: widget._grammar.content),
       decoration: InputDecoration(
         labelText: '语法',
         border: OutlineInputBorder(),
         suffixIcon: popupMenuButton(context:context, options:_options, onSelected:_onSelected),
       ),
-      onChanged: (String value) => widget._grammar.g_content = value,
+      onChanged: (String value) => widget._grammar.content = value,
     );
 
   @override

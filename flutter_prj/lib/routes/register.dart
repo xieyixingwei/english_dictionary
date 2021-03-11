@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../common/http.dart';
 
 
 class RegisterPage extends StatelessWidget {

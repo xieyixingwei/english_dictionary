@@ -10,7 +10,7 @@ class EditSentences extends StatefulWidget {
 }
 
 class _EditSentencesState extends State<EditSentences> {
-  SentencesPaginationSerializer sentences = SentencesPaginationSerializer();
+  SentencePaginationSerializer sentences = SentencePaginationSerializer();
   static final List<String> typeOptions = ['所有的类型', '句子', '短语'];
   static final List<String> tagOptions = ['请选择Tags'] + Global.sentenceTagOptions;
   static final List<String> tenseOptions = ['请选择Tense'] + Global.tenseOptions;
@@ -57,7 +57,7 @@ class _EditSentencesState extends State<EditSentences> {
           width: 100,
           child: TextField(
             maxLines: null,
-            onChanged: (val) => sentences.filter.s_en__icontains = val.trim().length == 0 ? null : val.trim(),
+            onChanged: (val) => sentences.filter.en__icontains = val.trim().length == 0 ? null : val.trim(),
             decoration: InputDecoration(
               labelText: '英文关键字',
             ),
@@ -67,7 +67,7 @@ class _EditSentencesState extends State<EditSentences> {
           width: 100,
           child: TextField(
             maxLines: null,
-            onChanged: (val) => sentences.filter.s_ch__icontains = val.trim().length == 0 ? null : val.trim(),
+            onChanged: (val) => sentences.filter.cn__icontains = val.trim().length == 0 ? null : val.trim(),
             decoration: InputDecoration(
               labelText: '中文关键字',
             ),
@@ -78,24 +78,24 @@ class _EditSentencesState extends State<EditSentences> {
           items: typeOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
           onChanged: (v) {
             num index = typeOptions.indexOf(v);
-            sentences.filter.s_type = index == 0 ? null : index - 1;
+            sentences.filter.type = index == 0 ? null : index - 1;
             setState(() => ddBtnValues.first = v);
           },
         ),
         DropdownButton(
           value: ddBtnValues[1],
           items: tagOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
-          onChanged: (v) {setState(() => ddBtnValues[1] = v); sentences.filter.s_tags__icontains = v != tagOptions.first ? v : null;},
+          onChanged: (v) {setState(() => ddBtnValues[1] = v); sentences.filter.tag__icontains = v != tagOptions.first ? v : null;},
         ),
         DropdownButton(
           value: ddBtnValues[2],
           items: tenseOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
-          onChanged: (v) {setState(() => ddBtnValues[2] = v); sentences.filter.s_tense__icontains = v != tenseOptions.first ? v : null;},
+          onChanged: (v) {setState(() => ddBtnValues[2] = v); sentences.filter.tense__icontains = v != tenseOptions.first ? v : null;},
         ),
         DropdownButton(
           value: ddBtnValues[3],
           items: formOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
-          onChanged: (v) {setState(() => ddBtnValues[3] = v); sentences.filter.s_form__icontains = v != formOptions.first ? v : null;},
+          onChanged: (v) {setState(() => ddBtnValues[3] = v); sentences.filter.pattern__icontains = v != formOptions.first ? v : null;},
         ),
         IconButton(
           splashRadius: 1.0,
@@ -114,7 +114,7 @@ class _EditSentencesState extends State<EditSentences> {
             var sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'添加句子'})) as SentenceSerializer;
             if(sentence != null) {
               sentences.results.add(sentence);
-              sentence.save();
+              sentence.save(update: true);
             }
             setState((){});
           },

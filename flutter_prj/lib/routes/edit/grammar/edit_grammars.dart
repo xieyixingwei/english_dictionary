@@ -11,7 +11,7 @@ class EditGrammers extends StatefulWidget {
 }
 
 class _EditGrammersState extends State<EditGrammers> {
-  GrammarsPaginationSerializer _grammars = GrammarsPaginationSerializer();
+  GrammarPaginationSerializer _grammars = GrammarPaginationSerializer();
   static final List<String> typeOptions = ["请选择类型"] + Global.grammarTypeOptions;
   static final List<String> tagOptions = ["请选择Tags"] + Global.grammarTagOptions;
   List<String> ddBtnValues = [typeOptions.first, tagOptions.first];
@@ -34,7 +34,7 @@ Widget _buildFilter(BuildContext context) =>
       Container(
         width: 100,
         child: TextField(
-          onChanged: (val) => _grammars.filter.g_content__icontains = val.trim().length == 0 ? null : val.trim(),
+          onChanged: (val) => _grammars.filter.content__icontains = val.trim().length == 0 ? null : val.trim(),
           decoration: InputDecoration(
             labelText: '语法关键字',
           ),
@@ -45,13 +45,13 @@ Widget _buildFilter(BuildContext context) =>
         items: typeOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
         onChanged: (v) {
           setState(() => ddBtnValues[0] = v);
-          _grammars.filter.g_type__icontains = v != typeOptions.first ? v : null;
+          _grammars.filter.type__icontains = v != typeOptions.first ? v : null;
         },
       ),
       DropdownButton(
         value: ddBtnValues[1],
         items: tagOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
-        onChanged: (v) {setState(() => ddBtnValues[1] = v); _grammars.filter.g_tags__icontains = v != tagOptions.first ? v : null;},
+        onChanged: (v) {setState(() => ddBtnValues[1] = v); _grammars.filter.tag__icontains = v != tagOptions.first ? v : null;},
       ),
       IconButton(
         splashRadius: 1.0,
@@ -70,7 +70,7 @@ Widget _buildFilter(BuildContext context) =>
           var g = (await Navigator.pushNamed(context, '/edit_grammar', arguments:{'title':'添加语法'})) as GrammarSerializer;
           if(g != null) {
             _grammars.results.add(g);
-            g.save();
+            g.save(update: true);
           }
           setState((){});
         },

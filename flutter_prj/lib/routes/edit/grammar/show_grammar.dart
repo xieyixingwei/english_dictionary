@@ -22,7 +22,7 @@ class _ShowGrammarState extends State<ShowGrammar> {
   Widget build(BuildContext context) =>
     ListTile(
       //leading: Text('相关语法'),
-      title: Text(widget._grammar.g_content),
+      title: Text(widget._grammar.content),
       subtitle: GrammarDetails(widget._grammar, false),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,

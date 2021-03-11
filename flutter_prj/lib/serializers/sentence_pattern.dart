@@ -3,28 +3,33 @@
 // JsonSerializer
 // **************************************************************************
 
-import 'sentence.dart';
+import 'paraphrase.dart';
 
 
 class SentencePatternSerializer {
   SentencePatternSerializer();
 
-  String pattern = '';
-  List<SentenceSerializer> exampleSentences = [];
+  num id;
+  String content = '';
+  String wordForeign;
+  List<ParaphraseSerializer> paraphraseSet = [];
   
 
 
   SentencePatternSerializer fromJson(Map<String, dynamic> json) {
-    pattern = json['pattern'] == null ? null : json['pattern'] as String;
-    exampleSentences = json['exampleSentences'] == null
+    id = json['id'] == null ? null : json['id'] as num;
+    content = json['content'] == null ? null : json['content'] as String;
+    wordForeign = json['wordForeign'] == null ? null : json['wordForeign'] as String;
+    paraphraseSet = json['paraphraseSet'] == null
                 ? []
-                : json['exampleSentences'].map<SentenceSerializer>((e) => SentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
+                : json['paraphraseSet'].map<ParaphraseSerializer>((e) => ParaphraseSerializer().fromJson(e as Map<String, dynamic>)).toList();
     return this;
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-    'pattern': pattern,
-    'exampleSentences': exampleSentences == null ? null : exampleSentences.map((e) => e.toJson()).toList(),
+    'id': id,
+    'content': content,
+    'wordForeign': wordForeign,
   };
 }
 

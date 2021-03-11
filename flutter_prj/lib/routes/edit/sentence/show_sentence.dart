@@ -27,21 +27,21 @@ class _ShowSentenceState extends State<ShowSentence> {
     Wrap(
       spacing: 10.0,
       children: [
-        widget._sentence.sentence_grammar.length > 0 ?
+        widget._sentence.grammarSet.length > 0 ?
         InkWell(
           child:Text('语法>>', style: _style,),
           onTap: () => setState(() => _onoff[0] = !_onoff[0]),
         ) : SizedBox(height: 0, width: 0,),
-        widget._sentence.s_synonym.length > 0 ?
+        widget._sentence.synonym.length > 0 ?
         InkWell(
           child: Text('同义句>>', style: _style,),
           onTap: () async {
             _onoff[1] = !_onoff[1];
             if(_onoff[1] == false) {
               _synonymSentences.clear();
-              await Future.forEach(widget._sentence.s_synonym,
+              await Future.forEach(widget._sentence.synonym,
                 (e) async {
-                  var s = SentenceSerializer()..s_id = e;
+                  var s = SentenceSerializer()..id = e;
                   await s.retrieve(update:true);
                   _synonymSentences.add(s);
                 }
@@ -51,16 +51,16 @@ class _ShowSentenceState extends State<ShowSentence> {
             setState(() {});
           },
         ) : SizedBox(height: 0, width: 0,),
-        widget._sentence.s_antonym.length > 0 ?
+        widget._sentence.antonym.length > 0 ?
         InkWell(
           child: Text('反义句>>', style: _style,),
           onTap: () async {
             _onoff[2] = !_onoff[2];
             if(_onoff[2] == false) {
               _antonymSentences.clear();
-              await Future.forEach(widget._sentence.s_antonym,
+              await Future.forEach(widget._sentence.antonym,
                 (e) async {
-                  var s = SentenceSerializer()..s_id = e;
+                  var s = SentenceSerializer()..id = e;
                   await s.retrieve(update:true);
                   _antonymSentences.add(s);
                 }
@@ -78,7 +78,7 @@ class _ShowSentenceState extends State<ShowSentence> {
     title: Wrap(
       spacing: 10.0,
       children:[
-        Text(widget._sentence.s_en),
+        Text(widget._sentence.en),
         SentenceDetails(sentence: widget._sentence),
         _buildOthers(),
       ],
@@ -86,17 +86,17 @@ class _ShowSentenceState extends State<ShowSentence> {
     subtitle: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget._sentence.s_ch),
+        Text(widget._sentence.cn),
         Offstage(
           offstage: _onoff[0],
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: widget._sentence.sentence_grammar.map<Widget>(
+            children: widget._sentence.grammarSet.map<Widget>(
               (e) => ShowGrammar(
                 grammar: e,
                 delete: () {
                   e.delete();
-                  setState(() => widget._sentence.sentence_grammar.remove(e));
+                  setState(() => widget._sentence.grammarSet.remove(e));
                 },
                 )
             ).toList(),
@@ -111,7 +111,7 @@ class _ShowSentenceState extends State<ShowSentence> {
                 sentence: e,
                 delete: () {
                   e.delete();
-                  widget._sentence.s_synonym.remove(e.s_id);
+                  widget._sentence.synonym.remove(e.id);
                   setState(() => _synonymSentences.remove(e));
                 },
                 )
@@ -127,7 +127,7 @@ class _ShowSentenceState extends State<ShowSentence> {
                 sentence: e,
                 delete: () {
                   e.delete();
-                  widget._sentence.s_antonym.remove(e.s_id);
+                  widget._sentence.antonym.remove(e.id);
                   setState(() => _antonymSentences.remove(e));
                 },
                 )

@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 class DeletableDropdownButton extends StatefulWidget {
   final List<String> _options;
   final String _value;
-  final String _label;
-  final int _index;
-  final int _indent;
   final Function() _delete;
   final Function(String) _close;
 
@@ -13,16 +10,10 @@ class DeletableDropdownButton extends StatefulWidget {
       Key key,
       List<String> options,
       String value,
-      String label,
-      int index=0,
-      int indent=1,
       Function() delete,
       Function(String) close})
     : _options = options,
       _value = value,
-      _label = label,
-      _index = index,
-      _indent = indent,
       _delete = delete,
       _close = close,
       super(key:key);

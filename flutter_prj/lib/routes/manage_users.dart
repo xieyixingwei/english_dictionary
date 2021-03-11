@@ -15,12 +15,9 @@ class _ManageUsersState extends State<ManageUsers> {
 
   List<UserSerializer> users;
 
-  Future<List<UserSerializer>> _init() async {
+  void _init() async {
     var res = await UserSerializer.list();
-
-    setState(() {
-      users = res;
-    });
+    setState(() => users = res);
   }
 
   @override
@@ -33,7 +30,7 @@ class _ManageUsersState extends State<ManageUsers> {
     if(users == null) return [Text("")];
     var children = users.map((e) =>
         ListTile(
-          title: Text(e.u_uname),
+          title: Text(e.uname),
           trailing: IconButton(
             splashRadius: 1.0,
             icon: Icon(Icons.clear),

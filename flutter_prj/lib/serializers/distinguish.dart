@@ -8,25 +8,34 @@
 class DistinguishSerializer {
   DistinguishSerializer();
 
-  num d_id = -1;
-  List<String> d_words = [];
-  String d_content = '';
+  num id;
+  List<String> words = [];
+  String content = '';
+  String image = '';
+  String vedio = '';
+  List<String> wordsForeign = [];
   
 
 
   DistinguishSerializer fromJson(Map<String, dynamic> json) {
-    d_id = json['d_id'] == null ? null : json['d_id'] as num;
-    d_words = json['d_words'] == null
+    id = json['id'] == null ? null : json['id'] as num;
+    words = json['words'] == null
                 ? []
-                : json['d_words'].map<String>((e) => e as String).toList();
-    d_content = json['d_content'] == null ? null : json['d_content'] as String;
+                : json['words'].map<String>((e) => e as String).toList();
+    content = json['content'] == null ? null : json['content'] as String;
+    image = json['image'] == null ? null : json['image'] as String;
+    vedio = json['vedio'] == null ? null : json['vedio'] as String;
+    wordsForeign = json['wordsForeign'] == null
+                ? []
+                : json['wordsForeign'].map<String>((e) => e as String).toList();
     return this;
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-    'd_id': d_id,
-    'd_words': d_words == null ? null : d_words.map((e) => e).toList(),
-    'd_content': d_content,
+    'id': id,
+    'words': words == null ? null : words.map((e) => e).toList(),
+    'content': content,
+    'wordsForeign': wordsForeign == null ? null : wordsForeign.map((e) => e).toList(),
   };
 }
 
