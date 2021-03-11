@@ -10,6 +10,7 @@ from django_filters import filterset, fields
 from rest_framework import filters
 from django.db import models
 import django_filters
+from .GrammarView import GrammarSerializer
 
 
 class SentenceSerializer(serializers.ModelSerializer):
@@ -19,7 +20,7 @@ class SentenceSerializer(serializers.ModelSerializer):
 
 
 class _RetrieveSentenceSerializer(serializers.ModelSerializer):
-    sentence_grammar = GrammarSerializer(many=True, read_only=True)
+    grammarSet = GrammarSerializer(many=True, read_only=True)
     class Meta:
         model = SentenceTable
         fields = ('__all__')
@@ -45,12 +46,12 @@ class _SentenceFilter(filterset.FilterSet):
             }
         }
         fields = {
-            's_en': ['icontains'],
-            's_ch': ['icontains'],
-            's_type': ['exact'],
-            's_tags': ['icontains'],
-            's_tense': ['icontains'],
-            's_form': ['icontains']
+            'en': ['icontains'],
+            'cn': ['icontains'],
+            'type': ['exact'],
+            'tag': ['icontains'],
+            'tense': ['icontains'],
+            'pattern': ['icontains']
         }
 
 
@@ -74,20 +75,20 @@ class SentenceView(ModelViewSetPermissionSerializerMap):
     filter_class = _SentenceFilter
 
 
-from dictionary.models import SentenceTagsTable
+from dictionary.models import SentenceTagTable
 
 
 class _SentenceTagSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SentenceTagsTable
+        model = SentenceTagTable
         fields = '__all__'
 
 
-class SentenceTagsView(ModelViewSetPermissionSerializerMap):
+class SentenceTagView(ModelViewSetPermissionSerializerMap):
     """
     句子 tags 视图
     """
-    queryset = SentenceTagsTable.objects.all()
+    queryset = SentenceTagTable.objects.all()
     serializer_class = _SentenceTagSerializer
     permission_classes = (permissions.IsRootUser,)
     permission_classes_map = {

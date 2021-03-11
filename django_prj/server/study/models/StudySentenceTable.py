@@ -8,14 +8,14 @@ class StudySentenceTable(models.Model):
     """
     句子学习表
     """
-    ss_id = models.AutoField(primary_key=True)
-    ss_user = models.ForeignKey(to=UserTable, on_delete=models.CASCADE)
-    ss_sentence = models.ForeignKey(to=SentenceTable, on_delete=models.CASCADE)
-    ss_collect = JSONFieldUtf8()        # 单词本 [a,b]
-    ss_familiarity = models.IntegerField() # 0 ~ 5
-    ss_repeats = models.IntegerField()
-    ss_learn_record = JSONFieldUtf8() # [09122030,09112030,09102030]
-    ss_inplan = models.BooleanField()
-    ss_new_words = JSONFieldUtf8()   # 生词 [w1,w2]
-    ss_next_sentences = JSONFieldUtf8() # 下个句子id [id1, id2]
-    ss_comments = models.CharField(max_length=256)  # markdown
+    id = models.AutoField(primary_key=True)
+    foreignUser = models.ForeignKey(to=UserTable, on_delete=models.CASCADE)
+    foreignSentence = models.ForeignKey(to=SentenceTable, on_delete=models.CASCADE)
+    collect = JSONFieldUtf8()        # 单词本 [a,b]
+    familiarity = models.IntegerField() # 0 ~ 5
+    repeats = models.IntegerField()
+    learnRecord = JSONFieldUtf8() # [09122030,09112030,09102030]
+    inplan = models.BooleanField()
+    newWords = JSONFieldUtf8()   # 生词 [w1,w2]
+    nextSentences = JSONFieldUtf8() # 下个句子id [id1, id2]
+    comments = models.CharField(max_length=256)  # markdown

@@ -8,12 +8,12 @@ class StudyWordTable(models.Model):
     """
     单词学习表
     """
-    sw_id = models.AutoField(primary_key=True)
-    sw_user = models.ForeignKey(to=UserTable, on_delete=models.CASCADE)
-    sw_word = models.ForeignKey(to=WordTable, on_delete=models.CASCADE)
-    sw_collect = JSONFieldUtf8()        # 单词本 [a,b]
-    sw_familiarity = models.IntegerField() # 0 ~ 5
-    sw_repeats = models.IntegerField()
-    sw_learn_record = JSONFieldUtf8() # [09122030,09112030,09102030]
-    sw_inplan = models.BooleanField()
-    sw_comments = models.CharField(max_length=256) # markdown
+    id = models.AutoField(primary_key=True)
+    foreignUser = models.ForeignKey(to=UserTable, on_delete=models.CASCADE)
+    foreignWord = models.ForeignKey(to=WordTable, on_delete=models.CASCADE)
+    collect = JSONFieldUtf8()        # 单词本 [a,b]
+    familiarity = models.IntegerField() # 0 ~ 5
+    repeats = models.IntegerField()
+    learnRecord = JSONFieldUtf8() # [09122030,09112030,09102030]
+    inplan = models.BooleanField()
+    comments = models.CharField(max_length=256) # markdown

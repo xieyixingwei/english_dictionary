@@ -13,7 +13,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserTable
-        fields = ('u_id','u_uname','u_passwd')
+        fields = ('id','uname','passwd')
 
 
 # 注册 path/register/
@@ -29,12 +29,12 @@ class RegisterView(generics.CreateAPIView):
         self.perform_create(serializer)
         # 将root用户自动设为管理员
         data = serializer.data
-        if data["u_uname"] in ROOT_USERS:
-            u_id= data["u_id"]
-            user = UserTable.objects.get(pk=u_id)
-            user.u_is_admin = True
+        if data["uname"] in ROOT_USERS:
+            id= data["id"]
+            user = UserTable.objects.get(pk=id)
+            user.isAdmin = True
             user.save()
-            data["u_is_admin"] = True
+            data["isAdmin"] = True
         headers = self.get_success_headers(data)
         return response.Response(data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -42,10 +42,10 @@ class RegisterView(generics.CreateAPIView):
 class CreateAdminUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserTable
-        fields = ('u_id','u_uname','u_passwd')
+        fields = ('id','uname','passwd')
 
     def validate(self, attrs):
-        attrs['u_is_admin'] = True
+        attrs['isAdmin'] = True
         return attrs
 
 

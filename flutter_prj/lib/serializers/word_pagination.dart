@@ -3,32 +3,32 @@
 // JsonSerializer
 // **************************************************************************
 
-import 'grammar.dart';
+import 'word.dart';
 import 'package:flutter_prj/common/http.dart';
 
 
-class GrammarsPaginationSerializer {
-  GrammarsPaginationSerializer();
+class WordPaginationSerializer {
+  WordPaginationSerializer();
 
   num count = 0;
   String next = '';
   String previous = '';
-  List<GrammarSerializer> results = [];
-  GrammarSerializerFilter filter = GrammarSerializerFilter();
+  List<WordSerializer> results = [];
+  WordSerializerFilter filter = WordSerializerFilter();
 
-  Future<GrammarsPaginationSerializer> retrieve({Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
+  Future<WordPaginationSerializer> retrieve({Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
     (queryParameters != null && filter.queryset != null) ? queryParameters.addAll(filter.queryset) : queryParameters = filter.queryset;
-    var res = await Http().request(HttpType.GET, '/dictionary/grammar/', queryParameters:queryParameters, cache:cache);
-    return update ? this.fromJson(res.data) : GrammarsPaginationSerializer().fromJson(res.data);
+    var res = await Http().request(HttpType.GET, '/dictionary/word/', queryParameters:queryParameters, cache:cache);
+    return update ? this.fromJson(res.data) : WordPaginationSerializer().fromJson(res.data);
   }
 
-  GrammarsPaginationSerializer fromJson(Map<String, dynamic> json) {
+  WordPaginationSerializer fromJson(Map<String, dynamic> json) {
     count = json['count'] == null ? null : json['count'] as num;
     next = json['next'] == null ? null : json['next'] as String;
     previous = json['previous'] == null ? null : json['previous'] as String;
     results = json['results'] == null
                 ? []
-                : json['results'].map<GrammarSerializer>((e) => GrammarSerializer().fromJson(e as Map<String, dynamic>)).toList();
+                : json['results'].map<WordSerializer>((e) => WordSerializer().fromJson(e as Map<String, dynamic>)).toList();
     return this;
   }
 
@@ -40,21 +40,24 @@ class GrammarsPaginationSerializer {
   };
 }
 
-class GrammarSerializerFilter {
-  String g_type__icontains;
-  String g_tags__icontains;
-  String g_content__icontains;
+class WordSerializerFilter {
+  String name;
+  String name__icontains;
+  String tag__icontains;
+  String etyma__icontains;
 
   Map<String, dynamic> get queryset => <String, dynamic>{
-    "g_type__icontains": g_type__icontains,
-    "g_tags__icontains": g_tags__icontains,
-    "g_content__icontains": g_content__icontains,
+    "name": name,
+    "name__icontains": name__icontains,
+    "tag__icontains": tag__icontains,
+    "etyma__icontains": etyma__icontains,
   }..removeWhere((String key, dynamic value) => value == null);
 
   void clear() {
-    g_type__icontains = null;
-    g_tags__icontains = null;
-    g_content__icontains = null;
+    name = null;
+    name__icontains = null;
+    tag__icontains = null;
+    etyma__icontains = null;
   }
 }
 

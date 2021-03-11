@@ -11,7 +11,7 @@ from server import permissions
 class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserTable
-        fields = ('u_id','u_uname','u_passwd')
+        fields = ('id','uname','passwd')
 
 
 # 登陆 path/login/
@@ -24,15 +24,15 @@ class LoginView(generics.CreateAPIView):
     permission_classes = (permissions.AllowAny,) # 允许所有用户
 
     def post(self, request, *args, **kwargs):
-        u_uname = request.data.get('u_uname')
-        u_passwd = request.data.get('u_passwd')
+        uname = request.data.get('uname')
+        passwd = request.data.get('passwd')
         try:
-            user = UserTable.objects.get(u_uname=u_uname)
-            if user.u_passwd != u_passwd:
+            user = UserTable.objects.get(uname=uname)
+            if user.passwd != passwd:
                 return response.Response({'status': 0,
                                           'msg': '用户名或密码不对!'})
             token = uuid.uuid4().hex
-            cache.set(token, user.u_id, timeout=LOGIN_TIMEOUT) # 往缓存里添加数据
+            cache.set(token, user.id, timeout=LOGIN_TIMEOUT) # 往缓存里添加数据
             data = {
                 'msg': 'login success',
                 'status': 200,

@@ -8,11 +8,11 @@ class StudyGrammerTable(models.Model):
     """
     语法学习表
     """
-    sg_id = models.AutoField(primary_key=True)
-    sg_user = models.ForeignKey(to=UserTable, on_delete=models.CASCADE)
-    sg_grammer = models.ForeignKey(to=GrammarTable, on_delete=models.CASCADE)
-    sg_familiarity = models.IntegerField() # 0 ~ 5
-    sg_repeats = models.IntegerField()
-    sg_learn_record = JSONFieldUtf8() # [09122030,09112030,09102030]
-    sg_inplan = models.BooleanField()
-    sg_comments = models.CharField(max_length=256)  # markdown
+    id = models.AutoField(primary_key=True)
+    foreignUser = models.ForeignKey(to=UserTable, on_delete=models.CASCADE)
+    foreignGrammer = models.ForeignKey(to=GrammarTable, on_delete=models.CASCADE)
+    familiarity = models.IntegerField() # 0 ~ 5
+    repeats = models.IntegerField()
+    learnRecord = JSONFieldUtf8() # [09122030,09112030,09102030]
+    inplan = models.BooleanField()
+    comments = models.CharField(max_length=256)  # markdown

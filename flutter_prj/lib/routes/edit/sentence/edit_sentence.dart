@@ -22,7 +22,7 @@ class EditSentence extends StatefulWidget {
 }
 
 class _EditSentenceState extends State<EditSentence> {
-  static const List<String> _options = ['设置类型', '添加Tag', '选择时态', '选择句型', '设置同义句', '设置反义句', '编辑Tags'];
+  static const List<String> _options = ['设置类型', '添加Tag', '选择时态', '选择句型', '设置同义句', '设置反义句', '编辑Tag'];
   static const List<String> _types = ['句子', '短语'];
   final TextStyle _textStyle = const TextStyle(fontSize: 14,);
 
@@ -32,35 +32,35 @@ class _EditSentenceState extends State<EditSentence> {
         context: context,
         title: value,
         options: _types,
-        close: (String val) => setState(() => widget._sentence.s_type = _types.indexOf(val)),
+        close: (String val) => setState(() => widget._sentence.type = _types.indexOf(val)),
       );
     } else if(value == '添加Tag') {
       popSelectDialog(
         context: context,
         title: value,
         options: Global.sentenceTagOptions,
-        close: (String val) => setState(() => widget._sentence.s_tags.add(val)),
+        close: (String val) => setState(() => widget._sentence.tag.add(val)),
       );
     } else if(value == '选择时态') {
       popSelectDialog(
         context: context,
         title: value,
         options: Global.tenseOptions,
-        close: (String val) => setState(() => widget._sentence.s_tense.add(val)),
+        close: (String val) => setState(() => widget._sentence.tense.add(val)),
       );
     } else if(value == '选择句型') {
       popSelectDialog(
         context: context,
         title: value,
         options: Global.sentenceFormOptions,
-        close: (String val) => setState(() => widget._sentence.s_form.add(val)),
+        close: (String val) => setState(() => widget._sentence.pattern.add(val)),
       );
     }
     else if(value == '设置同义句') {
       var sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'设置同义句'})) as SentenceSerializer;
       if(sentence != null) {
         await sentence.save(update: true);
-        widget._sentence.s_synonym.add(sentence.s_id);
+        widget._sentence.synonym.add(sentence.id);
         setState((){});
       }
     }
@@ -68,39 +68,39 @@ class _EditSentenceState extends State<EditSentence> {
       var sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'设置反义句'})) as SentenceSerializer;
       if(sentence != null) {
         await sentence.save(update: true);
-        widget._sentence.s_antonym.add(sentence.s_id);
+        widget._sentence.antonym.add(sentence.id);
         setState((){});
       }
     }
-    else if(value == '编辑Tags') {
-      Navigator.pushNamed(context, '/edit_sentence_tags');
+    else if(value == '编辑Tag') {
+      Navigator.pushNamed(context, '/edit_sentence_tag');
     }
   }
 
   _buildEnglishSentence(BuildContext context) => 
     TextField(
       maxLines: null, // 当一行写满时,会自动扩展
-      controller: TextEditingController(text:widget._sentence.s_en),
+      controller: TextEditingController(text:widget._sentence.en),
       style: _textStyle,
       decoration: InputDecoration(
         hintText: '英文例句',
         suffixIcon: popupMenuButton(context:context, options:_options, onSelected:_onSelected),
       ),
       onChanged: (String value){
-        widget._sentence.s_en = value;
+        widget._sentence.en = value;
       }
   );
 
   _buildChineseSentence(BuildContext context) =>
     TextField(
         maxLines: null,
-        controller: TextEditingController(text:widget._sentence.s_ch),
+        controller: TextEditingController(text:widget._sentence.cn),
         style: _textStyle,
         decoration: InputDecoration(
           hintText: '中文例句',
         ),
         onChanged: (String value){
-          widget._sentence.s_ch = value;
+          widget._sentence.cn = value;
         }
     );
 
@@ -125,13 +125,13 @@ class _EditSentenceState extends State<EditSentence> {
     );
 
   _buildGrammer(BuildContext context) {
-    print(widget._sentence.sentence_grammar.length);
-    List<Widget> children = widget._sentence.sentence_grammar.map<Widget>(
+    print(widget._sentence.grammarSet.length);
+    List<Widget> children = widget._sentence.grammarSet.map<Widget>(
       (e) => ShowGrammar(
         grammar: e,
         delete: () {
           e.delete();
-          setState(() => widget._sentence.sentence_grammar.remove(e));
+          setState(() => widget._sentence.grammarSet.remove(e));
         },
       ),
     ).toList();
@@ -147,8 +147,8 @@ class _EditSentenceState extends State<EditSentence> {
                 GrammarSerializer grammar = GrammarSerializer();
                 var g = (await Navigator.pushNamed(context, '/edit_grammar', arguments:{'title':'添加句子相关语法','grammar':grammar})) as GrammarSerializer;
                 if(g != null) {
-                  g.g_sentence = widget._sentence.s_id;
-                  widget._sentence.sentence_grammar.add(g);
+                  g.sentenceForeign = widget._sentence.id;
+                  widget._sentence.grammarSet.add(g);
                   g.save();
                 }
                 setState((){});

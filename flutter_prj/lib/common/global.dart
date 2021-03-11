@@ -40,16 +40,16 @@ class Global {
       ..maxCount = 100;
 
     Http.init();
-    List<WordTagsSerializer> wTags = await WordTagsSerializer.list();
-    wordTagOptions = wTags.map((e) => e.t_name).toList();
-    List<SentenceTagsSerializer> sTags = await SentenceTagsSerializer.list();
-    sentenceTagOptions = sTags.map((e) => e.t_name).toList();
+    List<WordTagSerializer> wTags = await WordTagSerializer.list();
+    wordTagOptions = wTags.map((e) => e.name).toList();
+    List<SentenceTagSerializer> sTags = await SentenceTagSerializer.list();
+    sentenceTagOptions = sTags.map((e) => e.name).toList();
     List<GrammarTypeSerializer> gTypes = await GrammarTypeSerializer.list();
-    grammarTypeOptions = gTypes.map((e) => e.g_name).toList();
-    List<GrammarTagsSerializer> gTags = await GrammarTagsSerializer.list();
-    grammarTagOptions = gTags.map((e) => e.g_name).toList();
+    grammarTypeOptions = gTypes.map((e) => e.name).toList();
+    List<GrammarTagSerializer> gTags = await GrammarTagSerializer.list();
+    grammarTagOptions = gTags.map((e) => e.name).toList();
     EtymaPaginationSerializer etymas = await EtymaPaginationSerializer().retrieve(update: true);
-    etymaOptions = etymas.results.map((e) => e.e_name).toList();
+    etymaOptions = etymas.results.map((e) => e.name).toList();
   }
 
   // 持久化本地存储数据

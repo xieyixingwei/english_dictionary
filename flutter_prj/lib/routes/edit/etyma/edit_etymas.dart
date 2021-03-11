@@ -34,7 +34,7 @@ Widget _buildFilter(BuildContext context) =>
       Container(
         width: 100,
         child: TextField(
-          onChanged: (val) => _etymas.filter.e_name__icontains = val.trim().isNotEmpty ? val.trim() : null,
+          onChanged: (val) => _etymas.filter.name__icontains = val.trim().isNotEmpty ? val.trim() : null,
           decoration: InputDecoration(
             labelText: '词根词缀',
           ),
@@ -45,7 +45,7 @@ Widget _buildFilter(BuildContext context) =>
         items: _typeOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
         onChanged: (v) {
           setState(() => _selected[0] = v);
-          _etymas.filter.e_type = v != _typeOptions.first ? Global.etymaTypeOptions.indexOf(v) : null;
+          _etymas.filter.type = v != _typeOptions.first ? Global.etymaTypeOptions.indexOf(v) : null;
         },
       ),
       IconButton(
@@ -65,6 +65,7 @@ Widget _buildFilter(BuildContext context) =>
           var g = (await Navigator.pushNamed(context, '/edit_etyma', arguments:{'title':'添加语法'})) as EtymaSerializer;
           if(g != null) {
             _etymas.results.add(g);
+            Global.etymaOptions.add(g.name);
             g.create(update: true);
           }
           setState((){});

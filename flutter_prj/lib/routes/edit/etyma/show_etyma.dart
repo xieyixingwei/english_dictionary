@@ -25,12 +25,12 @@ class _ShowEtymaState extends State<ShowEtyma> {
       //leading: Text('相关语法'),
       title: Row(
         children: [
-          Text(widget._etyma.e_name),
+          Text(widget._etyma.name),
           SizedBox(width: 10,),
-          Text(widget._etyma.e_type == null ? 'null' : Global.etymaTypeOptions[widget._etyma.e_type], style: TextStyle(fontSize: 12),),
+          Text(widget._etyma.type == null ? 'null' : Global.etymaTypeOptions[widget._etyma.type], style: TextStyle(fontSize: 12),),
         ]
       ),
-      subtitle: Text(widget._etyma.e_meaning),
+      subtitle: Text(widget._etyma.interpretation),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

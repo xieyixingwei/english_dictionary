@@ -9,20 +9,20 @@ import 'package:flutter_prj/common/http.dart';
 class UserSerializer {
   UserSerializer();
 
-  num u_id;
-  String u_uname = '';
-  String u_passwd = '';
-  bool u_is_admin = false;
-  String u_register_date = '';
-  String u_name = '';
-  bool u_gender = true;
-  String u_birthday = '';
-  num u_education = 0;
-  String u_wechart = '';
-  String u_qq = '';
-  String u_email = '';
-  String u_telephone = '';
-  String u_status = '';
+  num id;
+  String uname = '';
+  String passwd = '';
+  bool isAdmin = false;
+  String register_date = '';
+  String name = '';
+  bool gender = true;
+  String birthday = '';
+  num education = 0;
+  String wechart = '';
+  String qq = '';
+  String email = '';
+  String telephone = '';
+  String status = '';
   
 
   static Future<List<UserSerializer>> list({Map<String, dynamic> queryParameters, bool cache=false}) async {
@@ -31,13 +31,13 @@ class UserSerializer {
   }
 
   Future<UserSerializer> retrieve({Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
-    var res = await Http().request(HttpType.GET, '/user/$u_uname/', queryParameters:queryParameters, cache:cache);
+    var res = await Http().request(HttpType.GET, '/user/$uname/', queryParameters:queryParameters, cache:cache);
     return update ? this.fromJson(res.data) : UserSerializer().fromJson(res.data);
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queryParameters, bool cache=false}) async {
-    if(u_id == null) return false;
-    var res = await Http().request(HttpType.DELETE, '/user/$u_uname/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
+    if(id == null) return false;
+    var res = await Http().request(HttpType.DELETE, '/user/$uname/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
     /*
     
     */
@@ -50,38 +50,38 @@ class UserSerializer {
   }
 
   UserSerializer fromJson(Map<String, dynamic> json) {
-    u_id = json['u_id'] == null ? null : json['u_id'] as num;
-    u_uname = json['u_uname'] == null ? null : json['u_uname'] as String;
-    u_passwd = json['u_passwd'] == null ? null : json['u_passwd'] as String;
-    u_is_admin = json['u_is_admin'] == null ? null : json['u_is_admin'] as bool;
-    u_register_date = json['u_register_date'] == null ? null : json['u_register_date'] as String;
-    u_name = json['u_name'] == null ? null : json['u_name'] as String;
-    u_gender = json['u_gender'] == null ? null : json['u_gender'] as bool;
-    u_birthday = json['u_birthday'] == null ? null : json['u_birthday'] as String;
-    u_education = json['u_education'] == null ? null : json['u_education'] as num;
-    u_wechart = json['u_wechart'] == null ? null : json['u_wechart'] as String;
-    u_qq = json['u_qq'] == null ? null : json['u_qq'] as String;
-    u_email = json['u_email'] == null ? null : json['u_email'] as String;
-    u_telephone = json['u_telephone'] == null ? null : json['u_telephone'] as String;
-    u_status = json['u_status'] == null ? null : json['u_status'] as String;
+    id = json['id'] == null ? null : json['id'] as num;
+    uname = json['uname'] == null ? null : json['uname'] as String;
+    passwd = json['passwd'] == null ? null : json['passwd'] as String;
+    isAdmin = json['isAdmin'] == null ? null : json['isAdmin'] as bool;
+    register_date = json['register_date'] == null ? null : json['register_date'] as String;
+    name = json['name'] == null ? null : json['name'] as String;
+    gender = json['gender'] == null ? null : json['gender'] as bool;
+    birthday = json['birthday'] == null ? null : json['birthday'] as String;
+    education = json['education'] == null ? null : json['education'] as num;
+    wechart = json['wechart'] == null ? null : json['wechart'] as String;
+    qq = json['qq'] == null ? null : json['qq'] as String;
+    email = json['email'] == null ? null : json['email'] as String;
+    telephone = json['telephone'] == null ? null : json['telephone'] as String;
+    status = json['status'] == null ? null : json['status'] as String;
     return this;
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-    'u_id': u_id,
-    'u_uname': u_uname,
-    'u_passwd': u_passwd,
-    'u_is_admin': u_is_admin,
-    'u_register_date': u_register_date,
-    'u_name': u_name,
-    'u_gender': u_gender,
-    'u_birthday': u_birthday,
-    'u_education': u_education,
-    'u_wechart': u_wechart,
-    'u_qq': u_qq,
-    'u_email': u_email,
-    'u_telephone': u_telephone,
-    'u_status': u_status,
+    'id': id,
+    'uname': uname,
+    'passwd': passwd,
+    'isAdmin': isAdmin,
+    'register_date': register_date,
+    'name': name,
+    'gender': gender,
+    'birthday': birthday,
+    'education': education,
+    'wechart': wechart,
+    'qq': qq,
+    'email': email,
+    'telephone': telephone,
+    'status': status,
   };
 }
 

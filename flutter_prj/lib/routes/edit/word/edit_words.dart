@@ -10,10 +10,10 @@ class EditWords extends StatefulWidget {
 }
 
 class _EditWordsState extends State<EditWords> {
-  WordsPaginationSerializer _words = WordsPaginationSerializer();
-  static final List<String> _tagOptions = ['请选择Tags'] + Global.wordTagOptions;
-  //static final List<String> tenseOptions = ['请选择词根'] + Global.;
-  List<String> _ddBtnValues = [_tagOptions.first];
+  WordPaginationSerializer _words = WordPaginationSerializer();
+  static final List<String> _tagOptions = ['选择Tags'] + Global.wordTagOptions;
+  static final List<String> _etymaOptions = ['选择词根'] + Global.etymaOptions;
+  List<String> _ddBtnValues = [_tagOptions.first, _etymaOptions.first];
   num _pageSize = 10;
   num _pageIndex = 1;
 
@@ -54,7 +54,7 @@ class _EditWordsState extends State<EditWords> {
           width: 100,
           child: TextField(
             maxLines: null,
-            onChanged: (val) => _words.filter.w_name = val.trim().length == 0 ? null : val.trim(),
+            onChanged: (val) => _words.filter.name = val.trim().length == 0 ? null : val.trim(),
             decoration: InputDecoration(
               labelText: '单词',
             ),
@@ -63,7 +63,12 @@ class _EditWordsState extends State<EditWords> {
         DropdownButton(
           value: _ddBtnValues[0],
           items: _tagOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
-          onChanged: (v) {setState(() => _ddBtnValues[0] = v); _words.filter.w_tags__icontains = v != _tagOptions.first ? v : null;},
+          onChanged: (v) {setState(() => _ddBtnValues[0] = v); _words.filter.tag__icontains = v != _tagOptions.first ? v : null;},
+        ),
+        DropdownButton(
+          value: _ddBtnValues[1],
+          items: _etymaOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
+          onChanged: (v) {setState(() => _ddBtnValues[1] = v); _words.filter.etyma__icontains = v != _etymaOptions.first ? v : null;},
         ),
         IconButton(
           splashRadius: 1.0,
@@ -80,7 +85,7 @@ class _EditWordsState extends State<EditWords> {
           icon: Icon(Icons.add),
           onPressed: () async {
             var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'添加句子'})) as WordSerializer;
-            if(word != null) {
+            if(word != null && word.name.isNotEmpty) {
               _words.results.add(word);
               word.create(update: true);
             }

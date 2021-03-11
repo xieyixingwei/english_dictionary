@@ -34,9 +34,9 @@ class _GrammarFilter(filterset.FilterSet):
             }
         }
         fields = {
-            'g_type': ['icontains'],
-            'g_tags': ['icontains'],
-            'g_content': ['icontains'],
+            'type': ['icontains'],
+            'tag': ['icontains'],
+            'content': ['icontains'],
         }
 
 
@@ -62,7 +62,7 @@ class _GrammarTypeSerializer(serializers.ModelSerializer):
 
 class GrammarTypeView(ModelViewSetPermissionSerializerMap):
     """
-    语法的 type 视图
+    语法的 Type 视图
     """
     queryset = GrammarTypeTable.objects.all()
     serializer_class = _GrammarTypeSerializer

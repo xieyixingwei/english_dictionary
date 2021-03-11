@@ -7,8 +7,8 @@ import 'sentence.dart';
 import 'package:flutter_prj/common/http.dart';
 
 
-class SentencesPaginationSerializer {
-  SentencesPaginationSerializer();
+class SentencePaginationSerializer {
+  SentencePaginationSerializer();
 
   num count = 0;
   String next = '';
@@ -16,13 +16,13 @@ class SentencesPaginationSerializer {
   List<SentenceSerializer> results = [];
   SentenceSerializerFilter filter = SentenceSerializerFilter();
 
-  Future<SentencesPaginationSerializer> retrieve({Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
+  Future<SentencePaginationSerializer> retrieve({Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
     (queryParameters != null && filter.queryset != null) ? queryParameters.addAll(filter.queryset) : queryParameters = filter.queryset;
-    var res = await Http().request(HttpType.GET, '/dictionary/sentence', queryParameters:queryParameters, cache:cache);
-    return update ? this.fromJson(res.data) : SentencesPaginationSerializer().fromJson(res.data);
+    var res = await Http().request(HttpType.GET, '/dictionary/sentence/', queryParameters:queryParameters, cache:cache);
+    return update ? this.fromJson(res.data) : SentencePaginationSerializer().fromJson(res.data);
   }
 
-  SentencesPaginationSerializer fromJson(Map<String, dynamic> json) {
+  SentencePaginationSerializer fromJson(Map<String, dynamic> json) {
     count = json['count'] == null ? null : json['count'] as num;
     next = json['next'] == null ? null : json['next'] as String;
     previous = json['previous'] == null ? null : json['previous'] as String;
@@ -41,29 +41,29 @@ class SentencesPaginationSerializer {
 }
 
 class SentenceSerializerFilter {
-  String s_en__icontains;
-  String s_ch__icontains;
-  num s_type;
-  String s_tags__icontains;
-  String s_tense__icontains;
-  String s_form__icontains;
+  String en__icontains;
+  String cn__icontains;
+  num type;
+  String tag__icontains;
+  String tense__icontains;
+  String pattern__icontains;
 
   Map<String, dynamic> get queryset => <String, dynamic>{
-    "s_en__icontains": s_en__icontains,
-    "s_ch__icontains": s_ch__icontains,
-    "s_type": s_type,
-    "s_tags__icontains": s_tags__icontains,
-    "s_tense__icontains": s_tense__icontains,
-    "s_form__icontains": s_form__icontains,
+    "en__icontains": en__icontains,
+    "cn__icontains": cn__icontains,
+    "type": type,
+    "tag__icontains": tag__icontains,
+    "tense__icontains": tense__icontains,
+    "pattern__icontains": pattern__icontains,
   }..removeWhere((String key, dynamic value) => value == null);
 
   void clear() {
-    s_en__icontains = null;
-    s_ch__icontains = null;
-    s_type = null;
-    s_tags__icontains = null;
-    s_tense__icontains = null;
-    s_form__icontains = null;
+    en__icontains = null;
+    cn__icontains = null;
+    type = null;
+    tag__icontains = null;
+    tense__icontains = null;
+    pattern__icontains = null;
   }
 }
 

@@ -21,7 +21,7 @@ class IsAuthenticated(permissions.BasePermission):
     Allows access only to authenticated users.
     """
     def has_permission(self, request, view):
-        return bool(isinstance(request.user, UserTable) and request.user.is_authenticated)
+        return bool(isinstance(request.user, UserTable) and request.user.isAuthenticated)
 
 
 class IsAdminUser(permissions.BasePermission):
@@ -29,7 +29,7 @@ class IsAdminUser(permissions.BasePermission):
     Allows access only to admin users.
     """
     def has_permission(self, request, view):
-        return bool(isinstance(request.user, UserTable) and request.user.u_is_admin)
+        return bool(isinstance(request.user, UserTable) and request.user.isAdmin)
 
 
 class IsRootUser(permissions.BasePermission):
@@ -37,7 +37,7 @@ class IsRootUser(permissions.BasePermission):
     Allows access only to root users.
     """
     def has_permission(self, request, view):
-        return bool(isinstance(request.user, UserTable) and (request.user.u_uname in ROOT_USERS))
+        return bool(isinstance(request.user, UserTable) and (request.user.uname in ROOT_USERS))
 
 
 class IsAuthenticatedOrReadOnly(permissions.BasePermission):
@@ -48,5 +48,5 @@ class IsAuthenticatedOrReadOnly(permissions.BasePermission):
         return bool(
             request.method in SAFE_METHODS or
             request.user and
-            request.user.is_authenticated
+            request.user.isAuthenticated
         )

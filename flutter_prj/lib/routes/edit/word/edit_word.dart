@@ -22,7 +22,7 @@ class EditWord extends StatefulWidget {
 
 class _EditWordState extends State<EditWord> {
   final _textStyle = const TextStyle(fontSize: 14,);
-  static const List<String> _options = ['添加Tag', '添加词根词缀', '添加变形单词', '设置同义词', '设置反义词', '编辑Tags', '编辑词根词缀'];
+  static const List<String> _options = ['添加Tag', '添加词根词缀', '添加变形单词', '设置同义词', '设置反义词', '编辑Tags'];
   static const List<String> _morphOptions = ['选择', '过去分词', '现在分词', '形容词', '动词', '副词'];
   String _morphSelect = _morphOptions.first;
   String _morphInput = '';
@@ -65,7 +65,7 @@ class _EditWordState extends State<EditWord> {
     );
 
   if(_morphInput.isNotEmpty)
-    setState(() => widget._word.w_morph.add(_morphInput));
+    setState(() => widget._word.morph.add(_morphInput));
 }
   _onSelected(String value) async {
     if(value == '添加Tag') {
@@ -73,14 +73,14 @@ class _EditWordState extends State<EditWord> {
         context: context,
         title: value,
         options: Global.wordTagOptions,
-        close: (String val) => setState(() => widget._word.w_tags.add(val)),
+        close: (String val) => setState(() => widget._word.tag.add(val)),
       );
     } else if(value == '添加词根词缀') {
       popSelectDialog(
         context: context,
         title: value,
         options: Global.etymaOptions,
-        close: (String val) => setState(() => widget._word.w_etyma.add(val)),
+        close: (String val) => setState(() => widget._word.etyma.add(val)),
       );
     } else if(value == '添加变形单词') {
       _editMorph(context);
@@ -88,18 +88,18 @@ class _EditWordState extends State<EditWord> {
       var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'设置同义句'})) as WordSerializer;
       if(word != null) {
         await word.create(update: true);
-        widget._word.w_synonym.add(word.w_name);
+        widget._word.synonym.add(word.name);
         setState((){});
       }
     } else if(value == '设置反义词') {
       var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'设置反义句'})) as WordSerializer;
       if(word != null) {
         await word.create(update: true);
-        widget._word.w_antonym.add(word.w_name);
+        widget._word.antonym.add(word.name);
         setState((){});
       }
-    } else if(value == '编辑Tags') {
-      Navigator.pushNamed(context, '/edit_word_tags');
+    } else if(value == '编辑Tag') {
+      Navigator.pushNamed(context, '/edit_word_tag');
     } else if(value == '编辑词根词缀') {
       Navigator.pushNamed(context, '/edit_etyma');
     }
@@ -114,38 +114,38 @@ class _EditWordState extends State<EditWord> {
         Container(
           width: 100,
           child: TextField(
-            controller: TextEditingController(text:widget._word.w_name),
+            controller: TextEditingController(text:widget._word.name),
             style: _textStyle,
             decoration: InputDecoration(
               labelText: "单词",
               suffixIcon: InkWell(
                 child: Icon(Icons.search,),
-                onTap: () async { if(widget._word.w_name.isEmpty) return; await widget._word.retrieve(update:true); setState((){});},
+                onTap: () async { if(widget._word.name.isEmpty) return; await widget._word.retrieve(update:true); setState((){});},
               ),
             ),
-            onChanged: (String value) => widget._word.w_name = value.trim().isEmpty ? null : value.trim(),
+            onChanged: (String value) => widget._word.name = value.trim().isEmpty ? null : value.trim(),
           ),
         ),
         Container(
           width: 100,
           child: TextField(
-            controller: TextEditingController(text:widget._word.w_voice_us),
+            controller: TextEditingController(text:widget._word.voiceUs),
             style: _textStyle,
             decoration: InputDecoration(
               labelText: "音标(美)",
             ),
-            onChanged: (String value) => widget._word.w_voice_us = value,
+            onChanged: (String value) => widget._word.voiceUs = value,
           ),
         ),
         Container(
           width: 100,
           child:TextField(
-            controller: TextEditingController(text:widget._word.w_voice_uk),
+            controller: TextEditingController(text:widget._word.voiceUk),
             style: _textStyle,
             decoration: InputDecoration(
               labelText: "音标(英)",
             ),
-            onChanged: (String value) => widget._word.w_voice_uk = value,
+            onChanged: (String value) => widget._word.voiceUk = value,
           ),
         ),
         popupMenuButton(context:context, options:_options, onSelected:_onSelected),
@@ -157,17 +157,17 @@ class _EditWordState extends State<EditWord> {
     Wrap(
       spacing: 8.0,
       runSpacing: 8.0, 
-      children: widget._word.w_morph.map<Widget>((e) =>
+      children: widget._word.morph.map<Widget>((e) =>
         Tag(
           label: Text(e, style: TextStyle(color: Colors.indigo),),
-          onDeleted: () => setState(() => widget._word.w_morph.remove(e)),
+          onDeleted: () => setState(() => widget._word.morph.remove(e)),
         )
       ).toList(),
     );
 
   _buildOrigin(BuildContext context) =>
     TextField(
-      controller: TextEditingController(text:widget._word.w_origin),
+      controller: TextEditingController(text:widget._word.origin),
       minLines: 2,
       maxLines: null,
       style: TextStyle(
@@ -178,12 +178,12 @@ class _EditWordState extends State<EditWord> {
         hintText: "输入词源(markdown)",
         border: OutlineInputBorder(),
       ),
-      onChanged: (value) => widget._word.w_origin = value.trim(),
+      onChanged: (value) => widget._word.origin = value.trim(),
     );
   
   _buildShorthand(BuildContext context) =>
     TextField(
-      controller: TextEditingController(text:widget._word.w_shorthand),
+      controller: TextEditingController(text:widget._word.shorthand),
       minLines: 2,
       maxLines: null,
       style: TextStyle(
@@ -194,7 +194,7 @@ class _EditWordState extends State<EditWord> {
         hintText: "输入速记(markdown)",
         border: OutlineInputBorder(),
       ),
-      onChanged: (value) => widget._word.w_shorthand = value.trim(),
+      onChanged: (value) => widget._word.shorthand = value.trim(),
     );
 /*
   _buildRow2(BuildContext context) {

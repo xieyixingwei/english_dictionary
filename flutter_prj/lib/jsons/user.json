@@ -1,18 +1,18 @@
 {
-    "u_id @primary": "num=null",
-    "u_uname": "",
-    "u_passwd": "",
-    "u_is_admin": false,
-    "u_register_date": "",
-    "u_name": "",
-    "u_gender": true,
-    "u_birthday": "",
-    "u_education": 0,
-    "u_wechart": "",
-    "u_qq": "",
-    "u_email": "",
-    "u_telephone": "",
-    "u_status": "",
+    "id @primary": "num=null",
+    "uname": "",
+    "passwd": "",
+    "isAdmin": false,
+    "register_date": "",
+    "name": "",
+    "gender": true,
+    "birthday": "",
+    "education": 0,
+    "wechart": "",
+    "qq": "",
+    "email": "",
+    "telephone": "",
+    "status": "",
     "__http__": {
         "url": "/user/",
         "http_package": "package:flutter_prj/common/http.dart",
@@ -23,11 +23,11 @@
             },
             {
                 "name": "retrieve",
-                "url": "$u_uname/"
+                "url": "$uname/"
             },
             {
                 "name": "delete",
-                "url": "$u_uname/"
+                "url": "$uname/"
             },
             {
                 "name": "register",

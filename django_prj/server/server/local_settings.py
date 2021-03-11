@@ -1,6 +1,11 @@
 # -*- coding:utf-8 -*-
 
 # 自己创建的本地配置文件
+from pathlib import Path
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 LANGUAGE_CODE = 'zh-hans'
 TIME_ZONE = 'Asia/Shanghai'
@@ -48,3 +53,9 @@ REST_FRAMEWORK = {
 }
 
 ROOT_USERS = ['root']
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
+MEDIA_ROOT = BASE_DIR / 'static/upload'

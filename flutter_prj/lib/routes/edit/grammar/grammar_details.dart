@@ -18,13 +18,13 @@ class _GrammarDetailsState extends State<GrammarDetails> {
   List<Widget> _buildType(BuildContext context) {
     final TextStyle style = TextStyle(fontSize: 12.0, color: Colors.green);
     List<Widget> types = [];
-    if(widget._grammar.g_type == null || widget._grammar.g_type.length == 0) return types;
+    if(widget._grammar.type == null || widget._grammar.type.length == 0) return types;
     types.add(Text('Type:', style: style));
     types.addAll(
-      widget._grammar.g_type.map<Widget>((e) => 
+      widget._grammar.type.map<Widget>((e) => 
         Tag(
           label: Text(e, style: style,),
-          onDeleted: widget._editable ? () => setState(() => widget._grammar.g_type.remove(e)) : null,
+          onDeleted: widget._editable ? () => setState(() => widget._grammar.type.remove(e)) : null,
         )
       ).toList()
     );
@@ -34,13 +34,13 @@ class _GrammarDetailsState extends State<GrammarDetails> {
   List<Widget> _buildTags(BuildContext context) {
     final TextStyle style = TextStyle(fontSize: 12.0, color: Theme.of(context).primaryColor);
     List<Widget> tags = [];
-    if(widget._grammar.g_tags == null || widget._grammar.g_tags.length == 0) return tags;
+    if(widget._grammar.tag == null || widget._grammar.tag.length == 0) return tags;
     tags.add(Text('Tags:', style: style));
     tags.addAll(
-      widget._grammar.g_tags.map((e) => 
+      widget._grammar.tag.map((e) => 
         Tag(
           label: Text(e, style: style,),
-          onDeleted: widget._editable ? () => setState(() => widget._grammar.g_tags.remove(e)) : null,
+          onDeleted: widget._editable ? () => setState(() => widget._grammar.tag.remove(e)) : null,
         )
       ).toList()
     );

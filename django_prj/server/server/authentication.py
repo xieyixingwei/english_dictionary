@@ -15,7 +15,7 @@ class TokenAuthentication(authentication.BaseAuthentication):
         try:
             id = cache.get(token)
             user = UserTable.objects.get(pk=id)
-            user.is_authenticated = True
+            user.isAuthenticated = True
             return user, token # 认证成功返回一个元组(user, token)
         except:
             return None # 认证失败返回None

@@ -1,35 +1,32 @@
 { // 语法表
-    "g_id @primary": "num=null", //models.AutoField(primary_key=True)
-    "g_type": [""], // models.JSONField(null=True) # [时态,从句]
-    "g_tags": [""], // models.JSONField(null=True) # [重要]
-    "g_content": "", // models.TextField(null=False, blank=True) # 内容 markdown文本
-    "g_word": "String=null",//models.ForeignKey(to=WordTable, related_name='word_grammar', null=True, on_delete=models.CASCADE)
-    "g_sentence @foreign": "$sentence",// models.ForeignKey(to=SentenceTable, related_name='sentence_grammar', null=True, on_delete=models.CASCADE)
-    //"g_image": models.ImageField(null=True) # 图片讲解
-    //#"g_vedio": models.FilePathField(max_length=128, null=True) # 视频讲解
+    "id @primary": "num=null", //models.AutoField(primary_key=True)
+    "type": [""], // models.JSONField(null=True) # [时态,从句]
+    "tag": [""], // models.JSONField(null=True) # [重要]
+    "content": "", // models.TextField(null=False, blank=True) # 内容 markdown文本
+    "_image": "",
+    "_vedio": "",
+    "wordForeign @foreign": "$word",
+    "sentenceForeign @foreign": "$sentence",
     "__http__": {
         "url": "/dictionary/grammar/",
         "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
-                "name": "create",
-                "url": "create/"
+                "name": "create"
             },
             {
                 "name": "update",
-                "requst": "put",
-                "url": "update/$g_id/"
+                "url": "$id/"
             },
             {
                 "name": "retrieve",
-                "requst": "get",
-                "url": "$g_id/"
+                "url": "$id/"
             },
             {
                 "name": "delete",
-                "url": "delete/$g_id/"
+                "url": "$id/"
             },
-			{
+            {
                 "name": "save"
             }
         ]
@@ -37,16 +34,16 @@
 }
 
 { // 分页查询 语法
-    "__name__": "grammars_pagination",
+    "__name__": "grammar_pagination",
     "count": 0,
     "next": "",
     "previous": "",
     "results": ["$grammar"],
     "__filter__": {
         "__serializer__": "$grammar",
-        "g_type": ["icontains"],
-        "g_tags": ["icontains"],
-        "g_content": ["icontains"]
+        "type": ["icontains"],
+        "tag": ["icontains"],
+        "content": ["icontains"]
     },
     "__http__": {
         "url": "/dictionary/grammar/",
@@ -61,46 +58,41 @@
 }
 
 {   "__name__": "grammar_type",
-    "g_name @primary": "",
+    "name @primary": "",
     "__http__": {
-        "url": "/dictionary/grammartype/",
+        "url": "/dictionary/grammar_type/",
         "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
-                "name": "create",
-                "url": "create/"
+                "name": "create"
             },
             {
-                "name": "list",
-                "requst": "get"
+                "name": "list"
             },
             {
                 "name": "delete",
-                "url": "delete/$g_name/"
+                "url": "$name/"
 
             }
         ]
     }
 }
 
-{   "__name__": "grammar_tags",
-    "g_name @primary": "",
+{   "__name__": "grammar_tag",
+    "name @primary": "",
     "__http__": {
-        "url": "/dictionary/grammartags/",
+        "url": "/dictionary/grammar_tag/",
         "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
-                "name": "create",
-                "url": "create/"
+                "name": "create"
             },
             {
-                "name": "list",
-                "requst": "get"
+                "name": "list"
             },
             {
                 "name": "delete",
-                "url": "delete/$g_name/"
-
+                "url": "$name/"
             }
         ]
     }

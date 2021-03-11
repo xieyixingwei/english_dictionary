@@ -32,13 +32,13 @@ class _UsersSerializer(serializers.ModelSerializer):
 class _UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserTable
-        exclude = ('u_uname','u_is_admin',) # 除去指定的某些字段
+        exclude = ('uname','isAdmin',) # 除去指定的某些字段
 
 
 class _ChangeAdminUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserTable
-        fields = ('u_uname','u_is_admin')
+        fields = ('uname','isAdmin')
 
 
 class _IsAuthenticatedAndSelf(BasePermission):
@@ -47,8 +47,8 @@ class _IsAuthenticatedAndSelf(BasePermission):
     """
     def has_permission(self, request:request.Request, view):
         return bool(isinstance(request.user, UserTable) and
-                    request.user.is_authenticated and
-                    request._request.resolver_match.kwargs['u_uname'] == request.user.u_uname)
+                    request.user.isAuthenticated and
+                    request._request.resolver_match.kwargs['uname'] == request.user.uname)
 
 
 class UsersView(ModelViewSetPSM):
@@ -62,14 +62,14 @@ class UsersView(ModelViewSetPSM):
         'retrieve': (_IsAuthenticatedAndSelf,),
         'update': (_IsAuthenticatedAndSelf),
     }
-    lookup_field = 'u_uname'
+    lookup_field = 'uname'
 
 
 class ChangeAmindUserView(generics.UpdateAPIView):
     serializer_class = _ChangeAdminUserSerializer
     queryset = UserTable.objects.all()
     permission_classes = (permissions.IsRootUser,)
-    lookup_field = 'u_uname'
+    lookup_field = 'uname'
 
 
 '''
