@@ -6,20 +6,20 @@ class UserTable(models.Model):
     """
     用户表
     """
-    u_id = models.AutoField(primary_key=True)
-    u_uname = models.CharField(max_length=32, unique=True, null=False, blank=False) # 用户名
-    u_passwd = models.CharField(max_length=256, null=False, blank=False) # 密码
-    u_is_admin = models.BooleanField(default=False) # 是否是管理员
-    u_register_date = models.DateTimeField(auto_now_add=True) # 注册时间
-    u_name = models.CharField(max_length=32, null=True, blank=True) # 姓名
-    u_gender = models.BooleanField(null=True) # 性别
-    u_birthday = models.DateTimeField(null=True) # 生日
-    u_education = models.IntegerField(null=True) # 学历
-    u_wechart = models.CharField(max_length=64, null=True) # 微信号
-    u_qq = models.CharField(max_length=64, null=True) # QQ号
-    u_email = models.CharField(max_length=64, null=True) # email
-    u_telephone = models.CharField(max_length=16, null=True) # 电话
-    u_status = JSONFieldUtf8(null=True) # 状态
+    id = models.AutoField(primary_key=True)
+    uname = models.CharField(max_length=32, unique=True, null=False, blank=False) # 用户名
+    passwd = models.CharField(max_length=256, null=False, blank=False) # 密码
+    isAdmin = models.BooleanField(default=False) # 是否是管理员
+    registerDate = models.DateTimeField(auto_now_add=True) # 注册时间
+    name = models.CharField(max_length=32, null=True, blank=True) # 姓名
+    gender = models.BooleanField(null=True) # 性别
+    birthday = models.DateTimeField(null=True) # 生日
+    education = models.IntegerField(null=True) # 学历
+    wechart = models.CharField(max_length=64, null=True) # 微信号
+    qq = models.CharField(max_length=64, null=True) # QQ号
+    email = models.CharField(max_length=64, null=True) # email
+    telephone = models.CharField(max_length=16, null=True) # 电话
+    status = JSONFieldUtf8(null=True) # 状态
 
-    def gender(self) -> str:
-        return '男' if self.u_gender else '女'
+    def _gender(self) -> str:
+        return '男' if self.gender else '女'

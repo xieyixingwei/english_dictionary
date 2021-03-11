@@ -7,25 +7,27 @@ class GrammarTable(models.Model):
     """
     语法表
     """
-    g_id = models.AutoField(primary_key=True)
-    g_type = JSONFieldUtf8(null=True) # [时态,从句]
-    g_tags = JSONFieldUtf8(null=True) # [重要]
-    g_content = models.TextField(null=False, blank=True) # 内容 markdown文本
-    g_word = models.ForeignKey(to=WordTable, related_name='word_grammar', null=True, on_delete=models.CASCADE)
-    g_sentence = models.ForeignKey(to=SentenceTable, related_name='sentence_grammar', null=True, on_delete=models.CASCADE)
-    #g_image = models.ImageField(null=True) # 图片讲解
-    #g_vedio = models.FilePathField(max_length=128, null=True) # 视频讲解
+    id = models.AutoField(primary_key=True)
+    type = JSONFieldUtf8(null=True) # [时态,从句]
+    tag = JSONFieldUtf8(null=True) # [重要]
+    content = models.TextField() # 内容 markdown文本
+    image = models.ImageField(upload_to='grammar_images/', null=True, blank=True, verbose_name="图片讲解") # 图片讲解
+    vedio = models.FileField(upload_to='grammar_vedios/', null=True, blank=True, verbose_name="视频讲解") # 视频讲解
+    wordForeign = models.ForeignKey(to=WordTable, related_name='grammarSet', null=True, on_delete=models.CASCADE)
+    sentenceForeign = models.ForeignKey(to=SentenceTable, related_name='grammarSet', null=True, on_delete=models.CASCADE)
+    class Meta:
+        ordering = ['id']  # 消除list警告UnorderedObjectListWarning: Pagination may yield inconsistent results with an unordered object_list
 
 
 class GrammarTypeTable(models.Model):
     """
     语法表的Type
     """
-    g_name = models.CharField(primary_key=True, max_length=64) # [时态,从句]
+    name = models.CharField(primary_key=True, max_length=64) # [时态,从句]
 
 
 class GrammarTagTable(models.Model):
     """
     语法表的Tags
     """
-    g_name = models.CharField(primary_key=True, max_length=64) # [重要]
+    name = models.CharField(primary_key=True, max_length=64) # [重要]

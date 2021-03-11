@@ -6,34 +6,20 @@ class WordTable(models.Model):
     """
     单词表
     """
-    w_name = models.CharField(max_length=32, primary_key=True)     # 单词 (primary key)
-    w_voice_us = models.CharField(max_length=32, null=True) # 音标 美国
-    w_voice_uk = models.CharField(max_length=32, null=True) # 音标 英国
-    w_morph = JSONFieldUtf8(null=True)                 # 单词变形
-    w_tags = JSONFieldUtf8(null=True)                  # 标记 [情态动词,动物名词,蔬菜名词]
-    w_etyma = JSONFieldUtf8(null=True)    # 词根词缀 [root1,root2,...]
-    w_synonym = models.ManyToManyField(to='self', blank=True) # 近义词 [word1,word2,...]
-    w_antonym = models.ManyToManyField(to='self', blank=True) # 反义词 [word1,word2,...]
-    # w_distinguish_id = JSONFieldUtf8()     # 词义辨析id [id1,id2,...]
-    # w_grammar_id = JSONFieldUtf8() # 语法id [id1,id2,...]
-    w_origin = models.CharField(max_length=512, null=True) # 词源 markdown "1660年左右进入英语，直接源自中古拉丁语的coordinare，意为同一等级的。"
-    w_shorthand = models.CharField(max_length=256, null=True) # 速记 markdown
-    w_partofspeech = JSONFieldUtf8(max_length=256, null=True) # 词性 []
-    w_sentence_pattern = JSONFieldUtf8(max_length=256, null=True) # 常用句型 []
-    w_word_collocation = JSONFieldUtf8(max_length=256, null=True) # 词汇搭配 []
-    #w_image = models.ImageField(null=True) # 图片讲解
-    #w_vedio = models.FilePathField(max_length=128, null=True) # 视频讲解
-    def _paraphrase(self) -> str:
-        return '''
-        "PartOfSpeech": [
-            {   "type":"n.",
-                "means":[
-                    {   "content":"同等者， 同等物，同等的人物",
-                        "examples":[1,2,3],
-                    },
-                ]
-            },
-        ]'''
+    name = models.CharField(max_length=32, primary_key=True)     # 单词 (primary key)
+    voiceUs = models.CharField(max_length=32, null=True) # 音标 美国
+    voiceUk = models.CharField(max_length=32, null=True) # 音标 英国
+    morph = JSONFieldUtf8(null=True)                 # 单词形态
+    tag = JSONFieldUtf8(null=True)                  # 标记 [情态动词,动物名词,蔬菜名词]
+    etyma = JSONFieldUtf8(null=True)    # 词根词缀 [root1,root2,...]
+    origin = models.CharField(max_length=512, null=True) # 词源 markdown "1660年左右进入英语，直接源自中古拉丁语的coordinare，意为同一等级的。"
+    shorthand = models.CharField(max_length=256, null=True) # 速记 markdown
+    synonym = models.ManyToManyField(to='self', blank=True) # 近义词 [word1,word2,...]
+    antonym = models.ManyToManyField(to='self', blank=True) # 反义词 [word1,word2,...]
+    image = models.ImageField(upload_to='word_images/', null=True, blank=True, verbose_name="图片讲解") # 图片讲解
+    vedio = models.FileField(upload_to='word_videos/', null=True, blank=True, verbose_name="视频讲解") # 视频讲解
+    class Meta:
+        ordering = ['name']  # 消除list警告UnorderedObjectListWarning: Pagination may yield inconsistent results with an unordered object_list
 
 # 单词变形 格式(json):
 # {
@@ -72,40 +58,65 @@ class WordTable(models.Model):
 #        It is that very much.
 
 
+class SentencePatternTable(models.Model):
+    """
+    常用句型表
+    """
+    id = models.AutoField(primary_key=True)
+    content = models.CharField(max_length=64)  # 内容
+    wordForeign = models.ForeignKey(to=WordTable, related_name='sentencePatternSet', null=True, on_delete=models.CASCADE)
+
+
+class ParaphraseTable(models.Model):
+    """
+    释义表
+    """
+    id = models.AutoField(primary_key=True)
+    interpret = models.CharField(max_length=128)     # 翻译\含义
+    partOfSpeech = models.CharField(max_length=32)   # 词性
+    wordForeign = models.ForeignKey(to=WordTable, null=True, related_name='paraphraseSet', on_delete=models.CASCADE)
+    sentencePatternForeign = models.ForeignKey(to=SentencePatternTable, null=True, related_name='paraphraseSet', on_delete=models.CASCADE)
+
+
 class EtymaTable(models.Model):
     """
     词根词缀表
     """
-    e_name = models.CharField(max_length=32, primary_key=True) # 词根 (primary key)
-    e_meaning = models.TextField(max_length=512, null=True) # 含义 markdown
-    e_type = models.IntegerField(null=True) # 类型: 前缀|后缀|词根
-    #e_image = models.ImageField(null=True) # 图片讲解
-    #e_vedio = models.FilePathField(max_length=128, null=True) # 视频讲解
-    def type(self) -> str:
-        if self.e_type == 0:
+    name = models.CharField(max_length=32, primary_key=True) # 词根 (primary key)
+    interpretation = models.TextField(max_length=512, null=True) # 含义 markdown
+    type = models.IntegerField(null=True) # 类型: 前缀|后缀|词根
+    image = models.ImageField(upload_to='etyma_images/', null=True, blank=True, verbose_name="图片讲解") # 图片讲解
+    vedio = models.FileField(upload_to='etyma_videos/', null=True, blank=True, verbose_name="视频内容") # 视频讲解
+
+    class Meta:
+        ordering = ['name']  # 消除list警告UnorderedObjectListWarning: Pagination may yield inconsistent results with an unordered object_list
+
+    @property
+    def _type(self) -> str:
+        if self.type == 0:
             return "prefix"
-        elif self.e_type == 2:
-            return "etyma"
-        elif self.e_type == 1:
+        elif self.type == 1:
             return "suffix"
+        elif self.type == 2:
+            return "etyma"
         else:
             return "unkown"
 
 
-class WordTagsTable(models.Model):
+class WordTagTable(models.Model):
     """
     单词 Tags
     """
-    t_name = models.CharField(max_length=32, primary_key=True)
+    name = models.CharField(max_length=32, primary_key=True)
 
 
 class DistinguishWordTable(models.Model):
     """
     词义辨析表
     """
-    d_id = models.AutoField(primary_key=True)
-    d_words = JSONFieldUtf8(null=True)   # 单词列表 [word1,word2,...]
-    d_content = models.TextField(null=True) # 内容 markdown文本
-    d_word = models.ManyToManyField(to=WordTable, related_name='distinguish')
-    #d_image = models.ImageField(null=True) # 图片讲解
-    #d_vedio = models.FilePathField(max_length=128, null=True) # 视频讲解
+    id = models.AutoField(primary_key=True)
+    words = JSONFieldUtf8(null=True)      # 单词列表 [word1,word2,...]
+    content = models.TextField() # 内容 markdown文本
+    image = models.ImageField(upload_to='distinguish_word_images/', null=True, blank=True, verbose_name="图片讲解") # 图片讲解
+    vedio = models.FileField(upload_to='distinguish_word_videos/', null=True, blank=True, verbose_name="视频讲解") # 视频讲解
+    wordsForeign = models.ManyToManyField(to=WordTable, related_name='distinguishSet', blank=True)
