@@ -15,9 +15,10 @@ class RegisterPage extends StatelessWidget {
     // 提交前，先验证各个表单字段是否合法
     if ((_formKey.currentState as FormState).validate()) {
       ///showLoading(context);
-      UserSerializer user;
+      UserSerializer user = UserSerializer();
+      bool ret = false;
       try {
-        user = await UserSerializer().register(data:{"u_uname":_unameController.text, "u_passwd":_pwdController1.text});
+        ret = await user.register(data:{"uname":_unameController.text, "passwd":_pwdController1.text});
         // 因为登录页返回后，首页会build，所以我们传false，更新user后不触发更新
         ///Provider.of<UserModel>(context, listen: false).user = user;
       } catch (e) {
@@ -30,7 +31,7 @@ class RegisterPage extends StatelessWidget {
         //Navigator.of(context).pop(); // 隐藏loading框
       }
 
-      if (user != null) {
+      if (ret) {
         Navigator.of(context).pop(); // 返回
       }
     }

@@ -6,14 +6,12 @@ import 'user.dart';
 
 import 'net_cache_config.dart';
 
-
 class LocalStoreSerializer {
   LocalStoreSerializer();
 
   UserSerializer user = UserSerializer();
   String token = '';
   NetCacheConfigSerializer netCacheConfig = NetCacheConfigSerializer();
-  
 
 
   LocalStoreSerializer fromJson(Map<String, dynamic> json) {
@@ -32,6 +30,13 @@ class LocalStoreSerializer {
     'token': token,
     'netCacheConfig': netCacheConfig == null ? null : netCacheConfig.toJson(),
   };
+
+  LocalStoreSerializer from(LocalStoreSerializer instance) {
+    user = UserSerializer().from(instance.user);
+    token = instance.token;
+    netCacheConfig = NetCacheConfigSerializer().from(instance.netCacheConfig);
+    return this;
+  }
 }
 
 

@@ -17,7 +17,7 @@ class Http {
   Options _options;
   static Dio _dio = new Dio(
     BaseOptions(
-      baseUrl: 'http://192.168.2.10:5005',
+      baseUrl: 'http://192.168.1.10:5005',
     )
   );
 
@@ -46,7 +46,7 @@ class Http {
     }
   }
 
-  Future<Response> request(HttpType type, String path, {dynamic data, Map<String, dynamic> queryParameters, bool cache=true}) async {
+  Future<Response> request(HttpType type, String path, {dynamic data, Map<String, dynamic> queries, bool cache=true}) async {
     Options opt = _options.merge(
             extra: {
               "noCache": cache, //本接口禁用缓存
@@ -55,13 +55,13 @@ class Http {
     try{
       switch(type) {
         case HttpType.GET:
-          return await _dio.get(path, queryParameters: queryParameters, options: opt);
+          return await _dio.get(path, queryParameters: queries, options: opt);
         case HttpType.POST:
-          return await _dio.post(path, data:data, queryParameters: queryParameters, options: opt);
+          return await _dio.post(path, data:data, queryParameters: queries, options: opt);
         case HttpType.PUT:
-          return await _dio.put(path, data:data, queryParameters: queryParameters, options: opt);
+          return await _dio.put(path, data:data, queryParameters: queries, options: opt);
         case HttpType.DELETE:
-          return await _dio.delete(path, data:data, queryParameters: queryParameters, options: opt);
+          return await _dio.delete(path, data:data, queryParameters: queries, options: opt);
       }
     } catch(e) {
       print('*** Http Error: $e');

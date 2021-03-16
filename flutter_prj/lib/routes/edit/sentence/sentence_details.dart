@@ -38,22 +38,20 @@ class _SentenceDetailsState extends State<SentenceDetails> {
     );
     return tags;
   }
-
+/*
   List<Widget> _buildTense(BuildContext context) {
     final TextStyle style = TextStyle(fontSize: 12.0, color: Colors.pinkAccent);
     List<Widget> tense = [];
     if(widget._sentence.tense == null || widget._sentence.tense.length == 0) return tense;
     tense.add(Text('时态:', style: style));
-    tense.addAll(
-      widget._sentence.tense.map((e) => 
+    tense.add(
         Tag(
-          label: Text(e, style: style,),
+          label: Text(widget._sentence.tense, style: style,),
           onDeleted: widget._editable ? () => setState(() => widget._sentence.tense.remove(e)) : null,
         )
-      ).toList()
     );
     return tense;
-  }
+  }*/
 
   List<Widget> _buildForm(BuildContext context) {
     final TextStyle style = TextStyle(fontSize: 12.0, color: Colors.orange);
@@ -76,7 +74,6 @@ class _SentenceDetailsState extends State<SentenceDetails> {
     List<Widget> children = [];
     children.add(_buildType(context));
     children.addAll(_buildTags(context));
-    children.addAll(_buildTense(context));
     children.addAll(_buildForm(context));
     return Wrap(
             spacing: 8.0,

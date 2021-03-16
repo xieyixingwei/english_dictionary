@@ -16,10 +16,11 @@ class WordPaginationSerializer {
   List<WordSerializer> results = [];
   WordSerializerFilter filter = WordSerializerFilter();
 
-  Future<WordPaginationSerializer> retrieve({Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
-    (queryParameters != null && filter.queryset != null) ? queryParameters.addAll(filter.queryset) : queryParameters = filter.queryset;
-    var res = await Http().request(HttpType.GET, '/dictionary/word/', queryParameters:queryParameters, cache:cache);
-    return update ? this.fromJson(res.data) : WordPaginationSerializer().fromJson(res.data);
+  Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
+    (queries != null && filter.queryset != null) ? queries.addAll(filter.queryset) : queries = filter.queryset;
+    var res = await Http().request(HttpType.GET, '/dictionary/word/', queries:queries, cache:cache);
+    if(res != null) this.fromJson(res.data);
+    return res != null;
   }
 
   WordPaginationSerializer fromJson(Map<String, dynamic> json) {
@@ -38,6 +39,14 @@ class WordPaginationSerializer {
     'previous': previous,
     'results': results == null ? null : results.map((e) => e.toJson()).toList(),
   };
+
+  WordPaginationSerializer from(WordPaginationSerializer instance) {
+    count = instance.count;
+    next = instance.next;
+    previous = instance.previous;
+    results = List.from(instance.results.map((e) => WordSerializer().from(e)).toList());
+    return this;
+  }
 }
 
 class WordSerializerFilter {
@@ -60,4 +69,3 @@ class WordSerializerFilter {
     etyma__icontains = null;
   }
 }
-

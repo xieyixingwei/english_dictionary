@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/serializers/index.dart';
+import 'package:flutter_prj/widgets/edit_delete.dart';
 
 
 class ShowEtyma extends StatefulWidget {
@@ -18,41 +19,28 @@ class ShowEtyma extends StatefulWidget {
 
 class _ShowEtymaState extends State<ShowEtyma> {
 
-
   @override
-  Widget build(BuildContext context) =>
-    ListTile(
+  Widget build(BuildContext context) {
+    return ListTile(
+      minVerticalPadding: 0.0,
       //leading: Text('相关语法'),
       title: Row(
         children: [
-          Text(widget._etyma.name),
+          Text(widget._etyma.name, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),),
           SizedBox(width: 10,),
-          Text(widget._etyma.type == null ? 'null' : Global.etymaTypeOptions[widget._etyma.type], style: TextStyle(fontSize: 12),),
+          Text('[ ${Global.etymaTypeOptions[widget._etyma.type]} ]', style: TextStyle(fontSize: 14, color: Colors.orangeAccent),),
+          SizedBox(width: 10,),
+          Text(widget._etyma.interpretation, style: TextStyle(fontSize: 14,),),
         ]
       ),
-      subtitle: Text(widget._etyma.interpretation),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          InkWell(
-            child: Text('编辑', style: TextStyle(color: Theme.of(context).primaryColor),),
-            onTap: () async {
-              EtymaSerializer etyma = EtymaSerializer().fromJson(widget._etyma.toJson());
-              var e = (await Navigator.pushNamed(context, '/edit_etyma', arguments:{'title':'编辑词根词缀','etyma': etyma})) as EtymaSerializer;
-              if(e != null){
-                widget._etyma.fromJson(e.toJson());
-                widget._etyma.update(update: true);
-              }
-              setState(() {});
-            },
-          ),
-          SizedBox(width: 10,),
-          widget._delete != null ?
-          InkWell(
-            child: Text('删除', style: TextStyle(color: Colors.pink,)),
-            onTap: () => widget._delete(),
-          ) : SizedBox(width: 0,),
-        ],
-      )
+      trailing: EditDelete(
+        edit: () async {
+          var e = (await Navigator.pushNamed(context, '/edit_etyma', arguments:{'title':'编辑词根词缀','etyma': EtymaSerializer().from(widget._etyma)})) as EtymaSerializer;
+          if(e != null) await widget._etyma.from(e).save();
+          setState(() {});
+        },
+        delete: widget._delete,
+      ),
     );
+  }
 }

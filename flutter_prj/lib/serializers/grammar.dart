@@ -9,6 +9,7 @@ import 'package:flutter_prj/common/http.dart';
 class GrammarSerializer {
   GrammarSerializer();
 
+  num _id;
   num id;
   List<String> type = [];
   List<String> tag = [];
@@ -17,37 +18,40 @@ class GrammarSerializer {
   String vedio = '';
   String wordForeign;
   num sentenceForeign;
-  
 
-  Future<GrammarSerializer> create({dynamic data, Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/dictionary/grammar/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
-    return update ? this.fromJson(res.data) : GrammarSerializer().fromJson(res.data);
+  Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
+    var res = await Http().request(HttpType.POST, '/dictionary/grammar/', data:data ?? this.toJson(), queries:queries, cache:cache);
+    if(res != null) this.fromJson(res.data);
+    return res != null;
   }
 
-  Future<GrammarSerializer> update({dynamic data, Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
-    var res = await Http().request(HttpType.PUT, '/dictionary/grammar/$id/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
-    return update ? this.fromJson(res.data) : GrammarSerializer().fromJson(res.data);
+  Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
+    var res = await Http().request(HttpType.PUT, '/dictionary/grammar/$id/', data:data ?? this.toJson(), queries:queries, cache:cache);
+    return res != null;
   }
 
-  Future<GrammarSerializer> retrieve({Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
-    var res = await Http().request(HttpType.GET, '/dictionary/grammar/$id/', queryParameters:queryParameters, cache:cache);
-    return update ? this.fromJson(res.data) : GrammarSerializer().fromJson(res.data);
+  Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
+    var res = await Http().request(HttpType.GET, '/dictionary/grammar/$id/', queries:queries, cache:cache);
+    if(res != null) this.fromJson(res.data);
+    return res != null;
   }
 
-  Future<bool> delete({dynamic data, Map<String, dynamic> queryParameters, bool cache=false}) async {
-    if(id == null) return false;
-    var res = await Http().request(HttpType.DELETE, '/dictionary/grammar/$id/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
+  Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
+    if(_id == null) return false;
+    var res = await Http().request(HttpType.DELETE, '/dictionary/grammar/$id/', data:data ?? this.toJson(), queries:queries, cache:cache);
     /*
     
     */
     return res != null ? res.statusCode == 204 : false;
   }
 
-  Future<GrammarSerializer> save({dynamic data, Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
-    GrammarSerializer res = id == null
-                               ? await this.create(data:data, queryParameters:queryParameters, update:update, cache:cache)
-                               : await this.update(data:data, queryParameters:queryParameters, update:update, cache:cache);
-    
+  Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
+    bool res = false;
+    if(_id == null) {
+      res = await this.create(data:data, queries:queries, cache:cache);
+    } else {
+      res = await this.update(data:data, queries:queries, cache:cache);
+    }
     return res;
   }
 
@@ -64,6 +68,7 @@ class GrammarSerializer {
     vedio = json['vedio'] == null ? null : json['vedio'] as String;
     wordForeign = json['wordForeign'] == null ? null : json['wordForeign'] as String;
     sentenceForeign = json['sentenceForeign'] == null ? null : json['sentenceForeign'] as num;
+    _id = id;
     return this;
   }
 
@@ -75,6 +80,19 @@ class GrammarSerializer {
     'wordForeign': wordForeign,
     'sentenceForeign': sentenceForeign,
   };
+
+  GrammarSerializer from(GrammarSerializer instance) {
+    id = instance.id;
+    type = List.from(instance.type);
+    tag = List.from(instance.tag);
+    content = instance.content;
+    image = instance.image;
+    vedio = instance.vedio;
+    wordForeign = instance.wordForeign;
+    sentenceForeign = instance.sentenceForeign;
+    _id = instance._id;
+    return this;
+  }
 }
 
 

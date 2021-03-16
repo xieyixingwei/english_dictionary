@@ -9,7 +9,6 @@
     "sentenceForeign @foreign": "$sentence",
     "__http__": {
         "url": "/dictionary/grammar/",
-        "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
                 "name": "create"
@@ -47,7 +46,6 @@
     },
     "__http__": {
         "url": "/dictionary/grammar/",
-        "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
                 "name": "retrieve",
@@ -61,7 +59,6 @@
     "name @primary": "",
     "__http__": {
         "url": "/dictionary/grammar_type/",
-        "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
                 "name": "create"
@@ -82,7 +79,6 @@
     "name @primary": "",
     "__http__": {
         "url": "/dictionary/grammar_tag/",
-        "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
                 "name": "create"

@@ -4,7 +4,7 @@
     "cn": "", // 中文
     "type": 0, //  models.IntegerField(default=0)  # sentence|phrase
     "tag": [""], // models.JSONField(null=True)    # 标记 [日常用语,商务用语]
-    "tense": [""], //  models.JSONField(null=True)   # 时态 [一般过去式,被动语态]
+    "tense": "String=null", //  models.JSONField(null=True)   # 时态 [一般过去式,被动语态]
     "pattern": [""], // models.JSONField(null=True)    # 句型 [复合句,问候语,从句,陈述句]
     "synonym": [0], //models.JSONField(null=True) # 同义句 [Sentence.id,Sentence.id,...]
     "antonym": [0], //models.JSONField(null=True) # 反义句 [Sentence.id,Sentence.id,...]
@@ -12,7 +12,6 @@
     "_grammarSet": ["$grammar"], //models.JSONField() # 语法 [id1,id2,id3]
     "__http__": {
         "url": "/dictionary/sentence/",
-        "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
                 "name": "create"
@@ -48,12 +47,11 @@
         "cn": ["icontains"],
         "type": ["exact"],
         "tag": ["icontains"],
-        "tense": ["icontains"],
+        "tense": ["exact"],
         "pattern": ["icontains"]
     },
     "__http__": {
         "url": "/dictionary/sentence/",
-        "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
                 "name": "retrieve",
@@ -67,7 +65,6 @@
     "name @primary": "",
     "__http__": {
         "url": "/dictionary/sentence_tag/",
-        "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
                 "name": "create"

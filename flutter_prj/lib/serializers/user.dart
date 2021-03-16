@@ -9,11 +9,12 @@ import 'package:flutter_prj/common/http.dart';
 class UserSerializer {
   UserSerializer();
 
+  num _id;
   num id;
   String uname = '';
   String passwd = '';
   bool isAdmin = false;
-  String register_date = '';
+  String registerDate = '';
   String name = '';
   bool gender = true;
   String birthday = '';
@@ -23,30 +24,31 @@ class UserSerializer {
   String email = '';
   String telephone = '';
   String status = '';
-  
 
-  static Future<List<UserSerializer>> list({Map<String, dynamic> queryParameters, bool cache=false}) async {
-    var res = await Http().request(HttpType.GET, '/user/', queryParameters:queryParameters, cache:cache);
-    return res.data.map<UserSerializer>((e) => UserSerializer().fromJson(e)).toList();
+  static Future<List<UserSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
+    var res = await Http().request(HttpType.GET, '/user/', queries:queries, cache:cache);
+    return res != null ? res.data.map<UserSerializer>((e) => UserSerializer().fromJson(e)).toList() : [];
   }
 
-  Future<UserSerializer> retrieve({Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
-    var res = await Http().request(HttpType.GET, '/user/$uname/', queryParameters:queryParameters, cache:cache);
-    return update ? this.fromJson(res.data) : UserSerializer().fromJson(res.data);
+  Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
+    var res = await Http().request(HttpType.GET, '/user/$uname/', queries:queries, cache:cache);
+    if(res != null) this.fromJson(res.data);
+    return res != null;
   }
 
-  Future<bool> delete({dynamic data, Map<String, dynamic> queryParameters, bool cache=false}) async {
-    if(id == null) return false;
-    var res = await Http().request(HttpType.DELETE, '/user/$uname/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
+  Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
+    if(_id == null) return false;
+    var res = await Http().request(HttpType.DELETE, '/user/$uname/', data:data ?? this.toJson(), queries:queries, cache:cache);
     /*
     
     */
     return res != null ? res.statusCode == 204 : false;
   }
 
-  Future<UserSerializer> register({dynamic data, Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/user/register/', data:(data == null ? this.toJson() : data), queryParameters:queryParameters, cache:cache);
-    return update ? this.fromJson(res.data) : UserSerializer().fromJson(res.data);
+  Future<bool> register({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
+    var res = await Http().request(HttpType.POST, '/user/register/', data:data ?? this.toJson(), queries:queries, cache:cache);
+    if(res != null) this.fromJson(res.data);
+    return res != null;
   }
 
   UserSerializer fromJson(Map<String, dynamic> json) {
@@ -54,7 +56,7 @@ class UserSerializer {
     uname = json['uname'] == null ? null : json['uname'] as String;
     passwd = json['passwd'] == null ? null : json['passwd'] as String;
     isAdmin = json['isAdmin'] == null ? null : json['isAdmin'] as bool;
-    register_date = json['register_date'] == null ? null : json['register_date'] as String;
+    registerDate = json['registerDate'] == null ? null : json['registerDate'] as String;
     name = json['name'] == null ? null : json['name'] as String;
     gender = json['gender'] == null ? null : json['gender'] as bool;
     birthday = json['birthday'] == null ? null : json['birthday'] as String;
@@ -64,6 +66,7 @@ class UserSerializer {
     email = json['email'] == null ? null : json['email'] as String;
     telephone = json['telephone'] == null ? null : json['telephone'] as String;
     status = json['status'] == null ? null : json['status'] as String;
+    _id = id;
     return this;
   }
 
@@ -72,7 +75,7 @@ class UserSerializer {
     'uname': uname,
     'passwd': passwd,
     'isAdmin': isAdmin,
-    'register_date': register_date,
+    'registerDate': registerDate,
     'name': name,
     'gender': gender,
     'birthday': birthday,
@@ -83,6 +86,25 @@ class UserSerializer {
     'telephone': telephone,
     'status': status,
   };
+
+  UserSerializer from(UserSerializer instance) {
+    id = instance.id;
+    uname = instance.uname;
+    passwd = instance.passwd;
+    isAdmin = instance.isAdmin;
+    registerDate = instance.registerDate;
+    name = instance.name;
+    gender = instance.gender;
+    birthday = instance.birthday;
+    education = instance.education;
+    wechart = instance.wechart;
+    qq = instance.qq;
+    email = instance.email;
+    telephone = instance.telephone;
+    status = instance.status;
+    _id = instance._id;
+    return this;
+  }
 }
 
 

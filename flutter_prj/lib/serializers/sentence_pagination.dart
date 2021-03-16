@@ -16,10 +16,11 @@ class SentencePaginationSerializer {
   List<SentenceSerializer> results = [];
   SentenceSerializerFilter filter = SentenceSerializerFilter();
 
-  Future<SentencePaginationSerializer> retrieve({Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
-    (queryParameters != null && filter.queryset != null) ? queryParameters.addAll(filter.queryset) : queryParameters = filter.queryset;
-    var res = await Http().request(HttpType.GET, '/dictionary/sentence/', queryParameters:queryParameters, cache:cache);
-    return update ? this.fromJson(res.data) : SentencePaginationSerializer().fromJson(res.data);
+  Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
+    (queries != null && filter.queryset != null) ? queries.addAll(filter.queryset) : queries = filter.queryset;
+    var res = await Http().request(HttpType.GET, '/dictionary/sentence/', queries:queries, cache:cache);
+    if(res != null) this.fromJson(res.data);
+    return res != null;
   }
 
   SentencePaginationSerializer fromJson(Map<String, dynamic> json) {
@@ -38,6 +39,14 @@ class SentencePaginationSerializer {
     'previous': previous,
     'results': results == null ? null : results.map((e) => e.toJson()).toList(),
   };
+
+  SentencePaginationSerializer from(SentencePaginationSerializer instance) {
+    count = instance.count;
+    next = instance.next;
+    previous = instance.previous;
+    results = List.from(instance.results.map((e) => SentenceSerializer().from(e)).toList());
+    return this;
+  }
 }
 
 class SentenceSerializerFilter {
@@ -45,7 +54,7 @@ class SentenceSerializerFilter {
   String cn__icontains;
   num type;
   String tag__icontains;
-  String tense__icontains;
+  String tense;
   String pattern__icontains;
 
   Map<String, dynamic> get queryset => <String, dynamic>{
@@ -53,7 +62,7 @@ class SentenceSerializerFilter {
     "cn__icontains": cn__icontains,
     "type": type,
     "tag__icontains": tag__icontains,
-    "tense__icontains": tense__icontains,
+    "tense": tense,
     "pattern__icontains": pattern__icontains,
   }..removeWhere((String key, dynamic value) => value == null);
 
@@ -62,8 +71,7 @@ class SentenceSerializerFilter {
     cn__icontains = null;
     type = null;
     tag__icontains = null;
-    tense__icontains = null;
+    tense = null;
     pattern__icontains = null;
   }
 }
-

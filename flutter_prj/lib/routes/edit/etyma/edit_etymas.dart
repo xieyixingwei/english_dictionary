@@ -12,7 +12,7 @@ class EditEtymas extends StatefulWidget {
 
 class _EditEtymasState extends State<EditEtymas> {
   EtymaPaginationSerializer _etymas = EtymaPaginationSerializer();
-  static final List<String> _typeOptions = ['选择'] + Global.etymaTypeOptions;
+  static final List<String> _typeOptions = ['All'] + Global.etymaTypeOptions;
   List<String> _selected = [_typeOptions.first];
 
   @override
@@ -22,7 +22,7 @@ class _EditEtymasState extends State<EditEtymas> {
   }
 
   _init() async {
-    await _etymas.retrieve(update: true);
+    await _etymas.retrieve();
     setState((){});
   }
 
@@ -34,26 +34,35 @@ Widget _buildFilter(BuildContext context) =>
       Container(
         width: 100,
         child: TextField(
-          onChanged: (val) => _etymas.filter.name__icontains = val.trim().isNotEmpty ? val.trim() : null,
+          onChanged: (v) => _etymas.filter.name__icontains = v.trim().isNotEmpty ? v.trim() : null,
           decoration: InputDecoration(
             labelText: '词根词缀',
+            border: OutlineInputBorder(),
           ),
         ),
       ),
-      DropdownButton(
-        value: _selected[0],
-        items: _typeOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
-        onChanged: (v) {
-          setState(() => _selected[0] = v);
-          _etymas.filter.type = v != _typeOptions.first ? Global.etymaTypeOptions.indexOf(v) : null;
-        },
+      Container(
+        width: 100,
+        child: DropdownButtonFormField(
+          isExpanded: true,
+          value: _selected[0],
+          items: _typeOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
+          decoration: InputDecoration(
+            labelText: "类型",
+            border: OutlineInputBorder(),
+          ),
+          onChanged: (v) {
+            setState(() => _selected[0] = v);
+            _etymas.filter.type = v != _typeOptions.first ? Global.etymaTypeOptions.indexOf(v) : null;
+          },
+        ),
       ),
       IconButton(
         splashRadius: 1.0,
         tooltip: '搜索',
         icon: Icon(Icons.search),
         onPressed: () async {
-          await _etymas.retrieve(queryParameters:{"page_size": 10, "page_index":1}, update: true);
+          await _etymas.retrieve(queries:{"page_size": 10, "page_index":1});
           setState((){});
         },
       ),
@@ -62,11 +71,11 @@ Widget _buildFilter(BuildContext context) =>
         icon: Icon(Icons.add),
         tooltip: '添加词根词缀',
         onPressed: () async {
-          var g = (await Navigator.pushNamed(context, '/edit_etyma', arguments:{'title':'添加语法'})) as EtymaSerializer;
+          var g = (await Navigator.pushNamed(context, '/edit_etyma', arguments:{'title':'添加词根词缀'})) as EtymaSerializer;
           if(g != null) {
             _etymas.results.add(g);
             Global.etymaOptions.add(g.name);
-            g.create(update: true);
+            await g.save();
           }
           setState((){});
         },

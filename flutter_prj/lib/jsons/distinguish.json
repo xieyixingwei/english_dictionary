@@ -4,5 +4,28 @@
     "content": "",
     "_image": "",
     "_vedio": "",
-    "wordsForeign @foreign": [""]
+    "wordsForeign @foreign": "$word",
+    "__http__": {
+        "url": "/dictionary/distinguish_word/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "update",
+                "url": "$id/"
+            },
+            {
+                "name": "retrieve",
+                "url": "$id/"
+            },
+            {
+                "name": "delete",
+                "url": "$id/"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
 }

@@ -3,7 +3,7 @@
     "uname": "",
     "passwd": "",
     "isAdmin": false,
-    "register_date": "",
+    "registerDate": "",
     "name": "",
     "gender": true,
     "birthday": "",
@@ -15,7 +15,6 @@
     "status": "",
     "__http__": {
         "url": "/user/",
-        "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
                 "name": "list",
@@ -45,7 +44,6 @@
     "token": "String=null",
     "__http__": {
         "url": "/user/",
-        "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
                 "name": "login",

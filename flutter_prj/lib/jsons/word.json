@@ -17,7 +17,6 @@
     "_distinguishSet": ["$distinguish"], // 词义辨析
     "__http__": {
         "url": "/dictionary/word/",
-        "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
                 "name": "create"
@@ -56,7 +55,6 @@
     },
     "__http__": {
         "url": "/dictionary/word/",
-        "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
                 "name": "retrieve",
@@ -72,7 +70,51 @@
     "id @primary": "num=null",
     "content": "",
     "wordForeign @foreign": "$word",
-    "_paraphraseSet": ["$paraphrase"]
+    "_paraphraseSet": ["$paraphrase"],
+    "__http__": {
+        "url": "/dictionary/sentence_pattern/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "update",
+                "url": "$id/"
+            },
+            {
+                "name": "retrieve",
+                "url": "$id/"
+            },
+            {
+                "name": "delete",
+                "url": "$id/"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
+}
+
+{ // 分页查询 常用句型
+    "__name__": "sentence_pattern_pagination",
+    "count": 0,
+    "next": "",
+    "previous": "",
+    "results": ["$sentence_pattern"],
+    "__filter__": {
+        "__serializer__": "$sentence_pattern",
+        "content": ["icontains"]
+    },
+    "__http__": {
+        "url": "/dictionary/sentence_pattern/",
+        "methods": [
+            {
+                "name": "retrieve",
+                "filter": true
+            }
+        ]
+    }
 }
 
 { // 释义
@@ -82,7 +124,30 @@
     "partOfSpeech": "",
     "wordForeign @foreign": "$word",
     "sentencePatternForeign @foreign": "$sentence_pattern",
-    "_sentenceSet": ["$sentence"]
+    "_sentenceSet": ["$sentence"],
+    "__http__": {
+        "url": "/dictionary/paraphrase/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "update",
+                "url": "$id/"
+            },
+            {
+                "name": "retrieve",
+                "url": "$id/"
+            },
+            {
+                "name": "delete",
+                "url": "$id/"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
 }
 
 {
@@ -90,7 +155,6 @@
     "name @primary": "",
     "__http__": {
         "url": "/dictionary/word_tag/",
-        "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
                 "name": "create"
@@ -111,12 +175,11 @@
     "__name__": "etyma",
     "name @primary": "",
     "interpretation": "",
-    "type": "num=null",
+    "type": 0,
     "_image": "", 
     "_vedio": "",
     "__http__": {
         "url": "/dictionary/etyma/",
-        "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
                 "name": "create"
@@ -132,6 +195,9 @@
             {
                 "name": "delete",
                 "url": "$name/"
+            },
+            {
+                "name": "save"
             }
         ]
     }
@@ -150,7 +216,6 @@
     },
     "__http__": {
         "url": "/dictionary/etyma/",
-        "http_package": "package:flutter_prj/common/http.dart",
         "methods": [
             {
                 "name": "retrieve",

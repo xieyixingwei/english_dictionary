@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
-import 'package:flutter_prj/routes/edit/grammar/grammar_details.dart';
 import 'package:flutter_prj/serializers/grammar.dart';
-import 'package:flutter_prj/widgets/SelectDialog.dart';
-import 'package:flutter_prj/widgets/popup_memu_button.dart';
+import 'package:flutter_prj/widgets/wrap_selectable.dart';
+import 'package:flutter_prj/widgets/ok_cancel.dart';
 
 
 class EditGrammar extends StatefulWidget {
@@ -20,45 +19,11 @@ class EditGrammar extends StatefulWidget {
 }
 
 class _EditGrammarState extends State<EditGrammar> {
-  static const List<String> _options = ['设置类型', '添加Tag', '编辑类型', '编辑Tags'];
-
-  _onSelected(String value) {
-    if(value == '设置类型') {
-      popSelectDialog(
-        context: context,
-        title: value,
-        options: Global.grammarTypeOptions,
-        close: (String val) => setState(() => widget._grammar.type.add(val)),
-      );
-    } else if(value == '添加Tag') {
-      popSelectDialog(
-        context: context,
-        title: value,
-        options: Global.grammarTagOptions,
-        close: (String val) => setState(() => widget._grammar.tag.add(val)),
-      );
-    } else if(value == '编辑类型') {
-      Navigator.pushNamed(context, '/edit_grammar_type');
-    }
-     else if(value == '编辑Tags') {
-      Navigator.pushNamed(context, '/edit_grammar_tag');
-    }
-  }
-
-  _buildTextField(BuildContext context) =>
-    TextField(
-      maxLines: null,
-      controller: TextEditingController(text: widget._grammar.content),
-      decoration: InputDecoration(
-        labelText: '语法',
-        border: OutlineInputBorder(),
-        suffixIcon: popupMenuButton(context:context, options:_options, onSelected:_onSelected),
-      ),
-      onChanged: (String value) => widget._grammar.content = value,
-    );
+  final GlobalKey _formKey =  GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    final idctrl = TextEditingController(text: widget._grammar.id.toString());
     return Scaffold(
             appBar: AppBar(
               title: Text(widget._title),
@@ -66,34 +31,82 @@ class _EditGrammarState extends State<EditGrammar> {
             ),
             body: Container(
               padding: EdgeInsets.fromLTRB(20, 40, 20, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildTextField(context),
-                  SizedBox(height: 10,),
-                  GrammarDetails(widget._grammar, true),
-                  SizedBox(height: 20,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconButton(
-                        splashRadius: 1.0,
-                        icon: Icon(Icons.done, color: Colors.green,),
-                        tooltip: '确定',
-                        onPressed: () => Navigator.pop(context, widget._grammar),
+              child: Form(
+                key: _formKey, //设置globalKey，用于后面获取FormState
+                autovalidateMode: AutovalidateMode.always, //开启自动校验
+                child:Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextFormField(
+                      autofocus: false,
+                      keyboardType: TextInputType.number, // 键盘回车键的样式
+                      textInputAction: TextInputAction.next,
+                      controller: idctrl,
+                      maxLines: 1,
+                      style: TextStyle(fontSize: 14),
+                      decoration: InputDecoration(
+                        labelText: "id",
+                        border: OutlineInputBorder(),
+                        suffix: IconButton(
+                          icon: Icon(Icons.search),
+                          tooltip: '搜索',
+                          onPressed: () async {
+                            var g = GrammarSerializer()..id = num.parse(idctrl.text.trim());
+                            bool ret = await g.retrieve();
+                            if(ret) setState(() => widget._grammar.from(g));
+                          },
+                        ),
                       ),
-                      SizedBox(width: 10,),
-                      IconButton(
-                        splashRadius: 1.0,
-                        icon: Icon(Icons.clear, color: Colors.grey,),
-                        tooltip: '取消',
-                        onPressed: () => Navigator.pop(context),
+                      //onChanged: (v) => null,
+                      //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
+                    ),
+                    SizedBox(height: 20,),
+                    WrapSelectable(
+                      data: widget._grammar.type,
+                      options: Global.grammarTypeOptions,
+                      lable: Text('类型'),
+                      action: Text('添加', style: TextStyle(color: Colors.blueAccent),),
+                      trailing: TextButton(
+                        child: Text('编辑类型'),
+                        onPressed: () => Navigator.pushNamed(context, '/edit_grammar_type'),
                       ),
-                    ]
-                  ),
-                ],
+                    ),
+                    SizedBox(height: 20,),
+                    WrapSelectable(
+                      data: widget._grammar.tag,
+                      options: Global.grammarTagOptions,
+                      lable: Text('Tag'),
+                      action: Text('添加', style: TextStyle(color: Colors.blueAccent),),
+                      trailing: TextButton(
+                        child: Text('编辑Tag'),
+                        onPressed: () => Navigator.pushNamed(context, '/edit_grammar_tag'),
+                      ),
+                    ),
+                    SizedBox(height: 20,),
+                    TextFormField(
+                      autofocus: false,
+                      keyboardType: TextInputType.number, // 键盘回车键的样式
+                      textInputAction: TextInputAction.next,
+                      controller: TextEditingController(text: widget._grammar.content),
+                      minLines: 1,
+                      maxLines: null,
+                      style: TextStyle(fontSize: 14),
+                      decoration: InputDecoration(
+                        labelText: "语法",
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: (v) => widget._grammar.content = v.trim(),
+                      validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
+                    ),
+                    SizedBox(height: 20,),
+                    OkCancel(ok: () {
+                      if((_formKey.currentState as FormState).validate()) // 验证各个表单字段是否合法
+                        Navigator.pop(context, widget._grammar);
+                    }),
+                  ]
               ),
-            ),
-          );
+          ),
+        ),
+      );
   }
 }

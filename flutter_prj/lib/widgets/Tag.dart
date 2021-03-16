@@ -18,12 +18,13 @@ class _TagState extends State<Tag> {
 
   List<Widget> _children() {
     List<Widget> children = [widget._label];
-    widget._onDeleted != null ? children.add(
-      InkWell(
-        child: Icon(Icons.clear, size: 12.0,),
-        onTap: () => widget._onDeleted(),
-      )
-    ) : null;
+    if(widget._onDeleted != null)
+      children.add(
+        InkWell(
+          child: Icon(Icons.clear, size: 12.0,),
+          onTap: () => widget._onDeleted(),
+        )
+      );
     return children;
   }
 

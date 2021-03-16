@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/routes/edit/sentence/sentence_details.dart';
-import 'package:flutter_prj/routes/edit/grammar/show_grammar.dart';
 import 'package:flutter_prj/serializers/index.dart';
+import 'package:flutter_prj/widgets/edit_delete.dart';
 
 
 class ShowSentence extends StatefulWidget {
@@ -18,146 +18,26 @@ class ShowSentence extends StatefulWidget {
 }
 
 class _ShowSentenceState extends State<ShowSentence> {
-  final TextStyle _style = TextStyle(fontSize: 12.0, color: Colors.greenAccent);
-  List<bool> _onoff = [true, true, true];
-  List<SentenceSerializer> _synonymSentences = [];
-  List<SentenceSerializer> _antonymSentences = [];
-
-  _buildOthers() =>
-    Wrap(
-      spacing: 10.0,
-      children: [
-        widget._sentence.grammarSet.length > 0 ?
-        InkWell(
-          child:Text('语法>>', style: _style,),
-          onTap: () => setState(() => _onoff[0] = !_onoff[0]),
-        ) : SizedBox(height: 0, width: 0,),
-        widget._sentence.synonym.length > 0 ?
-        InkWell(
-          child: Text('同义句>>', style: _style,),
-          onTap: () async {
-            _onoff[1] = !_onoff[1];
-            if(_onoff[1] == false) {
-              _synonymSentences.clear();
-              await Future.forEach(widget._sentence.synonym,
-                (e) async {
-                  var s = SentenceSerializer()..id = e;
-                  await s.retrieve(update:true);
-                  _synonymSentences.add(s);
-                }
-              );
-              
-            }
-            setState(() {});
-          },
-        ) : SizedBox(height: 0, width: 0,),
-        widget._sentence.antonym.length > 0 ?
-        InkWell(
-          child: Text('反义句>>', style: _style,),
-          onTap: () async {
-            _onoff[2] = !_onoff[2];
-            if(_onoff[2] == false) {
-              _antonymSentences.clear();
-              await Future.forEach(widget._sentence.antonym,
-                (e) async {
-                  var s = SentenceSerializer()..id = e;
-                  await s.retrieve(update:true);
-                  _antonymSentences.add(s);
-                }
-              );
-            }
-            setState(() {});
-          },
-        ) : SizedBox(height: 0, width: 0,),
-      ],
-    );
 
   @override
   Widget build(BuildContext context) =>
   ListTile(
+    leading: Text('id[${widget._sentence.id}]', style: TextStyle(fontSize: 12, color: Colors.deepOrange),),
     title: Wrap(
       spacing: 10.0,
       children:[
         Text(widget._sentence.en),
         SentenceDetails(sentence: widget._sentence),
-        _buildOthers(),
       ],
     ),
-    subtitle: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(widget._sentence.cn),
-        Offstage(
-          offstage: _onoff[0],
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: widget._sentence.grammarSet.map<Widget>(
-              (e) => ShowGrammar(
-                grammar: e,
-                delete: () {
-                  e.delete();
-                  setState(() => widget._sentence.grammarSet.remove(e));
-                },
-                )
-            ).toList(),
-          ),
-        ),
-        Offstage(
-          offstage: _onoff[1],
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _synonymSentences.map<Widget>(
-              (e) => ShowSentence(
-                sentence: e,
-                delete: () {
-                  e.delete();
-                  widget._sentence.synonym.remove(e.id);
-                  setState(() => _synonymSentences.remove(e));
-                },
-                )
-            ).toList(),
-          ),
-        ),
-        Offstage(
-          offstage: _onoff[2],
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _antonymSentences.map<Widget>(
-              (e) => ShowSentence(
-                sentence: e,
-                delete: () {
-                  e.delete();
-                  widget._sentence.antonym.remove(e.id);
-                  setState(() => _antonymSentences.remove(e));
-                },
-                )
-            ).toList(),
-          ),
-        )
-      ],
+    trailing: EditDelete(
+      edit: () async {
+        var sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'编辑句子','sentence':SentenceSerializer().from(widget._sentence)})) as SentenceSerializer;
+        if(sentence != null) await widget._sentence.from(sentence).save();
+        setState(() {});
+      },
+      delete: widget._delete,
     ),
-    trailing: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        InkWell(
-          child: Text('编辑', style: TextStyle(color: Theme.of(context).primaryColor),),
-          onTap: () async {
-            SentenceSerializer sentence = SentenceSerializer().fromJson(widget._sentence.toJson());
-            var s = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'编辑句子','sentence':sentence})) as SentenceSerializer;
-            if(s != null) {
-              widget._sentence.fromJson(s.toJson());
-              widget._sentence.save();
-            }
-            setState(() {});
-          }
-        ),
-        SizedBox(width: 10,),
-        widget._delete != null ?
-        InkWell(
-          child: Text('删除', style: TextStyle(color: Colors.pink,)),
-          onTap: () {widget._delete();},
-        ) : SizedBox(width: 0,),
-      ],
-    )
   );
 }
+

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/routes/edit/etyma/edit_etymas.dart';
+import 'package:flutter_prj/routes/edit/paraphrase/edit_paraphrase.dart';
 import 'package:flutter_prj/routes/edit/sentence/edit_sentence.dart';
 import 'package:flutter_prj/routes/edit/sentence/edit_sentences.dart';
 import 'package:flutter_prj/routes/edit/edit_tags.dart';
 import 'package:flutter_prj/routes/edit/grammar/edit_grammar.dart';
 import 'package:flutter_prj/routes/edit/grammar/edit_grammars.dart';
 import 'package:flutter_prj/routes/edit/etyma/edit_etyma.dart';
+import 'package:flutter_prj/routes/edit/sentence_pattern/edit_sentence_pattern.dart';
+import 'package:flutter_prj/routes/edit/sentence_pattern/edit_sentence_patterns.dart';
 import 'package:flutter_prj/routes/edit/word/edit_word.dart';
 import 'package:flutter_prj/routes/edit/word/edit_words.dart';
 import 'package:flutter_prj/routes/login.dart';
@@ -56,6 +59,10 @@ final _routes = {
                                         ),
   '/edit_etymas': (context) => EditEtymas(),
   '/edit_etyma': (context, {arguments}) => EditEtyma(title:arguments['title'], etyma:arguments['etyma']),
+  '/edit_paraphrase': (context, {arguments}) => EditParaphrase(title:arguments['title'], paraphrase:arguments['paraphrase']),
+  '/edit_sentence_patterns': (context) => EditSentencePatterns(),
+  '/edit_sentence_pattern': (context, {arguments}) => EditSentencePattern(title:arguments['title'], sentencePattern:arguments['sentence_pattern']),
+
 };
 
 // 实现命名路由传参的函数

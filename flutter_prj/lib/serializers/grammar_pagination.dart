@@ -16,10 +16,11 @@ class GrammarPaginationSerializer {
   List<GrammarSerializer> results = [];
   GrammarSerializerFilter filter = GrammarSerializerFilter();
 
-  Future<GrammarPaginationSerializer> retrieve({Map<String, dynamic> queryParameters, bool update=false, bool cache=false}) async {
-    (queryParameters != null && filter.queryset != null) ? queryParameters.addAll(filter.queryset) : queryParameters = filter.queryset;
-    var res = await Http().request(HttpType.GET, '/dictionary/grammar/', queryParameters:queryParameters, cache:cache);
-    return update ? this.fromJson(res.data) : GrammarPaginationSerializer().fromJson(res.data);
+  Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
+    (queries != null && filter.queryset != null) ? queries.addAll(filter.queryset) : queries = filter.queryset;
+    var res = await Http().request(HttpType.GET, '/dictionary/grammar/', queries:queries, cache:cache);
+    if(res != null) this.fromJson(res.data);
+    return res != null;
   }
 
   GrammarPaginationSerializer fromJson(Map<String, dynamic> json) {
@@ -38,6 +39,14 @@ class GrammarPaginationSerializer {
     'previous': previous,
     'results': results == null ? null : results.map((e) => e.toJson()).toList(),
   };
+
+  GrammarPaginationSerializer from(GrammarPaginationSerializer instance) {
+    count = instance.count;
+    next = instance.next;
+    previous = instance.previous;
+    results = List.from(instance.results.map((e) => GrammarSerializer().from(e)).toList());
+    return this;
+  }
 }
 
 class GrammarSerializerFilter {
@@ -57,4 +66,3 @@ class GrammarSerializerFilter {
     content__icontains = null;
   }
 }
-

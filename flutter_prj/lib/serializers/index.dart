@@ -13,6 +13,7 @@ export 'login.dart';
 export 'word.dart';
 export 'word_pagination.dart';
 export 'sentence_pattern.dart';
+export 'sentence_pattern_pagination.dart';
 export 'paraphrase.dart';
 export 'word_tag.dart';
 export 'etyma.dart';

@@ -40,7 +40,12 @@ class UserTab extends StatelessWidget {
     {
       'title': '编辑词根词缀',
       'icon': Icon(Icons.g_translate_sharp),
-      'route':'/edit_etymas',
+      'route': '/edit_etymas',
+    },
+    {
+      'title': '编辑常用句型',
+      'icon': Icon(Icons.g_translate_sharp),
+      'route': '/edit_sentence_patterns',
     }
   ];
   final statistics = [

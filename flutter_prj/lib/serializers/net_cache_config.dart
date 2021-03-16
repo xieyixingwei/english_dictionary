@@ -4,14 +4,12 @@
 // **************************************************************************
 
 
-
 class NetCacheConfigSerializer {
   NetCacheConfigSerializer();
 
   bool enable = true;
   num maxAge = 1000;
   num maxCount = 100;
-  
 
 
   NetCacheConfigSerializer fromJson(Map<String, dynamic> json) {
@@ -26,6 +24,13 @@ class NetCacheConfigSerializer {
     'maxAge': maxAge,
     'maxCount': maxCount,
   };
+
+  NetCacheConfigSerializer from(NetCacheConfigSerializer instance) {
+    enable = instance.enable;
+    maxAge = instance.maxAge;
+    maxCount = instance.maxCount;
+    return this;
+  }
 }
 
 

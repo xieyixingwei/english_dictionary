@@ -24,7 +24,7 @@ class _EditWordsState extends State<EditWords> {
   }
 
   void retrieve() async {
-    await _words.retrieve(queryParameters:{'page_size':_pageSize, 'page_index':_pageIndex}, update: true);
+    await _words.retrieve(queries:{'page_size':_pageSize, 'page_index':_pageIndex});
     setState((){});
   }
 
@@ -75,7 +75,7 @@ class _EditWordsState extends State<EditWords> {
           tooltip: '搜索',
           icon: Icon(Icons.search),
           onPressed: () async {
-            await _words.retrieve(queryParameters:{'page_size':_pageSize, 'page_index':_pageIndex}, update: true);
+            await _words.retrieve(queries:{'page_size':_pageSize, 'page_index':_pageIndex});
             setState((){});
           },
         ),
@@ -87,7 +87,7 @@ class _EditWordsState extends State<EditWords> {
             var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'添加句子'})) as WordSerializer;
             if(word != null && word.name.isNotEmpty) {
               _words.results.add(word);
-              word.create(update: true);
+              await word.save();
             }
             setState((){});
           },

@@ -48,7 +48,8 @@ class Global {
     grammarTypeOptions = gTypes.map((e) => e.name).toList();
     List<GrammarTagSerializer> gTags = await GrammarTagSerializer.list();
     grammarTagOptions = gTags.map((e) => e.name).toList();
-    EtymaPaginationSerializer etymas = await EtymaPaginationSerializer().retrieve(update: true);
+    EtymaPaginationSerializer etymas = EtymaPaginationSerializer();
+    await etymas.retrieve();
     etymaOptions = etymas.results.map((e) => e.name).toList();
   }
 

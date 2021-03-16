@@ -27,13 +27,13 @@ class _LoginPageState extends State<LoginPage> {
       try {
         String uname = _unameController.text;
         String passwd = _pwdController.text;
-        LoginSerializer login = await LoginSerializer().login(data:{"uname":uname, "passwd":passwd});
-        
+        LoginSerializer login = LoginSerializer();
+        await login.login(data:{"uname":uname, "passwd":passwd});
         Global.localStore.token = login.token;
         Http.token = login.token;
 
         user = UserSerializer()..uname = uname;
-        await user.retrieve(update:true);
+        await user.retrieve();
 
         Global.netCache.clear(); //清空所有缓存
 
