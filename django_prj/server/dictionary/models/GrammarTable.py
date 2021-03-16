@@ -13,8 +13,9 @@ class GrammarTable(models.Model):
     content = models.TextField() # 内容 markdown文本
     image = models.ImageField(upload_to='grammar_images/', null=True, blank=True, verbose_name="图片讲解") # 图片讲解
     vedio = models.FileField(upload_to='grammar_vedios/', null=True, blank=True, verbose_name="视频讲解") # 视频讲解
-    wordForeign = models.ForeignKey(to=WordTable, related_name='grammarSet', null=True, on_delete=models.CASCADE)
-    sentenceForeign = models.ForeignKey(to=SentenceTable, related_name='grammarSet', null=True, on_delete=models.CASCADE)
+    wordForeign = models.ForeignKey(to=WordTable, related_name='grammarSet', null=True, on_delete=models.SET_NULL)
+    # on_delete=models.SET_NULL: 当主表项被删除时,从表项不会被删除，但是对应字段被设置为NULL
+    sentenceForeign = models.ForeignKey(to=SentenceTable, related_name='grammarSet', null=True, on_delete=models.SET_NULL)
     class Meta:
         ordering = ['id']  # 消除list警告UnorderedObjectListWarning: Pagination may yield inconsistent results with an unordered object_list
 

@@ -50,7 +50,7 @@ class _SentenceFilter(filterset.FilterSet):
             'cn': ['icontains'],
             'type': ['exact'],
             'tag': ['icontains'],
-            'tense': ['icontains'],
+            'tense': ['exact'],
             'pattern': ['icontains']
         }
 

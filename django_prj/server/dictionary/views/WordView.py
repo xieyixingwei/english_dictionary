@@ -173,6 +173,7 @@ class WordTagView(ModelViewSetPermissionSerializerMap):
 
 
 class _SentencePatternRetrieveSerializer(serializers.ModelSerializer):
+    paraphraseSet = _ParaphraseSerializer(many=True, read_only=True)
     class Meta:
         model = SentencePatternTable
         fields = '__all__'
@@ -221,6 +222,7 @@ class SentencePatternView(ModelViewSetPermissionSerializerMap):
 
 
 class _ParaphraseRetrieveSerializer(serializers.ModelSerializer):
+    sentenceSet = SentenceSerializer(many=True, read_only=True)
     class Meta:
         model = ParaphraseTable
         fields = '__all__'

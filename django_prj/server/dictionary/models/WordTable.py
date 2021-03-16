@@ -7,13 +7,13 @@ class WordTable(models.Model):
     单词表
     """
     name = models.CharField(max_length=32, primary_key=True)     # 单词 (primary key)
-    voiceUs = models.CharField(max_length=32, null=True) # 音标 美国
-    voiceUk = models.CharField(max_length=32, null=True) # 音标 英国
+    voiceUs = models.CharField(max_length=32, null=True, blank=True) # 音标 美国
+    voiceUk = models.CharField(max_length=32, null=True, blank=True) # 音标 英国
     morph = JSONFieldUtf8(null=True)                 # 单词形态
     tag = JSONFieldUtf8(null=True)                  # 标记 [情态动词,动物名词,蔬菜名词]
     etyma = JSONFieldUtf8(null=True)    # 词根词缀 [root1,root2,...]
-    origin = models.CharField(max_length=512, null=True) # 词源 markdown "1660年左右进入英语，直接源自中古拉丁语的coordinare，意为同一等级的。"
-    shorthand = models.CharField(max_length=256, null=True) # 速记 markdown
+    origin = models.CharField(max_length=512, null=True, blank=True) # 词源 markdown "1660年左右进入英语，直接源自中古拉丁语的coordinare，意为同一等级的。"
+    shorthand = models.CharField(max_length=256, null=True, blank=True) # 速记 markdown
     synonym = models.ManyToManyField(to='self', blank=True) # 近义词 [word1,word2,...]
     antonym = models.ManyToManyField(to='self', blank=True) # 反义词 [word1,word2,...]
     image = models.ImageField(upload_to='word_images/', null=True, blank=True, verbose_name="图片讲解") # 图片讲解
@@ -65,7 +65,8 @@ class SentencePatternTable(models.Model):
     id = models.AutoField(primary_key=True)
     content = models.CharField(max_length=64)  # 内容
     wordForeign = models.ForeignKey(to=WordTable, related_name='sentencePatternSet', null=True, on_delete=models.CASCADE)
-
+    class Meta:
+        ordering = ['id'] 
 
 class ParaphraseTable(models.Model):
     """
@@ -76,7 +77,8 @@ class ParaphraseTable(models.Model):
     partOfSpeech = models.CharField(max_length=32)   # 词性
     wordForeign = models.ForeignKey(to=WordTable, null=True, related_name='paraphraseSet', on_delete=models.CASCADE)
     sentencePatternForeign = models.ForeignKey(to=SentencePatternTable, null=True, related_name='paraphraseSet', on_delete=models.CASCADE)
-
+    class Meta:
+        ordering = ['id'] 
 
 class EtymaTable(models.Model):
     """
@@ -120,3 +122,5 @@ class DistinguishWordTable(models.Model):
     image = models.ImageField(upload_to='distinguish_word_images/', null=True, blank=True, verbose_name="图片讲解") # 图片讲解
     vedio = models.FileField(upload_to='distinguish_word_videos/', null=True, blank=True, verbose_name="视频讲解") # 视频讲解
     wordsForeign = models.ManyToManyField(to=WordTable, related_name='distinguishSet', blank=True)
+    class Meta:
+        ordering = ['id'] 

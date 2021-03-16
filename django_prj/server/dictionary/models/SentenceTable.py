@@ -11,7 +11,7 @@ class SentenceTable(models.Model):
     cn = models.CharField(max_length=512, null=True) # 中文
     type = models.IntegerField(default=0)  # sentence|phrase|词汇搭配
     tag = JSONFieldUtf8(null=True)    # 标记 [日常用语,商务用语]
-    tense = JSONFieldUtf8(null=True)   # 时态 [一般过去式,被动语态]
+    tense = models.CharField(max_length=32, null=True)   # 时态 [一般过去式,被动语态]
     pattern = JSONFieldUtf8(null=True)    # 句型 [复合句,问候语,从句,陈述句]
     synonym = models.ManyToManyField(to='self', blank=True) # 同义句 [Sentence.id,Sentence.id,...]
     antonym = models.ManyToManyField(to='self', blank=True) # 反义句 [Sentence.id,Sentence.id,...]
