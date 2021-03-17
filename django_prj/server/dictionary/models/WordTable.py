@@ -66,7 +66,7 @@ class SentencePatternTable(models.Model):
     content = models.CharField(max_length=64)  # 内容
     wordForeign = models.ForeignKey(to=WordTable, related_name='sentencePatternSet', null=True, on_delete=models.CASCADE)
     class Meta:
-        ordering = ['id'] 
+        ordering = ['id']
 
 class ParaphraseTable(models.Model):
     """
@@ -117,7 +117,6 @@ class DistinguishWordTable(models.Model):
     词义辨析表
     """
     id = models.AutoField(primary_key=True)
-    words = JSONFieldUtf8(null=True)      # 单词列表 [word1,word2,...]
     content = models.TextField() # 内容 markdown文本
     image = models.ImageField(upload_to='distinguish_word_images/', null=True, blank=True, verbose_name="图片讲解") # 图片讲解
     vedio = models.FileField(upload_to='distinguish_word_videos/', null=True, blank=True, verbose_name="视频讲解") # 视频讲解
