@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/edit/distinguish_word/edit_distinguish.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/SelectDialog.dart';
 import 'package:flutter_prj/widgets/Tag.dart';
@@ -393,6 +394,39 @@ class _EditWordState extends State<EditWord> {
                       ),
                     ),
                     SizedBox(height: 20,),
+                    WrapOutline(
+                      labelText: '词义辨析',
+                      children: widget._word.distinguishSet.map<Widget>((e) =>
+                        Tag(
+                          label: InkWell(
+                            child: Text('${e.id}', style: TextStyle(color: Colors.amberAccent)),
+                            onTap: () async {
+                              var d = DistinguishSerializer()..id = e.id;
+                              bool ret = await d.retrieve();
+                              if(ret) {
+                                d = (await Navigator.pushNamed(context, '/edit_distinguish', arguments: {'title':'编辑${widget._word.name}的词义辨析', 'distinguish': DistinguishSerializer().from(d)})) as DistinguishSerializer;
+                                if(d != null) {
+                                  await d.save();
+                                }
+                              }
+                              setState((){});
+                            },
+                          ),
+                          onDeleted: () => setState(() => widget._word.distinguishSet.remove(e)),
+                        )).toList(),
+                      suffix: TextButton(
+                        child: Text('添加',),
+                        onPressed: () async {
+                          var d = (await Navigator.pushNamed(context, '/edit_distinguish', arguments: {'title':'给${widget._word.name}添加词义辨析'})) as DistinguishSerializer;
+                          if(double.infinity != null) {
+                            bool ret = await d.save();
+                            if(ret) {
+                              setState(() => widget._word.distinguishSet.add(d));
+                            }
+                          }
+                        },
+                      ),
+                    ),
                     OkCancel(ok: () {
                       if((_formKey.currentState as FormState).validate()) // 验证各个表单字段是否合法
                         Navigator.pop(context, widget._word);

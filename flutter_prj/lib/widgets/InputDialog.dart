@@ -63,7 +63,7 @@ void popInputDialog({BuildContext context, Widget title, List<Widget> children, 
           SimpleDialog(
             title: title,
             contentPadding: EdgeInsets.fromLTRB(10,10,10,10),
-            children: children != null ? children: [
+            children: children ?? [
               TextField(
                 maxLines: null,
                 controller: textFeildCtrl,

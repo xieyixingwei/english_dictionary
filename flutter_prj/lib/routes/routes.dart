@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/edit/distinguish_word/edit_distinguish.dart';
+import 'package:flutter_prj/routes/edit/distinguish_word/edit_distinguishes.dart';
 import 'package:flutter_prj/routes/edit/etyma/edit_etymas.dart';
 import 'package:flutter_prj/routes/edit/paraphrase/edit_paraphrase.dart';
 import 'package:flutter_prj/routes/edit/sentence/edit_sentence.dart';
@@ -62,7 +64,8 @@ final _routes = {
   '/edit_paraphrase': (context, {arguments}) => EditParaphrase(title:arguments['title'], paraphrase:arguments['paraphrase']),
   '/edit_sentence_patterns': (context) => EditSentencePatterns(),
   '/edit_sentence_pattern': (context, {arguments}) => EditSentencePattern(title:arguments['title'], sentencePattern:arguments['sentence_pattern']),
-
+  '/edit_distinguishes': (context) => EditDistinguishes(),
+  '/edit_distinguish': (context, {arguments}) => EditDistinguish(title:arguments['title'], distinguish:arguments['distinguish']),
 };
 
 // 实现命名路由传参的函数

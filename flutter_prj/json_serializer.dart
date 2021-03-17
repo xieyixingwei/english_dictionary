@@ -139,7 +139,7 @@ class Member {
 
   String get unListType => isForeign ? typeSerializer.primaryMember.type : _unListType;
   String get type => isList ? 'List<$unListType>' : unListType;
-  String get init => isForeign ? null : _init;
+  String get init => isForeign ? (isList ? '[]' : null) : _init;
 
   String get save {
     if(!isSerializerType) return null;

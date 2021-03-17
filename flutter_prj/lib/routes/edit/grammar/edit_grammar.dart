@@ -3,7 +3,6 @@ import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/serializers/grammar.dart';
 import 'package:flutter_prj/widgets/SelectDialog.dart';
 import 'package:flutter_prj/widgets/wrap_custom.dart';
-import 'package:flutter_prj/widgets/wrap_selectable.dart';
 import 'package:flutter_prj/widgets/ok_cancel.dart';
 
 
@@ -13,7 +12,7 @@ class EditGrammar extends StatefulWidget {
 
   EditGrammar({Key key, String title, GrammarSerializer grammar})
     : _title = title,
-      _grammar = grammar != null ? grammar : GrammarSerializer(),
+      _grammar = grammar ?? GrammarSerializer(),
       super(key:key);
 
   @override

@@ -4,7 +4,7 @@
     "content": "",
     "_image": "",
     "_vedio": "",
-    "wordsForeign @foreign": "$word",
+    "wordsForeign @foreign": ["$word"],
     "__http__": {
         "url": "/dictionary/distinguish_word/",
         "methods": [
@@ -25,6 +25,29 @@
             },
             {
                 "name": "save"
+            }
+        ]
+    }
+}
+
+
+{ // 词义辨析分页查询
+    "__name__": "distinguish_pagination",
+    "count": 0,
+    "next": "",
+    "previous": "",
+    "results": ["$distinguish"],
+    "__filter__": {
+        "__serializer__": "$distinguish",
+        "wordsForeign": ["icontains"],
+        "content": ["icontains"]
+    },
+    "__http__": {
+        "url": "/dictionary/distinguish_word/",
+        "methods": [
+            {
+                "name": "retrieve",
+                "filter": true
             }
         ]
     }

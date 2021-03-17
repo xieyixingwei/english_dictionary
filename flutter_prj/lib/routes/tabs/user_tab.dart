@@ -46,6 +46,11 @@ class UserTab extends StatelessWidget {
       'title': '编辑常用句型',
       'icon': Icon(Icons.g_translate_sharp),
       'route': '/edit_sentence_patterns',
+    },
+    {
+      'title': '编辑词义辨析',
+      'icon': Icon(Icons.g_translate_sharp),
+      'route': '/edit_distinguishes'
     }
   ];
   final statistics = [

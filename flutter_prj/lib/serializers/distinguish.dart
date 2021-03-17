@@ -15,7 +15,7 @@ class DistinguishSerializer {
   String content = '';
   String image = '';
   String vedio = '';
-  String wordsForeign;
+  List<String> wordsForeign = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/dictionary/distinguish_word/', data:data ?? this.toJson(), queries:queries, cache:cache);
@@ -61,7 +61,9 @@ class DistinguishSerializer {
     content = json['content'] == null ? null : json['content'] as String;
     image = json['image'] == null ? null : json['image'] as String;
     vedio = json['vedio'] == null ? null : json['vedio'] as String;
-    wordsForeign = json['wordsForeign'] == null ? null : json['wordsForeign'] as String;
+    wordsForeign = json['wordsForeign'] == null
+                ? []
+                : json['wordsForeign'].map<String>((e) => e as String).toList();
     _id = id;
     return this;
   }
@@ -70,7 +72,7 @@ class DistinguishSerializer {
     'id': id,
     'words': words == null ? null : words.map((e) => e).toList(),
     'content': content,
-    'wordsForeign': wordsForeign,
+    'wordsForeign': wordsForeign == null ? null : wordsForeign.map((e) => e).toList(),
   };
 
   DistinguishSerializer from(DistinguishSerializer instance) {
@@ -79,7 +81,7 @@ class DistinguishSerializer {
     content = instance.content;
     image = instance.image;
     vedio = instance.vedio;
-    wordsForeign = instance.wordsForeign;
+    wordsForeign = List.from(instance.wordsForeign);
     _id = instance._id;
     return this;
   }
