@@ -46,126 +46,113 @@ class _EditSentencesState extends State<EditSentences> {
     );
   }
 
-  Widget _buildFilter(BuildContext context) =>
-    Wrap(
-      alignment: WrapAlignment.center,
-      runAlignment: WrapAlignment.center,
-      crossAxisAlignment: WrapCrossAlignment.end,
-      spacing: 10.0,
+  Widget _buildFilter(BuildContext context) {
+    final textStyle = const TextStyle(fontSize: 12,);
+    return Column(
       children: [
-        Container(
-          width: 100,
-          child: TextField(
-            maxLines: null,
-            onChanged: (v) => _sentences.filter.en__icontains = v.trim().isNotEmpty ? v.trim() : null,
-            decoration: InputDecoration(
-              labelText: '英文关键字',
-              border: OutlineInputBorder(),
+        Row(
+          children: [
+            Expanded(flex: 1, child: Container(),),
+            Expanded(
+              flex: 5,
+              child: TextField(
+                style: textStyle,
+                maxLines: null,
+                onChanged: (v) {
+                  _sentences.filter.en__icontains = v.trim().isNotEmpty ? v.trim() : null;
+                },
+                decoration: InputDecoration(
+                  hintText: '关键字',
+                  border: OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    splashRadius: 1.0,
+                    tooltip: '搜索',
+                    icon: Icon(Icons.search),
+                    onPressed: () async {
+                      bool ret = await _sentences.retrieve(queries:{'page_size': 10, 'page_index':1});
+                      if(ret) setState((){});
+                    },
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-        Container(
-          width: 100,
-          child: TextField(
-            maxLines: null,
-            onChanged: (v) => _sentences.filter.cn__icontains = v.trim().isNotEmpty ? v.trim() : null,
-            decoration: InputDecoration(
-              labelText: '中文关键字',
-              border: OutlineInputBorder(),
-            ),
-          ),
-        ),
-        Container(
-          width: 100,
-          child: DropdownButtonFormField(
-            isExpanded: true,
-            value: ddBtnValues.first,
-            items: _typeOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
-            decoration: InputDecoration(
-              labelText: "类型",
-              border: OutlineInputBorder(),
-            ),
-            onChanged: (v) {
-              num index = _typeOptions.indexOf(v);
-              _sentences.filter.type = index == 0 ? null : index - 1;
-              setState(() => ddBtnValues.first = v);
-            },
-          ),
-        ),
-        Container(
-          width: 100,
-          child: DropdownButtonFormField(
-            isExpanded: true,
-            value: ddBtnValues[1],
-            items: _tagOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
-            decoration: InputDecoration(
-              labelText: "Tag",
-              border: OutlineInputBorder(),
-            ),
-            onChanged: (v) {
-              _sentences.filter.tag__icontains = v != _tagOptions.first ? v : null;
-              setState(() => ddBtnValues[1] = v);
-            },
-          ),
-        ),
-        Container(
-          width: 100,
-          child: DropdownButtonFormField(
-            isExpanded: true,
-            value: ddBtnValues[2],
-            items: _tenseOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
-            decoration: InputDecoration(
-              labelText: "时态",
-              border: OutlineInputBorder(),
-            ),
-            onChanged: (v) {
-              _sentences.filter.tense = v != _tenseOptions.first ? v : null;
-              setState(() => ddBtnValues[2] = v);
-            },
-          ),
-        ),
-        Container(
-          width: 100,
-          child: DropdownButtonFormField(
-            isExpanded: true,
-            value: ddBtnValues[3],
-            items: _formOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
-            decoration: InputDecoration(
-              labelText: "句型",
-              border: OutlineInputBorder(),
-            ),
-            onChanged: (v) {
-              _sentences.filter.pattern__icontains = v != _formOptions.first ? v : null;
-              setState(() => ddBtnValues[3] = v);
+            SizedBox(width: 10,),
+            TextButton(
+              child: Text('添加例句'),
+              onPressed: () async {
+                var s = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'添加句子'})) as SentenceSerializer;
+                if(s != null) {
+                  var find = _sentences.results.where((e) => e.id == s.id);
+                  if(find.isEmpty) _sentences.results.add(s);
+                  else find.first.from(s);
+                  await s.save();
+                }
+                setState((){});
               },
-          ),
+            ),
+            Expanded(flex: 1, child: Container(),),
+          ],
         ),
-        IconButton(
-          splashRadius: 1.0,
-          tooltip: '搜索',
-          icon: Icon(Icons.search),
-          onPressed: () async {
-            await _sentences.retrieve(queries:{'page_size': 10, 'page_index':1});
-            setState((){});
-          },
-        ),
-        IconButton(
-          splashRadius: 1.0,
-          tooltip: '添加句子',
-          icon: Icon(Icons.add),
-          onPressed: () async {
-            var s = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'添加句子'})) as SentenceSerializer;
-            if(s != null) {
-              var find = _sentences.results.where((e) => e.id == s.id);
-              if(find.isEmpty) _sentences.results.add(s);
-              else find.first.from(s);
-              await s.save();
-            }
-            setState((){});
-          },
-        ),
+        Wrap(
+          alignment: WrapAlignment.start,
+          runAlignment: WrapAlignment.start,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 8.0,
+          runSpacing: 8.0,
+          children: [
+            Text('类型: ', style: TextStyle(fontSize: 12, color: Color.fromRGBO(132,132,132,1.0))),
+            DropdownButton(
+              elevation: 0,
+              value: ddBtnValues.first,
+              items: _tagOptions.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
+              onChanged: (v) {
+                num index = _typeOptions.indexOf(v);
+                _sentences.filter.type = index == 0 ? null : index - 1;
+                setState(() => ddBtnValues.first = v);
+              },
+              underline: Container(width: 0, height:0,),
+            ),
+            SizedBox(width: 8,),
+            Text('Tag: ', style: TextStyle(fontSize: 12, color: Color.fromRGBO(132,132,132,1.0))),
+            DropdownButton(
+              elevation: 0,
+              value: ddBtnValues[1],
+              items: _tagOptions.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
+              onChanged: (v) {
+                _sentences.filter.tag__icontains = v != _tagOptions.first ? v : null;
+                setState(() => ddBtnValues[1] = v);
+              },
+              underline: Container(width: 0, height:0,),
+            ),
+            SizedBox(width: 8,),
+            Text('时态: ', style: TextStyle(fontSize: 12, color: Color.fromRGBO(132,132,132,1.0))),
+            DropdownButton(
+              elevation: 0,
+              value: ddBtnValues[2],
+              items: _tenseOptions.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
+              onChanged: (v) {
+                _sentences.filter.tense = v != _tenseOptions.first ? v : null;
+                setState(() => ddBtnValues[2] = v);
+              },
+              underline: Container(width: 0, height:0,),
+            ),
+            SizedBox(width: 8,),
+            Text('句型: ', style: TextStyle(fontSize: 12, color: Color.fromRGBO(132,132,132,1.0))),
+            DropdownButton(
+              elevation: 0,
+              value: ddBtnValues[3],
+              items: _formOptions.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
+              onChanged: (v) {
+                _sentences.filter.pattern__icontains = v != _formOptions.first ? v : null;
+                setState(() => ddBtnValues[3] = v);
+              },
+              underline: Container(width: 0, height:0,),
+            ),
+          ],
+        )
       ],
     );
+  }
 
   @override
   Widget build(BuildContext context) {

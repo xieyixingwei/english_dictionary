@@ -1,92 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/widgets/Tag.dart';
+import 'package:flutter_prj/widgets/container_outline.dart';
 
 
-class WrapCustom extends StatefulWidget {
+class WrapOutlineTag extends StatefulWidget {
   final List<String> _data;
-  final Widget _lable;
-  final Widget _action;
-  final Widget _trailing;
+  final String _labelText;
+  final Widget _suffix;
 
-  WrapCustom({Key key, List<String> data, Widget lable, Widget action, Widget trailing})
+  WrapOutlineTag({Key key, List<String> data, String labelText, Widget child, Widget suffix})
     : _data = data,
-      _lable = lable,
-      _action = action,
-      _trailing = trailing,
+      _labelText = labelText,
+      _suffix = suffix,
       super(key: key);
 
   @override
-  _WrapCustomState createState() => _WrapCustomState();
+  _WrapOutlineTagState createState() => _WrapOutlineTagState();
 }
 
-class _WrapCustomState extends State<WrapCustom> {
+class _WrapOutlineTagState extends State<WrapOutlineTag> {
 
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-            spacing: 8.0,
-            runSpacing: 8.0,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: (<Widget>[widget._lable]
-              + widget._data.map<Widget>((e) =>
-                Tag(
-                  label:Text(e, style: TextStyle(color: Colors.amberAccent)),
-                  onDeleted: () => setState(() => widget._data.remove(e)),
-                  )
-                ).toList()
-              + <Widget>[widget._action]
-              + <Widget>[widget._trailing]).where((e) => e != null).toList(),
-            );
-  }
-}
-
-/*
-class WrapCustom<T> extends StatefulWidget {
-  final List<T> _data;
-  final Widget _lable;
-  final Widget _action;
-  final Widget _trailing;
-
-  WrapCustom({Key key, List<T> data, Widget lable, Widget action, Widget trailing})
-    : _data = data,
-      _lable = lable,
-      _action = action,
-      _trailing = trailing,
-      super(key: key);
-
-  @override
-  _WrapCustomState createState() => _WrapCustomState();
-}
-
-
-class _WrapCustomState extends State<WrapCustom> {
   @override
   Widget build(BuildContext context) =>
-    Wrap(
-      spacing: 8.0,
-      runSpacing: 8.0,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: (<Widget>[widget._lable] +
-        widget._data.map<Widget>((e) =>
-          Tag(
-            label: Text('$e', style: TextStyle(color: Colors.amberAccent)),
-            onDeleted: () => 
-            onPressed: () async {
-              var grammar = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title':'编辑句子语法', 'grammar': GrammarSerializer().from(e)})) as GrammarSerializer;
-              if(grammar != null) {
-                e.from(grammar);
-              }
-              setState((){});
-            },
-          )).toList() + 
-          [TextButton(
-            child: Text('添加',style: TextStyle(color: Colors.blueAccent)),
-            onPressed: () async {
-              var grammar = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title':'给句子添加语法'})) as GrammarSerializer;
-              if(grammar != null) {
-                setState(() => widget._sentence.grammarSet.add(grammar));
-              }
-            },
-          )]).where((e) => e != null).toList(),
+    WrapOutline(
+      labelText: widget._labelText,
+      children: (widget._data.map<Widget>((e) =>
+            Tag(
+              label:Text(e, style: TextStyle(color: Colors.amberAccent)),
+              onDeleted: () => setState(() => widget._data.remove(e)),
+              )
+            ).toList()
+        ),
+      suffix: widget._suffix,
     );
-*/
+}
+
+
+class WrapOutline extends StatelessWidget {
+  final String _labelText;
+  final List<Widget> _children;
+  final Widget _suffix;
+
+  WrapOutline({Key key, String labelText, List<Widget> children, Widget suffix})
+    : _labelText = labelText,
+      _children = children,
+      _suffix = suffix,
+      super(key: key);
+
+  @override
+  Widget build(BuildContext context) =>
+    ContainerOutline(
+      decoration: InputDecoration(
+        labelText: _labelText,
+        border: OutlineInputBorder(),
+        suffix: _suffix
+      ),
+      child: Wrap(
+        spacing: 8.0,
+        runSpacing: 8.0,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: _children,
+      ),
+    );
+}

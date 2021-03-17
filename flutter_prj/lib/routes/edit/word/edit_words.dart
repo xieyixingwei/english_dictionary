@@ -11,8 +11,8 @@ class EditWords extends StatefulWidget {
 
 class _EditWordsState extends State<EditWords> {
   WordPaginationSerializer _words = WordPaginationSerializer();
-  static final List<String> _tagOptions = ['选择Tags'] + Global.wordTagOptions;
-  static final List<String> _etymaOptions = ['选择词根'] + Global.etymaOptions;
+  static final List<String> _tagOptions = ['All'] + Global.wordTagOptions;
+  static final List<String> _etymaOptions = ['All'] + Global.etymaOptions;
   List<String> _ddBtnValues = [_tagOptions.first, _etymaOptions.first];
   num _pageSize = 10;
   num _pageIndex = 1;
@@ -43,57 +43,78 @@ class _EditWordsState extends State<EditWords> {
     );
   }
 
-  Widget _buildFilter(BuildContext context) =>
-    Wrap(
-      alignment: WrapAlignment.center,
-      runAlignment: WrapAlignment.center,
-      crossAxisAlignment: WrapCrossAlignment.end,
-      spacing: 10.0,
+  Widget _buildFilter(BuildContext context) {
+    final textStyle = const TextStyle(fontSize: 12,);
+    return Column(
       children: [
-        Container(
-          width: 100,
-          child: TextField(
-            maxLines: null,
-            onChanged: (val) => _words.filter.name = val.trim().length == 0 ? null : val.trim(),
-            decoration: InputDecoration(
-              labelText: '单词',
+        Row(
+          children: [
+            Expanded(flex: 1, child: Container(),),
+            Expanded(
+              flex: 5,
+              child: TextField(
+                maxLines: 1,
+                style: TextStyle(fontSize: 14,),
+                onChanged: (val) => _words.filter.name = val.trim().length == 0 ? null : val.trim(),
+                decoration: InputDecoration(
+                  hintText: '单词',
+                  border: OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    splashRadius: 1.0,
+                    tooltip: '搜索',
+                    icon: Icon(Icons.search),
+                    onPressed: () async {
+                      bool ret = await _words.retrieve(queries:{'page_size':_pageSize, 'page_index':_pageIndex});
+                      if(ret) setState((){});
+                    },
+                  ),
+                ),
+              ),
             ),
-          ),
+            SizedBox(width: 10,),
+            TextButton(
+              child: Text('添加单词'),
+              onPressed: () async {
+                var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'添加句子'})) as WordSerializer;
+                if(word != null && word.name.isNotEmpty) {
+                  _words.results.add(word);
+                  await word.save();
+                }
+                setState((){});
+              },
+            ),
+            Expanded(flex: 1, child: Container(),),
+          ],
         ),
-        DropdownButton(
-          value: _ddBtnValues[0],
-          items: _tagOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
-          onChanged: (v) {setState(() => _ddBtnValues[0] = v); _words.filter.tag__icontains = v != _tagOptions.first ? v : null;},
-        ),
-        DropdownButton(
-          value: _ddBtnValues[1],
-          items: _etymaOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
-          onChanged: (v) {setState(() => _ddBtnValues[1] = v); _words.filter.etyma__icontains = v != _etymaOptions.first ? v : null;},
-        ),
-        IconButton(
-          splashRadius: 1.0,
-          tooltip: '搜索',
-          icon: Icon(Icons.search),
-          onPressed: () async {
-            await _words.retrieve(queries:{'page_size':_pageSize, 'page_index':_pageIndex});
-            setState((){});
-          },
-        ),
-        IconButton(
-          splashRadius: 1.0,
-          tooltip: '添加单词',
-          icon: Icon(Icons.add),
-          onPressed: () async {
-            var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'添加句子'})) as WordSerializer;
-            if(word != null && word.name.isNotEmpty) {
-              _words.results.add(word);
-              await word.save();
-            }
-            setState((){});
-          },
-        ),
+        Wrap(
+          alignment: WrapAlignment.start,
+          runAlignment: WrapAlignment.start,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 8.0,
+          runSpacing: 8.0,
+          children: [
+            Text('Tag: ', style: TextStyle(fontSize: 12, color: Color.fromRGBO(132,132,132,1.0))),
+            DropdownButton(
+              elevation: 0,
+              value: _ddBtnValues[0],
+              items: _tagOptions.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
+              onChanged: (v) {setState(() => _ddBtnValues[0] = v); _words.filter.tag__icontains = v != _tagOptions.first ? v : null;},
+              underline: Container(width: 0, height:0,),
+            ),
+            SizedBox(width: 8,),
+            Text('时态: ', style: TextStyle(fontSize: 12, color: Color.fromRGBO(132,132,132,1.0))),
+            DropdownButton(
+              elevation: 0,
+              value: _ddBtnValues[1],
+              items: _etymaOptions.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
+              onChanged: (v) {setState(() => _ddBtnValues[1] = v); _words.filter.etyma__icontains = v != _etymaOptions.first ? v : null;},
+              underline: Container(width: 0, height:0,),
+            ),
+          ],
+        )
       ],
     );
+  }
 
   @override
   Widget build(BuildContext context) {

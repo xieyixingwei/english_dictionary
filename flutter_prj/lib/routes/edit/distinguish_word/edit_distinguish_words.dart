@@ -4,13 +4,13 @@ import 'package:flutter_prj/routes/edit/grammar/show_grammar.dart';
 import 'package:flutter_prj/serializers/index.dart';
 
 
-class EditGrammers extends StatefulWidget {
+class EditDistinguishWords extends StatefulWidget {
 
   @override
-  _EditGrammersState createState() => _EditGrammersState();
+  _EditDistinguishWordsState createState() => _EditDistinguishWordsState();
 }
 
-class _EditGrammersState extends State<EditGrammers> {
+class _EditDistinguishWordsState extends State<EditDistinguishWords> {
   GrammarPaginationSerializer _grammars = GrammarPaginationSerializer();
   static final List<String> typeOptions = ["All"] + Global.grammarTypeOptions;
   static final List<String> tagOptions = ["All"] + Global.grammarTagOptions;
@@ -123,7 +123,7 @@ class _EditGrammersState extends State<EditGrammers> {
   Widget build(BuildContext context) {
     return Scaffold(
                 appBar: AppBar(
-                  title: Text('编辑语法'),
+                  title: Text('编辑单词辨析'),
                 ),
                 body: Container(
                     padding: EdgeInsets.fromLTRB(20, 20, 20, 20),

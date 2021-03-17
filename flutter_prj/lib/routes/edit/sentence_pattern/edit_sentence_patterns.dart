@@ -23,35 +23,52 @@ class _EditSentencePatternsState extends State<EditSentencePatterns> {
     setState((){});
   }
 
-Widget _buildFilter(BuildContext context) =>
-  Wrap(
-    spacing: 10.0,
-    children: [
-      IconButton(
-        splashRadius: 1.0,
-        tooltip: '搜索',
-        icon: Icon(Icons.search),
-        onPressed: () async {
-          await _sentencePatterns.retrieve(queries:{"page_size": 10, "page_index":1});
-          setState((){});
-        },
-      ),
-      IconButton(
-        splashRadius: 1.0,
-        icon: Icon(Icons.add),
-        tooltip: '添加常用句型',
-        onPressed: () async {
-          var sp = (await Navigator.pushNamed(context, '/edit_sentence_pattern', arguments:{'title':'添加常用句型'})) as SentencePatternSerializer;
-          if(sp != null) {
-            _sentencePatterns.results.add(sp);
-            await sp.save();
-          }
-          setState((){});
-        },
-      ),
-    ],
-  );
-
+  Widget _buildFilter(BuildContext context) {
+    final textStyle = const TextStyle(fontSize: 12,);
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(flex: 1, child: Container(),),
+            Expanded(
+              flex: 5,
+              child: TextField(
+                maxLines: 1,
+                style: TextStyle(fontSize: 14,),
+                onChanged: (v) => {},
+                decoration: InputDecoration(
+                  hintText: '关键字',
+                  border: OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    splashRadius: 1.0,
+                    tooltip: '搜索',
+                    icon: Icon(Icons.search),
+                    onPressed: () async {
+                      await _sentencePatterns.retrieve(queries:{"page_size": 10, "page_index":1});
+                      setState((){});
+                    },
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 10,),
+            TextButton(
+              child: Text('添加常用句型'),
+              onPressed: () async {
+                var sp = (await Navigator.pushNamed(context, '/edit_sentence_pattern', arguments:{'title':'添加常用句型'})) as SentencePatternSerializer;
+                if(sp != null) {
+                  _sentencePatterns.results.add(sp);
+                  await sp.save();
+                }
+                setState((){});
+              },
+            ),
+            Expanded(flex: 1, child: Container(),),
+          ],
+        ),
+      ],
+    );
+  }
 
   Widget _buildListSentencePatterns(BuildContext context) =>
     Expanded(
@@ -85,7 +102,3 @@ Widget _buildFilter(BuildContext context) =>
                 );
   }
 }
-
-
-
-

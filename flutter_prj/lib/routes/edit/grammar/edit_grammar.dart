@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/serializers/grammar.dart';
+import 'package:flutter_prj/widgets/SelectDialog.dart';
+import 'package:flutter_prj/widgets/wrap_custom.dart';
 import 'package:flutter_prj/widgets/wrap_selectable.dart';
 import 'package:flutter_prj/widgets/ok_cancel.dart';
 
@@ -47,7 +49,8 @@ class _EditGrammarState extends State<EditGrammar> {
                       decoration: InputDecoration(
                         labelText: "id",
                         border: OutlineInputBorder(),
-                        suffix: IconButton(
+                        suffixIcon: IconButton(
+                          splashRadius: 1.0,
                           icon: Icon(Icons.search),
                           tooltip: '搜索',
                           onPressed: () async {
@@ -61,25 +64,49 @@ class _EditGrammarState extends State<EditGrammar> {
                       //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
                     SizedBox(height: 20,),
-                    WrapSelectable(
+                    WrapOutlineTag(
                       data: widget._grammar.type,
-                      options: Global.grammarTypeOptions,
-                      lable: Text('类型'),
-                      action: Text('添加', style: TextStyle(color: Colors.blueAccent),),
-                      trailing: TextButton(
-                        child: Text('编辑类型'),
-                        onPressed: () => Navigator.pushNamed(context, '/edit_grammar_type'),
+                      labelText: '类型',
+                      suffix: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextButton(
+                            child: Text('添加',),
+                            onPressed: () => popSelectDialog(
+                              context: context,
+                              title: Text('选择词根词缀'),
+                              options: Global.grammarTypeOptions,
+                              close: (v) => setState(() => widget._grammar.type.add(v)),
+                            ),
+                          ),
+                          TextButton(
+                            child: Text('编辑'),
+                            onPressed: () => Navigator.pushNamed(context, '/edit_grammar_type'),
+                          ),
+                        ]
                       ),
                     ),
                     SizedBox(height: 20,),
-                    WrapSelectable(
+                    WrapOutlineTag(
                       data: widget._grammar.tag,
-                      options: Global.grammarTagOptions,
-                      lable: Text('Tag'),
-                      action: Text('添加', style: TextStyle(color: Colors.blueAccent),),
-                      trailing: TextButton(
-                        child: Text('编辑Tag'),
-                        onPressed: () => Navigator.pushNamed(context, '/edit_grammar_tag'),
+                      labelText: 'Tag',
+                      suffix: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextButton(
+                            child: Text('添加',),
+                            onPressed: () => popSelectDialog(
+                              context: context,
+                              title: Text('选择Tag'),
+                              options: Global.grammarTagOptions,
+                              close: (v) => setState(() => widget._grammar.tag.add(v)),
+                            ),
+                          ),
+                          TextButton(
+                            child: Text('编辑'),
+                            onPressed: () => Navigator.pushNamed(context, '/edit_grammar_tag'),
+                          ),
+                        ]
                       ),
                     ),
                     SizedBox(height: 20,),

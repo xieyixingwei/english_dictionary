@@ -43,33 +43,47 @@ class _EditEtymaState extends State<EditEtyma> {
               child:Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  DropdownButtonFormField(
-                    autofocus: false,
-                    value: _select,
-                    items: _options.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
-                    decoration: InputDecoration(
-                      labelText: "类型",
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (v) {
-                      widget._etyma.type = _options.indexOf(v);
-                      setState(() => _select = v);
-                    },
-                  ),
-                  SizedBox(height: 20,),
-                  TextFormField(
-                    autofocus: false,
-                    keyboardType: TextInputType.number, // 键盘回车键的样式
-                    textInputAction: TextInputAction.next,
-                    controller: TextEditingController(text:widget._etyma.name ?? ''),
-                    maxLines: 1,
-                    style: textStyle,
-                    decoration: InputDecoration(
-                      labelText: "词根词缀",
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (value) => widget._etyma.name = value.trim(),
-                    validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
+                  Row(
+                    children: [
+                      ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: 120),
+                        child: DropdownButtonFormField(
+                          autofocus: false,
+                          value: _select,
+                          elevation: 0,
+                          items: _options.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
+                          decoration: InputDecoration(
+                            isDense: true,
+                            contentPadding: EdgeInsets.fromLTRB(10,18,2,18),
+                            prefixText: '类型:  ',
+                            prefixStyle: TextStyle(fontSize: 14, color: Color.fromRGBO(132,132,132,1.0)),
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (v) {
+                            widget._etyma.type = _options.indexOf(v);
+                            setState(() => _select = v);
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 10,),
+                      Expanded(
+                        flex: 5,
+                        child: TextFormField(
+                          autofocus: false,
+                          keyboardType: TextInputType.number, // 键盘回车键的样式
+                          textInputAction: TextInputAction.next,
+                          controller: TextEditingController(text:widget._etyma.name ?? ''),
+                          maxLines: 1,
+                          style: textStyle,
+                          decoration: InputDecoration(
+                            labelText: "词根词缀",
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (value) => widget._etyma.name = value.trim(),
+                          validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 20,),
                   TextFormField(

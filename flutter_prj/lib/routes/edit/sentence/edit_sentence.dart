@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/widgets/SelectDialog.dart';
 import 'package:flutter_prj/widgets/Tag.dart';
 import 'package:flutter_prj/widgets/ok_cancel.dart';
 import 'package:flutter_prj/serializers/index.dart';
+import 'package:flutter_prj/widgets/wrap_custom.dart';
 import 'package:flutter_prj/widgets/wrap_selectable.dart';
 
 
@@ -54,11 +56,12 @@ class _EditSentenceState extends State<EditSentence> {
                       textInputAction: TextInputAction.next,
                       controller: idctrl,
                       maxLines: 1,
-                      style: TextStyle(fontSize: 14),
+                      style: textStyle,
                       decoration: InputDecoration(
                         labelText: "id",
                         border: OutlineInputBorder(),
-                        suffix: IconButton(
+                        suffixIcon: IconButton(
+                          splashRadius: 1.0,
                           icon: Icon(Icons.search),
                           tooltip: '搜索',
                           onPressed: () async {
@@ -105,9 +108,10 @@ class _EditSentenceState extends State<EditSentence> {
                     DropdownButtonFormField(
                       autofocus: false,
                       value: _typeSelected,
-                      items: _types.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
+                      items: _types.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
                       decoration: InputDecoration(
-                        labelText: "类型",
+                        prefixText: '类型:  ',
+                        prefixStyle: TextStyle(fontSize: 14, color: Color.fromRGBO(132,132,132,1.0)),
                         border: OutlineInputBorder(),
                       ),
                       onChanged: (v) {
@@ -116,23 +120,36 @@ class _EditSentenceState extends State<EditSentence> {
                       },
                     ),
                     SizedBox(height: 20,),
-                    WrapSelectable(
+                    WrapOutlineTag(
                       data: widget._sentence.tag,
-                      options: Global.sentenceTagOptions,
-                      lable: Text('Tag: '),
-                      action: Text('添加', style: TextStyle(color: Colors.blueAccent),),
-                      trailing: TextButton(
-                        child: Text('编辑Tag'),
-                        onPressed: () => Navigator.pushNamed(context, '/edit_sentence_tag'),
-                      ),
+                      labelText: 'Tag',
+                      suffix: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextButton(
+                            child: Text('添加',),
+                            onPressed: () => popSelectDialog(
+                              context: context,
+                              title: Text('选择Tag'),
+                              options: Global.etymaOptions,
+                              close: (v) => setState(() => widget._sentence.tag.add(v)),
+                            ),
+                          ),
+                          TextButton(
+                            child: Text('编辑'),
+                            onPressed: () => Navigator.pushNamed(context, '/edit_sentence_tag'),
+                          ),
+                        ]
+                      )
                     ),
                     SizedBox(height: 20,),
                     DropdownButtonFormField(
                       autofocus: false,
                       value: _tenseSelected,
-                      items: Global.tenseOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
+                      items: Global.tenseOptions.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
                       decoration: InputDecoration(
-                        labelText: "时态",
+                        prefixText: '时态:  ',
+                        prefixStyle: TextStyle(fontSize: 14, color: Color.fromRGBO(132,132,132,1.0)),
                         border: OutlineInputBorder(),
                       ),
                       onChanged: (v) {
@@ -141,115 +158,113 @@ class _EditSentenceState extends State<EditSentence> {
                       },
                     ),
                     SizedBox(height: 20,),
-                    WrapSelectable(
+                    WrapOutlineTag(
                       data: widget._sentence.pattern,
-                      options: Global.sentenceFormOptions,
-                      lable: Text('句型: '),
-                      action: Text('添加', style: TextStyle(color: Colors.blueAccent),),
+                      labelText: '句型',
+                      suffix: TextButton(
+                        child: Text('添加',),
+                        onPressed: () => popSelectDialog(
+                          context: context,
+                          title: Text('选择Tag'),
+                          options: Global.sentenceFormOptions,
+                          close: (v) => setState(() => widget._sentence.tag.add(v)),
+                        ),
+                      ),
                     ),
                     SizedBox(height: 20,),
-                    Wrap(
-                      spacing: 8.0,
-                      runSpacing: 8.0,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: (<Widget>[Text('同义句: ')] +
-                        widget._sentence.synonym.map<Widget>((e) =>
-                          Tag(
-                            label: InkWell(
-                              child: Text('$e', style: TextStyle(color: Colors.amberAccent)),
-                              onTap: () async {
-                                var sentence = SentenceSerializer()..id = e;
-                                bool ret = await sentence.retrieve();
-                                if(ret) {
-                                  sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'编辑同义句', 'sentence': SentenceSerializer().from(sentence)})) as SentenceSerializer;
-                                  if(sentence != null) {
-                                    await sentence.save();
-                                  }
-                                }
-                                setState((){});
-                              },
-                            ),
-                            onDeleted: () => setState(() => widget._sentence.synonym.remove(e)),
-                          )).toList() + 
-                          [TextButton(
-                            child: Text('添加',style: TextStyle(color: Colors.blueAccent)),
-                            onPressed: () async {
-                              var sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'添加同义句'})) as SentenceSerializer;
-                              if(sentence != null) {
-                                bool ret = await sentence.save();
-                                if(ret) {
-                                  setState(() => widget._sentence.synonym.add(sentence.id));
+                    WrapOutline(
+                      labelText: '同义句',
+                      children: widget._sentence.synonym.map<Widget>((e) =>
+                        Tag(
+                          label: InkWell(
+                            child: Text('$e', style: TextStyle(color: Colors.amberAccent)),
+                            onTap: () async {
+                              var sentence = SentenceSerializer()..id = e;
+                              bool ret = await sentence.retrieve();
+                              if(ret) {
+                                sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'编辑同义句', 'word': SentenceSerializer().from(sentence)})) as SentenceSerializer;
+                                if(sentence != null) {
+                                  await sentence.save();
                                 }
                               }
+                              setState((){});
                             },
-                          )]).where((e) => e != null).toList(),
+                          ),
+                          onDeleted: () => setState(() => widget._sentence.synonym.remove(e)),
+                        )).toList(),
+                      suffix: TextButton(
+                        child: Text('添加',),
+                        onPressed: () async {
+                          var sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'添加同义句'})) as SentenceSerializer;
+                          if(sentence != null) {
+                            bool ret = await sentence.save();
+                            if(ret) {
+                              setState(() => widget._sentence.synonym.add(sentence.id));
+                            }
+                          }
+                        },
+                      ),
                     ),
                     SizedBox(height: 20,),
-                    Wrap(
-                      spacing: 8.0,
-                      runSpacing: 8.0,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: (<Widget>[Text('反义句: ')] +
-                        widget._sentence.antonym.map<Widget>((e) =>
-                          Tag(
-                            label: InkWell(
-                              child: Text('$e', style: TextStyle(color: Colors.amberAccent)),
-                              onTap: () async {
-                                var sentence = SentenceSerializer()..id = e;
-                                bool ret = await sentence.retrieve();
-                                if(ret) {
-                                  sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'编辑反义句', 'sentence': SentenceSerializer().from(sentence)})) as SentenceSerializer;
-                                  if(sentence != null) {
-                                    await sentence.save();
-                                  }
-                                }
-                                setState((){});
-                              },
-                            ),
-                            onDeleted: () => setState(() => widget._sentence.antonym.remove(e)),
-                          )).toList() +
-                          [TextButton(
-                            child: Text('添加',style: TextStyle(color: Colors.blueAccent)),
-                            onPressed: () async {
-                              var sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'添加反义句'})) as SentenceSerializer;
-                              if(sentence != null) {
-                                bool ret = await sentence.save();
-                                if(ret) {
-                                  setState(() => widget._sentence.antonym.add(sentence.id));
+                    WrapOutline(
+                      labelText: '反义句',
+                      children: widget._sentence.antonym.map<Widget>((e) =>
+                        Tag(
+                          label: InkWell(
+                            child: Text('$e', style: TextStyle(color: Colors.amberAccent)),
+                            onTap: () async {
+                              var sentence = SentenceSerializer()..id = e;
+                              bool ret = await sentence.retrieve();
+                              if(ret) {
+                                sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'编辑反义句', 'word': SentenceSerializer().from(sentence)})) as SentenceSerializer;
+                                if(sentence != null) {
+                                  await sentence.save();
                                 }
                               }
+                              setState((){});
                             },
-                          )]).where((e) => e != null).toList(),
+                          ),
+                          onDeleted: () => setState(() => widget._sentence.antonym.remove(e)),
+                        )).toList(),
+                      suffix: TextButton(
+                        child: Text('添加',),
+                        onPressed: () async {
+                          var sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'添加反义句'})) as SentenceSerializer;
+                          if(sentence != null) {
+                            bool ret = await sentence.save();
+                            if(ret) {
+                              setState(() => widget._sentence.antonym.add(sentence.id));
+                            }
+                          }
+                        },
+                      ),
                     ),
                     SizedBox(height: 20,),
-                    Wrap(
-                      spacing: 8.0,
-                      runSpacing: 8.0,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: (<Widget>[Text('语法: ')] +
-                        widget._sentence.grammarSet.map<Widget>((e) =>
-                          Tag(
-                            label: InkWell(
-                              child: Text('${e.id}', style: TextStyle(color: Colors.amberAccent)),
-                              onTap: () async {
-                                var grammar = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title':'编辑句子语法', 'grammar': GrammarSerializer().from(e)})) as GrammarSerializer;
-                                if(grammar != null) {
-                                  e.from(grammar);
-                                }
-                                setState((){});
-                              },
-                            ),
-                            onDeleted: () => setState(() => widget._sentence.grammarSet.remove(e)),
-                          )).toList() + 
-                          [TextButton(
-                            child: Text('添加',style: TextStyle(color: Colors.blueAccent)),
-                            onPressed: () async {
-                              var grammar = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title':'给句子添加语法'})) as GrammarSerializer;
+                    WrapOutline(
+                      labelText: '相关语法',
+                      children: widget._sentence.grammarSet.map<Widget>((e) =>
+                        Tag(
+                          label: InkWell(
+                            child: Text('${e.id}', style: TextStyle(color: Colors.amberAccent)),
+                            onTap: () async {
+                              var grammar = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title':'编辑句子的语法', 'grammar': GrammarSerializer().from(e)})) as GrammarSerializer;
                               if(grammar != null) {
-                                setState(() => widget._sentence.grammarSet.add(grammar));
+                                e.from(grammar);
                               }
+                              setState((){});
                             },
-                          )]).where((e) => e != null).toList(),
+                          ),
+                          onDeleted: () => setState(() => widget._sentence.grammarSet.remove(e)),
+                        )).toList(),
+                      suffix: TextButton(
+                        child: Text('添加',),
+                        onPressed: () async {
+                          var grammar = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title':'给句子添加语法'})) as GrammarSerializer;
+                          if(grammar != null) {
+                            setState(() => widget._sentence.grammarSet.add(grammar));
+                          }
+                        },
+                      ),
                     ),
                     OkCancel(ok: () {
                       if((_formKey.currentState as FormState).validate()) // 验证各个表单字段是否合法

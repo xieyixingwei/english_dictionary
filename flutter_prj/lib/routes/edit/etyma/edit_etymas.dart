@@ -26,63 +26,73 @@ class _EditEtymasState extends State<EditEtymas> {
     setState((){});
   }
 
-Widget _buildFilter(BuildContext context) =>
-  Wrap(
-    crossAxisAlignment: WrapCrossAlignment.end,
-    spacing: 10.0,
-    children: [
-      Container(
-        width: 100,
-        child: TextField(
-          onChanged: (v) => _etymas.filter.name__icontains = v.trim().isNotEmpty ? v.trim() : null,
-          decoration: InputDecoration(
-            labelText: '词根词缀',
-            border: OutlineInputBorder(),
-          ),
+  Widget _buildFilter(BuildContext context) {
+    final textStyle = const TextStyle(fontSize: 12,);
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(flex: 1, child: Container(),),
+            Expanded(
+              flex: 5,
+              child: TextField(
+                maxLines: 1,
+                style: TextStyle(fontSize: 14,),
+                onChanged: (val) => (v) => _etymas.filter.name__icontains = v.trim().isNotEmpty ? v.trim() : null,
+                decoration: InputDecoration(
+                  hintText: '词根词缀',
+                  border: OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    splashRadius: 1.0,
+                    tooltip: '搜索',
+                    icon: Icon(Icons.search),
+                    onPressed: () async {
+                      await _etymas.retrieve(queries:{"page_size": 10, "page_index":1});
+                      setState((){});
+                    },
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 10,),
+            TextButton(
+              child: Text('添加词根词缀'),
+              onPressed: () async {
+                var g = (await Navigator.pushNamed(context, '/edit_etyma', arguments:{'title':'添加词根词缀'})) as EtymaSerializer;
+                if(g != null) {
+                  _etymas.results.add(g);
+                  Global.etymaOptions.add(g.name);
+                  await g.save();
+                }
+                setState((){});
+              },
+            ),
+            Expanded(flex: 1, child: Container(),),
+          ],
         ),
-      ),
-      Container(
-        width: 100,
-        child: DropdownButtonFormField(
-          isExpanded: true,
-          value: _selected[0],
-          items: _typeOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
-          decoration: InputDecoration(
-            labelText: "类型",
-            border: OutlineInputBorder(),
-          ),
-          onChanged: (v) {
-            setState(() => _selected[0] = v);
-            _etymas.filter.type = v != _typeOptions.first ? Global.etymaTypeOptions.indexOf(v) : null;
-          },
-        ),
-      ),
-      IconButton(
-        splashRadius: 1.0,
-        tooltip: '搜索',
-        icon: Icon(Icons.search),
-        onPressed: () async {
-          await _etymas.retrieve(queries:{"page_size": 10, "page_index":1});
-          setState((){});
-        },
-      ),
-      IconButton(
-        splashRadius: 1.0,
-        icon: Icon(Icons.add),
-        tooltip: '添加词根词缀',
-        onPressed: () async {
-          var g = (await Navigator.pushNamed(context, '/edit_etyma', arguments:{'title':'添加词根词缀'})) as EtymaSerializer;
-          if(g != null) {
-            _etymas.results.add(g);
-            Global.etymaOptions.add(g.name);
-            await g.save();
-          }
-          setState((){});
-        },
-      ),
-    ],
-  );
-
+        Wrap(
+          alignment: WrapAlignment.start,
+          runAlignment: WrapAlignment.start,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 8.0,
+          runSpacing: 8.0,
+          children: [
+            Text('类型: ', style: TextStyle(fontSize: 12, color: Color.fromRGBO(132,132,132,1.0))),
+            DropdownButton(
+              elevation: 0,
+              value: _selected[0],
+              items: _typeOptions.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
+              onChanged: (v) {
+                setState(() => _selected[0] = v);
+                _etymas.filter.type = v != _typeOptions.first ? Global.etymaTypeOptions.indexOf(v) : null;
+              },
+              underline: Container(width: 0, height:0,),
+            ),
+          ],
+        )
+      ],
+    );
+  }
 
   Widget _buildListEtyma(BuildContext context) =>
     Expanded(
