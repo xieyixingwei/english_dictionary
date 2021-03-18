@@ -14,52 +14,51 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final WordSerializer _word = WordSerializer();
 
-  Widget _buildHeader(BuildContext context) {
-    return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "会说英语",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: 10,),
-              Text(
-                "让英语学习更高效",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          );
-  }
+  Widget get _header =>
+    Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "会说英语",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        SizedBox(height: 10,),
+        Text(
+          "让英语学习更高效",
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ],
+    );
 
-  Widget _buildSearch(BuildContext context) {
-    return TextField(
-            maxLines: 1,
-            style: TextStyle(
-              fontSize: 14,
-            ),
-            onChanged: (v) => _word.name = v.trim(),
-            decoration: InputDecoration(
-              hintText: "输入单词或句子",
-              border: OutlineInputBorder(),
-              suffixIcon: IconButton(
-                iconSize: 38,
-                tooltip: '搜索',
-                icon: Icon(Icons.search),
-                onPressed: () async {
-                  if(_word.name.trim().isEmpty) return;
-                  await _word.retrieve();
-                  setState(() {});
-                },
-              ),
-            ),
-          );
-  }
+  Widget get _search =>
+    TextField(
+      maxLines: 1,
+      style: TextStyle(
+        fontSize: 14,
+      ),
+      onChanged: (v) => _word.name = v.trim(),
+      decoration: InputDecoration(
+        hintText: "输入单词或句子",
+        border: OutlineInputBorder(),
+        suffixIcon: IconButton(
+          iconSize: 38,
+          tooltip: '搜索',
+          icon: Icon(Icons.search),
+          onPressed: () async {
+            if(_word.name.trim().isEmpty) return;
+            await _word.retrieve();
+            setState(() {});
+          },
+        ),
+      ),
+    );
+
 
   Widget get _wordNameShow => _word.name.isNotEmpty ?
     Row(
@@ -186,25 +185,19 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
             body: SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: 120,
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Column(
-                    children:[
-                      _buildHeader(context),
-                      SizedBox(height: 20,),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(40, 20, 40, 20),
-                        child: _buildSearch(context),
-                      ),
-                      SizedBox(height: 20,),
-                      _wordShow,
-                    ].where((e) => e != null).toList(),
+              padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: Column(
+                children:[
+                  _header,
+                  Container(
+                    padding: EdgeInsets.fromLTRB(40, 20, 40, 10),
+                    child: _search,
                   ),
-                ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    child: _wordShow,
+                  ),
+                ],
               ),
             ),
       );
