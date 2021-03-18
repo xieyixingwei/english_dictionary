@@ -11,6 +11,12 @@ enum JsonType {
   List
 }
 
+enum ForeignType {
+  Non,
+  Foreign,
+  ManyToMany
+}
+
 String _jsonType(JsonType type) =>
   type == JsonType.Map ? 'Map<String, dynamic>' : 'List';
 
@@ -34,7 +40,7 @@ class Member {
   List<Member> membersForeignToMeOfTypeSerializer;
   bool isPrimary = false;
   bool isList = false;
-  bool isForeign = false;
+  ForeignType foreign = ForeignType.Non;
   JsonType jsonType;
   bool unFromJson = false;
   bool unToJson = false;
@@ -50,9 +56,13 @@ class Member {
       key = key.replaceAll('@primary', '').trim();
       isPrimary = true;
     }
-    if(key.contains('@foreign')) {
+    
+    if(key.contains('@foreign_manytomany')) {
+      key = key.replaceAll('@foreign_manytomany', '').trim();
+      foreign = ForeignType.ManyToMany;
+    } else if(key.contains('@foreign')) {
       key = key.replaceAll('@foreign', '').trim();
-      isForeign = true;
+      foreign = ForeignType.Foreign;
     }
 
     unToJson = key.trim().startsWith('_');   // the member is not in toJson
@@ -137,9 +147,11 @@ class Member {
     return null;
   }
 
-  String get unListType => isForeign ? typeSerializer.primaryMember.type : _unListType;
+  bool get isForeign => foreign == ForeignType.Foreign;
+  bool get isForeignManyToMany => foreign == ForeignType.ManyToMany;
+  String get unListType => (isForeignManyToMany || isForeign) ? typeSerializer.primaryMember.type : _unListType;
   String get type => isList ? 'List<$unListType>' : unListType;
-  String get init => isForeign ? (isList ? '[]' : null) : _init;
+  String get init => isForeignManyToMany ? '[]' : (isForeign ? (isList ? '[]' : null) : _init);
 
   String get save {
     if(!isSerializerType) return null;

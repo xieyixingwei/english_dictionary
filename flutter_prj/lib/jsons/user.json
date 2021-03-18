@@ -29,6 +29,10 @@
                 "url": "$uname/"
             },
             {
+                "name": "update",
+                "url": "$uname/"
+            },
+            {
                 "name": "register",
                 "requst": "post",
                 "url": "register/"

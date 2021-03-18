@@ -4,7 +4,7 @@
     "content": "",
     "_image": "",
     "_vedio": "",
-    "wordsForeign @foreign": ["$word"],
+    "wordsForeign @foreign_manytomany": ["$word"],
     "__http__": {
         "url": "/dictionary/distinguish_word/",
         "methods": [

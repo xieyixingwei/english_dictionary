@@ -70,14 +70,14 @@ class WordSerializer {
       if(paraphraseSet != null){await Future.forEach(paraphraseSet, (e) async {e.wordForeign = name; await e.save();});}
       if(sentencePatternSet != null){await Future.forEach(sentencePatternSet, (e) async {e.wordForeign = name; await e.save();});}
       if(grammarSet != null){await Future.forEach(grammarSet, (e) async {e.wordForeign = name; await e.save();});}
-      if(distinguishSet != null){await Future.forEach(distinguishSet, (e) async {e.wordsForeign = name; await e.save();});}
+      if(distinguishSet != null){await Future.forEach(distinguishSet, (e) async { await e.save();});}
       res = await this.retrieve();
     } else {
       res = await this.update(data:data, queries:queries, cache:cache);
       if(paraphraseSet != null){await Future.forEach(paraphraseSet, (e) async {e.wordForeign = name; await e.save();});}
       if(sentencePatternSet != null){await Future.forEach(sentencePatternSet, (e) async {e.wordForeign = name; await e.save();});}
       if(grammarSet != null){await Future.forEach(grammarSet, (e) async {e.wordForeign = name; await e.save();});}
-      if(distinguishSet != null){await Future.forEach(distinguishSet, (e) async {e.wordsForeign = name; await e.save();});}
+      if(distinguishSet != null){await Future.forEach(distinguishSet, (e) async { await e.save();});}
     }
     return res;
   }

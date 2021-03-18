@@ -24,7 +24,7 @@ class EditWord extends StatefulWidget {
 class _EditWordState extends State<EditWord> {
   final GlobalKey _formKey =  GlobalKey<FormState>();
   final _textStyle = const TextStyle(fontSize: 14,);
-  static const List<String> _morphOptions = ['选择', '过去分词', '现在分词', '形容词', '动词', '副词'];
+  static const List<String> _morphOptions = ['选择', '过去分词', '现在分词', '名词', '形容词', '动词', '副词', '比较级', '最高级'];
   String _morphSelect = _morphOptions.first;
   String _morphInput = '';
 
@@ -225,7 +225,7 @@ class _EditWordState extends State<EditWord> {
                     ),
                     SizedBox(height: 20,),
                     WrapOutline(
-                      labelText: '同义词',
+                      labelText: '近义词',
                       children: widget._word.synonym.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
@@ -234,7 +234,7 @@ class _EditWordState extends State<EditWord> {
                               var word = WordSerializer()..name = e;
                               bool ret = await word.retrieve();
                               if(ret) {
-                                word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'编辑同义词', 'word': WordSerializer().from(word)})) as WordSerializer;
+                                word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'编辑近义词', 'word': WordSerializer().from(word)})) as WordSerializer;
                                 if(word != null) {
                                   await word.save();
                                 }
@@ -247,7 +247,7 @@ class _EditWordState extends State<EditWord> {
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'添加同义词'})) as WordSerializer;
+                          var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'添加近义词'})) as WordSerializer;
                           if(word != null) {
                             bool ret = await word.save();
                             if(ret) {
@@ -297,14 +297,17 @@ class _EditWordState extends State<EditWord> {
                       children: widget._word.paraphraseSet.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text('${e.partOfSpeech} ${e.interpret}', style: TextStyle(color: Colors.amberAccent)),
+                            child: ConstrainedBox(
+                              child: Text('${e.partOfSpeech} ${e.interpret}', overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.amberAccent)),
+                              constraints: BoxConstraints(maxWidth:80.0),
+                            ),
                             onTap: () async {
                               var p = ParaphraseSerializer()..id = e.id;
                               bool ret = await p.retrieve();
                               if(ret) {
                                 p = (await Navigator.pushNamed(context, '/edit_paraphrase', arguments: {'title':'编辑${widget._word.name}的释义', 'paraphrase': ParaphraseSerializer().from(p)})) as ParaphraseSerializer;
                                 if(p != null) {
-                                  await p.save();
+                                  await e.from(p).save();
                                 }
                               }
                               setState((){});
@@ -338,7 +341,7 @@ class _EditWordState extends State<EditWord> {
                               if(ret) {
                                 s = (await Navigator.pushNamed(context, '/edit_sentence_pattern', arguments: {'title':'编辑${widget._word.name}的常用句型', 'sentence_pattern': SentencePatternSerializer().from(s)})) as SentencePatternSerializer;
                                 if(s != null) {
-                                  await s.save();
+                                  await e.from(s).save();
                                 }
                               }
                               setState((){});
@@ -372,10 +375,10 @@ class _EditWordState extends State<EditWord> {
                               if(ret) {
                                 g = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title':'编辑${widget._word.name}的相关语法', 'grammar': GrammarSerializer().from(g)})) as GrammarSerializer;
                                 if(g != null) {
-                                  await g.save();
+                                  await e.from(g).save();
                                 }
                               }
-                              setState((){});
+                              setState((){widget._word.grammarSet.add(g);});
                             },
                           ),
                           onDeleted: () => setState(() => widget._word.grammarSet.remove(e)),
@@ -406,7 +409,7 @@ class _EditWordState extends State<EditWord> {
                               if(ret) {
                                 d = (await Navigator.pushNamed(context, '/edit_distinguish', arguments: {'title':'编辑${widget._word.name}的词义辨析', 'distinguish': DistinguishSerializer().from(d)})) as DistinguishSerializer;
                                 if(d != null) {
-                                  await d.save();
+                                  await e.from(d).save();
                                 }
                               }
                               setState((){});
@@ -418,7 +421,7 @@ class _EditWordState extends State<EditWord> {
                         child: Text('添加',),
                         onPressed: () async {
                           var d = (await Navigator.pushNamed(context, '/edit_distinguish', arguments: {'title':'给${widget._word.name}添加词义辨析'})) as DistinguishSerializer;
-                          if(double.infinity != null) {
+                          if(d != null) {
                             bool ret = await d.save();
                             if(ret) {
                               setState(() => widget._word.distinguishSet.add(d));

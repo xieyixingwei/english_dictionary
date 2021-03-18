@@ -12,10 +12,11 @@ import 'package:flutter_prj/routes/edit/grammar/edit_grammars.dart';
 import 'package:flutter_prj/routes/edit/etyma/edit_etyma.dart';
 import 'package:flutter_prj/routes/edit/sentence_pattern/edit_sentence_pattern.dart';
 import 'package:flutter_prj/routes/edit/sentence_pattern/edit_sentence_patterns.dart';
+import 'package:flutter_prj/routes/edit/user/edit_user.dart';
+import 'package:flutter_prj/routes/edit/user/edit_users.dart';
 import 'package:flutter_prj/routes/edit/word/edit_word.dart';
 import 'package:flutter_prj/routes/edit/word/edit_words.dart';
 import 'package:flutter_prj/routes/login.dart';
-import 'package:flutter_prj/routes/manage_users.dart';
 import 'package:flutter_prj/routes/register.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import '../dictionary_app.dart';
@@ -28,7 +29,8 @@ final _routes = {
   '/login': (context) => LoginPage(),
   '/register': (context) => RegisterPage(),
   '/setting': (context) => Setting(),
-  '/manage_users': (context) => ManageUsers(),
+  '/edit_users': (context) => EditUsers(),
+  '/edit_user': (context, {arguments}) => EditUser(title:arguments['title'], user:arguments['user']),
   '/edit_words': (context) => EditWords(),
   '/edit_word': (context, {arguments}) => EditWord(title:arguments['title'], word:arguments['word']),
   '/edit_word_tag': (context) => EditTags(

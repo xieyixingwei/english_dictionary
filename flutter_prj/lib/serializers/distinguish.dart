@@ -3,6 +3,7 @@
 // JsonSerializer
 // **************************************************************************
 
+import 'word.dart';
 import 'package:flutter_prj/common/http.dart';
 
 

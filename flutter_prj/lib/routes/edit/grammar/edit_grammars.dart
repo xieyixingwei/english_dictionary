@@ -122,21 +122,21 @@ class _EditGrammersState extends State<EditGrammers> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-                appBar: AppBar(
-                  title: Text('编辑语法'),
+            appBar: AppBar(
+              title: Text('编辑语法'),
+            ),
+            body: Container(
+                padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildFilter(context),
+                    SizedBox(height: 20,),
+                    _buildListGrammars(context),
+                  ],
                 ),
-                body: Container(
-                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildFilter(context),
-                        SizedBox(height: 20,),
-                        _buildListGrammars(context),
-                      ],
-                    ),
-                  ),
-                );
+              ),
+            );
   }
 }
 

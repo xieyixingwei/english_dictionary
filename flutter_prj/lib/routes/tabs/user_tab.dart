@@ -20,7 +20,7 @@ class UserTab extends StatelessWidget {
     {
       'title': '用户管理',
       'icon': Icon(Icons.person_add_disabled),
-      'route': '/manage_users',
+      'route': '/edit_users',
     },
     {
       'title': '编辑单词',
