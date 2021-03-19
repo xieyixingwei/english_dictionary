@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/serializers/grammar.dart';
-import 'package:flutter_prj/widgets/SelectDialog.dart';
+import 'package:flutter_prj/widgets/pop_dialog.dart';
 import 'package:flutter_prj/widgets/wrap_custom.dart';
 import 'package:flutter_prj/widgets/ok_cancel.dart';
 

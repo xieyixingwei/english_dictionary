@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/RatingStar.dart';
+import 'package:flutter_prj/widgets/column_space.dart';
 import 'package:flutter_prj/widgets/container_outline.dart';
+import 'package:flutter_prj/widgets/insert_list.dart';
+import 'package:flutter_prj/widgets/row_space.dart';
 
 
 class Home extends StatefulWidget {
@@ -13,6 +16,9 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final WordSerializer _word = WordSerializer();
+  final Color _colorA = Color.fromRGBO(47,184,203,1.0);
+  final Color _colorB = Color.fromRGBO(132,132,132,1.0);
+  List<bool> _offstage = [true, true, true, true, true];
 
   Widget get _header =>
     Column(
@@ -84,19 +90,13 @@ class _HomeState extends State<Home> {
   Widget get _voiceUsShow => _word.voiceUs.isNotEmpty ?
     Text(
       '美 ${_word.voiceUs}',
-      style: TextStyle(
-        fontSize: 12,
-        color: Color.fromRGBO(132,132,132,1.0),
-      ),
+      style: TextStyle(fontSize: 12, color: _colorB,),
     ) : null;
 
   Widget get _voiceUkShow => _word.voiceUk.isNotEmpty ?
     Text(
       '英 ${_word.voiceUk}',
-      style: TextStyle(
-        fontSize: 12,
-        color: Color.fromRGBO(132,132,132,1.0),
-      ),
+      style: TextStyle(fontSize: 12, color: _colorB,),
     ) : null;
 
   Widget get _tagShow => _word.tag.isNotEmpty ?
@@ -120,64 +120,186 @@ class _HomeState extends State<Home> {
   Widget get _morphShow => _word.morph.isNotEmpty ?
     Text(
       _word.morph.join(', '),
-      style: TextStyle(
-        fontSize: 12,
-        color: Color.fromRGBO(132,132,132,1.0),
-      ),
+      style: TextStyle(fontSize: 12, color: _colorB),
     ) : null;
 
   Widget get _originShow => _word.origin.isNotEmpty ?
     ContainerOutline(
       decoration: InputDecoration(
-        prefixText: '词源',
+        prefixText: '词源:',
+        prefixStyle: TextStyle(fontSize: 12, color: _colorA,),
+        isDense: true,
+        contentPadding: EdgeInsets.zero,
+        border: InputBorder.none, //去掉下划线
       ),
       child: Text(
         _word.origin,
         style: TextStyle(
           fontSize: 12,
-          color: Color.fromRGBO(132,132,132,1.0),
+          color: _colorB,
         ),
       ),
     ) : null;
 
   Widget get _shorthandShow => _word.shorthand.isNotEmpty ?
     ContainerOutline(
-                decoration: InputDecoration(
-                  prefixText: '速记',
-                ),
-                child: Text(
-                  _word.shorthand,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Color.fromRGBO(132,132,132,1.0),
-                  ),
-                ),
-              ) : null;
+      decoration: InputDecoration(
+        prefixText: '速记: ',
+        prefixStyle: TextStyle(fontSize: 12, color: _colorA,),
+        isDense: true,
+        contentPadding: EdgeInsets.zero,
+        border: InputBorder.none, //去掉下划线
+      ),
+      child: Text(
+        _word.shorthand,
+        style: TextStyle(
+          fontSize: 12,
+          color: _colorB,
+        ),
+      ),
+    ) : null;
 
-  Widget get _wordShow => _word.name.isNotEmpty ?
-    Column(
+  List<Map<String, List<ParaphraseSerializer>>> sortParaphraseSet(List<ParaphraseSerializer> paraphrases) {
+    List<Map<String, List<ParaphraseSerializer>>> ret = [];
+    paraphrases.forEach( (e) {
+      var find = ret.singleWhere((ele) => ele.keys.first == e.partOfSpeech, orElse: () => null);
+      find == null
+            ? ret.add({e.partOfSpeech: [e]})
+            : find.values.first.add(e);
+    });
+    return ret;
+  }
+
+  Widget _sentenceShow(SentenceSerializer sentence) =>
+    ColumnSpace(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(
+          sentence.en,
+          style: TextStyle(fontSize: 12, color: _colorB,),
+        ),
+        Text(
+          sentence.cn,
+          style: TextStyle(fontSize: 12, color: _colorB,),
+        ),
+      ]
+    );
+
+
+  Widget _paraphraseShow(int index, ParaphraseSerializer paraphrase) =>
+    ColumnSpace(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RowSpace(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          divider: SizedBox(width: 2),
+          children: [
+            Text(
+              '$index. ',
+              style: TextStyle(fontSize: 12, color: _colorB, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              paraphrase.interpret,
+              style: TextStyle(fontSize: 12, color: _colorB,),
+            ),
+            paraphrase.sentenceSet.isNotEmpty ? InkWell(
+              child: Icon(_offstage[index] ? Icons.arrow_right : Icons.arrow_drop_down, color: Color.fromRGBO(34, 154, 172, 1.0),),
+              onTap: () => setState(() => _offstage[index] = !_offstage[index]),
+            ) : null,
+          ],
+        ),
+        paraphrase.sentenceSet.isNotEmpty ? Offstage(
+          offstage: _offstage[index],
+          child: Container(
+            padding: EdgeInsets.only(left: 10),
+            child: ColumnSpace(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              divider: _offstage[index] ? null : SizedBox(height: 8),
+              children: paraphrase.sentenceSet.map( (e) => 
+                _sentenceShow(e)
+              ).toList(),
+            ),
+          ),
+        ) : null,
+      ],
+    );
+
+  Widget get _paraphraseSetShow => _word.paraphraseSet.isNotEmpty ?
+    ContainerOutline(
+      decoration: InputDecoration(
+        prefixText: '释义: ',
+        prefixStyle: TextStyle(fontSize: 12, color: _colorA,),
+        isDense: true,
+        contentPadding: EdgeInsets.zero,
+        border: InputBorder.none, //去掉下划线
+      ),
+      child: ColumnSpace(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        divider: SizedBox(height: 10),
+          children: sortParaphraseSet(_word.paraphraseSet).map( (e) =>
+            ColumnSpace(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              divider: SizedBox(height: 10),
+              children: <Widget>[
+                Text(
+                  e.keys.first,
+                  style: TextStyle(fontSize: 12, color: _colorB,),
+                )]
+                + e.values.first.asMap().map( (i, e) =>
+                MapEntry<int, Widget>(i, _paraphraseShow(i + 1, e))
+              ).values.toList(),
+            )
+          ).toList(),
+        ),
+    ) : null;
+
+  Widget get _sentencePatternSetShow => _word.sentencePatternSet.isNotEmpty ?
+    ContainerOutline(
+      decoration: InputDecoration(
+        prefixText: '常用句型: ',
+        prefixStyle: TextStyle(fontSize: 12, color: _colorA,),
+        isDense: true,
+        contentPadding: EdgeInsets.zero,
+        border: InputBorder.none, //去掉下划线
+      ),
+      child: ColumnSpace(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        divider: SizedBox(height: 10),
+          children: _word.sentencePatternSet.map( (e) =>
+            ColumnSpace(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              divider: SizedBox(height: 10),
+              children: <Widget>[
+                Text(
+                  e.content,
+                  style: TextStyle(fontSize: 12, color: _colorB,),
+                )]
+                
+              ),
+            ).toList(),
+        ),
+    ) : null;
+
+  Widget get _wordShow => _word.name.isNotEmpty ?
+    ColumnSpace(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      divider: SizedBox(height: 10,),
+      children: [
         _wordNameShow,
-        SizedBox(height: 10,),
-        Row(
+        RowSpace(
+          divider: SizedBox(width: 10,),
           children: [
             _voiceUsShow,
-            SizedBox(width: 20,),
             _voiceUkShow,
-            SizedBox(width: 20,),
             _tagShow,
-          ].where((e) => e != null).toList(),
+          ],
         ),
-        SizedBox(height: 20,),
         _etymaShow,
-        SizedBox(height: 20,),
         _morphShow,
-        SizedBox(height: 20,),
         _originShow,
-        SizedBox(height: 20,),
         _shorthandShow,
-      ].where((e) => e != null).toList(),
+        _paraphraseSetShow,
+      ],
     ) : null;
 
 

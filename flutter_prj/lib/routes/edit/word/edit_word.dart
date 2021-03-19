@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
-import 'package:flutter_prj/routes/edit/distinguish_word/edit_distinguish.dart';
 import 'package:flutter_prj/serializers/index.dart';
-import 'package:flutter_prj/widgets/SelectDialog.dart';
 import 'package:flutter_prj/widgets/Tag.dart';
+import 'package:flutter_prj/widgets/column_space.dart';
 import 'package:flutter_prj/widgets/ok_cancel.dart';
+import 'package:flutter_prj/widgets/pop_dialog.dart';
+import 'package:flutter_prj/widgets/row_space.dart';
 import 'package:flutter_prj/widgets/wrap_custom.dart';
 
 
@@ -39,15 +40,15 @@ class _EditWordState extends State<EditWord> {
               title: Text('编辑变形单词'),
               contentPadding: EdgeInsets.fromLTRB(10,10,10,10),
               children: [
-                Row(
+                RowSpace(
                   crossAxisAlignment: CrossAxisAlignment.end,
+                  divider: SizedBox(width: 8.0,),
                   children: [
                     DropdownButton(
                       value: _morphSelect,
                       items: _morphOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
                       onChanged: (v) {setState(() => _morphSelect = v);},
                     ),
-                    SizedBox(width: 8.0,),
                     Container(
                       width: 100,
                       child: TextField(
@@ -82,8 +83,9 @@ class _EditWordState extends State<EditWord> {
               child: Form(
                 key: _formKey, //设置globalKey，用于后面获取FormState
                 //autovalidateMode: AutovalidateMode.always, //开启自动校验
-                child: Column(
+                child: ColumnSpace(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  divider: SizedBox(height: 20,),
                   children: [
                     TextFormField(
                       autofocus: false,
@@ -108,7 +110,6 @@ class _EditWordState extends State<EditWord> {
                       onChanged: (v) => widget._word.name = v.trim(),
                       validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
-                    SizedBox(height: 20,),
                     TextFormField(
                       autofocus: false,
                       keyboardType: TextInputType.number, // 键盘回车键的样式
@@ -123,7 +124,6 @@ class _EditWordState extends State<EditWord> {
                       onChanged: (v) => widget._word.voiceUs = v.trim(),
                       //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
-                    SizedBox(height: 20,),
                     TextFormField(
                       autofocus: false,
                       keyboardType: TextInputType.number, // 键盘回车键的样式
@@ -138,7 +138,6 @@ class _EditWordState extends State<EditWord> {
                       onChanged: (v) => widget._word.voiceUk = v.trim(),
                       //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
-                    SizedBox(height: 20,),
                     WrapOutlineTag(
                       data: widget._word.morph,
                       labelText: '单词变形',
@@ -147,7 +146,6 @@ class _EditWordState extends State<EditWord> {
                         onPressed: () => _editMorph(context),
                       ),
                     ),
-                    SizedBox(height: 20,),
                     WrapOutlineTag(
                       data: widget._word.etyma,
                       labelText: '词根词缀',
@@ -170,7 +168,6 @@ class _EditWordState extends State<EditWord> {
                         ]
                       )
                     ),
-                    SizedBox(height: 20,),
                     WrapOutlineTag(
                       data: widget._word.tag,
                       labelText: 'Tag',
@@ -193,7 +190,6 @@ class _EditWordState extends State<EditWord> {
                         ]
                       )
                     ),
-                    SizedBox(height: 20,),
                     TextFormField(
                       autofocus: false,
                       keyboardType: TextInputType.number, // 键盘回车键的样式
@@ -208,7 +204,6 @@ class _EditWordState extends State<EditWord> {
                       onChanged: (v) => widget._word.origin = v.trim(),
                       //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
-                    SizedBox(height: 20,),
                     TextFormField(
                       autofocus: false,
                       keyboardType: TextInputType.number, // 键盘回车键的样式
@@ -223,7 +218,6 @@ class _EditWordState extends State<EditWord> {
                       onChanged: (v) => widget._word.shorthand = v.trim(),
                       //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
-                    SizedBox(height: 20,),
                     WrapOutline(
                       labelText: '近义词',
                       children: widget._word.synonym.map<Widget>((e) =>
@@ -257,7 +251,6 @@ class _EditWordState extends State<EditWord> {
                         },
                       ),
                     ),
-                    SizedBox(height: 20,),
                     WrapOutline(
                       labelText: '反义词',
                       children: widget._word.antonym.map<Widget>((e) =>
@@ -291,7 +284,6 @@ class _EditWordState extends State<EditWord> {
                         },
                       ),
                     ),
-                    SizedBox(height: 20,),
                     WrapOutline(
                       labelText: '释义',
                       children: widget._word.paraphraseSet.map<Widget>((e) =>
@@ -328,7 +320,6 @@ class _EditWordState extends State<EditWord> {
                         },
                       ),
                     ),
-                    SizedBox(height: 20,),
                     WrapOutline(
                       labelText: '常用句型',
                       children: widget._word.sentencePatternSet.map<Widget>((e) =>
@@ -362,7 +353,6 @@ class _EditWordState extends State<EditWord> {
                             },
                           ),
                     ),
-                    SizedBox(height: 20,),
                     WrapOutline(
                       labelText: '相关语法',
                       children: widget._word.grammarSet.map<Widget>((e) =>
@@ -396,7 +386,6 @@ class _EditWordState extends State<EditWord> {
                         },
                       ),
                     ),
-                    SizedBox(height: 20,),
                     WrapOutline(
                       labelText: '词义辨析',
                       children: widget._word.distinguishSet.map<Widget>((e) =>

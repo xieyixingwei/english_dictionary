@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
-import 'package:flutter_prj/widgets/SelectDialog.dart';
 import 'package:flutter_prj/widgets/Tag.dart';
 import 'package:flutter_prj/widgets/ok_cancel.dart';
 import 'package:flutter_prj/serializers/index.dart';
+import 'package:flutter_prj/widgets/pop_dialog.dart';
 import 'package:flutter_prj/widgets/wrap_custom.dart';
-import 'package:flutter_prj/widgets/wrap_selectable.dart';
 
 
 class EditSentence extends StatefulWidget {

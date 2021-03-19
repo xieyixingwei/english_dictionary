@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/serializers/distinguish.dart';
-import 'package:flutter_prj/widgets/InputDialog.dart';
+import 'package:flutter_prj/widgets/pop_dialog.dart';
 import 'package:flutter_prj/widgets/wrap_custom.dart';
 import 'package:flutter_prj/widgets/ok_cancel.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_prj/widgets/InputDialog.dart';
+import 'package:flutter_prj/widgets/pop_dialog.dart';
 
 
 class EditTags extends StatefulWidget {
