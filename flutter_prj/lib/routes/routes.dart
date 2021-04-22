@@ -5,7 +5,7 @@ import 'package:flutter_prj/routes/edit/distinguish_word/edit_distinguishes.dart
 import 'package:flutter_prj/routes/edit/etyma/edit_etymas.dart';
 import 'package:flutter_prj/routes/edit/paraphrase/edit_paraphrase.dart';
 import 'package:flutter_prj/routes/edit/sentence/edit_sentence.dart';
-import 'package:flutter_prj/routes/edit/sentence/edit_sentences.dart';
+import 'package:flutter_prj/routes/edit/sentence/list_sentences.dart';
 import 'package:flutter_prj/routes/edit/edit_tags.dart';
 import 'package:flutter_prj/routes/edit/grammar/edit_grammar.dart';
 import 'package:flutter_prj/routes/edit/grammar/edit_grammars.dart';
@@ -15,7 +15,7 @@ import 'package:flutter_prj/routes/edit/sentence_pattern/edit_sentence_patterns.
 import 'package:flutter_prj/routes/edit/user/edit_user.dart';
 import 'package:flutter_prj/routes/edit/user/edit_users.dart';
 import 'package:flutter_prj/routes/edit/word/edit_word.dart';
-import 'package:flutter_prj/routes/edit/word/edit_words.dart';
+import 'package:flutter_prj/routes/edit/word/list_words.dart';
 import 'package:flutter_prj/routes/login.dart';
 import 'package:flutter_prj/routes/register.dart';
 import 'package:flutter_prj/serializers/index.dart';
@@ -31,7 +31,7 @@ final _routes = {
   '/setting': (context) => Setting(),
   '/edit_users': (context) => EditUsers(),
   '/edit_user': (context, {arguments}) => EditUser(title:arguments['title'], user:arguments['user']),
-  '/edit_words': (context) => EditWords(),
+  '/list_words': (context) => ListWords(),
   '/edit_word': (context, {arguments}) => EditWord(title:arguments['title'], word:arguments['word']),
   '/edit_word_tag': (context) => EditTags(
                                     title: Text('编辑单词 Tag',),
@@ -39,7 +39,7 @@ final _routes = {
                                     add: (String tag) => WordTagSerializer().create(data:{'name':tag}),
                                     remove: (String tag) => WordTagSerializer()..name = tag ..delete(),
                                     ),
-  '/edit_sentences': (context) => EditSentences(),
+  '/list_sentences': (context) => ListSentences(),
   '/edit_sentence': (context, {arguments}) => EditSentence(title:arguments['title'], sentence:arguments['sentence']),
   '/edit_sentence_tag': (context) => EditTags(
                                         title: Text('编辑句子 Tag',),

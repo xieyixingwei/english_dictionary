@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/models/user_model.dart';
-import 'package:flutter_prj/models/word_model.dart';
 import 'package:provider/provider.dart';
 import '../login.dart';
 
@@ -19,37 +18,37 @@ class UserTab extends StatelessWidget {
   final listItemsOfRoot = [
     {
       'title': '用户管理',
-      'icon': Icon(Icons.person_add_disabled),
+      'icon': Icon(Icons.people_outline),
       'route': '/edit_users',
     },
     {
       'title': '编辑单词',
       'icon': Icon(Icons.drive_file_rename_outline),
-      'route': '/edit_words',
+      'route': '/list_words',
     },
     {
       'title': '编辑例句',
       'icon': Icon(Icons.edit),
-      'route': '/edit_sentences',
+      'route': '/list_sentences',
     },
     {
       'title': '编辑语法',
-      'icon': Icon(Icons.g_translate_sharp),
+      'icon': Icon(Icons.grid_on),
       'route': '/edit_grammars',
     },
     {
       'title': '编辑词根词缀',
-      'icon': Icon(Icons.g_translate_sharp),
+      'icon': Icon(Icons.hdr_strong),
       'route': '/edit_etymas',
     },
     {
       'title': '编辑常用句型',
-      'icon': Icon(Icons.g_translate_sharp),
+      'icon': Icon(Icons.gesture),
       'route': '/edit_sentence_patterns',
     },
     {
       'title': '编辑词义辨析',
-      'icon': Icon(Icons.g_translate_sharp),
+      'icon': Icon(Icons.transform),
       'route': '/edit_distinguishes'
     }
   ];
@@ -75,7 +74,15 @@ class UserTab extends StatelessWidget {
   ];
 
   final titleTextStyle = const TextStyle(fontSize: 16.0);
-  final arrowForwardIosIcon = const Icon(Icons.arrow_forward_ios, size:30.0);
+  final arrowForwardIosIcon = const Icon(Icons.arrow_forward_ios, size:20.0);
+
+    @override
+  Widget build(BuildContext context) {
+    return Consumer<UserModel>(
+      builder: (BuildContext context, UserModel user, Widget child) =>
+        user.isLogin ? _buildCustomScrollView(context, user) : LoginPage()
+    );
+  }
 
   _buildStatistics(UserModel user) {
     List statisticsTotal = [];
@@ -83,129 +90,78 @@ class UserTab extends StatelessWidget {
     if(user.user.uname == 'root') {
       statisticsTotal.addAll(statisticsOfRoot);
     }
-    return statisticsTotal.map((e) => 
-        Expanded(
-          flex: 1,
-          child: ListTile(
-            title:  Text(e['value'].toString(), style: const TextStyle(color: Colors.white, fontSize: 18.0)),
-            subtitle: Text(e['title'], style: const TextStyle(color: Colors.white, fontSize: 10.0)),
-          ),
-        )
-      ).toList();
+    return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: statisticsTotal.map((e) =>
+              Column(
+                children: [
+                  Text(e['value'].toString(), style: const TextStyle(fontSize: 12.0)),
+                  Text(e['title'], style: const TextStyle(fontSize: 12.0))
+                ],
+              )).toList()
+            );
   }
 
-  _buildSliverAppBar(BuildContext context, UserModel user) =>
-    SliverAppBar(
-      floating: true,
-      pinned: false,
-      snap: true,
-      backgroundColor: Colors.blue,
-      iconTheme: IconThemeData(color: Colors.transparent),
-      expandedHeight: 280.0,
-      flexibleSpace: FlexibleSpaceBar(
-        centerTitle: true,
-        title: SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
-                    child: InkWell(
-                        child: Icon(Icons.settings, size: 20, color: Colors.white,),
-                        onTap: () => Navigator.pushNamed(context, '/setting'),
-                      ),
-                    )
-                ]
-              ),
-              Row(
-                children:[
-                  Expanded(
-                    flex: 1,
-                    child: ListTile(
-                      title:  Text(user.user.uname, style: const TextStyle(color: Colors.white, fontSize: 24.0)),
-                      subtitle: Text('RegID: ' + user.user.id.toString(), style: const TextStyle(color: Colors.white, fontSize: 10.0)),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 40, 0),
-                    child: Icon(Icons.insert_emoticon, size: 60.0, color: Colors.white,),
-                  )
-                ],
-              ),
-              Row(
-                children: _buildStatistics(user),
-              ),
-            ],
+  Widget _buildHeader(BuildContext context, UserModel user) =>
+    Container(
+      padding: EdgeInsets.only(bottom: 20),
+      color: Colors.white,
+      child: Column(
+        children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              icon: Icon(Icons.settings, size: 16),
+              onPressed: () => Navigator.pushNamed(context, '/setting'),
+            ),
           ),
-        ),
+          ListTile(
+            leading: Icon(Icons.insert_emoticon, size: 50.0),
+            title:  Text(user.user.uname, style: const TextStyle( fontSize: 24.0)),
+            subtitle: Text('RegID: ' + user.user.id.toString(), style: const TextStyle(fontSize: 10.0)),
+          ),
+          SizedBox(height: 10,),
+          _buildStatistics(user),
+        ],
       ),
     );
 
-  _buildSliverChildBuilderDelegate(BuildContext context, UserModel user) {
+  Widget _listOptions(BuildContext context, UserModel user) {
     List listItemsTotal = [];
     listItemsTotal.addAll(listItems);
     if(user.user.uname == 'root') {
       listItemsTotal.addAll(listItemsOfRoot);
     }
-    return SliverChildBuilderDelegate(
-      (BuildContext context, int index) =>
-        Container(
-          alignment: Alignment.centerLeft,
-          child: InkWell(
-            onTap: () =>
-              Navigator.pushNamed(context, listItemsTotal[index]['route']),
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 15.0),
-                  child: Row(
-                    children: <Widget>[
-                      listItemsTotal[index]['icon'],
-                      SizedBox(width: 20,),
-                      Expanded(
-                        child: Text(
-                          listItemsTotal[index]['title'],
-                          style: titleTextStyle,
-                        ),
-                      ),
-                      arrowForwardIosIcon,
-                    ],
-                  ),
-                ),
-                Divider(height: 1.0,)
-              ],
+
+    return Container(
+      padding: EdgeInsets.only(bottom: 10),
+      child: Column(
+        children: listItemsTotal.map((e) =>
+          Container(
+            margin: EdgeInsets.only(top: 6),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(3)),
             ),
+            child: ListTile(
+              leading: e['icon'],
+              title: Text(e['title'], style: const TextStyle( fontSize: 16.0)),
+              trailing: arrowForwardIosIcon,
+              onTap: () => e['route'] != null ? Navigator.pushNamed(context, e['route']) : false,
+            )
           )
-        ),
-      childCount: listItemsTotal.length,
+        ).toList(),
+      ),
     );
   }
 
-  _buildSliverFixedExtentList(BuildContext context, UserModel user) =>
-    SliverFixedExtentList(
-      delegate: _buildSliverChildBuilderDelegate(context, user),
-      itemExtent: 61.0
+  Widget _buildCustomScrollView(BuildContext context, UserModel user) =>
+    SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(6, 6, 6, 0),
+      child: Column( children: [
+        _buildHeader(context, user),
+        _listOptions(context, user),
+      ],
+      ),
     );
-
-  _buildCustomScrollView(BuildContext context, UserModel user) =>
-    CustomScrollView(
-      reverse: false,
-      shrinkWrap: false,
-      slivers: <Widget>[
-        _buildSliverAppBar(context, user),
-        _buildSliverFixedExtentList(context, user),
-      ]
-    );
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer2<UserModel, WordModel>(
-      builder: (BuildContext context, UserModel user, WordModel word, Widget child) =>
-        user.isLogin ? _buildCustomScrollView(context, user) : LoginPage()
-    );
-  }
 }

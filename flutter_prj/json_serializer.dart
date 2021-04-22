@@ -109,6 +109,10 @@ class Member {
         _unListType = _serializerType(serializerJsonName);
         _init = '$_unListType()';
       }
+      else if (value == 'dynamic') {
+        _unListType = 'dynamic';
+        _init = null;
+      }
       else {
         _unListType = 'String';
         _init = '\'$value\'';
@@ -121,6 +125,7 @@ class Member {
     else if(value is List) {
       isList = true;
       if(value.length == 0) {
+        _unListType = 'dynamic';
         _init = '[]';
       }
       else {
@@ -323,7 +328,7 @@ class HttpMethods {
         return
 """
   Future<bool> $methodName({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    if(${fatherSerializer.primaryMember.hidePrimaryMemberName} == null) return false;
+    if(${fatherSerializer.primaryMember.hidePrimaryMemberName} == null) return true;
     var res = await Http().request(HttpType.DELETE, '$requestUrl', $data, $queries, $cache);
     /*
     ${fatherSerializer.membersDelete}
@@ -478,7 +483,9 @@ class JsonSerializer {
   String get serializerMembers => ([primaryMember?.hidePrimaryMember] + members.map((e) => e.member).toList()).where((e) => e != null).join('\n  ');
   String get httpMethods => httpMethodsObj != null ? httpMethodsObj.methods.join('\n') : '';
   String get filterMember => filter != null ? '\n  ${filter.filterClassName} filter = ${filter.filterClassName}();' : '';
-  String get filterClass => filter != null ? filter.filterClass : '';
+  String get filterClass => filter != null && members.where((e) => e.isSerializerType
+                                                  && e.typeSerializer.filter != null
+                                                  && e.typeSerializer.filter.filterClassName == filter.filterClassName).isEmpty ? filter.filterClass : '';
 
   String get content =>
 """

@@ -3,7 +3,6 @@ import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/RatingStar.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
 import 'package:flutter_prj/widgets/container_outline.dart';
-import 'package:flutter_prj/widgets/insert_list.dart';
 import 'package:flutter_prj/widgets/row_space.dart';
 
 
@@ -310,7 +309,7 @@ class _HomeState extends State<Home> {
               padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
               child: Column(
                 children:[
-                  _header,
+                  //_header,
                   Container(
                     padding: EdgeInsets.fromLTRB(40, 20, 40, 10),
                     child: _search,
