@@ -3,20 +3,17 @@ import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/Tag.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
-import 'package:flutter_prj/widgets/ok_cancel.dart';
 import 'package:flutter_prj/widgets/pop_dialog.dart';
-import 'package:flutter_prj/widgets/row_space.dart';
 import 'package:flutter_prj/widgets/wrap_custom.dart';
 
 
 class EditWord extends StatefulWidget {
-  final String _title;
-  final WordSerializer _word;
 
-  EditWord({Key key, String title, WordSerializer word})
-    : _title = title,
-      _word = word != null ? word : WordSerializer(),
-      super(key:key);
+  EditWord({Key key, this.title, WordSerializer word})
+  : this.word = word != null ? word : WordSerializer(), super(key: key);
+
+  final String title;
+  final WordSerializer word;
 
   @override
   _EditWordState createState() => _EditWordState();
@@ -29,54 +26,48 @@ class _EditWordState extends State<EditWord> {
   String _morphSelect = _morphOptions.first;
   String _morphInput = '';
 
-  _editMorph(BuildContext context) async {
-    _morphInput = '';
-    await showDialog(
-      context: context,
-      builder: (context) =>
-        StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) =>
-            SimpleDialog(
-              title: Text('编辑变形单词'),
-              contentPadding: EdgeInsets.fromLTRB(10,10,10,10),
-              children: [
-                RowSpace(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  divider: SizedBox(width: 8.0,),
-                  children: [
-                    DropdownButton(
-                      value: _morphSelect,
-                      items: _morphOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
-                      onChanged: (v) {setState(() => _morphSelect = v);},
-                    ),
-                    Container(
-                      width: 100,
-                      child: TextField(
-                        maxLines: null,
-                        onChanged: (val) {
-                          if(_morphSelect != _morphOptions.first && val.trim().isNotEmpty)
-                            _morphInput = '$_morphSelect: ${val.trim()}';
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-        ),
+  Widget _textFiledForm({
+    String text,
+    String labelText,
+    Widget suffixIcon,
+    Function(String) onChanged,
+    Function(String) validator
+  }) =>
+    TextFormField(
+      controller: TextEditingController(text: text),
+      maxLines: 1,
+      style: _textStyle,
+      decoration: InputDecoration(
+        //isDense: true,
+        //contentPadding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+        labelText: labelText,
+        border: OutlineInputBorder(),
+        suffixIcon: suffixIcon,
+      ),
+      onChanged: (v) => onChanged != null ? onChanged(v.trim()) : null,
+      validator: (v) => validator != null ? validator(v.trim()) : null,
     );
-
-  if(_morphInput.isNotEmpty)
-    setState(() => widget._word.morph.add(_morphInput));
-}
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
           appBar: AppBar(
-            title: Text(widget._title),
-            automaticallyImplyLeading: false, // 取消返回按钮
+            title: Text(widget.title),
+            centerTitle: true,
+            //automaticallyImplyLeading: false, // 取消返回按钮
+            leading: TextButton(
+              child: Text('取消', style: TextStyle(color: Colors.white),),
+              onPressed: () => Navigator.pop(context),
+            ),
+            actions: [
+              TextButton(
+                child: Text('确定', style: TextStyle(color: Colors.white),),
+                onPressed: () {
+                  if((_formKey.currentState as FormState).validate()) // 验证各个表单字段是否合法
+                    Navigator.pop(context, widget.word);
+                },
+              ),
+            ],
           ),
           body: SingleChildScrollView(
               padding: EdgeInsets.fromLTRB(20, 40, 20, 20),
@@ -87,59 +78,33 @@ class _EditWordState extends State<EditWord> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   divider: SizedBox(height: 20,),
                   children: [
-                    TextFormField(
-                      autofocus: false,
-                      keyboardType: TextInputType.number, // 键盘回车键的样式
-                      textInputAction: TextInputAction.next,
-                      controller: TextEditingController(text: widget._word.name),
-                      maxLines: 1,
-                      style: _textStyle,
-                      decoration: InputDecoration(
-                        labelText: "单词",
-                        border: OutlineInputBorder(),
-                        suffixIcon: IconButton(
-                          splashRadius: 1.0,
-                          icon: Icon(Icons.search),
-                          tooltip: '搜索',
-                          onPressed: () async {
-                            bool ret = await widget._word.retrieve();
-                            if(ret) setState((){});
-                          },
-                        ),
+                    _textFiledForm(
+                      text: widget.word.name,
+                      labelText: '单词',
+                      suffixIcon: IconButton(
+                        splashRadius: 1.0,
+                        icon: Icon(Icons.search),
+                        tooltip: '搜索',
+                        onPressed: () async {
+                          bool ret = await widget.word.retrieve();
+                          if(ret) setState((){});
+                        },
                       ),
-                      onChanged: (v) => widget._word.name = v.trim(),
-                      validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
+                      onChanged: (v) => widget.word.name = v,
+                      validator: (v) => v.isNotEmpty ? null : "不能为空",
                     ),
-                    TextFormField(
-                      autofocus: false,
-                      keyboardType: TextInputType.number, // 键盘回车键的样式
-                      textInputAction: TextInputAction.next,
-                      controller: TextEditingController(text: widget._word.voiceUs),
-                      maxLines: 1,
-                      style: _textStyle,
-                      decoration: InputDecoration(
-                        labelText: "音标(美)",
-                        border: OutlineInputBorder(),
-                      ),
-                      onChanged: (v) => widget._word.voiceUs = v.trim(),
-                      //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
+                    _textFiledForm(
+                      text: widget.word.voiceUs,
+                      labelText: '音标(美)',
+                      onChanged: (v) => widget.word.voiceUs = v,
                     ),
-                    TextFormField(
-                      autofocus: false,
-                      keyboardType: TextInputType.number, // 键盘回车键的样式
-                      textInputAction: TextInputAction.next,
-                      controller: TextEditingController(text: widget._word.voiceUk),
-                      maxLines: 1,
-                      style: _textStyle,
-                      decoration: InputDecoration(
-                        labelText: "音标(英)",
-                        border: OutlineInputBorder(),
-                      ),
-                      onChanged: (v) => widget._word.voiceUk = v.trim(),
-                      //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
+                    _textFiledForm(
+                      text: widget.word.voiceUk,
+                      labelText: '音标(英)',
+                      onChanged: (v) => widget.word.voiceUk = v,
                     ),
                     WrapOutlineTag(
-                      data: widget._word.morph,
+                      data: widget.word.morph,
                       labelText: '单词变形',
                       suffix: TextButton(
                         child: Text('添加',),
@@ -147,7 +112,7 @@ class _EditWordState extends State<EditWord> {
                       ),
                     ),
                     WrapOutlineTag(
-                      data: widget._word.etyma,
+                      data: widget.word.etyma,
                       labelText: '词根词缀',
                       suffix: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -158,7 +123,7 @@ class _EditWordState extends State<EditWord> {
                               context: context,
                               title: Text('选择词根词缀'),
                               options: Global.etymaOptions,
-                              close: (v) => setState(() => widget._word.etyma.add(v)),
+                              close: (v) => setState(() => widget.word.etyma.add(v)),
                             ),
                           ),
                           TextButton(
@@ -169,7 +134,7 @@ class _EditWordState extends State<EditWord> {
                       )
                     ),
                     WrapOutlineTag(
-                      data: widget._word.tag,
+                      data: widget.word.tag,
                       labelText: 'Tag',
                       suffix: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -180,7 +145,7 @@ class _EditWordState extends State<EditWord> {
                               context: context,
                               title: Text('选择Tag'),
                               options: Global.wordTagOptions,
-                              close: (v) => setState(() => widget._word.tag.add(v)),
+                              close: (v) => setState(() => widget.word.tag.add(v)),
                             ),
                           ),
                           TextButton(
@@ -194,33 +159,33 @@ class _EditWordState extends State<EditWord> {
                       autofocus: false,
                       keyboardType: TextInputType.number, // 键盘回车键的样式
                       textInputAction: TextInputAction.next,
-                      controller: TextEditingController(text: widget._word.origin),
+                      controller: TextEditingController(text: widget.word.origin),
                       maxLines: null,
                       style: _textStyle,
                       decoration: InputDecoration(
                         labelText: "词源",
                         border: OutlineInputBorder(),
                       ),
-                      onChanged: (v) => widget._word.origin = v.trim(),
+                      onChanged: (v) => widget.word.origin = v.trim(),
                       //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
                     TextFormField(
                       autofocus: false,
                       keyboardType: TextInputType.number, // 键盘回车键的样式
                       textInputAction: TextInputAction.next,
-                      controller: TextEditingController(text: widget._word.shorthand),
+                      controller: TextEditingController(text: widget.word.shorthand),
                       maxLines: null,
                       style: _textStyle,
                       decoration: InputDecoration(
                         labelText: "速记",
                         border: OutlineInputBorder(),
                       ),
-                      onChanged: (v) => widget._word.shorthand = v.trim(),
+                      onChanged: (v) => widget.word.shorthand = v.trim(),
                       //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
                     WrapOutline(
                       labelText: '近义词',
-                      children: widget._word.synonym.map<Widget>((e) =>
+                      children: widget.word.synonym.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
                             child: Text(e, style: TextStyle(color: Colors.amberAccent)),
@@ -236,7 +201,7 @@ class _EditWordState extends State<EditWord> {
                               setState((){});
                             },
                           ),
-                          onDeleted: () => setState(() => widget._word.synonym.remove(e)),
+                          onDeleted: () => setState(() => widget.word.synonym.remove(e)),
                         )).toList(),
                       suffix: TextButton(
                         child: Text('添加',),
@@ -245,7 +210,7 @@ class _EditWordState extends State<EditWord> {
                           if(word != null) {
                             bool ret = await word.save();
                             if(ret) {
-                              setState(() => widget._word.synonym.add(word.name));
+                              setState(() => widget.word.synonym.add(word.name));
                             }
                           }
                         },
@@ -253,7 +218,7 @@ class _EditWordState extends State<EditWord> {
                     ),
                     WrapOutline(
                       labelText: '反义词',
-                      children: widget._word.antonym.map<Widget>((e) =>
+                      children: widget.word.antonym.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
                             child: Text(e, style: TextStyle(color: Colors.amberAccent)),
@@ -269,7 +234,7 @@ class _EditWordState extends State<EditWord> {
                               setState((){});
                             },
                           ),
-                          onDeleted: () => setState(() => widget._word.antonym.remove(e)),
+                          onDeleted: () => setState(() => widget.word.antonym.remove(e)),
                         )).toList(),
                       suffix: TextButton(
                         child: Text('添加',),
@@ -278,7 +243,7 @@ class _EditWordState extends State<EditWord> {
                           if(word != null) {
                             bool ret = await word.save();
                             if(ret) {
-                              setState(() => widget._word.antonym.add(word.name));
+                              setState(() => widget.word.antonym.add(word.name));
                             }
                           }
                         },
@@ -286,7 +251,7 @@ class _EditWordState extends State<EditWord> {
                     ),
                     WrapOutline(
                       labelText: '释义',
-                      children: widget._word.paraphraseSet.map<Widget>((e) =>
+                      children: widget.word.paraphraseSet.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
                             child: ConstrainedBox(
@@ -297,7 +262,7 @@ class _EditWordState extends State<EditWord> {
                               var p = ParaphraseSerializer()..id = e.id;
                               bool ret = await p.retrieve();
                               if(ret) {
-                                p = (await Navigator.pushNamed(context, '/edit_paraphrase', arguments: {'title':'编辑${widget._word.name}的释义', 'paraphrase': ParaphraseSerializer().from(p)})) as ParaphraseSerializer;
+                                p = (await Navigator.pushNamed(context, '/edit_paraphrase', arguments: {'title':'编辑${widget.word.name}的释义', 'paraphrase': ParaphraseSerializer().from(p)})) as ParaphraseSerializer;
                                 if(p != null) {
                                   await e.from(p).save();
                                 }
@@ -305,16 +270,16 @@ class _EditWordState extends State<EditWord> {
                               setState((){});
                             },
                           ),
-                          onDeleted: () => setState(() => widget._word.antonym.remove(e)),
+                          onDeleted: () => setState(() => widget.word.antonym.remove(e)),
                         )).toList(),
                       suffix: TextButton(
                         child: Text('添加'),
                         onPressed: () async {
-                          var p = (await Navigator.pushNamed(context, '/edit_paraphrase', arguments: {'title':'给${widget._word.name}添加释义'})) as ParaphraseSerializer;
+                          var p = (await Navigator.pushNamed(context, '/edit_paraphrase', arguments: {'title':'给${widget.word.name}添加释义'})) as ParaphraseSerializer;
                           if(p != null) {
                             bool ret = await p.save();
                             if(ret) {
-                              setState(() => widget._word.paraphraseSet.add(p));
+                              setState(() => widget.word.paraphraseSet.add(p));
                             }
                           }
                         },
@@ -322,7 +287,7 @@ class _EditWordState extends State<EditWord> {
                     ),
                     WrapOutline(
                       labelText: '常用句型',
-                      children: widget._word.sentencePatternSet.map<Widget>((e) =>
+                      children: widget.word.sentencePatternSet.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
                             child: Text('${e.content}', style: TextStyle(color: Colors.amberAccent)),
@@ -330,7 +295,7 @@ class _EditWordState extends State<EditWord> {
                               var s = SentencePatternSerializer()..id = e.id;
                               bool ret = await s.retrieve();
                               if(ret) {
-                                s = (await Navigator.pushNamed(context, '/edit_sentence_pattern', arguments: {'title':'编辑${widget._word.name}的常用句型', 'sentence_pattern': SentencePatternSerializer().from(s)})) as SentencePatternSerializer;
+                                s = (await Navigator.pushNamed(context, '/edit_sentence_pattern', arguments: {'title':'编辑${widget.word.name}的常用句型', 'sentence_pattern': SentencePatternSerializer().from(s)})) as SentencePatternSerializer;
                                 if(s != null) {
                                   await e.from(s).save();
                                 }
@@ -338,16 +303,16 @@ class _EditWordState extends State<EditWord> {
                               setState((){});
                             },
                           ),
-                          onDeleted: () => setState(() => widget._word.sentencePatternSet.remove(e)),
+                          onDeleted: () => setState(() => widget.word.sentencePatternSet.remove(e)),
                         )).toList(),
                       suffix: TextButton(
                             child: Text('添加',),
                             onPressed: () async {
-                              var s = (await Navigator.pushNamed(context, '/edit_sentence_pattern', arguments: {'title':'给${widget._word.name}添加常用句型'})) as SentencePatternSerializer;
+                              var s = (await Navigator.pushNamed(context, '/edit_sentence_pattern', arguments: {'title':'给${widget.word.name}添加常用句型'})) as SentencePatternSerializer;
                               if(s != null) {
                                 bool ret = await s.save();
                                 if(ret) {
-                                  setState(() => widget._word.sentencePatternSet.add(s));
+                                  setState(() => widget.word.sentencePatternSet.add(s));
                                 }
                               }
                             },
@@ -355,7 +320,7 @@ class _EditWordState extends State<EditWord> {
                     ),
                     WrapOutline(
                       labelText: '相关语法',
-                      children: widget._word.grammarSet.map<Widget>((e) =>
+                      children: widget.word.grammarSet.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
                             child: Text('${e.id}', style: TextStyle(color: Colors.amberAccent)),
@@ -363,24 +328,24 @@ class _EditWordState extends State<EditWord> {
                               var g = GrammarSerializer()..id = e.id;
                               bool ret = await g.retrieve();
                               if(ret) {
-                                g = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title':'编辑${widget._word.name}的相关语法', 'grammar': GrammarSerializer().from(g)})) as GrammarSerializer;
+                                g = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title':'编辑${widget.word.name}的相关语法', 'grammar': GrammarSerializer().from(g)})) as GrammarSerializer;
                                 if(g != null) {
                                   await e.from(g).save();
                                 }
                               }
-                              setState((){widget._word.grammarSet.add(g);});
+                              setState((){widget.word.grammarSet.add(g);});
                             },
                           ),
-                          onDeleted: () => setState(() => widget._word.grammarSet.remove(e)),
+                          onDeleted: () => setState(() => widget.word.grammarSet.remove(e)),
                         )).toList(),
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          var g = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title':'给${widget._word.name}添加相关语法'})) as GrammarSerializer;
+                          var g = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title':'给${widget.word.name}添加相关语法'})) as GrammarSerializer;
                           if(g != null) {
                             bool ret = await g.save();
                             if(ret) {
-                              setState(() => widget._word.grammarSet.add(g));
+                              setState(() => widget.word.grammarSet.add(g));
                             }
                           }
                         },
@@ -388,7 +353,7 @@ class _EditWordState extends State<EditWord> {
                     ),
                     WrapOutline(
                       labelText: '词义辨析',
-                      children: widget._word.distinguishSet.map<Widget>((e) =>
+                      children: widget.word.distinguishSet.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
                             child: Text('${e.id}', style: TextStyle(color: Colors.amberAccent)),
@@ -396,7 +361,7 @@ class _EditWordState extends State<EditWord> {
                               var d = DistinguishSerializer()..id = e.id;
                               bool ret = await d.retrieve();
                               if(ret) {
-                                d = (await Navigator.pushNamed(context, '/edit_distinguish', arguments: {'title':'编辑${widget._word.name}的词义辨析', 'distinguish': DistinguishSerializer().from(d)})) as DistinguishSerializer;
+                                d = (await Navigator.pushNamed(context, '/edit_distinguish', arguments: {'title':'编辑${widget.word.name}的词义辨析', 'distinguish': DistinguishSerializer().from(d)})) as DistinguishSerializer;
                                 if(d != null) {
                                   await e.from(d).save();
                                 }
@@ -404,29 +369,71 @@ class _EditWordState extends State<EditWord> {
                               setState((){});
                             },
                           ),
-                          onDeleted: () => setState(() => widget._word.distinguishSet.remove(e)),
+                          onDeleted: () => setState(() => widget.word.distinguishSet.remove(e)),
                         )).toList(),
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          var d = (await Navigator.pushNamed(context, '/edit_distinguish', arguments: {'title':'给${widget._word.name}添加词义辨析'})) as DistinguishSerializer;
+                          var d = (await Navigator.pushNamed(context, '/edit_distinguish', arguments: {'title':'给${widget.word.name}添加词义辨析'})) as DistinguishSerializer;
                           if(d != null) {
                             bool ret = await d.save();
                             if(ret) {
-                              setState(() => widget._word.distinguishSet.add(d));
+                              setState(() => widget.word.distinguishSet.add(d));
                             }
                           }
                         },
                       ),
                     ),
-                    OkCancel(ok: () {
-                      if((_formKey.currentState as FormState).validate()) // 验证各个表单字段是否合法
-                        Navigator.pop(context, widget._word);
-                    }),
                   ]
                 ),
               ),
             ),
     );
+  }
+
+  _editMorph(BuildContext context) async {
+    _morphInput = '';
+    await showDialog(
+      context: context,
+      builder: (context) =>
+        StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) =>
+            SimpleDialog(
+              title: Text('编辑变形单词'),
+              contentPadding: EdgeInsets.fromLTRB(10,10,10,10),
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    DropdownButton(
+                      value: _morphSelect,
+                      items: _morphOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
+                      onChanged: (v) {setState(() => _morphSelect = v);},
+                      underline: Divider(height: 1,),
+                    ),
+                    Container(
+                      width: 100,
+                      child: TextField(
+                        maxLines: 1,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: EdgeInsets.fromLTRB(8, 0, 8, 8)
+                        ),
+                        onChanged: (val) {
+                          if(_morphSelect != _morphOptions.first && val.trim().isNotEmpty)
+                            _morphInput = '$_morphSelect: ${val.trim()}';
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+        ),
+    );
+
+  if(_morphInput.isNotEmpty)
+    setState(() => widget.word.morph.add(_morphInput));
   }
 }

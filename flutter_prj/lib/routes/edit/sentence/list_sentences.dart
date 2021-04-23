@@ -81,6 +81,7 @@ class _ListSentencesState extends State<ListSentences> {
     return Scaffold(
             appBar: AppBar(
               title: Text('编辑例句'),
+              centerTitle: true,
             ),
             body: Container(
                 padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
@@ -96,13 +97,15 @@ class _ListSentencesState extends State<ListSentences> {
   }
 
   Widget _buildFilterOptions(BuildContext context) =>
-    Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+    Wrap(
+      alignment: WrapAlignment.start,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 10,
       children: [
-        SizedBox(width: 10,),
+        SizedBox(width: 2,),
         Text('过滤:', style: TextStyle(fontSize: 12, color: Color.fromRGBO(132,132,132,1.0), fontWeight: FontWeight.bold)),
-        SizedBox(width: 10,),
         DropdownButton(
+          isDense: true,
           value: ddBtnValues.first,
           items: _typeOptions.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
           onChanged: (v) {
@@ -112,8 +115,8 @@ class _ListSentencesState extends State<ListSentences> {
           },
           underline: Divider(height:1, thickness: 1),
         ),
-        SizedBox(width: 10,),
         DropdownButton(
+          isDense: true,
           value: ddBtnValues[1],
           items: _tagOptions.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
           onChanged: (v) {
@@ -122,9 +125,8 @@ class _ListSentencesState extends State<ListSentences> {
           },
           underline: Divider(height:1, thickness: 1),
         ),
-        SizedBox(width: 10,),
         DropdownButton(
-          elevation: 0,
+          isDense: true,
           value: ddBtnValues[2],
           items: _tenseOptions.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
           onChanged: (v) {
@@ -133,9 +135,8 @@ class _ListSentencesState extends State<ListSentences> {
           },
           underline: Divider(height:1, thickness: 1),
         ),
-        SizedBox(width: 10,),
         DropdownButton(
-          elevation: 0,
+          isDense: true,
           value: ddBtnValues[3],
           items: _formOptions.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
           onChanged: (v) {
@@ -144,9 +145,8 @@ class _ListSentencesState extends State<ListSentences> {
           },
           underline: Divider(height:1, thickness: 1),
         ),
-        SizedBox(width: 10,),
         TextButton(
-          child: Text('添加例句'),
+          child: Text('添加例句', style: TextStyle(fontSize: 12)),
           onPressed: () async {
             var s = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'添加句子'})) as SentenceSerializer;
             if(s != null) {
@@ -169,6 +169,7 @@ class _ListSentencesState extends State<ListSentences> {
             Expanded(
               flex: 5,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextField(
                     style: textStyle,

@@ -3,26 +3,26 @@ import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/edit_delete.dart';
 
 
-class EditUsers extends StatefulWidget {
-  EditUsers({Key key}) : super(key: key);
+class ListUsers extends StatefulWidget {
+  ListUsers({Key key}) : super(key: key);
 
   @override
-  _EditUsersState createState() => _EditUsersState();
+  _ListUsersState createState() => _ListUsersState();
 }
 
 
-class _EditUsersState extends State<EditUsers> {
+class _ListUsersState extends State<ListUsers> {
   List<UserSerializer> _users = [];
+
+  @override
+  void initState() {
+    _init();
+    super.initState();
+  }
 
   void _init() async {
     var users = await UserSerializer.list();
     setState(() => _users = users);
-  }
-
-  @override
-  void initState() { 
-    super.initState();
-    _init();
   }
 
   _buildListUsers(BuildContext context) =>
@@ -49,20 +49,19 @@ class _EditUsersState extends State<EditUsers> {
     return Scaffold(
         appBar: AppBar(
           title: Text('管理用户'),
+          centerTitle: true,
         ),
         body: Container(
             padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                _buildListUsers(context),
                 Row(
                   children: <Widget>[
                     Expanded(
-                      child: RaisedButton(
-                        padding: EdgeInsets.all(15.0),
+                      child: ElevatedButton(
                         child: Text("添加用户"),
-                        color: Theme.of(context).primaryColor,
-                        textColor: Colors.white,
                         onPressed: () async {
                            var user = (await Navigator.pushNamed(context, '/edit_user', arguments:{'title':'编辑用户'})) as UserSerializer;
                           if(user != null) {
@@ -74,7 +73,6 @@ class _EditUsersState extends State<EditUsers> {
                     ),
                   ],
                 ),
-                _buildListUsers(context),
               ],
             ),
           ),

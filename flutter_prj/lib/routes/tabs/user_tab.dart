@@ -19,7 +19,7 @@ class UserTab extends StatelessWidget {
     {
       'title': '用户管理',
       'icon': Icon(Icons.people_outline),
-      'route': '/edit_users',
+      'route': '/list_users',
     },
     {
       'title': '编辑单词',
@@ -34,22 +34,22 @@ class UserTab extends StatelessWidget {
     {
       'title': '编辑语法',
       'icon': Icon(Icons.grid_on),
-      'route': '/edit_grammars',
+      'route': '/list_grammars',
     },
     {
       'title': '编辑词根词缀',
       'icon': Icon(Icons.hdr_strong),
-      'route': '/edit_etymas',
+      'route': '/list_etymas',
     },
     {
       'title': '编辑常用句型',
       'icon': Icon(Icons.gesture),
-      'route': '/edit_sentence_patterns',
+      'route': '/list_sentence_patterns',
     },
     {
       'title': '编辑词义辨析',
       'icon': Icon(Icons.transform),
-      'route': '/edit_distinguishes'
+      'route': '/list_distinguishes'
     }
   ];
   final statistics = [

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/routes/edit/distinguish_word/edit_distinguish.dart';
-import 'package:flutter_prj/routes/edit/distinguish_word/edit_distinguishes.dart';
-import 'package:flutter_prj/routes/edit/etyma/edit_etymas.dart';
+import 'package:flutter_prj/routes/edit/distinguish_word/list_distinguishes.dart';
+import 'package:flutter_prj/routes/edit/etyma/list_etymas.dart';
 import 'package:flutter_prj/routes/edit/paraphrase/edit_paraphrase.dart';
 import 'package:flutter_prj/routes/edit/sentence/edit_sentence.dart';
 import 'package:flutter_prj/routes/edit/sentence/list_sentences.dart';
 import 'package:flutter_prj/routes/edit/edit_tags.dart';
 import 'package:flutter_prj/routes/edit/grammar/edit_grammar.dart';
-import 'package:flutter_prj/routes/edit/grammar/edit_grammars.dart';
+import 'package:flutter_prj/routes/edit/grammar/list_grammars.dart';
 import 'package:flutter_prj/routes/edit/etyma/edit_etyma.dart';
 import 'package:flutter_prj/routes/edit/sentence_pattern/edit_sentence_pattern.dart';
-import 'package:flutter_prj/routes/edit/sentence_pattern/edit_sentence_patterns.dart';
+import 'package:flutter_prj/routes/edit/sentence_pattern/list_sentence_patterns.dart';
 import 'package:flutter_prj/routes/edit/user/edit_user.dart';
-import 'package:flutter_prj/routes/edit/user/edit_users.dart';
+import 'package:flutter_prj/routes/edit/user/list_users.dart';
 import 'package:flutter_prj/routes/edit/word/edit_word.dart';
 import 'package:flutter_prj/routes/edit/word/list_words.dart';
 import 'package:flutter_prj/routes/login.dart';
@@ -29,7 +29,7 @@ final _routes = {
   '/login': (context) => LoginPage(),
   '/register': (context) => RegisterPage(),
   '/setting': (context) => Setting(),
-  '/edit_users': (context) => EditUsers(),
+  '/list_users': (context) => ListUsers(),
   '/edit_user': (context, {arguments}) => EditUser(title:arguments['title'], user:arguments['user']),
   '/list_words': (context) => ListWords(),
   '/edit_word': (context, {arguments}) => EditWord(title:arguments['title'], word:arguments['word']),
@@ -47,7 +47,7 @@ final _routes = {
                                         add: (String tag) => SentenceTagSerializer().create(data:{'name':tag}),
                                         remove: (String tag) => SentenceTagSerializer()..name = tag ..delete(),
                                         ),
-  '/edit_grammars': (context) => EditGrammers(),
+  '/list_grammars': (context) => ListGrammers(),
   '/edit_grammar': (context, {arguments}) => EditGrammar(title:arguments['title'], grammar:arguments['grammar']),
   '/edit_grammar_type': (context) => EditTags(
                                         title: Text('编辑语法 Type',),
@@ -61,12 +61,12 @@ final _routes = {
                                         add: (String tag) => GrammarTagSerializer().create(data:{'name':tag}),
                                         remove: (String tag) => GrammarTagSerializer()..name = tag ..delete(),
                                         ),
-  '/edit_etymas': (context) => EditEtymas(),
+  '/list_etymas': (context) => ListEtymas(),
   '/edit_etyma': (context, {arguments}) => EditEtyma(title:arguments['title'], etyma:arguments['etyma']),
   '/edit_paraphrase': (context, {arguments}) => EditParaphrase(title:arguments['title'], paraphrase:arguments['paraphrase']),
-  '/edit_sentence_patterns': (context) => EditSentencePatterns(),
+  '/list_sentence_patterns': (context) => ListSentencePatterns(),
   '/edit_sentence_pattern': (context, {arguments}) => EditSentencePattern(title:arguments['title'], sentencePattern:arguments['sentence_pattern']),
-  '/edit_distinguishes': (context) => EditDistinguishes(),
+  '/list_distinguishes': (context) => ListDistinguishes(),
   '/edit_distinguish': (context, {arguments}) => EditDistinguish(title:arguments['title'], distinguish:arguments['distinguish']),
 };
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/serializers/etyma.dart';
-import 'package:flutter_prj/widgets/ok_cancel.dart';
 
 
 class EditEtyma extends StatefulWidget {
@@ -33,10 +32,24 @@ class _EditEtymaState extends State<EditEtyma> {
     return Scaffold(
           appBar: AppBar(
             title: Text(widget._title),
-            automaticallyImplyLeading: false, // 取消返回按钮
+            centerTitle: true,
+            //automaticallyImplyLeading: false, // 取消返回按钮
+            leading: TextButton(
+              child: Text('取消', style: TextStyle(color: Colors.white),),
+              onPressed: () => Navigator.pop(context),
+            ),
+            actions: [
+              TextButton(
+                child: Text('确定', style: TextStyle(color: Colors.white),),
+                onPressed: () {
+                  if((_formKey.currentState as FormState).validate()) // 验证各个表单字段是否合法
+                    Navigator.pop(context, widget._etyma);
+                },
+              ),
+            ],
           ),
-          body: Container(
-            padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
+          body: SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(20, 40, 20, 20),
             child: Form(
               key: _formKey, //设置globalKey，用于后面获取FormState
               autovalidateMode: AutovalidateMode.always, //开启自动校验
@@ -101,11 +114,6 @@ class _EditEtymaState extends State<EditEtyma> {
                     onChanged: (value) => widget._etyma.interpretation = value.trim(),
                     //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                   ),
-                  SizedBox(height: 20,),
-                  OkCancel(ok: () {
-                    if((_formKey.currentState as FormState).validate()) // 验证各个表单字段是否合法
-                      Navigator.pop(context, widget._etyma);
-                  }),
                 ]
             ),
           ),

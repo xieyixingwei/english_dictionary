@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/Tag.dart';
-import 'package:flutter_prj/widgets/ok_cancel.dart';
 import 'package:flutter_prj/widgets/wrap_custom.dart';
 
 
@@ -32,7 +31,21 @@ class _EditSentencePatternState extends State<EditSentencePattern> {
     return Scaffold(
           appBar: AppBar(
             title: Text(widget._title),
-            automaticallyImplyLeading: false, // 取消返回按钮
+            centerTitle: true,
+            //automaticallyImplyLeading: false, // 取消返回按钮
+            leading: TextButton(
+              child: Text('取消', style: TextStyle(color: Colors.white),),
+              onPressed: () => Navigator.pop(context),
+            ),
+            actions: [
+              TextButton(
+                child: Text('确定', style: TextStyle(color: Colors.white),),
+                onPressed: () {
+                  if((_formKey.currentState as FormState).validate()) // 验证各个表单字段是否合法
+                    Navigator.pop(context, widget._sentencePattern);
+                },
+              ),
+            ],
           ),
           body: SingleChildScrollView(
             padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
@@ -110,11 +123,6 @@ class _EditSentencePatternState extends State<EditSentencePattern> {
                       },
                     ),
                   ),
-                  SizedBox(height: 20,),
-                  OkCancel(ok: () {
-                    if((_formKey.currentState as FormState).validate()) // 验证各个表单字段是否合法
-                      Navigator.pop(context, widget._sentencePattern);
-                  }),
                 ]
             ),
           ),
