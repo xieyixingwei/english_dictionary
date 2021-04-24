@@ -4,6 +4,8 @@
 // **************************************************************************
 
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter_prj/serializers/file_type.dart';
 import 'paraphrase.dart';
 import 'sentence_pattern.dart';
 import 'grammar.dart';
@@ -25,10 +27,8 @@ class WordSerializer {
   String shorthand = '';
   List<String> synonym = [];
   List<String> antonym = [];
-  String image = '';
-  MultipartFile imageMpFile;
-  String vedio = '';
-  MultipartFile vedioMpFile;
+  FileSerializer image = FileSerializer('image', FileType.image);
+  FileSerializer vedio = FileSerializer('vedio', FileType.video);
   List<ParaphraseSerializer> paraphraseSet = [];
   List<SentencePatternSerializer> sentencePatternSet = [];
   List<GrammarSerializer> grammarSet = [];
@@ -37,7 +37,7 @@ class WordSerializer {
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/dictionary/word/', data:data??this.toJson(), queries:queries, cache:cache);
     if(res != null) {
-      await update(data: uploadFormData);
+      //await update(data: uploadFormData);
       this.fromJson(res.data);
     }
     return res != null;
@@ -45,8 +45,8 @@ class WordSerializer {
 
   FormData get uploadFormData {
     var formData = FormData();
-    formData.files.add(MapEntry('image', imageMpFile));
-    formData.files.add(MapEntry('vedio', vedioMpFile));
+    formData.files.add(image.file);
+    formData.files.add(vedio.file);
     return formData;
   }
 
@@ -116,8 +116,8 @@ class WordSerializer {
     antonym = json['antonym'] == null
                 ? []
                 : json['antonym'].map<String>((e) => e as String).toList();
-    image = json['image'] == null ? null : json['image'] as String;
-    vedio = json['vedio'] == null ? null : json['vedio'] as String;
+    image.url = json['image'] == null ? null : json['image'] as String;
+    vedio.url = json['vedio'] == null ? null : json['vedio'] as String;
     paraphraseSet = json['paraphraseSet'] == null
                 ? []
                 : json['paraphraseSet'].map<ParaphraseSerializer>((e) => ParaphraseSerializer().fromJson(e as Map<String, dynamic>)).toList();
@@ -158,11 +158,8 @@ class WordSerializer {
     shorthand = instance.shorthand;
     synonym = List.from(instance.synonym);
     antonym = List.from(instance.antonym);
-    image = instance.image;
-    vedio = instance.vedio;
-    imageMpFile = instance.imageMpFile;
-    vedioMpFile = instance.vedioMpFile;
-
+    image.from(instance.image);
+    vedio.from(instance.vedio);
     paraphraseSet = List.from(instance.paraphraseSet.map((e) => ParaphraseSerializer().from(e)).toList());
     sentencePatternSet = List.from(instance.sentencePatternSet.map((e) => SentencePatternSerializer().from(e)).toList());
     grammarSet = List.from(instance.grammarSet.map((e) => GrammarSerializer().from(e)).toList());

@@ -389,7 +389,7 @@ class _EditWordState extends State<EditWord> {
                     WrapOutline(
                       labelText: '相关图片',
                       children: [
-                        Text(widget.word.image ?? ''),
+                        Text(widget.word.image.url ?? ''),
                         //_testImagePath != null ? Image.network(_testImagePath) : Text(''),
                         //_testImage != null ? Image.file(_testImage) : Text(''),
                       ],
@@ -398,17 +398,17 @@ class _EditWordState extends State<EditWord> {
                         onPressed: () async {
                           var result = await FilePicker.platform.pickFiles(
                             type: FileType.image,
+                            allowMultiple: true,
                             withReadStream: true, // this will return PlatformFile object with read stream
                           );
                           if (result == null) return;
-                          var objFile = result.files.single;
-                          print('--- ${objFile.path}');
-                          print('--- ${objFile.name}');
-                          print('--- ${objFile.size}');
+                          //var objFile = result.files.single;
+                          for(var f in result.files)
+                            print('--- ${f.path} ${f.name} ${f.size}');
                           // 注意: 需要使用 'package::dio/dio.dart';中的 MultipartFile
-                          widget.word.imageMpFile = MultipartFile(objFile.readStream, objFile.size, filename: objFile.name);
-                          print('--- ${widget.word.imageMpFile.filename}');
-                          widget.word.image = objFile.name;
+                          //widget.word.imageMpFile = MultipartFile(objFile.readStream, objFile.size, filename: objFile.name);
+                          //print('--- ${widget.word.imageMpFile.filename}');
+                          //widget.word.image = objFile.name;
                           setState(() {});
                         },
                       ),
@@ -416,7 +416,7 @@ class _EditWordState extends State<EditWord> {
                     WrapOutline(
                       labelText: '相关视频',
                       children: [
-                        Text(widget.word.vedio ?? ''),
+                        Text(widget.word.vedio.url ?? ''),
                         //_testImagePath != null ? Image.network(_testImagePath) : Text(''),
                         //_testImage != null ? Image.file(_testImage) : Text(''),
                       ],
@@ -428,14 +428,14 @@ class _EditWordState extends State<EditWord> {
                             withReadStream: true, // this will return PlatformFile object with read stream
                           );
                           if (result == null) return;
-                          var objFile = result.files.single;
-                          print('--- ${objFile.path}');
-                          print('--- ${objFile.name}');
-                          print('--- ${objFile.size}');
+                          var objFile = result.files.first;
+                          for(var f in result.files)
+                            print('--- ${f.path} ${f.name} ${f.size}');
+
                           // 注意: 需要使用 'package::dio/dio.dart';中的 MultipartFile
-                          widget.word.vedioMpFile = MultipartFile(objFile.readStream, objFile.size, filename: objFile.name);
-                          print('--- ${widget.word.vedioMpFile.filename}');
-                          widget.word.vedio = objFile.name;
+                          //widget.word.vedioMpFile = MultipartFile(objFile.readStream, objFile.size, filename: objFile.name);
+                          //print('--- ${widget.word.vedioMpFile.filename}');
+                          //widget.word.vedio = objFile.name;
                           setState(() {});
                         },
                       ),
