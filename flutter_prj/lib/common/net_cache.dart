@@ -25,8 +25,8 @@ class NetCache extends Interceptor {
   var _cache = LinkedHashMap<String, CacheObject>();
 
   @override
-  onRequest(RequestOptions options) async {
-    if (!Global.localStore.netCacheConfig.enable) return options;
+  onRequest(RequestOptions options, RequestInterceptorHandler rth) async {
+    if (!Global.localStore.netCacheConfig.enable) return;
 
     //如果是下拉刷新，先删除相关缓存
     if (options.extra["refresh"] == true) {
@@ -37,7 +37,7 @@ class NetCache extends Interceptor {
         // 如果不是列表，则只删除uri相同的缓存
         delete(options.uri.toString());
       }
-      return options;
+      return;
     }
 
     if (options.extra["noCache"] != true &&
@@ -48,7 +48,7 @@ class NetCache extends Interceptor {
         //若缓存未过期，则返回缓存内容
         if ((DateTime.now().millisecondsSinceEpoch - ob.timeStamp) / 1000 <
             Global.localStore.netCacheConfig.maxAge) {
-          return _cache[key].response;
+          return;
         } else {
           //若已过期则删除缓存，继续向服务器请求
           _cache.remove(key);
@@ -58,12 +58,12 @@ class NetCache extends Interceptor {
   }
 
   @override
-  onError(DioError err) async {
+  onError(DioError err, ErrorInterceptorHandler eth) async {
     // 错误状态不缓存
   }
 
   @override
-  onResponse(Response response) async {
+  onResponse(Response response, ResponseInterceptorHandler rth) async {
     // 如果启用缓存，将返回结果保存到缓存
     if (Global.localStore.netCacheConfig.enable) {
       _saveCache(response);
@@ -71,7 +71,7 @@ class NetCache extends Interceptor {
   }
 
   _saveCache(Response object) {
-    RequestOptions options = object.request;
+    RequestOptions options = object.requestOptions;
     if (options.extra["noCache"] != true &&
         options.method.toLowerCase() == "get") {
       // 如果缓存数量超过最大数量限制，则先移除最早的一条记录

@@ -3,6 +3,7 @@
 // JsonSerializer
 // **************************************************************************
 
+import 'package:dio/dio.dart';
 import 'paraphrase.dart';
 import 'sentence_pattern.dart';
 import 'grammar.dart';
@@ -25,16 +26,28 @@ class WordSerializer {
   List<String> synonym = [];
   List<String> antonym = [];
   String image = '';
+  MultipartFile imageMpFile;
   String vedio = '';
+  MultipartFile vedioMpFile;
   List<ParaphraseSerializer> paraphraseSet = [];
   List<SentencePatternSerializer> sentencePatternSet = [];
   List<GrammarSerializer> grammarSet = [];
   List<DistinguishSerializer> distinguishSet = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/dictionary/word/', data:data ?? this.toJson(), queries:queries, cache:cache);
-    if(res != null) this.fromJson(res.data);
+    var res = await Http().request(HttpType.POST, '/dictionary/word/', data:data??this.toJson(), queries:queries, cache:cache);
+    if(res != null) {
+      await update(data: uploadFormData);
+      this.fromJson(res.data);
+    }
     return res != null;
+  }
+
+  FormData get uploadFormData {
+    var formData = FormData();
+    formData.files.add(MapEntry('image', imageMpFile));
+    formData.files.add(MapEntry('vedio', vedioMpFile));
+    return formData;
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
@@ -49,7 +62,7 @@ class WordSerializer {
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    if(_name == null) return false;
+    if(_name == null) return true;
     var res = await Http().request(HttpType.DELETE, '/dictionary/word/$name/', data:data ?? this.toJson(), queries:queries, cache:cache);
     /*
     if(paraphraseSet != null){paraphraseSet.forEach((e){e.delete();});}
@@ -147,6 +160,9 @@ class WordSerializer {
     antonym = List.from(instance.antonym);
     image = instance.image;
     vedio = instance.vedio;
+    imageMpFile = instance.imageMpFile;
+    vedioMpFile = instance.vedioMpFile;
+
     paraphraseSet = List.from(instance.paraphraseSet.map((e) => ParaphraseSerializer().from(e)).toList());
     sentencePatternSet = List.from(instance.sentencePatternSet.map((e) => SentencePatternSerializer().from(e)).toList());
     grammarSet = List.from(instance.grammarSet.map((e) => GrammarSerializer().from(e)).toList());

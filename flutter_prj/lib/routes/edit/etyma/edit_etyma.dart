@@ -3,6 +3,7 @@ import 'package:flutter_prj/serializers/etyma.dart';
 
 
 class EditEtyma extends StatefulWidget {
+  static const List<String> options = ['前缀', '后缀', '词根'];
   final String _title;
   final EtymaSerializer _etyma;
 
@@ -17,13 +18,13 @@ class EditEtyma extends StatefulWidget {
 
 class _EditEtymaState extends State<EditEtyma> {
   final GlobalKey _formKey =  GlobalKey<FormState>();
-  static const List<String> _options = ['前缀', '后缀', '词根'];
-  String _select = _options.first;
+  
+  String _select = EditEtyma.options.first;
 
   @override
   void initState() {
     super.initState();
-    _select = _options[widget._etyma.type];
+    _select = EditEtyma.options[widget._etyma.type];
   }
 
   @override
@@ -64,7 +65,7 @@ class _EditEtymaState extends State<EditEtyma> {
                           autofocus: false,
                           value: _select,
                           elevation: 0,
-                          items: _options.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
+                          items: EditEtyma.options.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
                           decoration: InputDecoration(
                             isDense: true,
                             contentPadding: EdgeInsets.fromLTRB(10,18,2,18),
@@ -73,7 +74,7 @@ class _EditEtymaState extends State<EditEtyma> {
                             border: OutlineInputBorder(),
                           ),
                           onChanged: (v) {
-                            widget._etyma.type = _options.indexOf(v);
+                            widget._etyma.type = EditEtyma.options.indexOf(v);
                             setState(() => _select = v);
                           },
                         ),

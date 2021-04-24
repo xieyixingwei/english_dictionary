@@ -179,7 +179,7 @@ class _EditSentenceState extends State<EditSentence> {
                           context: context,
                           title: Text('选择Tag'),
                           options: Global.sentenceFormOptions,
-                          close: (v) => setState(() => widget._sentence.tag.add(v)),
+                          close: (v) => setState(() => widget._sentence.pattern.add(v)),
                         ),
                       ),
                     ),
@@ -194,7 +194,10 @@ class _EditSentenceState extends State<EditSentence> {
                               var sentence = SentenceSerializer()..id = e;
                               bool ret = await sentence.retrieve();
                               if(ret) {
-                                sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'编辑同义句', 'word': SentenceSerializer().from(sentence)})) as SentenceSerializer;
+                                sentence = (await Navigator.pushNamed(
+                                  context, '/edit_sentence',
+                                  arguments: {'title':'编辑同义句', 'word': SentenceSerializer().from(sentence)})
+                                ) as SentenceSerializer;
                                 if(sentence != null) {
                                   await sentence.save();
                                 }

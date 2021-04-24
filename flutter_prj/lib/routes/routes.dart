@@ -3,6 +3,7 @@ import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/routes/edit/distinguish_word/edit_distinguish.dart';
 import 'package:flutter_prj/routes/edit/distinguish_word/list_distinguishes.dart';
 import 'package:flutter_prj/routes/edit/etyma/list_etymas.dart';
+import 'package:flutter_prj/routes/edit/etyma/show_etyma.dart';
 import 'package:flutter_prj/routes/edit/paraphrase/edit_paraphrase.dart';
 import 'package:flutter_prj/routes/edit/sentence/edit_sentence.dart';
 import 'package:flutter_prj/routes/edit/sentence/list_sentences.dart';
@@ -10,12 +11,14 @@ import 'package:flutter_prj/routes/edit/edit_tags.dart';
 import 'package:flutter_prj/routes/edit/grammar/edit_grammar.dart';
 import 'package:flutter_prj/routes/edit/grammar/list_grammars.dart';
 import 'package:flutter_prj/routes/edit/etyma/edit_etyma.dart';
+import 'package:flutter_prj/routes/edit/sentence/show_sentences.dart';
 import 'package:flutter_prj/routes/edit/sentence_pattern/edit_sentence_pattern.dart';
 import 'package:flutter_prj/routes/edit/sentence_pattern/list_sentence_patterns.dart';
 import 'package:flutter_prj/routes/edit/user/edit_user.dart';
 import 'package:flutter_prj/routes/edit/user/list_users.dart';
 import 'package:flutter_prj/routes/edit/word/edit_word.dart';
 import 'package:flutter_prj/routes/edit/word/list_words.dart';
+import 'package:flutter_prj/routes/edit/word/show_word.dart';
 import 'package:flutter_prj/routes/login.dart';
 import 'package:flutter_prj/routes/register.dart';
 import 'package:flutter_prj/serializers/index.dart';
@@ -68,7 +71,12 @@ final _routes = {
   '/edit_sentence_pattern': (context, {arguments}) => EditSentencePattern(title:arguments['title'], sentencePattern:arguments['sentence_pattern']),
   '/list_distinguishes': (context) => ListDistinguishes(),
   '/edit_distinguish': (context, {arguments}) => EditDistinguish(title:arguments['title'], distinguish:arguments['distinguish']),
+
+  '/show_word': (context, {arguments}) => ShowWordPage(title:arguments['title'], word: arguments['word'],),
+  '/show_sentences': (context, {arguments}) => ShowSentencesPage(title: arguments['title'], ids: arguments['ids'],),
+  '/show_etyma': (context, {arguments}) => ShowEtymaPage(title: arguments['title'], etyma: arguments['etyma'],),
 };
+
 
 // 实现命名路由传参的函数
 Route<dynamic> onGenerateRoute(RouteSettings settings) {

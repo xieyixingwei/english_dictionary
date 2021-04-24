@@ -16,7 +16,7 @@ class SentenceSerializer {
   String cn = '';
   num type = 0;
   List<String> tag = [];
-  String tense;
+  String tense = '';
   List<String> pattern = [];
   List<num> synonym = [];
   List<num> antonym = [];
@@ -24,6 +24,7 @@ class SentenceSerializer {
   List<GrammarSerializer> grammarSet = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
+    print('--- ${this.toJson()}');
     var res = await Http().request(HttpType.POST, '/dictionary/sentence/', data:data ?? this.toJson(), queries:queries, cache:cache);
     if(res != null) this.fromJson(res.data);
     return res != null;
@@ -41,7 +42,7 @@ class SentenceSerializer {
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    if(_id == null) return false;
+    if(_id == null) return true;
     var res = await Http().request(HttpType.DELETE, '/dictionary/sentence/$id/', data:data ?? this.toJson(), queries:queries, cache:cache);
     /*
     if(grammarSet != null){grammarSet.forEach((e){e.delete();});}
@@ -52,6 +53,7 @@ class SentenceSerializer {
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     bool res = false;
     if(_id == null) {
+      print('--- create');
       var clone = SentenceSerializer().from(this); // create will update self, maybe refresh the member of self.
       res = await clone.create(data:data, queries:queries, cache:cache);
       if(res == false) return false;

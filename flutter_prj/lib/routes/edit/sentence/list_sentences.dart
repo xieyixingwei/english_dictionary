@@ -34,7 +34,7 @@ class _ListSentencesState extends State<ListSentences> {
   }
 
   Widget _buildListSentences(BuildContext context) =>
-  SingleChildScrollView(
+    Container(
       padding: EdgeInsets.fromLTRB(6, 0, 6, 10),
       child: CustomTable(
         count: (_sentences.count + _perPage/2) ~/ _perPage,
@@ -83,7 +83,7 @@ class _ListSentencesState extends State<ListSentences> {
               title: Text('编辑例句'),
               centerTitle: true,
             ),
-            body: Container(
+            body: SingleChildScrollView(
                 padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,10 +150,12 @@ class _ListSentencesState extends State<ListSentences> {
           onPressed: () async {
             var s = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'添加句子'})) as SentenceSerializer;
             if(s != null) {
-              var find = _sentences.results.where((e) => e.id == s.id);
-              if(find.isEmpty) _sentences.results.add(s);
-              else find.first.from(s);
-              await s.save();
+              bool ret = await s.save();
+              if(ret) {
+                var find = _sentences.results.where((e) => e.id == s.id);
+                if(find.isEmpty) _sentences.results.add(s);
+                else find.first.from(s);
+              }
             }
             setState((){});
           },

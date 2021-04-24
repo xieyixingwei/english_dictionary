@@ -37,7 +37,7 @@ class GrammarSerializer {
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    if(_id == null) return false;
+    if(_id == null) return true;
     var res = await Http().request(HttpType.DELETE, '/dictionary/grammar/$id/', data:data ?? this.toJson(), queries:queries, cache:cache);
     /*
     

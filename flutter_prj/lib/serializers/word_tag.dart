@@ -24,7 +24,7 @@ class WordTagSerializer {
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    if(_name == null) return false;
+    if(_name == null) return true;
     var res = await Http().request(HttpType.DELETE, '/dictionary/word_tag/$name/', data:data ?? this.toJson(), queries:queries, cache:cache);
     /*
     

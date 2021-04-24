@@ -15,7 +15,7 @@ class _ListWordsState extends State<ListWords> {
   static final List<String> _tagOptions = ['Tag'] + Global.wordTagOptions;
   static final List<String> _etymaOptions = ['词根'] + Global.etymaOptions;
   List<String> _ddBtnValues = [_tagOptions.first, _etymaOptions.first];
-  num _perPage = 2;
+  num _perPage = 10;
   num _pageIndex = 1;
   static const _textStyle = const TextStyle(fontSize: 12,);
 
@@ -78,8 +78,9 @@ class _ListWordsState extends State<ListWords> {
           onPressed: () async {
             var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'添加句子'})) as WordSerializer;
             if(word != null && word.name.isNotEmpty) {
-              _words.results.add(word);
-              await word.save();
+              var ret = await word.save();
+              if(ret)
+                _words.results.add(word);
             }
             setState((){});
           },

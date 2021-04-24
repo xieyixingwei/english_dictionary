@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/serializers/index.dart';
@@ -381,6 +383,60 @@ class _EditWordState extends State<EditWord> {
                               setState(() => widget.word.distinguishSet.add(d));
                             }
                           }
+                        },
+                      ),
+                    ),
+                    WrapOutline(
+                      labelText: '相关图片',
+                      children: [
+                        Text(widget.word.image ?? ''),
+                        //_testImagePath != null ? Image.network(_testImagePath) : Text(''),
+                        //_testImage != null ? Image.file(_testImage) : Text(''),
+                      ],
+                      suffix: TextButton(
+                        child: Text('添加',),
+                        onPressed: () async {
+                          var result = await FilePicker.platform.pickFiles(
+                            type: FileType.image,
+                            withReadStream: true, // this will return PlatformFile object with read stream
+                          );
+                          if (result == null) return;
+                          var objFile = result.files.single;
+                          print('--- ${objFile.path}');
+                          print('--- ${objFile.name}');
+                          print('--- ${objFile.size}');
+                          // 注意: 需要使用 'package::dio/dio.dart';中的 MultipartFile
+                          widget.word.imageMpFile = MultipartFile(objFile.readStream, objFile.size, filename: objFile.name);
+                          print('--- ${widget.word.imageMpFile.filename}');
+                          widget.word.image = objFile.name;
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                    WrapOutline(
+                      labelText: '相关视频',
+                      children: [
+                        Text(widget.word.vedio ?? ''),
+                        //_testImagePath != null ? Image.network(_testImagePath) : Text(''),
+                        //_testImage != null ? Image.file(_testImage) : Text(''),
+                      ],
+                      suffix: TextButton(
+                        child: Text('添加',),
+                        onPressed: () async {
+                          var result = await FilePicker.platform.pickFiles(
+                            type: FileType.video,
+                            withReadStream: true, // this will return PlatformFile object with read stream
+                          );
+                          if (result == null) return;
+                          var objFile = result.files.single;
+                          print('--- ${objFile.path}');
+                          print('--- ${objFile.name}');
+                          print('--- ${objFile.size}');
+                          // 注意: 需要使用 'package::dio/dio.dart';中的 MultipartFile
+                          widget.word.vedioMpFile = MultipartFile(objFile.readStream, objFile.size, filename: objFile.name);
+                          print('--- ${widget.word.vedioMpFile.filename}');
+                          widget.word.vedio = objFile.name;
+                          setState(() {});
                         },
                       ),
                     ),
