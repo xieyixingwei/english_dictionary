@@ -137,6 +137,47 @@ class _EditGrammarState extends State<EditGrammar> {
                       onChanged: (v) => widget._grammar.content = v.trim(),
                       validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
+                    WrapOutline(
+                      labelText: '相关图片',
+                      children: [
+                        Text(widget._grammar.image.mptFile?.filename ?? ''),
+                        SelectableText(widget._grammar.image.url ?? ''),
+                        //_testImagePath != null ? Image.network(_testImagePath) : Text(''),
+                        //_testImage != null ? Image.file(_testImage) : Text(''),
+                      ],
+                      suffix: TextButton(
+                        child: Text('添加',),
+                        onPressed: () async {
+                          /*
+                          var result = await FilePicker.platform.pickFiles(
+                            type: FileType.image,
+                            allowMultiple: true,
+                            withReadStream: true, // this will return PlatformFile object with read stream
+                          );
+                          if (result == null) return;
+                          for(var f in result.files)
+                            print('--- ${f.path} ${f.name} ${f.size}');
+                          */
+                          await widget._grammar.image.pick();
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                    WrapOutline(
+                      labelText: '相关视频',
+                      children: [
+                        Text(widget._grammar.vedio.url ?? ''),
+                        //_testImagePath != null ? Image.network(_testImagePath) : Text(''),
+                        //_testImage != null ? Image.file(_testImage) : Text(''),
+                      ],
+                      suffix: TextButton(
+                        child: Text('添加',),
+                        onPressed: () async {
+                          await widget._grammar.vedio.pick();
+                          setState(() {});
+                        },
+                      ),
+                    ),
                   ]
               ),
           ),
