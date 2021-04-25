@@ -3,6 +3,9 @@
 // JsonSerializer
 // **************************************************************************
 
+import 'single_file.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_prj/common/http.dart';
 
 
@@ -13,29 +16,29 @@ class EtymaSerializer {
   String name = '';
   String interpretation = '';
   num type = 0;
-  String image = '';
-  String vedio = '';
+  SingleFile image = SingleFile('image', FileType.image);
+  SingleFile vedio = SingleFile('vedio', FileType.video);
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/dictionary/etyma/', data:data ?? this.toJson(), queries:queries, cache:cache);
-    if(res != null) this.fromJson(res.data);
+    var res = await Http().request(HttpType.POST, '/dictionary/etyma/', data:data ?? _formData, queries:queries, cache:cache);
+    if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.PUT, '/dictionary/etyma/$name/', data:data ?? this.toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.PUT, '/dictionary/etyma/$name/', data:data ?? _formData, queries:queries, cache:cache);
     return res != null;
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/dictionary/etyma/$name/', queries:queries, cache:cache);
-    if(res != null) this.fromJson(res.data);
+    if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     if(_name == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/dictionary/etyma/$name/', data:data ?? this.toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.DELETE, '/dictionary/etyma/$name/', data:data ?? _formData, queries:queries, cache:cache);
     /*
     
     */
@@ -45,9 +48,9 @@ class EtymaSerializer {
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     bool res = false;
     if(_name == null) {
-      res = await this.create(data:data, queries:queries, cache:cache);
+      res = await create(data:data, queries:queries, cache:cache);
     } else {
-      res = await this.update(data:data, queries:queries, cache:cache);
+      res = await update(data:data, queries:queries, cache:cache);
     }
     return res;
   }
@@ -56,8 +59,8 @@ class EtymaSerializer {
     name = json['name'] == null ? null : json['name'] as String;
     interpretation = json['interpretation'] == null ? null : json['interpretation'] as String;
     type = json['type'] == null ? null : json['type'] as num;
-    image = json['image'] == null ? null : json['image'] as String;
-    vedio = json['vedio'] == null ? null : json['vedio'] as String;
+    image.url = json['image'] == null ? null : json['image'] as String;
+    vedio.url = json['vedio'] == null ? null : json['vedio'] as String;
     _name = name;
     return this;
   }
@@ -67,13 +70,21 @@ class EtymaSerializer {
     'interpretation': interpretation,
     'type': type,
   };
+  FormData get _formData {
+    var jsonObj = toJson();
+    
+    var formData = FormData.fromMap(jsonObj, ListFormat.multi);
+    if(image.mptFile != null) formData.files.add(image.file);
+    if(vedio.mptFile != null) formData.files.add(vedio.file);
+    return formData;
+  }
 
   EtymaSerializer from(EtymaSerializer instance) {
     name = instance.name;
     interpretation = instance.interpretation;
     type = instance.type;
-    image = instance.image;
-    vedio = instance.vedio;
+    image.from(instance.image);
+    vedio.from(instance.vedio);
     _name = instance._name;
     return this;
   }

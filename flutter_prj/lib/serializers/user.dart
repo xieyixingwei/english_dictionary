@@ -32,13 +32,13 @@ class UserSerializer {
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/user/$uname/', queries:queries, cache:cache);
-    if(res != null) this.fromJson(res.data);
+    if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     if(_id == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/user/$uname/', data:data ?? this.toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.DELETE, '/user/$uname/', data:data ?? toJson(), queries:queries, cache:cache);
     /*
     
     */
@@ -46,13 +46,13 @@ class UserSerializer {
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.PUT, '/user/$uname/', data:data ?? this.toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.PUT, '/user/$uname/', data:data ?? toJson(), queries:queries, cache:cache);
     return res != null;
   }
 
   Future<bool> register({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/user/register/', data:data ?? this.toJson(), queries:queries, cache:cache);
-    if(res != null) this.fromJson(res.data);
+    var res = await Http().request(HttpType.POST, '/user/register/', data:data ?? toJson(), queries:queries, cache:cache);
+    if(res != null) fromJson(res.data);
     return res != null;
   }
 

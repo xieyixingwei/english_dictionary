@@ -25,7 +25,6 @@ class SingleFile {
     var objFile = result.files.single;
     // 注意: 需要使用 'package::dio/dio.dart';中的 MultipartFile
     mptFile = MultipartFile(objFile.readStream, objFile.size, filename: objFile.name);
-    print('--- ${mptFile.filename}');
     return true;
   }
 }

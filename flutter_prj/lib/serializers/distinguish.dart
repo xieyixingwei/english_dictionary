@@ -3,7 +3,10 @@
 // JsonSerializer
 // **************************************************************************
 
-import 'word.dart';
+import 'dart:convert';
+import 'single_file.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_prj/common/http.dart';
 
 
@@ -14,30 +17,30 @@ class DistinguishSerializer {
   num id;
   List<String> words = [];
   String content = '';
-  String image = '';
-  String vedio = '';
+  SingleFile image = SingleFile('image', FileType.image);
+  SingleFile vedio = SingleFile('vedio', FileType.video);
   List<String> wordsForeign = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/dictionary/distinguish_word/', data:data ?? this.toJson(), queries:queries, cache:cache);
-    if(res != null) this.fromJson(res.data);
+    var res = await Http().request(HttpType.POST, '/dictionary/distinguish_word/', data:data ?? _formData, queries:queries, cache:cache);
+    if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.PUT, '/dictionary/distinguish_word/$id/', data:data ?? this.toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.PUT, '/dictionary/distinguish_word/$id/', data:data ?? _formData, queries:queries, cache:cache);
     return res != null;
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/dictionary/distinguish_word/$id/', queries:queries, cache:cache);
-    if(res != null) this.fromJson(res.data);
+    if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     if(_id == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/dictionary/distinguish_word/$id/', data:data ?? this.toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.DELETE, '/dictionary/distinguish_word/$id/', data:data ?? _formData, queries:queries, cache:cache);
     /*
     
     */
@@ -47,9 +50,9 @@ class DistinguishSerializer {
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     bool res = false;
     if(_id == null) {
-      res = await this.create(data:data, queries:queries, cache:cache);
+      res = await create(data:data, queries:queries, cache:cache);
     } else {
-      res = await this.update(data:data, queries:queries, cache:cache);
+      res = await update(data:data, queries:queries, cache:cache);
     }
     return res;
   }
@@ -60,8 +63,8 @@ class DistinguishSerializer {
                 ? []
                 : json['words'].map<String>((e) => e as String).toList();
     content = json['content'] == null ? null : json['content'] as String;
-    image = json['image'] == null ? null : json['image'] as String;
-    vedio = json['vedio'] == null ? null : json['vedio'] as String;
+    image.url = json['image'] == null ? null : json['image'] as String;
+    vedio.url = json['vedio'] == null ? null : json['vedio'] as String;
     wordsForeign = json['wordsForeign'] == null
                 ? []
                 : json['wordsForeign'].map<String>((e) => e as String).toList();
@@ -75,13 +78,21 @@ class DistinguishSerializer {
     'content': content,
     'wordsForeign': wordsForeign == null ? null : wordsForeign.map((e) => e).toList(),
   };
+  FormData get _formData {
+    var jsonObj = toJson();
+    jsonObj['words'] = json.encode(jsonObj['words']);
+    var formData = FormData.fromMap(jsonObj, ListFormat.multi);
+    if(image.mptFile != null) formData.files.add(image.file);
+    if(vedio.mptFile != null) formData.files.add(vedio.file);
+    return formData;
+  }
 
   DistinguishSerializer from(DistinguishSerializer instance) {
     id = instance.id;
     words = List.from(instance.words);
     content = instance.content;
-    image = instance.image;
-    vedio = instance.vedio;
+    image.from(instance.image);
+    vedio.from(instance.vedio);
     wordsForeign = List.from(instance.wordsForeign);
     _id = instance._id;
     return this;

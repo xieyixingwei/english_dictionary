@@ -389,26 +389,25 @@ class _EditWordState extends State<EditWord> {
                     WrapOutline(
                       labelText: '相关图片',
                       children: [
-                        Text(widget.word.image.url ?? ''),
+                        Text(widget.word.image.mptFile?.filename ?? ''),
+                        SelectableText(widget.word.image.url ?? ''),
                         //_testImagePath != null ? Image.network(_testImagePath) : Text(''),
                         //_testImage != null ? Image.file(_testImage) : Text(''),
                       ],
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
+                          /*
                           var result = await FilePicker.platform.pickFiles(
                             type: FileType.image,
                             allowMultiple: true,
                             withReadStream: true, // this will return PlatformFile object with read stream
                           );
                           if (result == null) return;
-                          //var objFile = result.files.single;
                           for(var f in result.files)
                             print('--- ${f.path} ${f.name} ${f.size}');
-                          // 注意: 需要使用 'package::dio/dio.dart';中的 MultipartFile
-                          //widget.word.imageMpFile = MultipartFile(objFile.readStream, objFile.size, filename: objFile.name);
-                          //print('--- ${widget.word.imageMpFile.filename}');
-                          //widget.word.image = objFile.name;
+                          */
+                          await widget.word.image.pick();
                           setState(() {});
                         },
                       ),
@@ -423,19 +422,7 @@ class _EditWordState extends State<EditWord> {
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          var result = await FilePicker.platform.pickFiles(
-                            type: FileType.video,
-                            withReadStream: true, // this will return PlatformFile object with read stream
-                          );
-                          if (result == null) return;
-                          var objFile = result.files.first;
-                          for(var f in result.files)
-                            print('--- ${f.path} ${f.name} ${f.size}');
-
-                          // 注意: 需要使用 'package::dio/dio.dart';中的 MultipartFile
-                          //widget.word.vedioMpFile = MultipartFile(objFile.readStream, objFile.size, filename: objFile.name);
-                          //print('--- ${widget.word.vedioMpFile.filename}');
-                          //widget.word.vedio = objFile.name;
+                          await widget.word.vedio.pick();
                           setState(() {});
                         },
                       ),

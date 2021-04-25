@@ -4,6 +4,7 @@
 // **************************************************************************
 
 import 'sentence_pattern.dart';
+import 'dart:convert';
 import 'package:flutter_prj/common/http.dart';
 
 
@@ -19,7 +20,7 @@ class SentencePatternPaginationSerializer {
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     (queries != null && filter.queryset != null) ? queries.addAll(filter.queryset) : queries = filter.queryset;
     var res = await Http().request(HttpType.GET, '/dictionary/sentence_pattern/', queries:queries, cache:cache);
-    if(res != null) this.fromJson(res.data);
+    if(res != null) fromJson(res.data);
     return res != null;
   }
 

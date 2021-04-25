@@ -17,25 +17,25 @@ class SentencePatternSerializer {
   List<ParaphraseSerializer> paraphraseSet = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/dictionary/sentence_pattern/', data:data ?? this.toJson(), queries:queries, cache:cache);
-    if(res != null) this.fromJson(res.data);
+    var res = await Http().request(HttpType.POST, '/dictionary/sentence_pattern/', data:data ?? toJson(), queries:queries, cache:cache);
+    if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.PUT, '/dictionary/sentence_pattern/$id/', data:data ?? this.toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.PUT, '/dictionary/sentence_pattern/$id/', data:data ?? toJson(), queries:queries, cache:cache);
     return res != null;
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/dictionary/sentence_pattern/$id/', queries:queries, cache:cache);
-    if(res != null) this.fromJson(res.data);
+    if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     if(_id == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/dictionary/sentence_pattern/$id/', data:data ?? this.toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.DELETE, '/dictionary/sentence_pattern/$id/', data:data ?? toJson(), queries:queries, cache:cache);
     /*
     if(paraphraseSet != null){paraphraseSet.forEach((e){e.delete();});}
     */
@@ -50,9 +50,9 @@ class SentencePatternSerializer {
       if(res == false) return false;
       id = clone.id;
       if(paraphraseSet != null){await Future.forEach(paraphraseSet, (e) async {e.sentencePatternForeign = id; await e.save();});}
-      res = await this.retrieve();
+      res = await retrieve();
     } else {
-      res = await this.update(data:data, queries:queries, cache:cache);
+      res = await update(data:data, queries:queries, cache:cache);
       if(paraphraseSet != null){await Future.forEach(paraphraseSet, (e) async {e.sentencePatternForeign = id; await e.save();});}
     }
     return res;

@@ -14,8 +14,8 @@ class LoginSerializer {
   String token;
 
   Future<bool> login({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/user/login/', data:data ?? this.toJson(), queries:queries, cache:cache);
-    if(res != null) this.fromJson(res.data);
+    var res = await Http().request(HttpType.POST, '/user/login/', data:data ?? toJson(), queries:queries, cache:cache);
+    if(res != null) fromJson(res.data);
     return res != null;
   }
 

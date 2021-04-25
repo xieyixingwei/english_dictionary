@@ -3,9 +3,10 @@
 // JsonSerializer
 // **************************************************************************
 
-import 'package:dio/dio.dart';
+import 'dart:convert';
+import 'single_file.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter_prj/serializers/file_type.dart';
+import 'package:dio/dio.dart';
 import 'paraphrase.dart';
 import 'sentence_pattern.dart';
 import 'grammar.dart';
@@ -27,43 +28,33 @@ class WordSerializer {
   String shorthand = '';
   List<String> synonym = [];
   List<String> antonym = [];
-  FileSerializer image = FileSerializer('image', FileType.image);
-  FileSerializer vedio = FileSerializer('vedio', FileType.video);
+  SingleFile image = SingleFile('image', FileType.image);
+  SingleFile vedio = SingleFile('vedio', FileType.video);
   List<ParaphraseSerializer> paraphraseSet = [];
   List<SentencePatternSerializer> sentencePatternSet = [];
   List<GrammarSerializer> grammarSet = [];
   List<DistinguishSerializer> distinguishSet = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/dictionary/word/', data:data??this.toJson(), queries:queries, cache:cache);
-    if(res != null) {
-      //await update(data: uploadFormData);
-      this.fromJson(res.data);
-    }
+    var res = await Http().request(HttpType.POST, '/dictionary/word/', data:data ?? _formData, queries:queries, cache:cache);
+    if(res != null) fromJson(res.data);
     return res != null;
   }
 
-  FormData get uploadFormData {
-    var formData = FormData();
-    formData.files.add(image.file);
-    formData.files.add(vedio.file);
-    return formData;
-  }
-
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.PUT, '/dictionary/word/$name/', data:data ?? this.toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.PUT, '/dictionary/word/$name/', data:data ?? _formData, queries:queries, cache:cache);
     return res != null;
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/dictionary/word/$name/', queries:queries, cache:cache);
-    if(res != null) this.fromJson(res.data);
+    if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     if(_name == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/dictionary/word/$name/', data:data ?? this.toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.DELETE, '/dictionary/word/$name/', data:data ?? _formData, queries:queries, cache:cache);
     /*
     if(paraphraseSet != null){paraphraseSet.forEach((e){e.delete();});}
     if(sentencePatternSet != null){sentencePatternSet.forEach((e){e.delete();});}
@@ -84,9 +75,9 @@ class WordSerializer {
       if(sentencePatternSet != null){await Future.forEach(sentencePatternSet, (e) async {e.wordForeign = name; await e.save();});}
       if(grammarSet != null){await Future.forEach(grammarSet, (e) async {e.wordForeign = name; await e.save();});}
       if(distinguishSet != null){await Future.forEach(distinguishSet, (e) async { await e.save();});}
-      res = await this.retrieve();
+      res = await retrieve();
     } else {
-      res = await this.update(data:data, queries:queries, cache:cache);
+      res = await update(data:data, queries:queries, cache:cache);
       if(paraphraseSet != null){await Future.forEach(paraphraseSet, (e) async {e.wordForeign = name; await e.save();});}
       if(sentencePatternSet != null){await Future.forEach(sentencePatternSet, (e) async {e.wordForeign = name; await e.save();});}
       if(grammarSet != null){await Future.forEach(grammarSet, (e) async {e.wordForeign = name; await e.save();});}
@@ -146,6 +137,16 @@ class WordSerializer {
     'synonym': synonym == null ? null : synonym.map((e) => e).toList(),
     'antonym': antonym == null ? null : antonym.map((e) => e).toList(),
   };
+  FormData get _formData {
+    var jsonObj = toJson();
+    jsonObj['morph'] = json.encode(jsonObj['morph']);
+    jsonObj['tag'] = json.encode(jsonObj['tag']);
+    jsonObj['etyma'] = json.encode(jsonObj['etyma']);
+    var formData = FormData.fromMap(jsonObj, ListFormat.multi);
+    if(image.mptFile != null) formData.files.add(image.file);
+    if(vedio.mptFile != null) formData.files.add(vedio.file);
+    return formData;
+  }
 
   WordSerializer from(WordSerializer instance) {
     name = instance.name;

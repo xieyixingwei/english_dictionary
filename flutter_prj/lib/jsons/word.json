@@ -7,10 +7,10 @@
     "etyma": [""],
     "origin": "",
     "shorthand": "",
-    "synonym": [""], //  # 近义词 [word1,word2,...]
-    "antonym": [""],// 反义词 [word1,word2,...]
-    "_image": "", 
-    "_vedio": "",
+    "synonym @foreign_manytomany": ["$word"], //  # 近义词 [word1,word2,...]
+    "antonym @foreign_manytomany": ["$word"],// 反义词 [word1,word2,...]
+    "image": "$SingleFile image", 
+    "vedio": "$SingleFile video",
     "_paraphraseSet": ["$paraphrase"], // 释义
     "_sentencePatternSet": ["$sentence_pattern"], // 常用句型
     "_grammarSet": ["$grammar"], //语法
@@ -176,8 +176,8 @@
     "name @primary": "",
     "interpretation": "",
     "type": 0,
-    "_image": "", 
-    "_vedio": "",
+    "image": "$SingleFile image", 
+    "vedio": "$SingleFile video",
     "__http__": {
         "url": "/dictionary/etyma/",
         "methods": [

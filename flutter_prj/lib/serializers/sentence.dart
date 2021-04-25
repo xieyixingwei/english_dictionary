@@ -3,6 +3,7 @@
 // JsonSerializer
 // **************************************************************************
 
+import 'dart:convert';
 import 'grammar.dart';
 import 'package:flutter_prj/common/http.dart';
 
@@ -24,26 +25,25 @@ class SentenceSerializer {
   List<GrammarSerializer> grammarSet = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    print('--- ${this.toJson()}');
-    var res = await Http().request(HttpType.POST, '/dictionary/sentence/', data:data ?? this.toJson(), queries:queries, cache:cache);
-    if(res != null) this.fromJson(res.data);
+    var res = await Http().request(HttpType.POST, '/dictionary/sentence/', data:data ?? toJson(), queries:queries, cache:cache);
+    if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.PUT, '/dictionary/sentence/$id/', data:data ?? this.toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.PUT, '/dictionary/sentence/$id/', data:data ?? toJson(), queries:queries, cache:cache);
     return res != null;
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/dictionary/sentence/$id/', queries:queries, cache:cache);
-    if(res != null) this.fromJson(res.data);
+    if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     if(_id == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/dictionary/sentence/$id/', data:data ?? this.toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.DELETE, '/dictionary/sentence/$id/', data:data ?? toJson(), queries:queries, cache:cache);
     /*
     if(grammarSet != null){grammarSet.forEach((e){e.delete();});}
     */
@@ -53,15 +53,14 @@ class SentenceSerializer {
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     bool res = false;
     if(_id == null) {
-      print('--- create');
       var clone = SentenceSerializer().from(this); // create will update self, maybe refresh the member of self.
       res = await clone.create(data:data, queries:queries, cache:cache);
       if(res == false) return false;
       id = clone.id;
       if(grammarSet != null){await Future.forEach(grammarSet, (e) async {e.sentenceForeign = id; await e.save();});}
-      res = await this.retrieve();
+      res = await retrieve();
     } else {
-      res = await this.update(data:data, queries:queries, cache:cache);
+      res = await update(data:data, queries:queries, cache:cache);
       if(grammarSet != null){await Future.forEach(grammarSet, (e) async {e.sentenceForeign = id; await e.save();});}
     }
     return res;

@@ -13,8 +13,8 @@ class WordTagSerializer {
   String name = '';
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/dictionary/word_tag/', data:data ?? this.toJson(), queries:queries, cache:cache);
-    if(res != null) this.fromJson(res.data);
+    var res = await Http().request(HttpType.POST, '/dictionary/word_tag/', data:data ?? toJson(), queries:queries, cache:cache);
+    if(res != null) fromJson(res.data);
     return res != null;
   }
 
@@ -25,7 +25,7 @@ class WordTagSerializer {
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     if(_name == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/dictionary/word_tag/$name/', data:data ?? this.toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.DELETE, '/dictionary/word_tag/$name/', data:data ?? toJson(), queries:queries, cache:cache);
     /*
     
     */

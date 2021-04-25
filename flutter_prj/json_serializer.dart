@@ -40,10 +40,12 @@ class Member {
   List<Member> membersForeignToMeOfTypeSerializer;
   bool isPrimary = false;
   bool isList = false;
+  bool isMap = false;
   ForeignType foreign = ForeignType.Non;
   JsonType jsonType;
   bool unFromJson = false;
   bool unToJson = false;
+  bool isFileType =false;
 
   Member(String key, dynamic value, this.fatherSerializer, this.serializeTool, {JsonType jsonType=JsonType.Map}) {
     this.jsonType = jsonType;
@@ -56,7 +58,7 @@ class Member {
       key = key.replaceAll('@primary', '').trim();
       isPrimary = true;
     }
-    
+
     if(key.contains('@foreign_manytomany')) {
       key = key.replaceAll('@foreign_manytomany', '').trim();
       foreign = ForeignType.ManyToMany;
@@ -98,6 +100,13 @@ class Member {
           _unListType = _serializerType(serializerJsonName);
         }
       }
+      else if(value.startsWith('\$SingleFile')) {
+        isFileType = true;
+        _unListType = 'SingleFile';
+        var filetype = value.split(' ').last.trim();
+        _init = 'SingleFile(\'$name\', FileType.$filetype)';
+        unToJson = true;
+      }
       else if(value.startsWith('\$[]')) {
         serializerJsonName = value.substring(3).trim();
         _unListType = _serializerType(serializerJsonName);
@@ -121,6 +130,7 @@ class Member {
     else if(value is Map) {
       _unListType = 'Map<String, dynamic>';
       _init = '{}';
+      isMap = true;
     }
     else if(value is List) {
       isList = true;
@@ -139,7 +149,14 @@ class Member {
   bool get isSerializerType => _isSerializerType(type);
 
   // the type of foreign member is not a Serializer and don't need import serializer
-  String get importSerializer => isForeign ? '' : (serializerJsonName != null ? 'import \'$serializerJsonName.dart\';' : '');
+  String get importSerializer {
+    List<String> import = [];
+    if(isForeign || isForeignManyToMany) return '';
+    if(serializerJsonName != null) import.add('import \'$serializerJsonName.dart\';');
+    if(isFileType) import.add(SingleFileType.import);
+    if(jsonEncode != null) import.add('import \'dart:convert\';');
+    return import.join('\n');
+  }
 
   String _trim(String val) => val.startsWith('_') ? _trim(val.substring(1)).trim() : val.trim();
 
@@ -188,11 +205,12 @@ class Member {
   String get fromJson {
     if(unFromJson) return null; // ignore member which name start with '__'
     String jsonMember = jsonType == JsonType.Map ? 'json[\'$name\']' : 'json';
-    String eFromJson = isSerializerType ? '$unListType().fromJson(e as Map<String, dynamic>)' : 'e as $unListType';
+    String type = isFileType ? 'String' : unListType;
+    String eFromJson = isSerializerType ? '$type().fromJson(e as Map<String, dynamic>)' : 'e as $type';
     String unListFromJson = isSerializerType ? 
 """$jsonMember == null
                 ? null
-                : $unListType().fromJson($jsonMember as Map<String, dynamic>)""" : '$jsonMember == null ? null : $jsonMember as $unListType';
+                : $unListType().fromJson($jsonMember as Map<String, dynamic>)""" : '$jsonMember == null ? null : $jsonMember as $type';
 
     String listFromJson = 
 """$jsonMember == null
@@ -200,7 +218,7 @@ class Member {
                 : $jsonMember.map<$unListType>((e) => $eFromJson).toList()""";
 
     String memberFromJson = isList ? listFromJson : unListFromJson;
-    return '$name = $memberFromJson';
+    return isFileType ? '$name.url = $memberFromJson' : '$name = $memberFromJson';
   }
 
   String get toJson {
@@ -218,15 +236,63 @@ class Member {
     String serializerFrom = '$unListType().from($commonFrom)';
     String listSerializerFrom = 'List.from(instance.$name.map((e) => $unListType().from(e)).toList())';
     String from = isList ? (isSerializerType ? listSerializerFrom : listFrom) : (isSerializerType ? serializerFrom : commonFrom);
-    return '$name = $from;';
+    return isFileType ? '$name.from($from);' : '$name = $from;';
   }
 
   String get hidePrimaryMemberName => isPrimary ? '_$name' : null;
   String get hidePrimaryMember => isPrimary ? '$unListType $hidePrimaryMemberName;' : null;
   String get hidePrimaryMemberFromJson => isPrimary ? '$hidePrimaryMemberName = $name' : null;
   String get hidePrimaryMemberFrom => isPrimary ? '$hidePrimaryMemberName = instance.$hidePrimaryMemberName;' : null;
+
+  String get jsonEncode => (isForeign || isForeignManyToMany || unToJson) ? null : (isList || isMap ? 'jsonObj[\'$name\'] = json.encode(jsonObj[\'$name\']);' : null);
+  String get addToFormData => isFileType ? 'if($name.mptFile != null) formData.files.add($name.file);' : null;
 }
 
+
+class SingleFileType {
+  static bool saved = false;
+  static final String fileName = 'single_file';
+  static final String import = 'import \'$fileName.dart\';\nimport \'package:file_picker/file_picker.dart\';\nimport \'package:dio/dio.dart\';';
+  final String content = """
+import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
+
+
+class SingleFile {
+  SingleFile(String field, FileType type)
+    : this.field = field, this.type = type;
+
+  final FileType type;
+  final String field;
+  String url;
+  MultipartFile mptFile;
+
+  MapEntry<String, MultipartFile> get file => MapEntry(field, mptFile);
+
+  SingleFile from(SingleFile instance) {
+    url = instance.url;
+    mptFile = instance.mptFile;
+    return this;
+  }
+
+  Future<bool> pick() async {
+    var result = await FilePicker.platform.pickFiles(type: type, withReadStream: true);
+    if (result == null) return false;
+    var objFile = result.files.single;
+    // 注意: 需要使用 'package::dio/dio.dart';中的 MultipartFile
+    mptFile = MultipartFile(objFile.readStream, objFile.size, filename: objFile.name);
+    return true;
+  }
+}
+""";
+
+  Future save(String distPath) async {
+    if(saved == false) {
+      await File(path.join(distPath, '$fileName.dart')).writeAsString(content);
+      saved = true;
+    }
+  }
+}
 
 class HttpMethods {
   final JsonSerializer fatherSerializer;
@@ -259,14 +325,14 @@ class HttpMethods {
 
       if(methodName == 'save') {
         String saveForeign = fatherSerializer.membersSave.isNotEmpty ? '\n      ${fatherSerializer.membersSave}' : '';
-        String update = hasUpdate ? 'res = await this.update(data:data, queries:queries, cache:cache);' : '';
+        String update = hasUpdate ? 'res = await update(data:data, queries:queries, cache:cache);' : '';
         String create = fatherSerializer.membersSave.isNotEmpty ? 
 """var clone = $serializerType().from(this); // create will update self, maybe refresh the member of self.
       res = await clone.create(data:data, queries:queries, cache:cache);
       if(res == false) return false;
       ${fatherSerializer.primaryMember.name} = clone.${fatherSerializer.primaryMember.name};
       ${fatherSerializer.membersSave}
-      res = await this.retrieve();""" : """res = await this.create(data:data, queries:queries, cache:cache);""";
+      res = await retrieve();""" : """res = await create(data:data, queries:queries, cache:cache);""";
         return
 """
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
@@ -283,7 +349,7 @@ class HttpMethods {
 
       String requestUrl = baseUrl + (e["url"] != null ? e["url"] : '');
       String requestType = e["requst"] != null ? e["requst"] : methodMap[methodName];
-      String data = 'data:data ?? this.toJson()';
+      String data = fatherSerializer.hasFileType ? 'data:data ?? _formData' : 'data:data ?? toJson()';
       String queries = 'queries:queries';
       String cache = 'cache:cache';
 
@@ -292,7 +358,7 @@ class HttpMethods {
 """
   Future<bool> $methodName({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '$requestUrl', $data, $queries, $cache);
-    if(res != null) this.fromJson(res.data);
+    if(res != null) fromJson(res.data);
     return res != null;
   }
 """;
@@ -319,7 +385,7 @@ class HttpMethods {
 """
   Future<bool> $methodName({Map<String, dynamic> queries, bool cache=false}) async {
     ${queryset}var res = await Http().request(HttpType.GET, '$requestUrl', $queries, $cache);
-    if(res != null) this.fromJson(res.data);
+    if(res != null) fromJson(res.data);
     return res != null;
   }
 """;
@@ -468,7 +534,8 @@ class JsonSerializer {
   };""" :
 """
   List toJson() =>
-    $toJsonMembers""";
+    $toJsonMembers
+""";
 
   String get fromMembers => (members.map((e) => e.from).toList()
                              + [primaryMember?.hidePrimaryMemberFrom]).where((e) => e != null).join('\n    ');
@@ -477,6 +544,21 @@ class JsonSerializer {
     $fromMembers
     return this;
   }""";
+
+  String get jsonEncodeOfMembers => members.map((e) => e.jsonEncode).where((e) => e != null).toList().join('\n    ');
+  String get addToFormDataOfMembers => members.map((e) => e.addToFormData).where((e) => e != null).toList().join('\n    ');
+  bool get hasFileType => members.where((e) => e.isFileType).isNotEmpty;
+
+  String get formData => hasFileType ?
+"""
+  FormData get _formData {
+    var jsonObj = toJson();
+    $jsonEncodeOfMembers
+    var formData = FormData.fromMap(jsonObj, ListFormat.multi);
+    $addToFormDataOfMembers
+    return formData;
+  }
+""" : '';
 
   String get importSerializers => members.map((e) => e.importSerializer).toSet().join('\n');
   String get importHttpPackage => (httpMethodsObj != null) ? (serializeTool.importHttpPackage ?? httpMethodsObj.importHttpPackage) : '';
@@ -504,7 +586,7 @@ $httpMethods
 $fromJson
 
 $toJson
-
+$formData
 $from
 }
 
@@ -512,6 +594,9 @@ $filterClass
 """;
 
   Future save(String distPath) async {
+    if(members.where((e) => e.isFileType).isNotEmpty) {
+      await SingleFileType().save(distPath);
+    }
     await File(path.join(distPath, '$jsonName.dart')).writeAsString(content);
   }
 }

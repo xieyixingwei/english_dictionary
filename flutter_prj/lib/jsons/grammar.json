@@ -3,8 +3,8 @@
     "type": [""], // models.JSONField(null=True) # [时态,从句]
     "tag": [""], // models.JSONField(null=True) # [重要]
     "content": "", // models.TextField(null=False, blank=True) # 内容 markdown文本
-    "_image": "",
-    "_vedio": "",
+    "image": "$SingleFile image", 
+    "vedio": "$SingleFile video",
     "wordForeign @foreign": "$word",
     "sentenceForeign @foreign": "$sentence",
     "__http__": {
