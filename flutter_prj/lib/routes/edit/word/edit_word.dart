@@ -415,7 +415,8 @@ class _EditWordState extends State<EditWord> {
                     WrapOutline(
                       labelText: '相关视频',
                       children: [
-                        Text(widget.word.vedio.url ?? ''),
+                        Text(widget.word.vedio.mptFile?.filename ?? ''),
+                        SelectableText(widget.word.vedio.url ?? ''),
                         //_testImagePath != null ? Image.network(_testImagePath) : Text(''),
                         //_testImage != null ? Image.file(_testImage) : Text(''),
                       ],

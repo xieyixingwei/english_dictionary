@@ -1,10 +1,11 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/routes/edit/sentence/show_sentences.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/OnOffWidget.dart';
-import 'package:flutter_prj/widgets/RatingStar.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
 import 'package:flutter_prj/widgets/row_space.dart';
+import 'package:flutter_prj/widgets/vedio_player.dart';
 
 
 class ShowWordPage extends StatelessWidget {
@@ -33,6 +34,7 @@ class ShowWord extends StatelessWidget {
 
   final WordSerializer word;
   final _labelStyle = TextStyle(fontSize: 14, color: Colors.black87, fontWeight: FontWeight.bold);
+  AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
   Widget build(BuildContext context) => _wordShow(context);
@@ -57,6 +59,7 @@ class ShowWord extends StatelessWidget {
             _etymaShow(context),
           ],
         ),
+        _originShow,
         Divider(height: 1, thickness: 1, color: Colors.black12,),
         ColumnSpace(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,10 +69,9 @@ class ShowWord extends StatelessWidget {
           ),
           children: [
             _morphShow(context),
-            _originShow,
-            _shorthandShow,
             _paraphraseSetShow(context),
             _sentencePatternSetShow(context),
+            _shorthandShow,
             _grammerSetShow,
             _distinguishSetShow(context),
             _synonymsShow(context),
@@ -117,8 +119,16 @@ class ShowWord extends StatelessWidget {
           splashColor: Colors.transparent,
           hoverColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          child: Icon(Icons.volume_up_outlined, color: Colors.blue, size: 20,),
+          child: Icon(Icons.volume_up_outlined, color: word.audioUsMan != null ? Colors.blue : Colors.grey, size: 20,),
           onTap: () => print("发音"),
+        ),
+        SizedBox(width: 6,),
+        InkWell(
+          splashColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          child: Icon(Icons.volume_up_outlined, color: word.audioUsMan != null ? Colors.pink : Colors.grey, size: 20,),
+          onTap: () async {await _audioPlayer.play(word.audioUkMan); },
         ),
       ]
     ) : null;
@@ -139,6 +149,14 @@ class ShowWord extends StatelessWidget {
           child: Icon(Icons.volume_up_outlined, color: Colors.blue, size: 20,),
           onTap: () => print("发音"),
         ),
+        SizedBox(width: 6,),
+        InkWell(
+          splashColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          child: Icon(Icons.volume_up_outlined, color: Colors.pink, size: 20,),
+          onTap: () => print("发音"),
+        ),
       ]
     ) : null;
 
@@ -146,7 +164,7 @@ class ShowWord extends StatelessWidget {
     Text(
       word.tag.join(' / '),
       style: TextStyle(
-        fontSize: 10,
+        fontSize: 12,
         color: Colors.black54,
       ),
     ) : null;
@@ -155,14 +173,14 @@ class ShowWord extends StatelessWidget {
     Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text('词根词缀: ', style: TextStyle(fontSize: 10, color: Colors.black54,)),
+        Text('词根词缀: ', style: TextStyle(fontSize: 12, color: Colors.black54,)),
         Row(
           children: word.etyma.map((e) =>
             InkWell(
               splashColor: Colors.transparent,
               hoverColor: Colors.transparent,
               highlightColor: Colors.transparent,
-              child: Text(e,  style: TextStyle(fontSize: 10, color: Colors.blueAccent,)),
+              child: Text(e,  style: TextStyle(fontSize: 12, color: Colors.blueAccent,)),
               onTap: () => Navigator.pushNamed(context, '/show_etyma', arguments: {'title': '${word.name}的词根词缀 $e', 'etyma': e}),
             )
           ).toList(),
@@ -210,36 +228,74 @@ class ShowWord extends StatelessWidget {
     ) : null;
 
   Widget get _originShow => word.origin.isNotEmpty ?
-    OnOffWidget(
-      label: Text('词源', style: _labelStyle),
-      child: Container(
-        padding: EdgeInsets.only(top:14),
-        child: SelectableText(
-          word.origin,
+    Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '词源',
           style: TextStyle(
             fontSize: 12,
             color: Colors.black87,
-            height: 1,
+            fontWeight: FontWeight.bold
+          ),
+          strutStyle: StrutStyle(
+            fontSize: 12,
+            forceStrutHeight: true,
           ),
         ),
-      ),
+        Icon(Icons.label_important, size: 16, color: Colors.black87,),
+        Flexible(
+          child: SelectableText(
+          word.origin,
+          strutStyle: StrutStyle(
+            fontSize: 12,
+            forceStrutHeight: true,
+          ),
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.black87,
+            height: null,
+          ),
+        ),),
+      ],
     ) : null;
 
-  Widget get _shorthandShow => word.shorthand.isNotEmpty ?
+  Widget get _shorthandShow =>
     OnOffWidget(
-      label: Text('速记', style: _labelStyle),
+      label: Text('图文助记', style: _labelStyle),
       child: Container(
         padding: EdgeInsets.only(top:14),
-        child: SelectableText(
-          word.shorthand,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.black87,
-            height: 1,
-          ),
-        ),
+        child: ColumnSpace(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          divider: SizedBox(height: 14,),
+          children: [
+            word.shorthand.isNotEmpty ? SelectableText(
+              word.shorthand,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.black87,
+                height: 1,
+              ),
+            ) : null,
+            word.image.url != null ?
+            Align(
+              alignment: Alignment.center,
+              child: Image.network(
+                word.image.url,
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+              )
+            ) : null,
+            word.vedio.url != null ?
+            Align(
+              alignment: Alignment.center,
+              child: VedioPlayer(url: word.vedio.url),
+            ) : null,
+          ],
+        )
       ),
-    ) : null;
+    );
 
   Widget _paraphraseSetShow(BuildContext context) => word.paraphraseSet.isNotEmpty ?
     OnOffWidget(
@@ -540,3 +596,5 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
       ),
     ) : null;
 }
+
+

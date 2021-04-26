@@ -21,6 +21,10 @@ class WordSerializer {
   String name = '';
   String voiceUs = '';
   String voiceUk = '';
+  String audioUsMan;
+  String audioUsWoman;
+  String audioUkMan;
+  String audioUkWoman;
   List<String> morph = [];
   List<String> tag = [];
   List<String> etyma = [];
@@ -90,6 +94,10 @@ class WordSerializer {
     name = json['name'] == null ? null : json['name'] as String;
     voiceUs = json['voiceUs'] == null ? null : json['voiceUs'] as String;
     voiceUk = json['voiceUk'] == null ? null : json['voiceUk'] as String;
+    audioUsMan = json['audioUsMan'] == null ? null : json['audioUsMan'] as String;
+    audioUsWoman = json['audioUsWoman'] == null ? null : json['audioUsWoman'] as String;
+    audioUkMan = json['audioUkMan'] == null ? null : json['audioUkMan'] as String;
+    audioUkWoman = json['audioUkWoman'] == null ? null : json['audioUkWoman'] as String;
     morph = json['morph'] == null
                 ? []
                 : json['morph'].map<String>((e) => e as String).toList();
@@ -152,6 +160,10 @@ class WordSerializer {
     name = instance.name;
     voiceUs = instance.voiceUs;
     voiceUk = instance.voiceUk;
+    audioUsMan = instance.audioUsMan;
+    audioUsWoman = instance.audioUsWoman;
+    audioUkMan = instance.audioUkMan;
+    audioUkWoman = instance.audioUkWoman;
     morph = List.from(instance.morph);
     tag = List.from(instance.tag);
     etyma = List.from(instance.etyma);

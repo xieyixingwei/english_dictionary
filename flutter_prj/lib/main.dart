@@ -3,6 +3,7 @@ import 'package:flutter_prj/models/misc_model.dart';
 import 'package:flutter_prj/models/sentence_model.dart';
 import 'package:flutter_prj/routes/Routes.dart';
 import 'package:flutter_prj/models/word_model.dart';
+import 'package:flutter_prj/routes/tabs/home/home.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'common/global.dart';
