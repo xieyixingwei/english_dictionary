@@ -12,6 +12,7 @@ from django.db import models
 import django_filters
 from dictionary.models import SentencePatternTable
 from dictionary.models import ParaphraseTable
+from rest_framework.decorators import action
 
 
 class _ParaphraseSerializer(serializers.ModelSerializer):
@@ -107,6 +108,17 @@ class WordView(ModelViewSetPermissionSerializerMap):
     # filter_backends = (django_filters.rest_framework.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter, )
     filter_class = _WordFilter
 
+    '''
+    @action(methods=['put'], detail=False)
+    def updateAudio(self, request, *args, **kwargs):
+        name = request.GET.get('name')
+        audioNames = DownloadWordVoice(settings.MEDIA_ROOT).download(name)
+        word = WordTable.objects.get(name=name)
+        for audio in audioNames:
+            if 'us_man' in audio:
+                word.audioUsMan = word.audioUsMan.upload
+        return response.Response({'status': 0, 'msg': '抓取数据成功', 'data': categories})
+    '''
 
 
 from dictionary.models import EtymaTable

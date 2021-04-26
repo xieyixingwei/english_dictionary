@@ -6,6 +6,7 @@ from . import views
 urlpatterns = [
     url(r'^word/$', views.WordView.as_view({'post':'create', 'get':'list'})),
     url(r'^word/(?P<name>\w+)/$', views.WordView.as_view({'put':'update', 'get':'retrieve', 'delete':'destroy', })),
+    #url(r'^word/update_audio/$', views.WordView.as_view({'put':'updateAudio'})),
 
     url(r'^word_tag/$', views.WordTagView.as_view({'post':'create', 'get':'list'})),
     url(r'^word_tag/(?P<pk>\w+)/$', views.WordTagView.as_view({'delete': 'destroy'})),

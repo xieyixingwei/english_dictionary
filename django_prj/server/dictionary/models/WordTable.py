@@ -1,5 +1,9 @@
 from django.db import models
 from server.models  import JSONFieldUtf8
+from ..download_word_voice import DownloadWordVoice
+from server import settings
+from django.core.files.base import ContentFile
+import base64
 
 
 class WordTable(models.Model):
@@ -9,6 +13,10 @@ class WordTable(models.Model):
     name = models.CharField(max_length=32, primary_key=True)     # 单词 (primary key)
     voiceUs = models.CharField(max_length=32, null=True, blank=True) # 音标 美国
     voiceUk = models.CharField(max_length=32, null=True, blank=True) # 音标 英国
+    audioUsMan = models.FileField(upload_to='word_audio/', null=True, blank=True, verbose_name="发音美男")
+    audioUsWoman = models.FileField(upload_to='word_audio/', null=True, blank=True, verbose_name="发音美女")
+    audioUkMan = models.FileField(upload_to='word_audio/', null=True, blank=True, verbose_name="发音英男")
+    audioUkWoman = models.FileField(upload_to='word_audio/', null=True, blank=True, verbose_name="发音英女")
     morph = JSONFieldUtf8(null=True)                 # 单词形态
     tag = JSONFieldUtf8(null=True)                  # 标记 [情态动词,动物名词,蔬菜名词]
     etyma = JSONFieldUtf8(null=True)    # 词根词缀 [root1,root2,...]
@@ -20,6 +28,31 @@ class WordTable(models.Model):
     vedio = models.FileField(upload_to='word_videos/', null=True, blank=True, verbose_name="视频讲解") # 视频讲解
     class Meta:
         ordering = ['name']  # 消除list警告UnorderedObjectListWarning: Pagination may yield inconsistent results with an unordered object_list
+
+    def save(self, *args, **kwargs):
+        if self.audioUsMan.name == ''\
+            or self.audioUsWoman.name == ''\
+            or self.audioUkMan.name == ''\
+            or self.audioUkWoman.name == '':
+            for name, data in DownloadWordVoice(settings.MEDIA_ROOT).download(str(self.name)):
+                fileContent = ContentFile(data)
+                if 'us_man' in name and self.audioUsMan.name != None:
+                    pathName = self.audioUsMan.field.upload_to+name
+                    self.audioUsMan.name = pathName
+                    self.audioUsMan.storage.save(pathName, fileContent)
+                elif 'us_woman' in name and self.audioUsWoman.name != None:
+                    pathName = self.audioUsWoman.field.upload_to+name
+                    self.audioUsWoman.name = pathName
+                    self.audioUsWoman.storage.save(pathName, fileContent)
+                elif 'uk_man' in name and self.audioUkMan.name != None:
+                    pathName = self.audioUkMan.field.upload_to+name
+                    self.audioUkMan.name = pathName
+                    self.audioUkMan.storage.save(pathName, fileContent)
+                elif 'uk_woman' in name and self.audioUkWoman.name != None:
+                    pathName = self.audioUkWoman.field.upload_to+name
+                    self.audioUkWoman.name = pathName
+                    self.audioUkWoman.storage.save(pathName, fileContent)
+        super().save(*args, **kwargs)
 
 # 单词变形 格式(json):
 # {
