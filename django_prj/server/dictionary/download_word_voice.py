@@ -24,7 +24,7 @@ class DownloadWordVoice:
 
     def download(self, word:str) -> Generator:
         res = self.http.request('GET', self.url + word)
-        soup = BeautifulSoup(res.data.decode('utf-8'), features="html5lib")
+        soup = BeautifulSoup(res.data.decode('utf-8'), features="html.parser")
         sounds = soup.findAll(name="i", attrs={"class" :"sound"})
         #names = []
         for s in sounds:
