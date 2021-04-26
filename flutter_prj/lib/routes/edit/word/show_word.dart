@@ -120,15 +120,15 @@ class ShowWord extends StatelessWidget {
           hoverColor: Colors.transparent,
           highlightColor: Colors.transparent,
           child: Icon(Icons.volume_up_outlined, color: word.audioUsMan != null ? Colors.blue : Colors.grey, size: 20,),
-          onTap: () => print("发音"),
+          onTap: () async {if(word.audioUsMan != null) await _audioPlayer.play(word.audioUsMan); },
         ),
         SizedBox(width: 6,),
         InkWell(
           splashColor: Colors.transparent,
           hoverColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          child: Icon(Icons.volume_up_outlined, color: word.audioUsMan != null ? Colors.pink : Colors.grey, size: 20,),
-          onTap: () async {await _audioPlayer.play(word.audioUkMan); },
+          child: Icon(Icons.volume_up_outlined, color: word.audioUsWoman != null ? Colors.pink : Colors.grey, size: 20,),
+          onTap: () async {if(word.audioUsWoman != null) await _audioPlayer.play(word.audioUsWoman); },
         ),
       ]
     ) : null;
@@ -146,16 +146,16 @@ class ShowWord extends StatelessWidget {
           splashColor: Colors.transparent,
           hoverColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          child: Icon(Icons.volume_up_outlined, color: Colors.blue, size: 20,),
-          onTap: () => print("发音"),
+          child: Icon(Icons.volume_up_outlined, color: word.audioUkMan != null ? Colors.blue : Colors.grey, size: 20,),
+          onTap: () async {if(word.audioUkMan != null) await _audioPlayer.play(word.audioUkMan); },
         ),
         SizedBox(width: 6,),
         InkWell(
           splashColor: Colors.transparent,
           hoverColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          child: Icon(Icons.volume_up_outlined, color: Colors.pink, size: 20,),
-          onTap: () => print("发音"),
+          child: Icon(Icons.volume_up_outlined, color: word.audioUkWoman != null ? Colors.pink : Colors.grey, size: 20,),
+          onTap: () async {if(word.audioUkWoman != null) await _audioPlayer.play(word.audioUkWoman); },
         ),
       ]
     ) : null;

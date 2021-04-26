@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/serializers/grammar.dart';
+import 'package:flutter_prj/widgets/column_space.dart';
 import 'package:flutter_prj/widgets/pop_dialog.dart';
 import 'package:flutter_prj/widgets/wrap_custom.dart';
 
@@ -48,8 +49,9 @@ class _EditGrammarState extends State<EditGrammar> {
               child: Form(
                 key: _formKey, //设置globalKey，用于后面获取FormState
                 autovalidateMode: AutovalidateMode.always, //开启自动校验
-                child:Column(
+                child:ColumnSpace(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  divider: SizedBox(height: 20,),
                   children: [
                     TextFormField(
                       autofocus: false,
@@ -75,7 +77,6 @@ class _EditGrammarState extends State<EditGrammar> {
                       //onChanged: (v) => null,
                       //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
-                    SizedBox(height: 20,),
                     WrapOutlineTag(
                       data: widget._grammar.type,
                       labelText: '类型',
@@ -98,7 +99,6 @@ class _EditGrammarState extends State<EditGrammar> {
                         ]
                       ),
                     ),
-                    SizedBox(height: 20,),
                     WrapOutlineTag(
                       data: widget._grammar.tag,
                       labelText: 'Tag',
@@ -121,7 +121,6 @@ class _EditGrammarState extends State<EditGrammar> {
                         ]
                       ),
                     ),
-                    SizedBox(height: 20,),
                     TextFormField(
                       autofocus: false,
                       keyboardType: TextInputType.number, // 键盘回车键的样式
@@ -140,24 +139,11 @@ class _EditGrammarState extends State<EditGrammar> {
                     WrapOutline(
                       labelText: '相关图片',
                       children: [
-                        Text(widget._grammar.image.mptFile?.filename ?? ''),
-                        SelectableText(widget._grammar.image.url ?? ''),
-                        //_testImagePath != null ? Image.network(_testImagePath) : Text(''),
-                        //_testImage != null ? Image.file(_testImage) : Text(''),
+                        SelectableText(widget._grammar.image.mptFile?.filename ?? (widget._grammar.image.url ?? '')),
                       ],
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          /*
-                          var result = await FilePicker.platform.pickFiles(
-                            type: FileType.image,
-                            allowMultiple: true,
-                            withReadStream: true, // this will return PlatformFile object with read stream
-                          );
-                          if (result == null) return;
-                          for(var f in result.files)
-                            print('--- ${f.path} ${f.name} ${f.size}');
-                          */
                           await widget._grammar.image.pick();
                           setState(() {});
                         },
@@ -166,9 +152,7 @@ class _EditGrammarState extends State<EditGrammar> {
                     WrapOutline(
                       labelText: '相关视频',
                       children: [
-                        Text(widget._grammar.vedio.url ?? ''),
-                        //_testImagePath != null ? Image.network(_testImagePath) : Text(''),
-                        //_testImage != null ? Image.file(_testImage) : Text(''),
+                        Text(widget._grammar.vedio.mptFile?.filename ?? (widget._grammar.vedio.url ?? '')),
                       ],
                       suffix: TextButton(
                         child: Text('添加',),

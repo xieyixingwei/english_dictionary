@@ -389,8 +389,7 @@ class _EditWordState extends State<EditWord> {
                     WrapOutline(
                       labelText: '相关图片',
                       children: [
-                        Text(widget.word.image.mptFile?.filename ?? ''),
-                        SelectableText(widget.word.image.url ?? ''),
+                        SelectableText(widget.word.image.mptFile?.filename ?? (widget.word.image.url ?? '')),
                         //_testImagePath != null ? Image.network(_testImagePath) : Text(''),
                         //_testImage != null ? Image.file(_testImage) : Text(''),
                       ],
@@ -415,10 +414,7 @@ class _EditWordState extends State<EditWord> {
                     WrapOutline(
                       labelText: '相关视频',
                       children: [
-                        Text(widget.word.vedio.mptFile?.filename ?? ''),
-                        SelectableText(widget.word.vedio.url ?? ''),
-                        //_testImagePath != null ? Image.network(_testImagePath) : Text(''),
-                        //_testImage != null ? Image.file(_testImage) : Text(''),
+                        SelectableText(widget.word.vedio.mptFile?.filename ?? (widget.word.vedio.url ?? '')),
                       ],
                       suffix: TextButton(
                         child: Text('添加',),
