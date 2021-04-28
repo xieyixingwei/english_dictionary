@@ -90,7 +90,7 @@ class _EditParaphraseState extends State<EditParaphrase> {
                     children: widget._paraphrase.sentenceSet.map<Widget>((e) =>
                       Tag(
                         label: InkWell(
-                          child: Text('${e.id}', style: TextStyle(color: Colors.amberAccent)),
+                          child: Text('${e.id}', style: TextStyle(color: Colors.black87)),
                           onTap: () async {
                             var sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'编辑释义的例句', 'sentence': SentenceSerializer().from(e)})) as SentenceSerializer;
                             if(sentence != null) {

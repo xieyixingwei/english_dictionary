@@ -52,13 +52,14 @@ class ShowWord extends StatelessWidget {
             _voiceUkShow,
           ],
         ),
+        word.tag.isNotEmpty || word.etyma.isNotEmpty ?
         RowSpace(
           divider: SizedBox(width: 10,),
           children: [
             _tagShow,
             _etymaShow(context),
           ],
-        ),
+        ) : null,
         _originShow,
         Divider(height: 1, thickness: 1, color: Colors.black12,),
         ColumnSpace(
@@ -260,7 +261,7 @@ class ShowWord extends StatelessWidget {
       ],
     ) : null;
 
-  Widget get _shorthandShow =>
+  Widget get _shorthandShow => word.shorthand.isNotEmpty || word.image.url != null || word.vedio.url != null ?
     OnOffWidget(
       label: Text('图文助记', style: _labelStyle),
       child: Container(
@@ -295,7 +296,7 @@ class ShowWord extends StatelessWidget {
           ],
         )
       ),
-    );
+    ) : null;
 
   Widget _paraphraseSetShow(BuildContext context) => word.paraphraseSet.isNotEmpty ?
     OnOffWidget(

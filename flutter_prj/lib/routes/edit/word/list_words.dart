@@ -37,7 +37,7 @@ class _ListWordsState extends State<ListWords> {
         title: Text('编辑单词'),
         centerTitle: true,
       ),
-      body: Container(
+      body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,7 +130,7 @@ class _ListWordsState extends State<ListWords> {
   }
 
   Widget _buildListWords(BuildContext context) =>
-    SingleChildScrollView(
+    Container(
       padding: EdgeInsets.fromLTRB(6, 0, 6, 10),
       child: CustomTable(
         count: (_words.count + _perPage/2) ~/ _perPage,
@@ -164,6 +164,7 @@ class _ListWordsState extends State<ListWords> {
               },
               delete: () {e.delete(); setState(() => _words.results.remove(e));},
             ),
+            onTap: () => Navigator.pushNamed(context, '/show_word', arguments: {'title': '${e.name}的$e', 'word': e}),
           )
         ).toList(),
       ),

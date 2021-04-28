@@ -26,7 +26,7 @@ class _WrapOutlineTagState extends State<WrapOutlineTag> {
       labelText: widget._labelText,
       children: (widget._data.map<Widget>((e) =>
             Tag(
-              label:Text(e, style: TextStyle(color: Colors.amberAccent)),
+              label:Text(e, style: TextStyle(color: Colors.black87)),
               onDeleted: () => setState(() => widget._data.remove(e)),
               )
             ).toList()

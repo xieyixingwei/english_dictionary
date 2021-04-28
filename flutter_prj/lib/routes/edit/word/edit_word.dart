@@ -24,7 +24,7 @@ class EditWord extends StatefulWidget {
 class _EditWordState extends State<EditWord> {
   final GlobalKey _formKey =  GlobalKey<FormState>();
   final _textStyle = const TextStyle(fontSize: 14,);
-  static const List<String> _morphOptions = ['选择', '过去分词', '现在分词', '名词', '形容词', '动词', '副词', '比较级', '最高级'];
+  static const List<String> _morphOptions = ['选择', '现在分词', '过去式', '过去分词', '第三人称单数', '名词', '形容词', '动词', '副词', '比较级', '最高级'];
   String _morphSelect = _morphOptions.first;
   String _morphInput = '';
 
@@ -190,7 +190,7 @@ class _EditWordState extends State<EditWord> {
                       children: widget.word.synonym.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text(e, style: TextStyle(color: Colors.amberAccent)),
+                            child: Text(e, style: TextStyle(color: Colors.black87)),
                             onTap: () async {
                               var word = WordSerializer()..name = e;
                               bool ret = await word.retrieve();
@@ -223,7 +223,7 @@ class _EditWordState extends State<EditWord> {
                       children: widget.word.antonym.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text(e, style: TextStyle(color: Colors.amberAccent)),
+                            child: Text(e, style: TextStyle(color: Colors.black87)),
                             onTap: () async {
                               var word = WordSerializer()..name = e;
                               bool ret = await word.retrieve();
@@ -257,7 +257,7 @@ class _EditWordState extends State<EditWord> {
                         Tag(
                           label: InkWell(
                             child: ConstrainedBox(
-                              child: Text('${e.partOfSpeech} ${e.interpret}', overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.amberAccent)),
+                              child: Text('${e.partOfSpeech} ${e.interpret}', overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.black87)),
                               constraints: BoxConstraints(maxWidth:80.0),
                             ),
                             onTap: () async {
@@ -292,7 +292,7 @@ class _EditWordState extends State<EditWord> {
                       children: widget.word.sentencePatternSet.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text('${e.content}', style: TextStyle(color: Colors.amberAccent)),
+                            child: Text('${e.content}', style: TextStyle(color: Colors.black87)),
                             onTap: () async {
                               var s = SentencePatternSerializer()..id = e.id;
                               bool ret = await s.retrieve();
@@ -325,7 +325,7 @@ class _EditWordState extends State<EditWord> {
                       children: widget.word.grammarSet.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text('${e.id}', style: TextStyle(color: Colors.amberAccent)),
+                            child: Text('${e.id}', style: TextStyle(color: Colors.black87)),
                             onTap: () async {
                               var g = GrammarSerializer()..id = e.id;
                               bool ret = await g.retrieve();
@@ -358,7 +358,7 @@ class _EditWordState extends State<EditWord> {
                       children: widget.word.distinguishSet.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text('${e.id}', style: TextStyle(color: Colors.amberAccent)),
+                            child: Text('${e.id}', style: TextStyle(color: Colors.black87)),
                             onTap: () async {
                               var d = DistinguishSerializer()..id = e.id;
                               bool ret = await d.retrieve();
@@ -440,13 +440,14 @@ class _EditWordState extends State<EditWord> {
           builder: (BuildContext context, StateSetter setState) =>
             SimpleDialog(
               title: Text('编辑变形单词'),
-              contentPadding: EdgeInsets.fromLTRB(10,10,10,10),
+              contentPadding: EdgeInsets.fromLTRB(10,10,10,30),
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     DropdownButton(
+                      isDense: true,
                       value: _morphSelect,
                       items: _morphOptions.map((e)=>DropdownMenuItem(child: Text(e), value: e,)).toList(),
                       onChanged: (v) {setState(() => _morphSelect = v);},

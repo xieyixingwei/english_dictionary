@@ -189,7 +189,7 @@ class _EditSentenceState extends State<EditSentence> {
                       children: widget._sentence.synonym.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text('$e', style: TextStyle(color: Colors.amberAccent)),
+                            child: Text('$e', style: TextStyle(color: Colors.black87)),
                             onTap: () async {
                               var sentence = SentenceSerializer()..id = e;
                               bool ret = await sentence.retrieve();
@@ -226,7 +226,7 @@ class _EditSentenceState extends State<EditSentence> {
                       children: widget._sentence.antonym.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text('$e', style: TextStyle(color: Colors.amberAccent)),
+                            child: Text('$e', style: TextStyle(color: Colors.black87)),
                             onTap: () async {
                               var sentence = SentenceSerializer()..id = e;
                               bool ret = await sentence.retrieve();
@@ -260,7 +260,7 @@ class _EditSentenceState extends State<EditSentence> {
                       children: widget._sentence.grammarSet.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text('${e.id}', style: TextStyle(color: Colors.amberAccent)),
+                            child: Text('${e.id}', style: TextStyle(color: Colors.black87)),
                             onTap: () async {
                               var grammar = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title':'编辑句子的语法', 'grammar': GrammarSerializer().from(e)})) as GrammarSerializer;
                               if(grammar != null) {

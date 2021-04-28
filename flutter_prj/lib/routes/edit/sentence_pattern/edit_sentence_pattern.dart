@@ -99,7 +99,7 @@ class _EditSentencePatternState extends State<EditSentencePattern> {
                     children: widget._sentencePattern.paraphraseSet.map<Widget>((e) =>
                       Tag(
                         label: InkWell(
-                          child: Text('${e.interpret}', style: TextStyle(color: Colors.amberAccent)),
+                          child: Text('${e.interpret}', style: TextStyle(color: Colors.black87)),
                           onTap: () async {
                             var paraphrase = (await Navigator.pushNamed(context, '/edit_paraphrase', arguments: {'title':'编辑常用句型的释义', 'paraphrase': ParaphraseSerializer().from(e)})) as ParaphraseSerializer;
                             if(paraphrase != null) {
