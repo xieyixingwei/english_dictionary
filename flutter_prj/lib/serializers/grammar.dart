@@ -95,6 +95,7 @@ class GrammarSerializer {
   }
 
   GrammarSerializer from(GrammarSerializer instance) {
+    if(instance == null) return this;
     id = instance.id;
     type = List.from(instance.type);
     tag = List.from(instance.tag);

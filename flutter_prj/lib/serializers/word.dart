@@ -157,6 +157,7 @@ class WordSerializer {
   }
 
   WordSerializer from(WordSerializer instance) {
+    if(instance == null) return this;
     name = instance.name;
     voiceUs = instance.voiceUs;
     voiceUk = instance.voiceUk;

@@ -76,6 +76,7 @@ class SentencePatternSerializer {
   };
 
   SentencePatternSerializer from(SentencePatternSerializer instance) {
+    if(instance == null) return this;
     id = instance.id;
     content = instance.content;
     wordForeign = instance.wordForeign;

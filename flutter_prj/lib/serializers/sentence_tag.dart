@@ -43,6 +43,7 @@ class SentenceTagSerializer {
   };
 
   SentenceTagSerializer from(SentenceTagSerializer instance) {
+    if(instance == null) return this;
     name = instance.name;
     _name = instance._name;
     return this;

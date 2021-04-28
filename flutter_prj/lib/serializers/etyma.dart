@@ -80,6 +80,7 @@ class EtymaSerializer {
   }
 
   EtymaSerializer from(EtymaSerializer instance) {
+    if(instance == null) return this;
     name = instance.name;
     interpretation = instance.interpretation;
     type = instance.type;

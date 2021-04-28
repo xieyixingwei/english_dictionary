@@ -88,6 +88,7 @@ class DistinguishSerializer {
   }
 
   DistinguishSerializer from(DistinguishSerializer instance) {
+    if(instance == null) return this;
     id = instance.id;
     words = List.from(instance.words);
     content = instance.content;

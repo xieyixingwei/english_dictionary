@@ -3,6 +3,7 @@
 // JsonSerializer
 // **************************************************************************
 
+import 'study_plan.dart';
 import 'package:flutter_prj/common/http.dart';
 
 
@@ -24,6 +25,7 @@ class UserSerializer {
   String email = '';
   String telephone = '';
   String status = '';
+  StudyPlanSerializer studyPlan = StudyPlanSerializer();
 
   static Future<List<UserSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/user/', queries:queries, cache:cache);
@@ -71,6 +73,9 @@ class UserSerializer {
     email = json['email'] == null ? null : json['email'] as String;
     telephone = json['telephone'] == null ? null : json['telephone'] as String;
     status = json['status'] == null ? null : json['status'] as String;
+    studyPlan = json['studyPlan'] == null
+                ? null
+                : StudyPlanSerializer().fromJson(json['studyPlan'] as Map<String, dynamic>);
     _id = id;
     return this;
   }
@@ -93,6 +98,7 @@ class UserSerializer {
   };
 
   UserSerializer from(UserSerializer instance) {
+    if(instance == null) return this;
     id = instance.id;
     uname = instance.uname;
     passwd = instance.passwd;
@@ -107,6 +113,7 @@ class UserSerializer {
     email = instance.email;
     telephone = instance.telephone;
     status = instance.status;
+    studyPlan = StudyPlanSerializer().from(instance.studyPlan);
     _id = instance._id;
     return this;
   }

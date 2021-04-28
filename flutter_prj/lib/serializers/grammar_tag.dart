@@ -43,6 +43,7 @@ class GrammarTagSerializer {
   };
 
   GrammarTagSerializer from(GrammarTagSerializer instance) {
+    if(instance == null) return this;
     name = instance.name;
     _name = instance._name;
     return this;

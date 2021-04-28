@@ -33,6 +33,7 @@ class LoginSerializer {
   };
 
   LoginSerializer from(LoginSerializer instance) {
+    if(instance == null) return this;
     msg = instance.msg;
     status = instance.status;
     token = instance.token;

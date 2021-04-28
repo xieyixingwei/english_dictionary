@@ -82,6 +82,7 @@ class ParaphraseSerializer {
   };
 
   ParaphraseSerializer from(ParaphraseSerializer instance) {
+    if(instance == null) return this;
     id = instance.id;
     interpret = instance.interpret;
     partOfSpeech = instance.partOfSpeech;

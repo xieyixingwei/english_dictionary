@@ -541,6 +541,7 @@ class JsonSerializer {
                              + [primaryMember?.hidePrimaryMemberFrom]).where((e) => e != null).join('\n    ');
   String get from =>
 """  $serializerTypeName from($serializerTypeName instance) {
+    if(instance == null) return this;
     $fromMembers
     return this;
   }""";

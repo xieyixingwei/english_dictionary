@@ -32,6 +32,7 @@ class LocalStoreSerializer {
   };
 
   LocalStoreSerializer from(LocalStoreSerializer instance) {
+    if(instance == null) return this;
     user = UserSerializer().from(instance.user);
     token = instance.token;
     netCacheConfig = NetCacheConfigSerializer().from(instance.netCacheConfig);

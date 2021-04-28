@@ -106,6 +106,7 @@ class SentenceSerializer {
   };
 
   SentenceSerializer from(SentenceSerializer instance) {
+    if(instance == null) return this;
     id = instance.id;
     en = instance.en;
     cn = instance.cn;

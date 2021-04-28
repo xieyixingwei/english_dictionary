@@ -1,0 +1,53 @@
+{
+    "__name__": "study_plan",
+    "id @primary": "num=null",
+    "foreignUser @foreign": "$user",
+    "onceWords": 0,
+    "onceSentences": 0,
+    "onceGrammers": 0,
+    "vocabularies": [""]
+}
+
+{
+    "__name__": "study_grammer",
+    "id @primary": 0,
+    "foreignUser @foreign": "$user",
+    "foreignGrammer @foreign": ["$grammar"],
+    "vocabularies": [""],
+    "familiarity": 0,
+    "learnRecord": [""],
+    "inplan": false,
+    "isFavorite": false,
+    "comments": "",
+    "repeats": 0
+}
+
+{
+    "__name__": "study_sentence",
+    "id @primary": 0,
+    "foreignUser @foreign": "$user",
+    "foreignSentence @foreign": ["$sentence"],
+    "vocabularies": [""],
+    "familiarity": 0,
+    "learnRecord": [""],
+    "inplan": false,
+    "isFavorite": false,
+    "comments": "",
+    "repeats": 0,
+    "newWords": [""]
+}
+
+{
+    "__name__": "study_word",
+    "id @primary": 0,
+    "foreignUser @foreign": "$user",
+    "foreignWord @foreign": ["$word"],
+    "vocabularies": [""],
+    "familiarity": 0,
+    "learnRecord": [""],
+    "inplan": false,
+    "isFavorite": false,
+    "comments": "",
+    "repeats": 0,
+    "newWords": [""]
+}

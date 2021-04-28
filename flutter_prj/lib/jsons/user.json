@@ -13,6 +13,7 @@
     "email": "",
     "telephone": "",
     "status": "",
+    "_studyPlan": "$study_plan",
     "__http__": {
         "url": "/user/",
         "methods": [

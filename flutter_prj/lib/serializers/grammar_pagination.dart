@@ -42,6 +42,7 @@ class GrammarPaginationSerializer {
   };
 
   GrammarPaginationSerializer from(GrammarPaginationSerializer instance) {
+    if(instance == null) return this;
     count = instance.count;
     next = instance.next;
     previous = instance.previous;

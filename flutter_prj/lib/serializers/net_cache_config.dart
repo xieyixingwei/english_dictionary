@@ -26,6 +26,7 @@ class NetCacheConfigSerializer {
   };
 
   NetCacheConfigSerializer from(NetCacheConfigSerializer instance) {
+    if(instance == null) return this;
     enable = instance.enable;
     maxAge = instance.maxAge;
     maxCount = instance.maxCount;
