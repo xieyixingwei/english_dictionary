@@ -9,10 +9,12 @@ class StudyGrammerTable(models.Model):
     语法学习表
     """
     id = models.AutoField(primary_key=True)
-    foreignUser = models.ForeignKey(to=UserTable, on_delete=models.CASCADE)
+    foreignUser = models.ForeignKey(to=UserTable, related_name='studyGrammerSet', on_delete=models.CASCADE)
     foreignGrammer = models.ForeignKey(to=GrammarTable, on_delete=models.CASCADE)
-    familiarity = models.IntegerField() # 0 ~ 5
-    repeats = models.IntegerField()
-    learnRecord = JSONFieldUtf8() # [09122030,09112030,09102030]
-    inplan = models.BooleanField()
+    vocabularies = JSONFieldUtf8(null=True, blank=True)
+    familiarity = models.IntegerField(default=0) # 0 ~ 5
+    learnRecord = JSONFieldUtf8(null=True) # [09122030,09112030,09102030]
+    inplan = models.BooleanField(default=False)
+    isFavorite = models.BooleanField(default=False)
     comments = models.CharField(max_length=256)  # markdown
+    repeats = models.IntegerField(default=0)

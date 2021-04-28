@@ -9,9 +9,17 @@ import uuid
 from server import permissions
 from rest_framework.permissions import BasePermission
 from server.views import ModelViewSetPermissionSerializerMap as ModelViewSetPSM
+from study.views.StudyPlanView import StudyPlanSerializer
+from study.views.StudyWordView import StudyWordSerializer
+from study.views.StudySentenceView import StudySentenceSerializer
+from study.views.StudyGrammerView import StudyGrammerSerializer
 
 
 class _UsersSerializer(serializers.ModelSerializer):
+    studyPlan = StudyPlanSerializer(many=False, read_only=True)
+    studyWordSet = StudyWordSerializer(many=True, read_only=True)
+    studySentenceSet = StudySentenceSerializer(many=True, read_only=True)
+    studyGrammerSet = StudyGrammerSerializer(many=True, read_only=True)
     class Meta:
         model = UserTable
         fields = '__all__' # 所有字段

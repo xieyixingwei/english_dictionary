@@ -25,4 +25,5 @@ urlpatterns = [
     # path('admin/', admin.site.urls),
     url(r'^dictionary/', include(('dictionary.urls', 'dictionary'), namespace='dictionary')),
     url(r'^user/', include(('user.urls', 'user'), namespace='user')),
+    url(r'^study/', include(('study.urls', 'study'), namespace='study')),
 ]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

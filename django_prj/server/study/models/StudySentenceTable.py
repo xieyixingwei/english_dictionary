@@ -9,13 +9,13 @@ class StudySentenceTable(models.Model):
     句子学习表
     """
     id = models.AutoField(primary_key=True)
-    foreignUser = models.ForeignKey(to=UserTable, on_delete=models.CASCADE)
+    foreignUser = models.ForeignKey(to=UserTable, related_name='studySentenceSet', on_delete=models.CASCADE)
     foreignSentence = models.ForeignKey(to=SentenceTable, on_delete=models.CASCADE)
-    collect = JSONFieldUtf8()        # 单词本 [a,b]
-    familiarity = models.IntegerField() # 0 ~ 5
-    repeats = models.IntegerField()
-    learnRecord = JSONFieldUtf8() # [09122030,09112030,09102030]
-    inplan = models.BooleanField()
-    newWords = JSONFieldUtf8()   # 生词 [w1,w2]
-    nextSentences = JSONFieldUtf8() # 下个句子id [id1, id2]
+    vocabularies = JSONFieldUtf8(null=True, blank=True)
+    familiarity = models.IntegerField(default=0) # 0 ~ 5
+    learnRecord = JSONFieldUtf8(null=True, blank=True) # [09122030,09112030,09102030]
+    inplan = models.BooleanField(default=False)
+    isFavorite = models.BooleanField(default=False)
     comments = models.CharField(max_length=256)  # markdown
+    repeats = models.IntegerField(default=0)
+    newWords = JSONFieldUtf8(null=True, blank=True)   # 生词 [w1,w2]

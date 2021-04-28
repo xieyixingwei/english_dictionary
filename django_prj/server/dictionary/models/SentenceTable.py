@@ -16,6 +16,7 @@ class SentenceTable(models.Model):
     synonym = models.ManyToManyField(to='self', blank=True) # 同义句 [Sentence.id,Sentence.id,...]
     antonym = models.ManyToManyField(to='self', blank=True) # 反义句 [Sentence.id,Sentence.id,...]
     paraphraseForeign = models.ForeignKey(to=ParaphraseTable, related_name='sentenceSet', null=True, on_delete=models.CASCADE)
+    next = models.IntegerField(null=True) # 下个句子id
     class Meta:
         ordering = ['id']  # 消除list警告UnorderedObjectListWarning: Pagination may yield inconsistent results with an unordered object_list
 
