@@ -171,86 +171,6 @@ class _EditWordState extends State<EditWord> {
                       onChanged: (v) => widget.word.origin = v.trim(),
                       //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
-                    TextFormField(
-                      autofocus: false,
-                      keyboardType: TextInputType.number, // 键盘回车键的样式
-                      textInputAction: TextInputAction.next,
-                      controller: TextEditingController(text: widget.word.shorthand),
-                      maxLines: null,
-                      style: _textStyle,
-                      decoration: InputDecoration(
-                        labelText: "速记",
-                        border: OutlineInputBorder(),
-                      ),
-                      onChanged: (v) => widget.word.shorthand = v.trim(),
-                      //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
-                    ),
-                    WrapOutline(
-                      labelText: '近义词',
-                      children: widget.word.synonym.map<Widget>((e) =>
-                        Tag(
-                          label: InkWell(
-                            child: Text(e, style: TextStyle(color: Colors.black87)),
-                            onTap: () async {
-                              var word = WordSerializer()..name = e;
-                              bool ret = await word.retrieve();
-                              if(ret) {
-                                word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'编辑近义词', 'word': WordSerializer().from(word)})) as WordSerializer;
-                                if(word != null) {
-                                  await word.save();
-                                }
-                              }
-                              setState((){});
-                            },
-                          ),
-                          onDeleted: () => setState(() => widget.word.synonym.remove(e)),
-                        )).toList(),
-                      suffix: TextButton(
-                        child: Text('添加',),
-                        onPressed: () async {
-                          var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'添加近义词'})) as WordSerializer;
-                          if(word != null) {
-                            bool ret = await word.save();
-                            if(ret) {
-                              setState(() => widget.word.synonym.add(word.name));
-                            }
-                          }
-                        },
-                      ),
-                    ),
-                    WrapOutline(
-                      labelText: '反义词',
-                      children: widget.word.antonym.map<Widget>((e) =>
-                        Tag(
-                          label: InkWell(
-                            child: Text(e, style: TextStyle(color: Colors.black87)),
-                            onTap: () async {
-                              var word = WordSerializer()..name = e;
-                              bool ret = await word.retrieve();
-                              if(ret) {
-                                word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'编辑反义词', 'word': WordSerializer().from(word)})) as WordSerializer;
-                                if(word != null) {
-                                  await word.save();
-                                }
-                              }
-                              setState((){});
-                            },
-                          ),
-                          onDeleted: () => setState(() => widget.word.antonym.remove(e)),
-                        )).toList(),
-                      suffix: TextButton(
-                        child: Text('添加',),
-                        onPressed: () async {
-                          var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'添加反义词'})) as WordSerializer;
-                          if(word != null) {
-                            bool ret = await word.save();
-                            if(ret) {
-                              setState(() => widget.word.antonym.add(word.name));
-                            }
-                          }
-                        },
-                      ),
-                    ),
                     WrapOutline(
                       labelText: '释义',
                       children: widget.word.paraphraseSet.map<Widget>((e) =>
@@ -381,6 +301,86 @@ class _EditWordState extends State<EditWord> {
                             bool ret = await d.save();
                             if(ret) {
                               setState(() => widget.word.distinguishSet.add(d));
+                            }
+                          }
+                        },
+                      ),
+                    ),
+                    TextFormField(
+                      autofocus: false,
+                      keyboardType: TextInputType.number, // 键盘回车键的样式
+                      textInputAction: TextInputAction.next,
+                      controller: TextEditingController(text: widget.word.shorthand),
+                      maxLines: null,
+                      style: _textStyle,
+                      decoration: InputDecoration(
+                        labelText: "速记",
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: (v) => widget.word.shorthand = v.trim(),
+                      //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
+                    ),
+                    WrapOutline(
+                      labelText: '近义词',
+                      children: widget.word.synonym.map<Widget>((e) =>
+                        Tag(
+                          label: InkWell(
+                            child: Text(e, style: TextStyle(color: Colors.black87)),
+                            onTap: () async {
+                              var word = WordSerializer()..name = e;
+                              bool ret = await word.retrieve();
+                              if(ret) {
+                                word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'编辑近义词', 'word': WordSerializer().from(word)})) as WordSerializer;
+                                if(word != null) {
+                                  await word.save();
+                                }
+                              }
+                              setState((){});
+                            },
+                          ),
+                          onDeleted: () => setState(() => widget.word.synonym.remove(e)),
+                        )).toList(),
+                      suffix: TextButton(
+                        child: Text('添加',),
+                        onPressed: () async {
+                          var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'添加近义词'})) as WordSerializer;
+                          if(word != null) {
+                            bool ret = await word.save();
+                            if(ret) {
+                              setState(() => widget.word.synonym.add(word.name));
+                            }
+                          }
+                        },
+                      ),
+                    ),
+                    WrapOutline(
+                      labelText: '反义词',
+                      children: widget.word.antonym.map<Widget>((e) =>
+                        Tag(
+                          label: InkWell(
+                            child: Text(e, style: TextStyle(color: Colors.black87)),
+                            onTap: () async {
+                              var word = WordSerializer()..name = e;
+                              bool ret = await word.retrieve();
+                              if(ret) {
+                                word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'编辑反义词', 'word': WordSerializer().from(word)})) as WordSerializer;
+                                if(word != null) {
+                                  await word.save();
+                                }
+                              }
+                              setState((){});
+                            },
+                          ),
+                          onDeleted: () => setState(() => widget.word.antonym.remove(e)),
+                        )).toList(),
+                      suffix: TextButton(
+                        child: Text('添加',),
+                        onPressed: () async {
+                          var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'添加反义词'})) as WordSerializer;
+                          if(word != null) {
+                            bool ret = await word.save();
+                            if(ret) {
+                              setState(() => widget.word.antonym.add(word.name));
                             }
                           }
                         },

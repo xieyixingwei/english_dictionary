@@ -308,7 +308,8 @@ class ShowWord extends StatelessWidget {
     ) : null;
 
   Widget _paraphraseListShow(BuildContext context, List<ParaphraseSerializer> paraphraseSet) =>
-    Column(
+    ColumnSpace(
+      divider: SizedBox(height: 14,),
       children: sortParaphraseSet(paraphraseSet).map((e) =>
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -76,7 +76,7 @@ class _ListWordsState extends State<ListWords> {
         TextButton(
           child: Text('添加单词', style: TextStyle(fontSize: 12)),
           onPressed: () async {
-            var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'添加句子'})) as WordSerializer;
+            var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'添加单词'})) as WordSerializer;
             if(word != null && word.name.isNotEmpty) {
               var ret = await word.save();
               if(ret)
