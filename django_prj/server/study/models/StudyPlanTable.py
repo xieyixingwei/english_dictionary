@@ -13,3 +13,4 @@ class StudyPlanTable(models.Model):
     onceSentences = models.IntegerField(null=True, blank=True)
     onceGrammers = models.IntegerField(null=True, blank=True)
     vocabularies = JSONFieldUtf8(null=True, blank=True) # 单词本名字 [a,b]
+    distinguishes = JSONFieldUtf8(null=True, blank=True) # 收藏的词义辨析

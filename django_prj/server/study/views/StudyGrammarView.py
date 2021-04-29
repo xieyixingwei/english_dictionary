@@ -1,19 +1,19 @@
 from rest_framework import serializers, response, request, generics, viewsets
 from server import permissions
 from server.views import ModelViewSetPermissionSerializerMap
-from study.models import StudyGrammerTable
+from study.models import StudyGrammarTable
 
 
-class StudyGrammerSerializer(serializers.ModelSerializer):
+class StudyGrammarSerializer(serializers.ModelSerializer):
     class Meta:
-        model = StudyGrammerTable
+        model = StudyGrammarTable
         fields = '__all__'
 
 
-class StudyGrammerView(ModelViewSetPermissionSerializerMap):
+class StudyGrammarView(ModelViewSetPermissionSerializerMap):
     """
     语法学习 视图
     """
-    queryset = StudyGrammerTable.objects.all()
-    serializer_class = StudyGrammerSerializer
+    queryset = StudyGrammarTable.objects.all()
+    serializer_class = StudyGrammarSerializer
     permission_classes = (permissions.IsAuthenticated,)

@@ -10,12 +10,12 @@ class StudySentenceTable(models.Model):
     """
     id = models.AutoField(primary_key=True)
     foreignUser = models.ForeignKey(to=UserTable, related_name='studySentenceSet', on_delete=models.CASCADE)
-    foreignSentence = models.ForeignKey(to=SentenceTable, on_delete=models.CASCADE)
+    sentence = models.OneToOneField(to=SentenceTable, on_delete=models.CASCADE)
     vocabularies = JSONFieldUtf8(null=True, blank=True)
     familiarity = models.IntegerField(default=0) # 0 ~ 5
     learnRecord = JSONFieldUtf8(null=True, blank=True) # [09122030,09112030,09102030]
     inplan = models.BooleanField(default=False)
     isFavorite = models.BooleanField(default=False)
-    comments = models.CharField(max_length=256)  # markdown
+    comments = models.CharField(max_length=256, null=True, blank=True)  # markdown
     repeats = models.IntegerField(default=0)
     newWords = JSONFieldUtf8(null=True, blank=True)   # 生词 [w1,w2]

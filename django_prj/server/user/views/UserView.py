@@ -1,25 +1,22 @@
-from rest_framework import serializers, exceptions, views, generics, response, request, status
+from rest_framework import serializers,generics, request
 from rest_framework.decorators import action
-from rest_framework import mixins, viewsets
-from rest_framework import permissions, authentication
 from django.core.cache import cache
 from user.models import UserTable
 from server.settings import LOGIN_TIMEOUT, ROOT_USERS
-import uuid
 from server import permissions
 from rest_framework.permissions import BasePermission
 from server.views import ModelViewSetPermissionSerializerMap as ModelViewSetPSM
 from study.views.StudyPlanView import StudyPlanSerializer
 from study.views.StudyWordView import StudyWordSerializer
 from study.views.StudySentenceView import StudySentenceSerializer
-from study.views.StudyGrammerView import StudyGrammerSerializer
+from study.views.StudyGrammarView import StudyGrammarSerializer
 
 
 class _UsersSerializer(serializers.ModelSerializer):
     studyPlan = StudyPlanSerializer(many=False, read_only=True)
     studyWordSet = StudyWordSerializer(many=True, read_only=True)
     studySentenceSet = StudySentenceSerializer(many=True, read_only=True)
-    studyGrammerSet = StudyGrammerSerializer(many=True, read_only=True)
+    studyGrammarSet = StudyGrammarSerializer(many=True, read_only=True)
     class Meta:
         model = UserTable
         fields = '__all__' # 所有字段
@@ -69,8 +66,14 @@ class UsersView(ModelViewSetPSM):
     permission_classes_map = {
         'retrieve': (_IsAuthenticatedAndSelf,),
         'update': (_IsAuthenticatedAndSelf),
+        'islogin': (_IsAuthenticatedAndSelf),
     }
     lookup_field = 'uname'
+
+    #@action('GET')
+    #def islogin(self, request, *args, **kwargs):
+    #    pass
+
 
 
 class ChangeAmindUserView(generics.UpdateAPIView):
