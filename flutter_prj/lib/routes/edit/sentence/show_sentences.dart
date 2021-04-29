@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/edit/common/utils.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
 
@@ -47,7 +49,7 @@ class _ShowSentencesPageState extends State<ShowSentencesPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           divider: SizedBox(height: 16,),
           children: _sentences.map((e) =>
-            sentenceShow(context, e)
+            sentenceShow(context, e, ()=>setState((){}))
           ).toList(),
         ),
       ),
@@ -55,7 +57,7 @@ class _ShowSentencesPageState extends State<ShowSentencesPage> {
 }
 
 
-Widget sentenceShow(BuildContext context, SentenceSerializer sentence) =>
+  Widget sentenceShow(BuildContext context, SentenceSerializer sentence, Function update) =>
     Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -93,8 +95,21 @@ Widget sentenceShow(BuildContext context, SentenceSerializer sentence) =>
               splashColor: Colors.transparent,
               hoverColor: Colors.transparent,
               highlightColor: Colors.transparent,
-              child: Icon(Icons.star, color: Colors.redAccent, size: 14),
-              onTap: () => print("收藏"),
+              child: Icon(Icons.star, color: getStudySentence(sentence.id) == null ? Colors.black54 : Colors.redAccent, size: 14),
+              onTap: () async {
+                var ss = getStudySentence(sentence.id);
+                if(ss == null) {
+                  var newSs = StudySentenceSerializer()..sentence = sentence.id
+                                                  ..foreignUser = Global.localStore.user.id;
+                  Global.localStore.user.studySentenceSet.add(newSs);
+                  await newSs.save();
+                } else {
+                  await ss.delete();
+                  Global.localStore.user.studySentenceSet.remove(ss);
+                }
+                Global.saveLocalStore();
+                if(update != null) update();
+              },
             ),
           ].where((e) => e != null).toList(),
         ),

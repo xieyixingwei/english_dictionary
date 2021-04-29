@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_prj/models/user_model.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_prj/common/global.dart';
 import '../login.dart';
 
 
@@ -13,6 +12,7 @@ class UserTab extends StatelessWidget {
     {
       'title': '我的收藏',
       'icon': Icon(Icons.favorite),
+      'route': '/favorite_page',
     },
   ];
   final listItemsOfRoot = [
@@ -77,17 +77,14 @@ class UserTab extends StatelessWidget {
   final arrowForwardIosIcon = const Icon(Icons.arrow_forward_ios, size:20.0);
 
     @override
-  Widget build(BuildContext context) {
-    return Consumer<UserModel>(
-      builder: (BuildContext context, UserModel user, Widget child) =>
-        user.isLogin ? _buildCustomScrollView(context, user) : LoginPage()
-    );
-  }
+  Widget build(BuildContext context) =>
+    Global.isLogin ? _buildCustomScrollView(context) : LoginPage();
 
-  _buildStatistics(UserModel user) {
+
+  _buildStatistics() {
     List statisticsTotal = [];
     statisticsTotal.addAll(statistics);
-    if(user.user.uname == 'root') {
+    if(Global.localStore.user.uname == 'root') {
       statisticsTotal.addAll(statisticsOfRoot);
     }
     return Row(
@@ -102,7 +99,7 @@ class UserTab extends StatelessWidget {
             );
   }
 
-  Widget _buildHeader(BuildContext context, UserModel user) =>
+  Widget _buildHeader(BuildContext context) =>
     Container(
       padding: EdgeInsets.only(bottom: 20),
       color: Colors.white,
@@ -111,25 +108,26 @@ class UserTab extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: IconButton(
-              icon: Icon(Icons.settings, size: 16),
+              splashRadius: 1.0,
+              icon: Icon(Icons.settings, size: 24),
               onPressed: () => Navigator.pushNamed(context, '/setting'),
             ),
           ),
           ListTile(
             leading: Icon(Icons.insert_emoticon, size: 50.0),
-            title:  Text(user.user.uname, style: const TextStyle( fontSize: 24.0)),
-            subtitle: Text('RegID: ' + user.user.id.toString(), style: const TextStyle(fontSize: 10.0)),
+            title:  Text(Global.localStore.user.uname, style: const TextStyle( fontSize: 24.0)),
+            subtitle: Text('RegID: ' + Global.localStore.user.id.toString(), style: const TextStyle(fontSize: 10.0)),
           ),
           SizedBox(height: 10,),
-          _buildStatistics(user),
+          _buildStatistics(),
         ],
       ),
     );
 
-  Widget _listOptions(BuildContext context, UserModel user) {
+  Widget _listOptions(BuildContext context) {
     List listItemsTotal = [];
     listItemsTotal.addAll(listItems);
-    if(user.user.uname == 'root') {
+    if(Global.localStore.user.uname == 'root') {
       listItemsTotal.addAll(listItemsOfRoot);
     }
 
@@ -155,12 +153,12 @@ class UserTab extends StatelessWidget {
     );
   }
 
-  Widget _buildCustomScrollView(BuildContext context, UserModel user) =>
+  Widget _buildCustomScrollView(BuildContext context) =>
     SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(6, 6, 6, 0),
       child: Column( children: [
-        _buildHeader(context, user),
-        _listOptions(context, user),
+        _buildHeader(context),
+        _listOptions(context),
       ],
       ),
     );

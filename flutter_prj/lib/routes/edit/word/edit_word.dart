@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/edit/common/text_form_field.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/Tag.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
@@ -27,28 +28,6 @@ class _EditWordState extends State<EditWord> {
   static const List<String> _morphOptions = ['选择', '现在分词', '过去式', '过去分词', '第三人称单数', '名词', '形容词', '动词', '副词', '比较级', '最高级'];
   String _morphSelect = _morphOptions.first;
   String _morphInput = '';
-
-  Widget _textFiledForm({
-    String text,
-    String labelText,
-    Widget suffixIcon,
-    Function(String) onChanged,
-    Function(String) validator
-  }) =>
-    TextFormField(
-      controller: TextEditingController(text: text),
-      maxLines: 1,
-      style: _textStyle,
-      decoration: InputDecoration(
-        //isDense: true,
-        //contentPadding: EdgeInsets.fromLTRB(8, 0, 8, 0),
-        labelText: labelText,
-        border: OutlineInputBorder(),
-        suffixIcon: suffixIcon,
-      ),
-      onChanged: (v) => onChanged != null ? onChanged(v.trim()) : null,
-      validator: (v) => validator != null ? validator(v.trim()) : null,
-    );
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +59,7 @@ class _EditWordState extends State<EditWord> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   divider: SizedBox(height: 20,),
                   children: [
-                    _textFiledForm(
+                    textFiledForm(
                       text: widget.word.name,
                       labelText: '单词',
                       suffixIcon: IconButton(
@@ -95,12 +74,12 @@ class _EditWordState extends State<EditWord> {
                       onChanged: (v) => widget.word.name = v,
                       validator: (v) => v.isNotEmpty ? null : "不能为空",
                     ),
-                    _textFiledForm(
+                    textFiledForm(
                       text: widget.word.voiceUs,
                       labelText: '音标(美)',
                       onChanged: (v) => widget.word.voiceUs = v,
                     ),
-                    _textFiledForm(
+                    textFiledForm(
                       text: widget.word.voiceUk,
                       labelText: '音标(英)',
                       onChanged: (v) => widget.word.voiceUk = v,

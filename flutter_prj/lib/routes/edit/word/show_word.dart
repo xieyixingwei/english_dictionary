@@ -1,5 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/edit/common/utils.dart';
 import 'package:flutter_prj/routes/edit/sentence/show_sentences.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/OnOffWidget.dart';
@@ -28,18 +30,24 @@ class ShowWordPage extends StatelessWidget {
     );
 }
 
-
-class ShowWord extends StatelessWidget {
+class ShowWord extends StatefulWidget {
   ShowWord({Key key, this.word}) : super(key: key);
 
   final WordSerializer word;
+
+  @override
+  _ShowWordState createState() => _ShowWordState();
+}
+
+class _ShowWordState extends State<ShowWord> {
+
   final _labelStyle = TextStyle(fontSize: 14, color: Colors.black87, fontWeight: FontWeight.bold);
-  AudioPlayer _audioPlayer = AudioPlayer();
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
   Widget build(BuildContext context) => _wordShow(context);
 
-  Widget _wordShow(BuildContext context) => word.name.isNotEmpty ?
+  Widget _wordShow(BuildContext context) => widget.word.name.isNotEmpty ?
     ColumnSpace(
       crossAxisAlignment: CrossAxisAlignment.start,
       divider: SizedBox(height: 14,),
@@ -52,7 +60,7 @@ class ShowWord extends StatelessWidget {
             _voiceUkShow,
           ],
         ),
-        word.tag.isNotEmpty || word.etyma.isNotEmpty ?
+        widget.word.tag.isNotEmpty || widget.word.etyma.isNotEmpty ?
         RowSpace(
           divider: SizedBox(width: 10,),
           children: [
@@ -82,12 +90,12 @@ class ShowWord extends StatelessWidget {
       ],
     ) : null;
 
-  Widget get _wordNameShow => word.name.isNotEmpty ?
+  Widget get _wordNameShow => widget.word.name.isNotEmpty ?
     Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SelectableText(
-          word.name,
+          widget.word.name,
           style: TextStyle(
             color: Colors.black87,
             fontWeight: FontWeight.w700,
@@ -97,22 +105,34 @@ class ShowWord extends StatelessWidget {
         ),
         IconButton(
           padding: EdgeInsets.zero,
-          icon: Icon(Icons.star, color: Colors.redAccent, size: 24),
+          icon: Icon(Icons.star, color: getStudyWord(widget.word.name) == null ? Colors.black54 : Colors.redAccent, size: 24),
           tooltip: '收藏',
           splashRadius: 5.0,
-          onPressed: () => print("收藏"),
+          onPressed: () async {
+            var sw = getStudyWord(widget.word.name);
+            if(sw == null) {
+              var newSw = StudyWordSerializer()..word = widget.word.name
+                                               ..foreignUser = Global.localStore.user.id;
+              Global.localStore.user.studyWordSet.add(newSw);
+              await newSw.save();
+            } else {
+              await sw.delete();
+              Global.localStore.user.studyWordSet.remove(sw);
+            }
+            Global.saveLocalStore();
+            setState(() {});
+          },
         ),
-        //ratingStar(3.3,5),
       ],
     ) : null;
 
-  Widget get _voiceUsShow => word.voiceUs.isNotEmpty ?
+  Widget get _voiceUsShow => widget.word.voiceUs.isNotEmpty ?
     Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         SelectableText(
-          '美 ${word.voiceUs}',
+          '美 ${widget.word.voiceUs}',
           style: TextStyle(fontSize: 12, color: Colors.black87, height: 1,),
         ),
         SizedBox(width: 6,),
@@ -120,26 +140,26 @@ class ShowWord extends StatelessWidget {
           splashColor: Colors.transparent,
           hoverColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          child: Icon(Icons.volume_up_outlined, color: word.audioUsMan != null ? Colors.blue : Colors.grey, size: 20,),
-          onTap: () async {if(word.audioUsMan != null) await _audioPlayer.play(word.audioUsMan); },
+          child: Icon(Icons.volume_up_outlined, color: widget.word.audioUsMan != null ? Colors.blue : Colors.grey, size: 20,),
+          onTap: () async {if(widget.word.audioUsMan != null) await _audioPlayer.play(widget.word.audioUsMan); },
         ),
         SizedBox(width: 6,),
         InkWell(
           splashColor: Colors.transparent,
           hoverColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          child: Icon(Icons.volume_up_outlined, color: word.audioUsWoman != null ? Colors.pink : Colors.grey, size: 20,),
-          onTap: () async {if(word.audioUsWoman != null) await _audioPlayer.play(word.audioUsWoman); },
+          child: Icon(Icons.volume_up_outlined, color: widget.word.audioUsWoman != null ? Colors.pink : Colors.grey, size: 20,),
+          onTap: () async {if(widget.word.audioUsWoman != null) await _audioPlayer.play(widget.word.audioUsWoman); },
         ),
       ]
     ) : null;
 
-  Widget get _voiceUkShow => word.voiceUk.isNotEmpty ?
+  Widget get _voiceUkShow => widget.word.voiceUk.isNotEmpty ?
     Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         SelectableText(
-          '英 ${word.voiceUk}',
+          '英 ${widget.word.voiceUk}',
           style: TextStyle(fontSize: 12, color: Colors.black87, height: 1,),
         ),
         SizedBox(width: 6,),
@@ -147,56 +167,56 @@ class ShowWord extends StatelessWidget {
           splashColor: Colors.transparent,
           hoverColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          child: Icon(Icons.volume_up_outlined, color: word.audioUkMan != null ? Colors.blue : Colors.grey, size: 20,),
-          onTap: () async {if(word.audioUkMan != null) await _audioPlayer.play(word.audioUkMan); },
+          child: Icon(Icons.volume_up_outlined, color: widget.word.audioUkMan != null ? Colors.blue : Colors.grey, size: 20,),
+          onTap: () async {if(widget.word.audioUkMan != null) await _audioPlayer.play(widget.word.audioUkMan); },
         ),
         SizedBox(width: 6,),
         InkWell(
           splashColor: Colors.transparent,
           hoverColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          child: Icon(Icons.volume_up_outlined, color: word.audioUkWoman != null ? Colors.pink : Colors.grey, size: 20,),
-          onTap: () async {if(word.audioUkWoman != null) await _audioPlayer.play(word.audioUkWoman); },
+          child: Icon(Icons.volume_up_outlined, color: widget.word.audioUkWoman != null ? Colors.pink : Colors.grey, size: 20,),
+          onTap: () async {if(widget.word.audioUkWoman != null) await _audioPlayer.play(widget.word.audioUkWoman); },
         ),
       ]
     ) : null;
 
-  Widget get _tagShow => word.tag.isNotEmpty ?
+  Widget get _tagShow => widget.word.tag.isNotEmpty ?
     Text(
-      word.tag.join(' / '),
+      widget.word.tag.join(' / '),
       style: TextStyle(
         fontSize: 12,
         color: Colors.black54,
       ),
     ) : null;
 
-  Widget _etymaShow(BuildContext context) => word.etyma.isNotEmpty ?
+  Widget _etymaShow(BuildContext context) => widget.word.etyma.isNotEmpty ?
     Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text('词根词缀: ', style: TextStyle(fontSize: 12, color: Colors.black54,)),
         Row(
-          children: word.etyma.map((e) =>
+          children: widget.word.etyma.map((e) =>
             InkWell(
               splashColor: Colors.transparent,
               hoverColor: Colors.transparent,
               highlightColor: Colors.transparent,
               child: Text(e,  style: TextStyle(fontSize: 12, color: Colors.blueAccent,)),
-              onTap: () => Navigator.pushNamed(context, '/show_etyma', arguments: {'title': '${word.name}的词根词缀 $e', 'etyma': e}),
+              onTap: () => Navigator.pushNamed(context, '/show_etyma', arguments: {'title': '${widget.word.name}的词根词缀 $e', 'etyma': e}),
             )
           ).toList(),
         ),
       ],
     ) : null;
 
-  Widget _morphShow(BuildContext context) => word.morph.isNotEmpty ?
+  Widget _morphShow(BuildContext context) => widget.word.morph.isNotEmpty ?
     OnOffWidget(
       label: Text('单词变形', style: _labelStyle),
       child: Container(
         padding: EdgeInsets.only(top:14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: word.morph.map<Widget>((e) =>
+          children: widget.word.morph.map<Widget>((e) =>
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -217,7 +237,7 @@ class ShowWord extends StatelessWidget {
                     var w = WordSerializer()..name = e.split(':').last.trim();
                     bool ret = await w.retrieve();
                     if(ret) {
-                      Navigator.pushNamed(context, '/show_word', arguments: {'title': '${word.name}的$e', 'word': w});
+                      Navigator.pushNamed(context, '/show_word', arguments: {'title': '${widget.word.name}的$e', 'word': w});
                     }
                   },
                 ),
@@ -228,7 +248,7 @@ class ShowWord extends StatelessWidget {
       ),
     ) : null;
 
-  Widget get _originShow => word.origin.isNotEmpty ?
+  Widget get _originShow => widget.word.origin.isNotEmpty ?
     Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -247,7 +267,7 @@ class ShowWord extends StatelessWidget {
         Icon(Icons.label_important, size: 16, color: Colors.black87,),
         Flexible(
           child: SelectableText(
-          word.origin,
+          widget.word.origin,
           strutStyle: StrutStyle(
             fontSize: 12,
             forceStrutHeight: true,
@@ -261,7 +281,7 @@ class ShowWord extends StatelessWidget {
       ],
     ) : null;
 
-  Widget get _shorthandShow => word.shorthand.isNotEmpty || word.image.url != null || word.vedio.url != null ?
+  Widget get _shorthandShow => widget.word.shorthand.isNotEmpty || widget.word.image.url != null || widget.word.vedio.url != null ?
     OnOffWidget(
       label: Text('图文助记', style: _labelStyle),
       child: Container(
@@ -270,40 +290,40 @@ class ShowWord extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           divider: SizedBox(height: 14,),
           children: [
-            word.shorthand.isNotEmpty ? SelectableText(
-              word.shorthand,
+            widget.word.shorthand.isNotEmpty ? SelectableText(
+              widget.word.shorthand,
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.black87,
                 height: 1,
               ),
             ) : null,
-            word.image.url != null ?
+            widget.word.image.url != null ?
             Align(
               alignment: Alignment.center,
               child: Image.network(
-                word.image.url,
+                widget.word.image.url,
                 width: 100,
                 height: 100,
                 fit: BoxFit.cover,
               )
             ) : null,
-            word.vedio.url != null ?
+            widget.word.vedio.url != null ?
             Align(
               alignment: Alignment.center,
-              child: VedioPlayer(url: word.vedio.url),
+              child: VedioPlayer(url: widget.word.vedio.url),
             ) : null,
           ],
         )
       ),
     ) : null;
 
-  Widget _paraphraseSetShow(BuildContext context) => word.paraphraseSet.isNotEmpty ?
+  Widget _paraphraseSetShow(BuildContext context) => widget.word.paraphraseSet.isNotEmpty ?
     OnOffWidget(
       label: Text('详细释义', style: _labelStyle),
       child: Container(
         padding: EdgeInsets.only(top:14),
-        child: _paraphraseListShow(context, word.paraphraseSet),
+        child: _paraphraseListShow(context, widget.word.paraphraseSet),
       ),
     ) : null;
 
@@ -361,7 +381,7 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
     ColumnSpace(
       crossAxisAlignment: CrossAxisAlignment.start,
       divider: SizedBox(height: 8,),
-      children: sentenceSet.map((e) => sentenceShow(context, e)).toList(),
+      children: sentenceSet.map((e) => sentenceShow(context, e, ()=>setState((){}))).toList(),
     );
 
   List<Map<String, List<ParaphraseSerializer>>> sortParaphraseSet(List<ParaphraseSerializer> paraphrases) {
@@ -375,14 +395,14 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
     return ret;
   }
 
-  Widget _sentencePatternSetShow(BuildContext context) => word.sentencePatternSet.isNotEmpty ?
+  Widget _sentencePatternSetShow(BuildContext context) => widget.word.sentencePatternSet.isNotEmpty ?
     OnOffWidget(
       label: Text('常用句型', style: _labelStyle),
       child: Container(
         padding: EdgeInsets.only(top:14),
         child: ColumnSpace(
           divider: SizedBox(height: 8,),
-          children: word.sentencePatternSet.asMap().map((i, e) =>
+          children: widget.word.sentencePatternSet.asMap().map((i, e) =>
             MapEntry(i, _sentencePatternShow(context, i+1, e))
           ).values.toList(),
         ),
@@ -404,14 +424,6 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
               sp.content,
               style: TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.bold, height: 1),
             ),
-            SizedBox(width: 8,),
-            InkWell(
-              splashColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              child: Icon(Icons.star, color: Colors.redAccent, size: 14),
-              onTap: () => print("收藏"),
-            ),
           ].where((e) => e != null).toList(),
         ),
         sp.paraphraseSet.isNotEmpty ?
@@ -422,21 +434,21 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
       ].where((e) => e != null).toList(),
     );
 
-  Widget get _grammerSetShow => word.grammarSet.isNotEmpty ?
+  Widget get _grammerSetShow => widget.word.grammarSet.isNotEmpty ?
     OnOffWidget(
       label: Text('相关语法', style: _labelStyle),
       child: Container(
         padding: EdgeInsets.only(top:14),
         child: ColumnSpace(
           divider: SizedBox(height: 8,),
-          children: word.grammarSet.asMap().map((i, e) =>
-            MapEntry(i, _grammerShow(i+1, e))
+          children: widget.word.grammarSet.asMap().map((i, e) =>
+            MapEntry(i, _grammarShow(i+1, e))
           ).values.toList(),
         ),
       ),
     ) : null;
 
-  Widget _grammerShow(num index, GrammarSerializer gs) =>
+  Widget _grammarShow(num index, GrammarSerializer gs) =>
     ColumnSpace(
       crossAxisAlignment: CrossAxisAlignment.start,
       divider: SizedBox(height: 8,),
@@ -462,8 +474,21 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
               splashColor: Colors.transparent,
               hoverColor: Colors.transparent,
               highlightColor: Colors.transparent,
-              child: Icon(Icons.star, color: Colors.redAccent, size: 14),
-              onTap: () => print("收藏"),
+              child: Icon(Icons.star, color: getStudyGrammar(gs.id) == null ? Colors.black54 : Colors.redAccent, size: 14),
+              onTap: () async {
+                var sg = getStudyGrammar(gs.id);
+                if(sg == null) {
+                  var newSg = StudyGrammarSerializer()..grammar = gs.id
+                                                  ..foreignUser = Global.localStore.user.id;
+                  Global.localStore.user.studyGrammarSet.add(newSg);
+                  await newSg.save();
+                } else {
+                  await sg.delete();
+                  Global.localStore.user.studyGrammarSet.remove(sg);
+                }
+                Global.saveLocalStore();
+                setState(() {});
+              },
             ),
           ].where((e) => e != null).toList(),
         ),
@@ -477,14 +502,14 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
       ],
     );
 
-  Widget _distinguishSetShow(BuildContext context) => word.distinguishSet.isNotEmpty ?
+  Widget _distinguishSetShow(BuildContext context) => widget.word.distinguishSet.isNotEmpty ?
     OnOffWidget(
       label: Text('词义辨析', style: _labelStyle),
       child: Container(
         padding: EdgeInsets.only(top:14),
         child: ColumnSpace(
           divider: SizedBox(height: 8,),
-          children: word.distinguishSet.asMap().map((i, e) =>
+          children: widget.word.distinguishSet.asMap().map((i, e) =>
             MapEntry(i, _distinguishShow(context, i+1, e))
           ).values.toList(),
         ),
@@ -523,8 +548,17 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
               splashColor: Colors.transparent,
               hoverColor: Colors.transparent,
               highlightColor: Colors.transparent,
-              child: Icon(Icons.star, color: Colors.redAccent, size: 14),
-              onTap: () => print("收藏"),
+              child: Icon(Icons.star, color: isFavoriteDistinguish(ds.id) == false ? Colors.black54 : Colors.redAccent, size: 14),
+              onTap: () async {
+                if(!isFavoriteDistinguish(ds.id)) {
+                  Global.localStore.user.studyPlan.distinguishes.add(ds.id);
+                } else {
+                  Global.localStore.user.studyPlan.distinguishes.remove(ds.id);
+                }
+                await Global.localStore.user.studyPlan.save();
+                Global.saveLocalStore();
+                setState(() {});
+              }
             ),
           ],
         ),
@@ -538,7 +572,7 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
       ],
     );
 
-   Widget _synonymsShow(BuildContext context) => word.synonym.isNotEmpty ?
+   Widget _synonymsShow(BuildContext context) => widget.word.synonym.isNotEmpty ?
     OnOffWidget(
       label: Text('近义词', style: _labelStyle),
       child: Container(
@@ -546,7 +580,7 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
         child: Wrap(
           spacing: 8.0,
           runSpacing: 8.0,
-          children: word.synonym.map((e) =>
+          children: widget.word.synonym.map((e) =>
             InkWell(
               splashColor: Colors.transparent,
               hoverColor: Colors.transparent,
@@ -559,7 +593,7 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
                 var w = WordSerializer()..name = e;
                 bool ret = await w.retrieve();
                 if(ret) {
-                  Navigator.pushNamed(context, '/show_word', arguments: {'title': '${word.name}的近义词$e', 'word': w});
+                  Navigator.pushNamed(context, '/show_word', arguments: {'title': '${widget.word.name}的近义词$e', 'word': w});
                 }
               },
             )
@@ -568,7 +602,7 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
       ),
     ) : null;
 
-  Widget _antonymsShow(BuildContext context) => word.antonym.isNotEmpty ?
+  Widget _antonymsShow(BuildContext context) => widget.word.antonym.isNotEmpty ?
     OnOffWidget(
       label: Text('反义词', style: _labelStyle),
       child: Container(
@@ -576,7 +610,7 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
         child: Wrap(
           spacing: 8.0,
           runSpacing: 8.0,
-          children: word.antonym.map((e) =>
+          children: widget.word.antonym.map((e) =>
             InkWell(
               splashColor: Colors.transparent,
               hoverColor: Colors.transparent,
@@ -589,7 +623,7 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
                 var w = WordSerializer()..name = e;
                 bool ret = await w.retrieve();
                 if(ret) {
-                  Navigator.pushNamed(context, '/show_word', arguments: {'title': '${word.name}的反义词$e', 'word': w});
+                  Navigator.pushNamed(context, '/show_word', arguments: {'title': '${widget.word.name}的反义词$e', 'word': w});
                 }
               },
             )

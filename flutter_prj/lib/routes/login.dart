@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/common/http.dart';
 import 'package:flutter_prj/serializers/index.dart';
-import 'package:provider/provider.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import '../common/http.dart';
-import '../models/user_model.dart';
+import 'package:flutter_prj/widgets/column_space.dart';
+
 
 
 class LoginPage extends StatefulWidget {
@@ -14,88 +13,66 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController _unameController = TextEditingController();
-  TextEditingController _pwdController = TextEditingController();
   final GlobalKey _formKey =  GlobalKey<FormState>();
   bool pwdShow = false;
 
-  void _onLogin(BuildContext context) async {
-    // 提交前，先验证各个表单字段是否合法
-    if ((_formKey.currentState as FormState).validate()) {
-      ///showLoading(context);
-      UserSerializer user;
-      try {
-        String uname = _unameController.text;
-        String passwd = _pwdController.text;
-        LoginSerializer login = LoginSerializer();
-        await login.login(data:{"uname":uname, "passwd":passwd});
-        Global.localStore.token = login.token;
-        Http.token = login.token;
-
-        user = UserSerializer()..uname = uname;
-        await user.retrieve();
-
-        Global.netCache.clear(); //清空所有缓存
-
-        // 因为登录页返回后，首页会build，所以我们传false，更新user后不触发更新
-        Provider.of<UserModel>(context, listen: false).user = user;
-      } catch (e) {
-        if (e.response?.statusCode == 401) {
-          Fluttertoast.showToast(msg:"User name or password wrong!");///GmLocalizations.of(context).userNameOrPasswordWrong);
-        } else {
-          Fluttertoast.showToast(msg:e.toString());
-        }
-      } finally {
-        //Navigator.of(context).pop(); // 隐藏loading框
-      }
-
-      if (user != null) {
-        Navigator.pushNamed(context, "/", arguments:3);
-      }
-    }
-  }
+  @override
+  Widget build(BuildContext context) =>
+    Scaffold(
+      appBar: AppBar(
+        title: Text("登录"),
+        centerTitle: true,
+      ),
+      body: Container(
+        margin: EdgeInsets.fromLTRB(6, 20, 6, 0),
+        child: ColumnSpace(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          divider: SizedBox(height: 20,),
+          children: [
+            TextButton(
+              child: Text("注册", style: TextStyle(color: Colors.blueAccent),),
+              onPressed: () => Navigator.pushNamed(context, "/register"),
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(20, 20, 30, 0),
+              child: _buildForm(context),
+            ),
+          ],
+        ),
+      ),
+    );
 
   Widget _buildForm(BuildContext context) =>
     Form(
       key: _formKey, //设置globalKey，用于后面获取FormState
       autovalidateMode: AutovalidateMode.always, //开启自动校验
-      child: Column(
-        children: <Widget>[
+      child: ColumnSpace(
+        divider: SizedBox(height: 20,),
+        children: [
           TextFormField(
-            autofocus: false,
-            keyboardType: TextInputType.number, // 键盘回车键的样式
-            textInputAction: TextInputAction.next,
-            controller: _unameController,
             decoration: InputDecoration(
               labelText: "用户名或邮箱",
               hintText: "用户名或邮箱",
               icon: Icon(Icons.person)
             ),
-            validator: (v) { // 校验用户名
-              return v.trim().length > 0 ? null : "用户名不能为空";
-            }
+            onChanged: (v) => Global.localStore.user.uname = v.trim(),
+            validator: (v) => Global.localStore.user.uname.isEmpty ? "用户名不能为空" : null, // 校验用户名
           ),
           TextFormField(
-            autofocus: false,
-            controller: _pwdController,
             decoration: InputDecoration(
               labelText: "密码", hintText: "您的登录密码", icon: Icon(Icons.lock)
             ),
             obscureText: true,
-            validator: (v) {
-              return v.trim().length > 2 ? null : "密码不能少于6位";
-            }
+            onChanged: (v) => Global.localStore.user.passwd = v.trim(),
+            validator: (v) => Global.localStore.user.passwd.length < 2 ? "密码不能少于6位" : null,
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 28.0),
+          Container(
+            margin: const EdgeInsets.only(left: 30, right: 30, top: 20),
             child: Row(
-              children: <Widget>[
+              children: [
                 Expanded(
-                  child: RaisedButton(
-                    padding: EdgeInsets.all(15.0),
+                  child: ElevatedButton(
                     child: Text("登录"),
-                    color: Theme.of(context).primaryColor,
-                    textColor: Colors.white,
                     onPressed: () => _onLogin(context),
                   ),
                 ),
@@ -106,39 +83,23 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("登录"),
-      ),
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            height: 120.0,
-            alignment:Alignment.centerLeft,
-            padding: EdgeInsets.only(left:30.0),
-            color: Colors.white,
-            child: Padding(
-              padding: EdgeInsets.only(right: 30),
-              child: InkWell(
-                child: Text("注册", style: TextStyle(color: Theme.of(context).primaryColor,),),
-                onTap: () => Navigator.pushNamed(context, "/register"),
-              ),
-            ),
-          ),
-          Container(
-            color: Colors.white,
-            alignment: Alignment.center,
-            padding: EdgeInsets.only(left:30.0, right:30.0),
-            child: Container(
-              child: _buildForm(context),
-            ),
-          ),
-        ],
-      ),
-    );
+  void _onLogin(BuildContext context) async {
+    // 提交前，先验证各个表单字段是否合法
+    if ((_formKey.currentState as FormState).validate()) {
+      ///showLoading(context);
+      LoginSerializer login = LoginSerializer();
+      var ret = await login.login(data:{"uname":Global.localStore.user.uname, "passwd":Global.localStore.user.passwd});
+      if(!ret) return;
+
+      Global.localStore.token = login.token;
+      Http.token = login.token;
+
+      Global.isLogin = await Global.localStore.user.retrieve();
+      if(!Global.isLogin) return;
+
+      Global.netCache.clear(); //清空所有缓存
+      Global.saveLocalStore();
+      Navigator.pushNamed(context, "/", arguments:3);
+    }
   }
 }

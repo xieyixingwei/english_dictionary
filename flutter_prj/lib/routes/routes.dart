@@ -19,8 +19,10 @@ import 'package:flutter_prj/routes/edit/user/list_users.dart';
 import 'package:flutter_prj/routes/edit/word/edit_word.dart';
 import 'package:flutter_prj/routes/edit/word/list_words.dart';
 import 'package:flutter_prj/routes/edit/word/show_word.dart';
+import 'package:flutter_prj/routes/favorite_page.dart';
 import 'package:flutter_prj/routes/login.dart';
 import 'package:flutter_prj/routes/register.dart';
+import 'package:flutter_prj/routes/study_settings.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import '../dictionary_app.dart';
 import 'setting.dart';
@@ -75,6 +77,9 @@ final _routes = {
   '/show_word': (context, {arguments}) => ShowWordPage(title:arguments['title'], word: arguments['word'],),
   '/show_sentences': (context, {arguments}) => ShowSentencesPage(title: arguments['title'], ids: arguments['ids'],),
   '/show_etyma': (context, {arguments}) => ShowEtymaPage(title: arguments['title'], etyma: arguments['etyma'],),
+
+  '/study_settings': (context, {arguments}) => StudySettings(plan: arguments['plan']),
+  '/favorite_page': (context) => FavoritePage(),
 };
 
 

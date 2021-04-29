@@ -1,0 +1,144 @@
+{
+    "__name__": "study_plan",
+    "id @primary": "num=null",
+    "foreignUser @foreign": "$user",
+    "onceWords": 0,
+    "onceSentences": 0,
+    "onceGrammers": 0,
+    "vocabularies": [""],
+    "distinguishes": [0],
+    "__http__": {
+        "url": "/study/plan/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "retrieve",
+                "url": "$id/"
+            },
+            {
+                "name": "delete",
+                "url": "$id/"
+            },
+            {
+                "name": "update",
+                "url": "$id/"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
+}
+
+{
+    "__name__": "study_grammar",
+    "id @primary": 0,
+    "foreignUser @foreign": "$user",
+    "grammar @foreign": "$grammar",
+    "vocabularies": [""],
+    "familiarity": 0,
+    "learnRecord": [""],
+    "inplan": false,
+    "isFavorite": false,
+    "repeats": 0,
+    "__http__": {
+        "url": "/study/grammar/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "retrieve",
+                "url": "$id/"
+            },
+            {
+                "name": "delete",
+                "url": "$id/"
+            },
+            {
+                "name": "update",
+                "url": "$id/"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
+}
+
+{
+    "__name__": "study_sentence",
+    "id @primary": 0,
+    "foreignUser @foreign": "$user",
+    "sentence @foreign": "$sentence",
+    "vocabularies": [""],
+    "familiarity": 0,
+    "learnRecord": [""],
+    "inplan": false,
+    "isFavorite": false,
+    "comments": "",
+    "repeats": 0,
+    "newWords": [""],
+    "__http__": {
+        "url": "/study/sentence/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "retrieve",
+                "url": "$id/"
+            },
+            {
+                "name": "delete",
+                "url": "$id/"
+            },
+            {
+                "name": "update",
+                "url": "$id/"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
+}
+
+{
+    "__name__": "study_word",
+    "id @primary": 0,
+    "foreignUser @foreign": "$user",
+    "word @foreign": "$word",
+    "vocabularies": [""],
+    "familiarity": 0,
+    "learnRecord": [""],
+    "inplan": false,
+    "isFavorite": false,
+    "comments": "",
+    "repeats": 0,
+    "__http__": {
+        "url": "/study/word/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "retrieve",
+                "url": "$id/"
+            },
+            {
+                "name": "delete",
+                "url": "$id/"
+            },
+            {
+                "name": "update",
+                "url": "$id/"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
+}

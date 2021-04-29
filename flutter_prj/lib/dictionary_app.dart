@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_prj/models/misc_model.dart';
 import 'package:provider/provider.dart';
 import 'routes/tabs/discover.dart';
 import 'routes/tabs/home/home.dart';
@@ -68,8 +67,6 @@ class _DictionaryApp extends State<DictionaryApp> {
   @override
   Widget build(BuildContext context) {
     // print(MediaQuery.of(context).size.toString());
-    return Consumer<MiscModel>(
-        builder: (BuildContext context, miscModel, Widget child) => _buildScaffold(),
-    );
+    return _buildScaffold();
   }
 }

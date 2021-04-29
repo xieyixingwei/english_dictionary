@@ -4,6 +4,8 @@
 // **************************************************************************
 
 import 'dart:convert';
+import 'package:flutter_prj/common/http.dart';
+
 
 class StudySentenceSerializer {
   StudySentenceSerializer();
@@ -11,7 +13,7 @@ class StudySentenceSerializer {
   num _id;
   num id = 0;
   num foreignUser;
-  List<num> foreignSentence = [];
+  num sentence;
   List<String> vocabularies = [];
   num familiarity = 0;
   List<String> learnRecord = [];
@@ -21,13 +23,46 @@ class StudySentenceSerializer {
   num repeats = 0;
   List<String> newWords = [];
 
+  Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
+    var res = await Http().request(HttpType.POST, '/study/sentence/', data:data ?? toJson(), queries:queries, cache:cache);
+    if(res != null) fromJson(res.data);
+    return res != null;
+  }
+
+  Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
+    var res = await Http().request(HttpType.GET, '/study/sentence/$id/', queries:queries, cache:cache);
+    if(res != null) fromJson(res.data);
+    return res != null;
+  }
+
+  Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
+    if(_id == null) return true;
+    var res = await Http().request(HttpType.DELETE, '/study/sentence/$id/', data:data ?? toJson(), queries:queries, cache:cache);
+    /*
+    
+    */
+    return res != null ? res.statusCode == 204 : false;
+  }
+
+  Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
+    var res = await Http().request(HttpType.PUT, '/study/sentence/$id/', data:data ?? toJson(), queries:queries, cache:cache);
+    return res != null;
+  }
+
+  Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
+    bool res = false;
+    if(_id == null) {
+      res = await create(data:data, queries:queries, cache:cache);
+    } else {
+      res = await update(data:data, queries:queries, cache:cache);
+    }
+    return res;
+  }
 
   StudySentenceSerializer fromJson(Map<String, dynamic> json) {
     id = json['id'] == null ? null : json['id'] as num;
     foreignUser = json['foreignUser'] == null ? null : json['foreignUser'] as num;
-    foreignSentence = json['foreignSentence'] == null
-                ? []
-                : json['foreignSentence'].map<num>((e) => e as num).toList();
+    sentence = json['sentence'] == null ? null : json['sentence'] as num;
     vocabularies = json['vocabularies'] == null
                 ? []
                 : json['vocabularies'].map<String>((e) => e as String).toList();
@@ -49,7 +84,7 @@ class StudySentenceSerializer {
   Map<String, dynamic> toJson() => <String, dynamic>{
     'id': id,
     'foreignUser': foreignUser,
-    'foreignSentence': foreignSentence == null ? null : foreignSentence.map((e) => e).toList(),
+    'sentence': sentence,
     'vocabularies': vocabularies == null ? null : vocabularies.map((e) => e).toList(),
     'familiarity': familiarity,
     'learnRecord': learnRecord == null ? null : learnRecord.map((e) => e).toList(),
@@ -64,7 +99,7 @@ class StudySentenceSerializer {
     if(instance == null) return this;
     id = instance.id;
     foreignUser = instance.foreignUser;
-    foreignSentence = List.from(instance.foreignSentence);
+    sentence = instance.sentence;
     vocabularies = List.from(instance.vocabularies);
     familiarity = instance.familiarity;
     learnRecord = List.from(instance.learnRecord);

@@ -4,6 +4,12 @@
 // **************************************************************************
 
 import 'study_plan.dart';
+import 'study_grammar.dart';
+import 'dart:convert';
+import 'study_word.dart';
+import 'dart:convert';
+import 'study_sentence.dart';
+import 'dart:convert';
 import 'package:flutter_prj/common/http.dart';
 
 
@@ -26,6 +32,9 @@ class UserSerializer {
   String telephone = '';
   String status = '';
   StudyPlanSerializer studyPlan = StudyPlanSerializer();
+  List<StudyGrammarSerializer> studyGrammarSet = [];
+  List<StudyWordSerializer> studyWordSet = [];
+  List<StudySentenceSerializer> studySentenceSet = [];
 
   static Future<List<UserSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/user/', queries:queries, cache:cache);
@@ -42,7 +51,10 @@ class UserSerializer {
     if(_id == null) return true;
     var res = await Http().request(HttpType.DELETE, '/user/$uname/', data:data ?? toJson(), queries:queries, cache:cache);
     /*
-    
+    if(studyPlan != null){studyPlan.delete();}
+    if(studyGrammarSet != null){studyGrammarSet.forEach((e){e.delete();});}
+    if(studyWordSet != null){studyWordSet.forEach((e){e.delete();});}
+    if(studySentenceSet != null){studySentenceSet.forEach((e){e.delete();});}
     */
     return res != null ? res.statusCode == 204 : false;
   }
@@ -76,6 +88,15 @@ class UserSerializer {
     studyPlan = json['studyPlan'] == null
                 ? null
                 : StudyPlanSerializer().fromJson(json['studyPlan'] as Map<String, dynamic>);
+    studyGrammarSet = json['studyGrammarSet'] == null
+                ? []
+                : json['studyGrammarSet'].map<StudyGrammarSerializer>((e) => StudyGrammarSerializer().fromJson(e as Map<String, dynamic>)).toList();
+    studyWordSet = json['studyWordSet'] == null
+                ? []
+                : json['studyWordSet'].map<StudyWordSerializer>((e) => StudyWordSerializer().fromJson(e as Map<String, dynamic>)).toList();
+    studySentenceSet = json['studySentenceSet'] == null
+                ? []
+                : json['studySentenceSet'].map<StudySentenceSerializer>((e) => StudySentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
     _id = id;
     return this;
   }
@@ -95,6 +116,10 @@ class UserSerializer {
     'email': email,
     'telephone': telephone,
     'status': status,
+    'studyPlan': studyPlan == null ? null : studyPlan.toJson(),
+    'studyGrammarSet': studyGrammarSet == null ? null : studyGrammarSet.map((e) => e.toJson()).toList(),
+    'studyWordSet': studyWordSet == null ? null : studyWordSet.map((e) => e.toJson()).toList(),
+    'studySentenceSet': studySentenceSet == null ? null : studySentenceSet.map((e) => e.toJson()).toList(),
   };
 
   UserSerializer from(UserSerializer instance) {
@@ -114,6 +139,9 @@ class UserSerializer {
     telephone = instance.telephone;
     status = instance.status;
     studyPlan = StudyPlanSerializer().from(instance.studyPlan);
+    studyGrammarSet = List.from(instance.studyGrammarSet.map((e) => StudyGrammarSerializer().from(e)).toList());
+    studyWordSet = List.from(instance.studyWordSet.map((e) => StudyWordSerializer().from(e)).toList());
+    studySentenceSet = List.from(instance.studySentenceSet.map((e) => StudySentenceSerializer().from(e)).toList());
     _id = instance._id;
     return this;
   }

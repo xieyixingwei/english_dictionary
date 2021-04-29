@@ -5,8 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'http.dart';
 
 
-
 class Global {
+  // 全局单例共享数据
   static bool get isRelease => true; // 是否为release版
   static SharedPreferences _prefs;
   static LocalStoreSerializer localStore = LocalStoreSerializer();
@@ -21,17 +21,14 @@ class Global {
   static const List<String> sentenceFormOptions = const ["定语从句","主语从句","被动句"];
   static final List<String> etymaTypeOptions = ['前缀', '后缀', '词根'];
   static List<bool> onOffWidget = [true, true, true];
+  static bool isLogin = false;
 
   // 初始化全局信息，会在APP启动时执行
   static Future init() async {
     _prefs = await SharedPreferences.getInstance();
-    var _localStore = _prefs.getString("localStore");
-    if (_localStore != null) {
-      try {
-        localStore = LocalStoreSerializer().fromJson(jsonDecode(_localStore));
-      } catch (e) {
-        print('--- $e');
-      }
+    var localStoreString = _prefs.getString("localStore");
+    if (localStoreString != null) {
+      localStore = LocalStoreSerializer().fromJson(jsonDecode(localStoreString));
     }
 
     localStore.netCacheConfig = localStore.netCacheConfig ?? NetCacheConfigSerializer()
@@ -51,6 +48,8 @@ class Global {
     EtymaPaginationSerializer etymas = EtymaPaginationSerializer();
     await etymas.retrieve();
     etymaOptions = etymas.results.map((e) => e.name).toList();
+
+    isLogin = await localStore.user.retrieve();
   }
 
   // 持久化本地存储数据
@@ -60,6 +59,5 @@ class Global {
 
   static clear() {
     netCache.clear();
-    localStore.user = null;
   }
 }

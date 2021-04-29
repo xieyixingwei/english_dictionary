@@ -13,7 +13,10 @@
     "email": "",
     "telephone": "",
     "status": "",
-    "_studyPlan": "$study_plan",
+    "studyPlan": "$study_plan",
+    "studyGrammarSet": ["$study_grammar"],
+    "studyWordSet": ["$study_word"],
+    "studySentenceSet": ["$study_sentence"],
     "__http__": {
         "url": "/user/",
         "methods": [
