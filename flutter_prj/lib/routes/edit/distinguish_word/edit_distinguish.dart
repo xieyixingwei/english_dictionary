@@ -89,8 +89,8 @@ class _EditDistinguishState extends State<EditDistinguish> {
                     SizedBox(height: 20,),
                     TextFormField(
                       autofocus: false,
-                      keyboardType: TextInputType.number, // 键盘回车键的样式
-                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.multiline,
+                      textInputAction: TextInputAction.newline,
                       controller: TextEditingController(text: widget._distinguish.content),
                       minLines: 1,
                       maxLines: null,

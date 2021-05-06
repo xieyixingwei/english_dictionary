@@ -29,14 +29,16 @@ class _FavoritePageState extends State<FavoritePage> {
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
-        child: ColumnSpace(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          divider: SizedBox(height: 14,),
+        child: Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          alignment: WrapAlignment.start,
+          runAlignment: WrapAlignment.start,
           children: [
-            _card(context, '收藏的单词', Global.localStore.user.studyWordSet.length, (){}),
-            _card(context, '收藏的词义辨析', Global.localStore.user.studyPlan.distinguishes.length, (){}),
-            _card(context, '收藏的句子', Global.localStore.user.studySentenceSet.length, (){}),
-            _card(context, '收藏的语法', Global.localStore.user.studyGrammarSet.length, (){}),
+            _card(context, '收藏的单词', Global.localStore.user.studyWordSet.length, ()=>Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.word})),
+            _card(context, '收藏的词义辨析', Global.localStore.user.studyPlan.distinguishes.length, ()=>Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.distinguish})),
+            _card(context, '收藏的句子', Global.localStore.user.studySentenceSet.length, ()=>Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.sentence})),
+            _card(context, '收藏的语法', Global.localStore.user.studyGrammarSet.length, ()=>Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.grammar})),
           ],
         ),
       ),
@@ -44,26 +46,24 @@ class _FavoritePageState extends State<FavoritePage> {
 
   Widget _card(BuildContext context, String title, num count, Function onPressed) =>
     Container(
+      padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
       alignment: Alignment.center,
-      padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-      height: 60,
+      height: 160,
+      width: 160,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(3)),
-        boxShadow: [
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+        /*boxShadow: [
           BoxShadow(color: Colors.black26, offset: Offset(5.0, 5.0), blurRadius: 5.0, spreadRadius: 1.0),
           BoxShadow(color: Colors.black26, offset: Offset(1.0, 1.0)), BoxShadow(color: Colors.black26)
-        ],
+        ],*/
       ),
       child: InkWell(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Column(
+         mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.favorite, color: Colors.redAccent,),
-            SizedBox(width: 14,),
-            Text(title, style: TextStyle(fontSize: 24),),
-            SizedBox(width: 14,),
-            Text('$count', style: TextStyle(fontSize: 14),)
+          Text('$count', style: TextStyle(fontSize: 14),),
+          Text(title, style: TextStyle(fontSize: 17),),
           ],
         ),
         onTap: onPressed,
@@ -116,31 +116,92 @@ class _ListFavoritePageState extends State<ListFavoritePage> {
         padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
         child: ColumnSpace(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: ,
+          children: _children(),
         ),
       ),
     );
-  
+
   List<Widget> _children() {
     switch(widget.type) {
       case FavoriteType.word:
         return Global.localStore.user.studyWordSet.map((e) =>
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(e.word),
-              SizedBox(width: 8,),
-              InkWell(
-                
-              )
+              TextButton(
+                child: Text('加入学习计划'),
+                onPressed: () => e.inplan = true,
+              ),
+              TextButton(
+                child: Text('取消收藏'),
+                onPressed: () {
+                  e.delete();
+                  Global.localStore.user.studyWordSet.remove(e);
+                  setState((){});
+                },
+              ),
             ],
           )
         ).toList();
       case FavoriteType.distinguish:
-        _title = '收藏的词义辨析';
+        return Global.localStore.user.studyPlan.distinguishes.map((e) =>
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text('$e'),
+              TextButton(
+                child: Text('取消收藏'),
+                onPressed: () {
+                  Global.localStore.user.studyPlan.distinguishes.remove(e);
+                  setState((){});
+                },
+              ),
+            ],
+          )
+        ).toList();
       case FavoriteType.sentence:
-        _title = '收藏的句子';
+        return Global.localStore.user.studySentenceSet.map((e) =>
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text('${e.sentence}'),
+              TextButton(
+                child: Text('加入学习计划'),
+                onPressed: () => e.inplan = true,
+              ),
+              TextButton(
+                child: Text('取消收藏'),
+                onPressed: () {
+                  e.delete();
+                  Global.localStore.user.studySentenceSet.remove(e);
+                  setState((){});
+                },
+              ),
+            ],
+          )
+        ).toList();
       case FavoriteType.grammar:
-        _title = '收藏的语法';
+        return Global.localStore.user.studyGrammarSet.map((e) =>
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text('${e.grammar}'),
+              TextButton(
+                child: Text('加入学习计划'),
+                onPressed: () => e.inplan = true,
+              ),
+              TextButton(
+                child: Text('取消收藏'),
+                onPressed: () {
+                  e.delete();
+                  Global.localStore.user.studyGrammarSet.remove(e);
+                  setState((){});
+                },
+              ),
+            ],
+          )
+        ).toList();
     }
   }
 }

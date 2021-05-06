@@ -56,18 +56,6 @@ class _StudySettingsState extends State<StudySettings> {
                 labelText: '每次学习的语法数量',
                 onChanged: (v) => widget.plan.onceGrammers = num.parse(v),
               ),
-              WrapOutlineTag(
-                data: widget.plan.vocabularies,
-                labelText: '单词本',
-                suffix: TextButton(
-                  child: Text('添加',),
-                  onPressed: () => popInputDialog(
-                    context: context,
-                    title: Text('输入单词本的名字'),
-                    close: (v) => setState(() => widget.plan.vocabularies.add(v)),
-                  ),
-                ),
-              ),
             ],
         ),
         ),

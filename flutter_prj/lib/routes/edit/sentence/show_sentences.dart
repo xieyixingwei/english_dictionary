@@ -99,8 +99,11 @@ class _ShowSentencesPageState extends State<ShowSentencesPage> {
               onTap: () async {
                 var ss = getStudySentence(sentence.id);
                 if(ss == null) {
+                  var category = await popSelectSentenceCategoryDialog(context);
+                  if(category == null) return;
                   var newSs = StudySentenceSerializer()..sentence = sentence.id
-                                                  ..foreignUser = Global.localStore.user.id;
+                                                  ..foreignUser = Global.localStore.user.id
+                                                  ..category = category;
                   Global.localStore.user.studySentenceSet.add(newSs);
                   await newSs.save();
                 } else {
@@ -120,3 +123,7 @@ class _ShowSentencesPageState extends State<ShowSentencesPage> {
         ),
       ]
     );
+
+
+
+

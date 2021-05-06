@@ -80,6 +80,7 @@ final _routes = {
 
   '/study_settings': (context, {arguments}) => StudySettings(plan: arguments['plan']),
   '/favorite_page': (context) => FavoritePage(),
+  '/list_favorite_page': (context, {arguments}) => ListFavoritePage(type: arguments['type']),
 };
 
 

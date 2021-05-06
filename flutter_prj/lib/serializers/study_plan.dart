@@ -16,7 +16,10 @@ class StudyPlanSerializer {
   num onceWords = 0;
   num onceSentences = 0;
   num onceGrammers = 0;
-  List<String> vocabularies = [];
+  List<String> wordCategory = [];
+  List<String> sentenceCategory = [];
+  List<String> grammarCategory = [];
+  List<String> distinguishCategory = [];
   List<num> distinguishes = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
@@ -61,9 +64,18 @@ class StudyPlanSerializer {
     onceWords = json['onceWords'] == null ? null : json['onceWords'] as num;
     onceSentences = json['onceSentences'] == null ? null : json['onceSentences'] as num;
     onceGrammers = json['onceGrammers'] == null ? null : json['onceGrammers'] as num;
-    vocabularies = json['vocabularies'] == null
+    wordCategory = json['wordCategory'] == null
                 ? []
-                : json['vocabularies'].map<String>((e) => e as String).toList();
+                : json['wordCategory'].map<String>((e) => e as String).toList();
+    sentenceCategory = json['sentenceCategory'] == null
+                ? []
+                : json['sentenceCategory'].map<String>((e) => e as String).toList();
+    grammarCategory = json['grammarCategory'] == null
+                ? []
+                : json['grammarCategory'].map<String>((e) => e as String).toList();
+    distinguishCategory = json['distinguishCategory'] == null
+                ? []
+                : json['distinguishCategory'].map<String>((e) => e as String).toList();
     distinguishes = json['distinguishes'] == null
                 ? []
                 : json['distinguishes'].map<num>((e) => e as num).toList();
@@ -77,7 +89,10 @@ class StudyPlanSerializer {
     'onceWords': onceWords,
     'onceSentences': onceSentences,
     'onceGrammers': onceGrammers,
-    'vocabularies': vocabularies == null ? null : vocabularies.map((e) => e).toList(),
+    'wordCategory': wordCategory == null ? null : wordCategory.map((e) => e).toList(),
+    'sentenceCategory': sentenceCategory == null ? null : sentenceCategory.map((e) => e).toList(),
+    'grammarCategory': grammarCategory == null ? null : grammarCategory.map((e) => e).toList(),
+    'distinguishCategory': distinguishCategory == null ? null : distinguishCategory.map((e) => e).toList(),
     'distinguishes': distinguishes == null ? null : distinguishes.map((e) => e).toList(),
   };
 
@@ -88,7 +103,10 @@ class StudyPlanSerializer {
     onceWords = instance.onceWords;
     onceSentences = instance.onceSentences;
     onceGrammers = instance.onceGrammers;
-    vocabularies = List.from(instance.vocabularies);
+    wordCategory = List.from(instance.wordCategory);
+    sentenceCategory = List.from(instance.sentenceCategory);
+    grammarCategory = List.from(instance.grammarCategory);
+    distinguishCategory = List.from(instance.distinguishCategory);
     distinguishes = List.from(instance.distinguishes);
     _id = instance._id;
     return this;

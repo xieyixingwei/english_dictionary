@@ -14,7 +14,7 @@ class StudyWordSerializer {
   num id = 0;
   num foreignUser;
   String word;
-  List<String> vocabularies = [];
+  String category = '';
   num familiarity = 0;
   List<String> learnRecord = [];
   bool inplan = false;
@@ -62,9 +62,7 @@ class StudyWordSerializer {
     id = json['id'] == null ? null : json['id'] as num;
     foreignUser = json['foreignUser'] == null ? null : json['foreignUser'] as num;
     word = json['word'] == null ? null : json['word'] as String;
-    vocabularies = json['vocabularies'] == null
-                ? []
-                : json['vocabularies'].map<String>((e) => e as String).toList();
+    category = json['category'] == null ? null : json['category'] as String;
     familiarity = json['familiarity'] == null ? null : json['familiarity'] as num;
     learnRecord = json['learnRecord'] == null
                 ? []
@@ -81,7 +79,7 @@ class StudyWordSerializer {
     'id': id,
     'foreignUser': foreignUser,
     'word': word,
-    'vocabularies': vocabularies == null ? null : vocabularies.map((e) => e).toList(),
+    'category': category,
     'familiarity': familiarity,
     'learnRecord': learnRecord == null ? null : learnRecord.map((e) => e).toList(),
     'inplan': inplan,
@@ -95,7 +93,7 @@ class StudyWordSerializer {
     id = instance.id;
     foreignUser = instance.foreignUser;
     word = instance.word;
-    vocabularies = List.from(instance.vocabularies);
+    category = instance.category;
     familiarity = instance.familiarity;
     learnRecord = List.from(instance.learnRecord);
     inplan = instance.inplan;

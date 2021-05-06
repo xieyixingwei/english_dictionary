@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'routes/tabs/discover.dart';
 import 'routes/tabs/home/home.dart';
 import 'routes/tabs/practice.dart';
@@ -25,6 +24,7 @@ class _DictionaryApp extends State<DictionaryApp> {
     TabDiscover(),
     UserTab(),
   ];
+
   final List<BottomNavigationBarItem> _items = [
     BottomNavigationBarItem(
       icon: Icon(Icons.home), //(Icons.home, color:Colors.grey,),
@@ -45,8 +45,11 @@ class _DictionaryApp extends State<DictionaryApp> {
     ),
   ];
 
-  _buildScaffold() =>
-    Scaffold(
+
+  @override
+  Widget build(BuildContext context) {
+    // print(MediaQuery.of(context).size.toString());
+    return Scaffold(
       body: _tabs[widget._currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: widget._currentIndex,
@@ -63,10 +66,5 @@ class _DictionaryApp extends State<DictionaryApp> {
         items: _items,
       ),
     );
-
-  @override
-  Widget build(BuildContext context) {
-    // print(MediaQuery.of(context).size.toString());
-    return _buildScaffold();
   }
 }

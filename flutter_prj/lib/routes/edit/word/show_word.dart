@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/markdown/markdown.dart';
 import 'package:flutter_prj/routes/edit/common/utils.dart';
 import 'package:flutter_prj/routes/edit/sentence/show_sentences.dart';
 import 'package:flutter_prj/serializers/index.dart';
@@ -43,6 +44,7 @@ class _ShowWordState extends State<ShowWord> {
 
   final _labelStyle = TextStyle(fontSize: 14, color: Colors.black87, fontWeight: FontWeight.bold);
   final AudioPlayer _audioPlayer = AudioPlayer();
+  String _wordCategory = '';
 
   @override
   Widget build(BuildContext context) => _wordShow(context);
@@ -79,10 +81,10 @@ class _ShowWordState extends State<ShowWord> {
           children: [
             _morphShow(context),
             _paraphraseSetShow(context),
-            _sentencePatternSetShow(context),
-            _shorthandShow,
-            _grammerSetShow,
             _distinguishSetShow(context),
+            _sentencePatternSetShow(context),
+            _grammerSetShow,
+            _shorthandShow,
             _synonymsShow(context),
             _antonymsShow(context),
           ],
@@ -111,8 +113,11 @@ class _ShowWordState extends State<ShowWord> {
           onPressed: () async {
             var sw = getStudyWord(widget.word.name);
             if(sw == null) {
+              var category = await popSelectWordCategoryDialog(context);
+              if(category == null) return;
               var newSw = StudyWordSerializer()..word = widget.word.name
-                                               ..foreignUser = Global.localStore.user.id;
+                                               ..foreignUser = Global.localStore.user.id
+                                               ..category = category;
               Global.localStore.user.studyWordSet.add(newSw);
               await newSw.save();
             } else {
@@ -478,8 +483,11 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
               onTap: () async {
                 var sg = getStudyGrammar(gs.id);
                 if(sg == null) {
+                  var category = await popSelectGrammarCategoryDialog(context);
+                  if(category == null) return;
                   var newSg = StudyGrammarSerializer()..grammar = gs.id
-                                                  ..foreignUser = Global.localStore.user.id;
+                                                  ..foreignUser = Global.localStore.user.id
+                                                  ..category = category;
                   Global.localStore.user.studyGrammarSet.add(newSg);
                   await newSg.save();
                 } else {
@@ -563,7 +571,7 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
           ],
         ),
         Padding(
-          padding: EdgeInsets.only(left: 14),
+          padding: EdgeInsets.only(left: 14), // MarkDown(text:ds.content).render(),
           child: SelectableText(
             ds.content,
             style: TextStyle(fontSize: 12, color: Colors.black87, height: 1),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_prj/markdown/markdown.dart';
 import 'package:flutter_prj/routes/Routes.dart';
 import 'package:flutter_prj/routes/tabs/home/home.dart';
 import 'package:provider/provider.dart';
@@ -41,4 +42,35 @@ class MyApp extends StatelessWidget {
       //),
     );
   }
+}
+
+class MarkDownWidget extends StatelessWidget {
+
+  String _text = '''
+# 1. Flutter简#介
+
+**Flutter**是google推出的一款跨平台UI框架adasdsadasdasssssssssssssssssssssssssssssssssssssssssssssssssssssssss。
+
+- Flutter的特点有:
+  1. 跨平台
+    - Linux
+    - Windows 桌面dfgdfgfdgfdgsdfgfdsgfdsgsdfgdfsgdsfgdsfgfdddddddddddddddddddddddddddddddddddddddddddddddd
+      dfgdfgfdsgsfdgsfdgfdsgfdsgfdsgdfsgdfsgfd
+    - 嵌入式
+  2. 热更新
+    + 重加载
+    + 二进制编译
+      - 速度很快
+      - 原生编译
+    + 热加载
+  3. **dart**语言
+    - 面向对象
+    - 静态类型检查
+
+## 1.1 Flutter入门
+''';
+  @override
+  Widget build(BuildContext context) =>
+    MarkDown(text:_text).render();
+
 }

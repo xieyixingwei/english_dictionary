@@ -25,23 +25,73 @@ void popInputDialog({BuildContext context, Widget title, List<Widget> children, 
   if(close != null && children != null) close(null);
 }
 
-void popSelectDialog({BuildContext context, Widget title, List<String> options, Function(String) close}) async {
-  var optionWidgets = options.map((e) =>
-    SimpleDialogOption(
-      child: Text(e),
-      onPressed: () => Navigator.pop(context, e), // 关闭Dialog并传值出去
-    )
-  ).toList();
-
+Future<String> popSelectDialog({
+  BuildContext context,
+  Widget title,
+  List<String> options,
+  Function(String) close
+  }) async {
   String res = await showDialog(
     context: context,
-    builder: (context) {
-      return SimpleDialog(
-        title: title,
-        children: optionWidgets,
+    builder: (context) =>
+      StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) =>
+          SimpleDialog(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                title,
+                IconButton(
+                  icon: Icon(Icons.clear, color: Colors.black54, size: 24,),
+                  tooltip: '取消',
+                  splashRadius: 1.0,
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ]
+            ),
+            children: options.map<Widget>((e) =>
+              SimpleDialogOption(
+                child: Text(e),
+                onPressed: () => Navigator.pop(context, e), // 关闭Dialog并传值出去
+              )
+            ).toList(),
+          ),
+        )
       );
-    },
-  );
 
   if(close != null && res != null) close(res);
-  }
+  return res;
+}
+
+
+Future<String> popSelectWidgetDialog({
+  BuildContext context,
+  Widget title,
+  List<Widget> options,
+  List<Widget> actions
+  }) async {
+  var res = await showDialog(
+    context: context,
+    builder: (context) =>
+      StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) =>
+          SimpleDialog(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                title,
+                IconButton(
+                  icon: Icon(Icons.clear, color: Colors.black54, size: 24,),
+                  tooltip: '取消',
+                  splashRadius: 1.0,
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ]
+            ),
+            children: options,
+          ),
+        ),
+    );
+
+  return res;
+}
