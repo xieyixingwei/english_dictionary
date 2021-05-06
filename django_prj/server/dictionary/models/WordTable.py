@@ -3,7 +3,6 @@ from server.models  import JSONFieldUtf8
 from ..download_word_voice import DownloadWordVoice
 from server import settings
 from django.core.files.base import ContentFile
-import base64
 
 
 class WordTable(models.Model):
