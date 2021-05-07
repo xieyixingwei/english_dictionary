@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/markdown/markdown.dart';
+import 'package:flutter_prj/markdown/style.dart' as style;
 import 'package:flutter_prj/widgets/column_space.dart';
 
 
-abstract class MarkBlockItem extends MarkItem {
+abstract class MarkBlockItem {
   RegExp get regExp;
   Widget render(RegExpMatch match);
 }
@@ -39,7 +40,7 @@ class MarkTitle extends MarkBlockItem {
 
 class MarkList extends MarkBlockItem {
   @override
-  RegExp get regExp => RegExp(r'^(?: *(?:\d+\.|[-+*]) +[^\n]+(?:\n[^\n]+)*?\n)+(?:\r\n+|$)');
+  RegExp get regExp => RegExp(r'^(?: *(?:\d+\.|[-+*]) +[^\n]+(?:\n[^\n]+)*?\n)+(?:\n+|$)');
 
   @override
   Widget render(RegExpMatch match) {
@@ -56,7 +57,6 @@ class MarkList extends MarkBlockItem {
 
     while(text.isNotEmpty) {
       var cap = re.firstMatch(text);
-      print('--- ${cap[3].trim()}');
       if(cap != null) {
         items.add({ 'indent': cap[1].length,
                     'prefix': cap[2].trim(),
@@ -124,13 +124,11 @@ class MarkList extends MarkBlockItem {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(width: e['indent']*14,),
-                  Column(
-                    children: [
-                      SizedBox(height: ul ? 6 : 4,),
-                      ul ? prefix : SelectableText(olRegExp.firstMatch(e['prefix'])[0], style: TextStyle(fontSize: 14, color: Colors.black54, decoration: TextDecoration.none, fontWeight: FontWeight.bold),),
-                    ].where((e) => e != null).toList()
+                  Padding(
+                    padding: EdgeInsets.only(top: ul ? 5 : 3),
+                    child:  ul ? prefix : SelectableText(olRegExp.firstMatch(e['prefix'])[0], style: style.textStyle),
                   ),
-                  SizedBox(width: 7,),
+                  SizedBox(width: 4,),
                   Flexible(
                     child: MarkDown.inlineRender(
                       e['text'],
@@ -149,7 +147,7 @@ class MarkList extends MarkBlockItem {
 
 class MarkParagraph extends MarkBlockItem {
   @override
-  RegExp get regExp => RegExp(r'^(.*?)(?:\n\n+|$)');
+  RegExp get regExp => RegExp(r'^(.*?)(?:\n+|$)');
 
   @override
   Widget render(RegExpMatch match) {

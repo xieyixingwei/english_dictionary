@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/markdown/block.dart';
 import 'package:flutter_prj/markdown/inline.dart';
-
-
-abstract class MarkItem {
-  RegExp get regExp;
-  Widget render(RegExpMatch match);
-}
+import 'package:flutter_prj/markdown/style.dart' as style;
 
 
 class MarkDown {
-  static List<MarkItem> blockItems = [
+  static List<MarkBlockItem> blockItems = [
     MarkTitle(),
     MarkList(),
+
     MarkParagraph(),
   ];
 
@@ -29,12 +25,11 @@ class MarkDown {
 
   Widget render() {
     num count = 0;
+    text += '\n';
     while(text != null && text.isNotEmpty) {
       for(var i in blockItems) {
-        print('--- [$text]');
         var match = i.regExp.firstMatch(text);
         if(match != null) {
-          
           widgets.add(i.render(match));
           text = text.substring(match[0].length);
           break;
@@ -63,14 +58,9 @@ class MarkDown {
       }
     }
 
-    return RichText(
-      text: TextSpan(
-        style: TextStyle(
-          fontSize: 14.0, //设置大小
-          color: Colors.black87,//设置颜色
-          fontWeight: FontWeight.w500,
-          letterSpacing: 0.8
-        ),
+    return SelectableText.rich(
+      TextSpan(
+        style: style.textStyle,
         children: children
       ),
     );

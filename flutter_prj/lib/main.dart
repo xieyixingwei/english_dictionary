@@ -71,6 +71,8 @@ class MarkDownWidget extends StatelessWidget {
 ''';
   @override
   Widget build(BuildContext context) =>
-    MarkDown(text:_text).render();
+    Scaffold(
+      body: MarkDown(text:_text).render()
+    );
 
 }

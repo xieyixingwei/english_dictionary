@@ -44,7 +44,6 @@ class _ShowWordState extends State<ShowWord> {
 
   final _labelStyle = TextStyle(fontSize: 14, color: Colors.black87, fontWeight: FontWeight.bold);
   final AudioPlayer _audioPlayer = AudioPlayer();
-  String _wordCategory = '';
 
   @override
   Widget build(BuildContext context) => _wordShow(context);
@@ -54,7 +53,7 @@ class _ShowWordState extends State<ShowWord> {
       crossAxisAlignment: CrossAxisAlignment.start,
       divider: SizedBox(height: 14,),
       children: [
-        _wordNameShow,
+        _wordNameShow(context),
         RowSpace(
           divider: SizedBox(width: 10,),
           children: [
@@ -92,8 +91,8 @@ class _ShowWordState extends State<ShowWord> {
       ],
     ) : null;
 
-  Widget get _wordNameShow => widget.word.name.isNotEmpty ?
-    Row(
+  Widget _wordNameShow(BuildContext context) => widget.word.name.isNotEmpty ?
+    RowSpace(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SelectableText(
@@ -128,6 +127,18 @@ class _ShowWordState extends State<ShowWord> {
             setState(() {});
           },
         ),
+        Global.localStore.user.uname == 'root' ?
+        InkWell(
+          child: Text('修改', style: TextStyle(fontSize: 12, color: Colors.blueAccent),),
+          onTap: () async {
+            var word = (await Navigator.pushNamed(
+              context, '/edit_word',
+              arguments: {'title':'编辑单词','word':WordSerializer().from(widget.word)})
+            ) as WordSerializer;
+            if(word != null) await widget.word.from(word).save();
+            setState(() {});
+          },
+        ) : null,
       ],
     ) : null;
 
@@ -200,7 +211,8 @@ class _ShowWordState extends State<ShowWord> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text('词根词缀: ', style: TextStyle(fontSize: 12, color: Colors.black54,)),
-        Row(
+        RowSpace(
+          divider: SizedBox(width: 4,),
           children: widget.word.etyma.map((e) =>
             InkWell(
               splashColor: Colors.transparent,
@@ -271,18 +283,8 @@ class _ShowWordState extends State<ShowWord> {
         ),
         Icon(Icons.label_important, size: 16, color: Colors.black87,),
         Flexible(
-          child: SelectableText(
-          widget.word.origin,
-          strutStyle: StrutStyle(
-            fontSize: 12,
-            forceStrutHeight: true,
-          ),
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.black87,
-            height: null,
-          ),
-        ),),
+          child: MarkDown(text:widget.word.origin).render()
+        ),
       ],
     ) : null;
 
@@ -295,14 +297,7 @@ class _ShowWordState extends State<ShowWord> {
           crossAxisAlignment: CrossAxisAlignment.start,
           divider: SizedBox(height: 14,),
           children: [
-            widget.word.shorthand.isNotEmpty ? SelectableText(
-              widget.word.shorthand,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.black87,
-                height: 1,
-              ),
-            ) : null,
+            widget.word.shorthand.isNotEmpty ? MarkDown(text: widget.word.shorthand).render() : null,
             widget.word.image.url != null ?
             Align(
               alignment: Alignment.center,
@@ -361,7 +356,7 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
   Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Row(
+      RowSpace(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           SelectableText(
@@ -372,7 +367,24 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
             paraphrase.interpret,
             style: TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.bold, height: 1),
           ),
-        ].where((e) => e != null).toList(),
+          SizedBox(width: 8,),
+          Global.localStore.user.uname == 'root' ?
+          InkWell(
+            child: Text('修改', style: TextStyle(fontSize: 12, color: Colors.blueAccent),),
+            onTap: () async {
+             var p = (await Navigator.pushNamed(
+                                  context, '/edit_paraphrase',
+                                  arguments: {
+                                    'title':'编辑${widget.word.name}的释义',
+                                    'paraphrase': ParaphraseSerializer().from(paraphrase)})
+                      ) as ParaphraseSerializer;
+              if(p != null) {
+                await paraphrase.from(p).save();
+              }
+              setState(() {});
+            },
+          ) : null,
+        ],
       ),
       paraphrase.sentenceSet.isNotEmpty ? 
       Container(
@@ -502,10 +514,7 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
         ),
         Padding(
           padding: EdgeInsets.only(left: 14),
-          child: SelectableText(
-            gs.content,
-            style: TextStyle(fontSize: 12, color: Colors.black87, height: 1),
-          ),
+          child: MarkDown(text: gs.content).render(),
         ),
       ],
     );
@@ -571,11 +580,8 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
           ],
         ),
         Padding(
-          padding: EdgeInsets.only(left: 14), // MarkDown(text:ds.content).render(),
-          child: SelectableText(
-            ds.content,
-            style: TextStyle(fontSize: 12, color: Colors.black87, height: 1),
-          ),
+          padding: EdgeInsets.only(left: 14),
+          child: MarkDown(text:ds.content).render()
         ),
       ],
     );
