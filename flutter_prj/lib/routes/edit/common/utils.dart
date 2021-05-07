@@ -23,7 +23,7 @@ StudyGrammarSerializer getStudyGrammar(num id) {
 }
 
 bool isFavoriteDistinguish(num id) {
-  return Global.localStore.user.studyPlan.distinguishes.contains(id);
+  return Global.localStore.user.studyPlan == null ? false : Global.localStore.user.studyPlan.distinguishes.contains(id);
 }
 
 

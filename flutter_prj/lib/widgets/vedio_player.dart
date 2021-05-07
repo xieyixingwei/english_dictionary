@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_web_video_player/flutter_web_video_player.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 
@@ -83,5 +84,24 @@ class _VedioPlayerState extends State<VedioPlayer> {
               ),
           ],
     );
+  }
+}
+
+
+class VedioPlayerWeb extends StatelessWidget {
+  const VedioPlayerWeb({this.url});
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+            padding: EdgeInsets.all(8),
+            height: 500,
+            width: 400,
+            child: WebVideoPlayer(
+              src: url,
+            ),
+          );
   }
 }

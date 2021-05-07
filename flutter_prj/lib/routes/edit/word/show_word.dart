@@ -1,4 +1,4 @@
-import 'package:audioplayers/audioplayers.dart';
+import 'package:audioplayers/audioplayers_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/markdown/markdown.dart';
@@ -43,7 +43,8 @@ class ShowWord extends StatefulWidget {
 class _ShowWordState extends State<ShowWord> {
 
   final _labelStyle = TextStyle(fontSize: 14, color: Colors.black87, fontWeight: FontWeight.bold);
-  final AudioPlayer _audioPlayer = AudioPlayer();
+  //AudioPlayer _player = AudioPlayer();
+  WrappedPlayer _audioPlayer = WrappedPlayer();
 
   @override
   Widget build(BuildContext context) => _wordShow(context);
@@ -89,7 +90,7 @@ class _ShowWordState extends State<ShowWord> {
           ],
         ),
       ],
-    ) : null;
+    ) : Text('loading');
 
   Widget _wordNameShow(BuildContext context) => widget.word.name.isNotEmpty ?
     RowSpace(
@@ -157,7 +158,7 @@ class _ShowWordState extends State<ShowWord> {
           hoverColor: Colors.transparent,
           highlightColor: Colors.transparent,
           child: Icon(Icons.volume_up_outlined, color: widget.word.audioUsMan != null ? Colors.blue : Colors.grey, size: 20,),
-          onTap: () async {if(widget.word.audioUsMan != null) await _audioPlayer.play(widget.word.audioUsMan); },
+          onTap: () {if(widget.word.audioUsMan == null) return; _audioPlayer.setUrl(widget.word.audioUsMan); _audioPlayer.start(0); },
         ),
         SizedBox(width: 6,),
         InkWell(
@@ -165,7 +166,7 @@ class _ShowWordState extends State<ShowWord> {
           hoverColor: Colors.transparent,
           highlightColor: Colors.transparent,
           child: Icon(Icons.volume_up_outlined, color: widget.word.audioUsWoman != null ? Colors.pink : Colors.grey, size: 20,),
-          onTap: () async {if(widget.word.audioUsWoman != null) await _audioPlayer.play(widget.word.audioUsWoman); },
+          onTap: () async {if(widget.word.audioUsWoman == null) return; _audioPlayer.setUrl(widget.word.audioUsWoman); _audioPlayer.start(0);},
         ),
       ]
     ) : null;
@@ -184,7 +185,7 @@ class _ShowWordState extends State<ShowWord> {
           hoverColor: Colors.transparent,
           highlightColor: Colors.transparent,
           child: Icon(Icons.volume_up_outlined, color: widget.word.audioUkMan != null ? Colors.blue : Colors.grey, size: 20,),
-          onTap: () async {if(widget.word.audioUkMan != null) await _audioPlayer.play(widget.word.audioUkMan); },
+          onTap: () async {if(widget.word.audioUkMan == null) return; _audioPlayer.setUrl(widget.word.audioUkMan); _audioPlayer.start(0);},
         ),
         SizedBox(width: 6,),
         InkWell(
@@ -192,7 +193,7 @@ class _ShowWordState extends State<ShowWord> {
           hoverColor: Colors.transparent,
           highlightColor: Colors.transparent,
           child: Icon(Icons.volume_up_outlined, color: widget.word.audioUkWoman != null ? Colors.pink : Colors.grey, size: 20,),
-          onTap: () async {if(widget.word.audioUkWoman != null) await _audioPlayer.play(widget.word.audioUkWoman); },
+          onTap: () async {if(widget.word.audioUkWoman == null) return; _audioPlayer.setUrl(widget.word.audioUkWoman); _audioPlayer.start(0);},
         ),
       ]
     ) : null;
@@ -311,7 +312,7 @@ class _ShowWordState extends State<ShowWord> {
             widget.word.vedio.url != null ?
             Align(
               alignment: Alignment.center,
-              child: VedioPlayer(url: widget.word.vedio.url),
+              child: VedioPlayerWeb(url: widget.word.vedio.url),
             ) : null,
           ],
         )

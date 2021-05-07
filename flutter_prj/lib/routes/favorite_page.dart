@@ -36,7 +36,7 @@ class _FavoritePageState extends State<FavoritePage> {
           runAlignment: WrapAlignment.start,
           children: [
             _card(context, '收藏的单词', Global.localStore.user.studyWordSet.length, ()=>Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.word})),
-            _card(context, '收藏的词义辨析', Global.localStore.user.studyPlan.distinguishes.length, ()=>Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.distinguish})),
+            _card(context, '收藏的词义辨析', Global.localStore.user.studyPlan == null ? 0 : Global.localStore.user.studyPlan.distinguishes.length, ()=>Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.distinguish})),
             _card(context, '收藏的句子', Global.localStore.user.studySentenceSet.length, ()=>Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.sentence})),
             _card(context, '收藏的语法', Global.localStore.user.studyGrammarSet.length, ()=>Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.grammar})),
           ],

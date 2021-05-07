@@ -76,7 +76,7 @@ class _HomeState extends State<Home> {
       ),
       onChanged: (v) => _word.name = v.trim(),
       decoration: InputDecoration(
-        hintText: "输入单词或句子",
+        hintText: "输入单词或句子1",
         border: OutlineInputBorder(),
         suffixIcon: IconButton(
           splashRadius: 1.0,
