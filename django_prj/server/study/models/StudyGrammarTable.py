@@ -10,7 +10,7 @@ class StudyGrammarTable(models.Model):
     """
     id = models.AutoField(primary_key=True)
     foreignUser = models.ForeignKey(to=UserTable, related_name='studyGrammerSet', on_delete=models.CASCADE)
-    grammar = models.OneToOneField(to=GrammarTable, on_delete=models.CASCADE)
+    grammar = models.OneToOneField(to=GrammarTable, null=True, on_delete=models.CASCADE)
     category = models.CharField(max_length=30, null=True, blank=True)     # 所属的单词本
     familiarity = models.IntegerField(default=0) # 0 ~ 5
     learnRecord = JSONFieldUtf8(null=True) # [09122030,09112030,09102030]
