@@ -45,8 +45,7 @@ class RegisterPage extends StatelessWidget {
         children: <Widget>[
           TextFormField(
             autofocus: false,
-            keyboardType: TextInputType.number,
-            textInputAction: TextInputAction.next,
+            keyboardType: TextInputType.text,
             controller: _unameController,
             decoration: InputDecoration(
               labelText: "用户名或邮箱",
@@ -60,6 +59,7 @@ class RegisterPage extends StatelessWidget {
           TextFormField(
             autofocus: false,
             controller: _pwdController1,
+            keyboardType: TextInputType.text,
             decoration: InputDecoration(
               labelText: "密码", hintText: "输入密码", icon: Icon(Icons.lock)
             ),
@@ -71,6 +71,7 @@ class RegisterPage extends StatelessWidget {
           TextFormField(
             autofocus: false,
             controller: _pwdController2,
+            keyboardType: TextInputType.text,
             decoration: InputDecoration(
               labelText: "密码", hintText: "再次输入密码", icon: Icon(Icons.lock)
             ),
@@ -102,29 +103,32 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text("注册"),
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            height: 120.0,
-            alignment:Alignment.centerLeft,
-            padding: EdgeInsets.only(left:30.0),
-            color: Colors.white,
-          ),
-          Container(
-            color: Colors.white,
-            alignment: Alignment.center,
-            padding: EdgeInsets.only(left:30.0, right:30.0),
-            child: Container(
-              child: _buildForm(context),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              height: 120.0,
+              alignment:Alignment.centerLeft,
+              padding: EdgeInsets.only(left:30.0),
+              color: Colors.white,
             ),
-          ),
-        ],
-      ),
+            Container(
+              color: Colors.white,
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(left:30.0, right:30.0),
+              child: Container(
+                child: _buildForm(context),
+              ),
+            ),
+          ],
+        ),
+      )
     );
   }
 }

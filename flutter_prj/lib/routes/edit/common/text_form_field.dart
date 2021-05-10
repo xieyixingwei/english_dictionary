@@ -7,11 +7,13 @@ Widget textFiledForm({
   String labelText,
   Widget suffixIcon,
   Function(String) onChanged,
-  Function(String) validator
+  Function(String) validator,
+  TextInputType keyboardType = TextInputType.text,
 }) =>
   TextFormField(
     controller: TextEditingController(text: text),
     maxLines: 1,
+    keyboardType: keyboardType,
     style: _textStyle,
     decoration: InputDecoration(
       //isDense: true,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_prj/serializers/distinguish.dart';
 import 'package:flutter_prj/widgets/pop_dialog.dart';
 import 'package:flutter_prj/widgets/wrap_custom.dart';
-import 'package:flutter_prj/widgets/ok_cancel.dart';
 
 
 class EditDistinguish extends StatefulWidget {
@@ -24,6 +23,7 @@ class _EditDistinguishState extends State<EditDistinguish> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+            resizeToAvoidBottomInset: true,
             appBar: AppBar(
               title: Text(widget._title),
               centerTitle: true,
@@ -42,7 +42,7 @@ class _EditDistinguishState extends State<EditDistinguish> {
                 ),
               ],
             ),
-            body: Container(
+            body: SingleChildScrollView(
               padding: EdgeInsets.fromLTRB(20, 40, 20, 20),
               child: Form(
                 key: _formKey, //设置globalKey，用于后面获取FormState

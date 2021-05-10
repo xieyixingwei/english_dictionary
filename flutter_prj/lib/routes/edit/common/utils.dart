@@ -51,8 +51,8 @@ Future<String> popSelectWordCategoryDialog(BuildContext context) async {
                   onPressed: () => setState(() {
                     Global.localStore.user.studyWordSet.where((w) => w.category == e).forEach((w) => w.delete());
                     Global.localStore.user.studyWordSet.removeWhere((w) => w.category == e);
-                    Global.localStore.user.studyPlan.wordCategory.remove(e);
-                    Global.localStore.user.studyPlan.save();
+                    if(Global.localStore.user.studyPlan != null) Global.localStore.user.studyPlan.wordCategory.remove(e);
+                    if(Global.localStore.user.studyPlan != null) Global.localStore.user.studyPlan.save();
                     Global.saveLocalStore();
                   }),
                 ),
@@ -87,8 +87,8 @@ Future<String> popSelectWordCategoryDialog(BuildContext context) async {
                     onPressed: () {
                       if(ctrl.text.trim().isNotEmpty)
                         setState(() {
-                          Global.localStore.user.studyPlan.wordCategory.add(ctrl.text.trim());
-                          Global.localStore.user.studyPlan.save();
+                          if(Global.localStore.user.studyPlan != null) Global.localStore.user.studyPlan.wordCategory.add(ctrl.text.trim());
+                          if(Global.localStore.user.studyPlan != null) Global.localStore.user.studyPlan.save();
                           Global.saveLocalStore();
                         });
                       ctrl.text = '';

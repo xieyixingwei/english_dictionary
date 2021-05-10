@@ -3,8 +3,6 @@ import 'package:flutter_prj/routes/edit/common/appbar.dart';
 import 'package:flutter_prj/routes/edit/common/text_form_field.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
-import 'package:flutter_prj/widgets/pop_dialog.dart';
-import 'package:flutter_prj/widgets/wrap_custom.dart';
 
 
 class StudySettings extends StatefulWidget {
@@ -23,6 +21,7 @@ class _StudySettingsState extends State<StudySettings> {
   @override
   Widget build(BuildContext context) =>
     Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: appBarOfSet(
         context: context,
         title: Text('设置学习计划'),
@@ -43,6 +42,7 @@ class _StudySettingsState extends State<StudySettings> {
               textFiledForm(
                 text: '${widget.plan.onceWords}',
                 labelText: '每次学习的单词数量',
+                keyboardType: TextInputType.number,
                 onChanged: (v) => widget.plan.onceWords = num.parse(v),
                 validator: (v) => v.isNotEmpty ? null : "不能为空",
               ),

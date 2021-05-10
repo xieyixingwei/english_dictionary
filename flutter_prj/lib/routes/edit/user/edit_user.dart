@@ -22,11 +22,12 @@ class _EditUserState extends State<EditUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+            resizeToAvoidBottomInset: true,
             appBar: AppBar(
               title: Text(widget._title),
               automaticallyImplyLeading: false, // 取消返回按钮
             ),
-            body: Container(
+            body: SingleChildScrollView(
               padding: EdgeInsets.fromLTRB(20, 40, 20, 20),
               child: Form(
                 key: _formKey, //设置globalKey，用于后面获取FormState

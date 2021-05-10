@@ -32,6 +32,7 @@ class _EditWordState extends State<EditWord> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             title: Text(widget.title),
             centerTitle: true,

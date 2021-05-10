@@ -31,6 +31,7 @@ class _EditEtymaState extends State<EditEtyma> {
   Widget build(BuildContext context) {
     final textStyle = TextStyle(fontSize: 14,);
     return Scaffold(
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             title: Text(widget._title),
             centerTitle: true,

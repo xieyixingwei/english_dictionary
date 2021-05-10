@@ -36,6 +36,7 @@ class _EditSentenceState extends State<EditSentence> {
     final textStyle = TextStyle(fontSize: 14,);
     final idctrl = TextEditingController(text: widget._sentence.id.toString());
     return Scaffold(
+            resizeToAvoidBottomInset: true,
             appBar: AppBar(
               title: Text(widget._title),
               centerTitle: true,

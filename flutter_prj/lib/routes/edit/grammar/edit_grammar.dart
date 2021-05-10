@@ -26,6 +26,7 @@ class _EditGrammarState extends State<EditGrammar> {
   Widget build(BuildContext context) {
     final idctrl = TextEditingController(text: widget._grammar.id.toString());
     return Scaffold(
+            resizeToAvoidBottomInset: true,
             appBar: AppBar(
               title: Text(widget._title),
               centerTitle: true,
@@ -44,7 +45,7 @@ class _EditGrammarState extends State<EditGrammar> {
                 ),
               ],
             ),
-            body: Container(
+            body: SingleChildScrollView(
               padding: EdgeInsets.fromLTRB(20, 40, 20, 20),
               child: Form(
                 key: _formKey, //设置globalKey，用于后面获取FormState
