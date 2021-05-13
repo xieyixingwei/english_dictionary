@@ -25,25 +25,25 @@ class SentenceSerializer {
   List<GrammarSerializer> grammarSet = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/dictionary/sentence/', data:data ?? toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.POST, '/api/dictionary/sentence/', data:data ?? toJson(), queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.PUT, '/dictionary/sentence/$id/', data:data ?? toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.PUT, '/api/dictionary/sentence/$id/', data:data ?? toJson(), queries:queries, cache:cache);
     return res != null;
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.GET, '/dictionary/sentence/$id/', queries:queries, cache:cache);
+    var res = await Http().request(HttpType.GET, '/api/dictionary/sentence/$id/', queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     if(_id == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/dictionary/sentence/$id/', data:data ?? toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.DELETE, '/api/dictionary/sentence/$id/', data:data ?? toJson(), queries:queries, cache:cache);
     /*
     if(grammarSet != null){grammarSet.forEach((e){e.delete();});}
     */

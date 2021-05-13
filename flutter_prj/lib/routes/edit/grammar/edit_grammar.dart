@@ -124,14 +124,14 @@ class _EditGrammarState extends State<EditGrammar> {
                     ),
                     TextFormField(
                       autofocus: false,
-                      keyboardType: TextInputType.number, // 键盘回车键的样式
+                      keyboardType: TextInputType.multiline, // 键盘回车键的样式
                       textInputAction: TextInputAction.next,
                       controller: TextEditingController(text: widget._grammar.content),
                       minLines: 1,
                       maxLines: null,
                       style: TextStyle(fontSize: 14),
                       decoration: InputDecoration(
-                        labelText: "语法",
+                        labelText: "语法(markdown)",
                         border: OutlineInputBorder(),
                       ),
                       onChanged: (v) => widget._grammar.content = v.trim(),

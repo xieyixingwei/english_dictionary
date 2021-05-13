@@ -13,7 +13,6 @@ class LoginSerializer(serializers.ModelSerializer):
         model = UserTable
         fields = ('id','uname','passwd')
 
-
 # 登陆 path/login/
 class LoginView(generics.CreateAPIView):
     '''

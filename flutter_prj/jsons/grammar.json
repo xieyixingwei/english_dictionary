@@ -8,7 +8,7 @@
     "wordForeign @foreign": "$word",
     "sentenceForeign @foreign": "$sentence",
     "__http__": {
-        "url": "/dictionary/grammar/",
+        "url": "/api/dictionary/grammar/",
         "methods": [
             {
                 "name": "create"
@@ -45,7 +45,7 @@
         "content": ["icontains"]
     },
     "__http__": {
-        "url": "/dictionary/grammar/",
+        "url": "/api/dictionary/grammar/",
         "methods": [
             {
                 "name": "retrieve",
@@ -58,7 +58,7 @@
 {   "__name__": "grammar_type",
     "name @primary": "",
     "__http__": {
-        "url": "/dictionary/grammar_type/",
+        "url": "/api/dictionary/grammar_type/",
         "methods": [
             {
                 "name": "create"
@@ -78,7 +78,7 @@
 {   "__name__": "grammar_tag",
     "name @primary": "",
     "__http__": {
-        "url": "/dictionary/grammar_tag/",
+        "url": "/api/dictionary/grammar_tag/",
         "methods": [
             {
                 "name": "create"

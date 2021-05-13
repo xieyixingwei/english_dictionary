@@ -20,7 +20,7 @@
     "_grammarSet": ["$grammar"], //语法
     "_distinguishSet": ["$distinguish"], // 词义辨析
     "__http__": {
-        "url": "/dictionary/word/",
+        "url": "/api/dictionary/word/",
         "methods": [
             {
                 "name": "create"
@@ -58,7 +58,7 @@
         "etyma": ["icontains"]
     },
     "__http__": {
-        "url": "/dictionary/word/",
+        "url": "/api/dictionary/word/",
         "methods": [
             {
                 "name": "retrieve",
@@ -76,7 +76,7 @@
     "wordForeign @foreign": "$word",
     "_paraphraseSet": ["$paraphrase"],
     "__http__": {
-        "url": "/dictionary/sentence_pattern/",
+        "url": "/api/dictionary/sentence_pattern/",
         "methods": [
             {
                 "name": "create"
@@ -111,7 +111,7 @@
         "content": ["icontains"]
     },
     "__http__": {
-        "url": "/dictionary/sentence_pattern/",
+        "url": "/api/dictionary/sentence_pattern/",
         "methods": [
             {
                 "name": "retrieve",
@@ -130,7 +130,7 @@
     "sentencePatternForeign @foreign": "$sentence_pattern",
     "_sentenceSet": ["$sentence"],
     "__http__": {
-        "url": "/dictionary/paraphrase/",
+        "url": "/api/dictionary/paraphrase/",
         "methods": [
             {
                 "name": "create"
@@ -158,7 +158,7 @@
     "__name__": "word_tag",
     "name @primary": "",
     "__http__": {
-        "url": "/dictionary/word_tag/",
+        "url": "/api/dictionary/word_tag/",
         "methods": [
             {
                 "name": "create"
@@ -183,7 +183,7 @@
     "image": "$SingleFile image", 
     "vedio": "$SingleFile video",
     "__http__": {
-        "url": "/dictionary/etyma/",
+        "url": "/api/dictionary/etyma/",
         "methods": [
             {
                 "name": "create"
@@ -219,7 +219,7 @@
         "type": ["exact"]
     },
     "__http__": {
-        "url": "/dictionary/etyma/",
+        "url": "/api/dictionary/etyma/",
         "methods": [
             {
                 "name": "retrieve",

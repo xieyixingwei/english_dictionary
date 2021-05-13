@@ -22,25 +22,25 @@ class DistinguishSerializer {
   List<String> wordsForeign = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/dictionary/distinguish_word/', data:data ?? _formData, queries:queries, cache:cache);
+    var res = await Http().request(HttpType.POST, '/api/dictionary/distinguish_word/', data:data ?? _formData, queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.PUT, '/dictionary/distinguish_word/$id/', data:data ?? _formData, queries:queries, cache:cache);
+    var res = await Http().request(HttpType.PUT, '/api/dictionary/distinguish_word/$id/', data:data ?? _formData, queries:queries, cache:cache);
     return res != null;
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.GET, '/dictionary/distinguish_word/$id/', queries:queries, cache:cache);
+    var res = await Http().request(HttpType.GET, '/api/dictionary/distinguish_word/$id/', queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     if(_id == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/dictionary/distinguish_word/$id/', data:data ?? _formData, queries:queries, cache:cache);
+    var res = await Http().request(HttpType.DELETE, '/api/dictionary/distinguish_word/$id/', data:data ?? _formData, queries:queries, cache:cache);
     /*
     
     */

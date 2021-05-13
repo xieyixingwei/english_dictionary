@@ -18,7 +18,7 @@
     "studyWordSet": ["$study_word"],
     "studySentenceSet": ["$study_sentence"],
     "__http__": {
-        "url": "/user/",
+        "url": "/api/user/",
         "methods": [
             {
                 "name": "list",
@@ -51,7 +51,7 @@
     "status": 0,
     "token": "String=null",
     "__http__": {
-        "url": "/user/",
+        "url": "/api/user/",
         "methods": [
             {
                 "name": "login",

@@ -19,7 +19,7 @@ class DistinguishPaginationSerializer {
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     (queries != null && filter.queryset != null) ? queries.addAll(filter.queryset) : queries = filter.queryset;
-    var res = await Http().request(HttpType.GET, '/dictionary/distinguish_word/', queries:queries, cache:cache);
+    var res = await Http().request(HttpType.GET, '/api/dictionary/distinguish_word/', queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
   }

@@ -19,25 +19,25 @@ class ParaphraseSerializer {
   List<SentenceSerializer> sentenceSet = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/dictionary/paraphrase/', data:data ?? toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.POST, '/api/dictionary/paraphrase/', data:data ?? toJson(), queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.PUT, '/dictionary/paraphrase/$id/', data:data ?? toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.PUT, '/api/dictionary/paraphrase/$id/', data:data ?? toJson(), queries:queries, cache:cache);
     return res != null;
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.GET, '/dictionary/paraphrase/$id/', queries:queries, cache:cache);
+    var res = await Http().request(HttpType.GET, '/api/dictionary/paraphrase/$id/', queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     if(_id == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/dictionary/paraphrase/$id/', data:data ?? toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.DELETE, '/api/dictionary/paraphrase/$id/', data:data ?? toJson(), queries:queries, cache:cache);
     /*
     if(sentenceSet != null){sentenceSet.forEach((e){e.delete();});}
     */

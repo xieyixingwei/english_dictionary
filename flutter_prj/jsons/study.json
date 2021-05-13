@@ -11,7 +11,7 @@
     "distinguishCategory": [""],
     "distinguishes": [0],
     "__http__": {
-        "url": "/study/plan/",
+        "url": "/api/study/plan/",
         "methods": [
             {
                 "name": "create"
@@ -47,7 +47,7 @@
     "isFavorite": false,
     "repeats": 0,
     "__http__": {
-        "url": "/study/grammar/",
+        "url": "/api/study/grammar/",
         "methods": [
             {
                 "name": "create"
@@ -85,7 +85,7 @@
     "repeats": 0,
     "newWords": [""],
     "__http__": {
-        "url": "/study/sentence/",
+        "url": "/api/study/sentence/",
         "methods": [
             {
                 "name": "create"
@@ -122,7 +122,7 @@
     "comments": "",
     "repeats": 0,
     "__http__": {
-        "url": "/study/word/",
+        "url": "/api/study/word/",
         "methods": [
             {
                 "name": "create"

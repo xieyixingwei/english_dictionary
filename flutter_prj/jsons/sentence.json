@@ -11,7 +11,7 @@
     "paraphraseForeign @foreign": "$paraphrase",
     "_grammarSet": ["$grammar"], //models.JSONField() # 语法 [id1,id2,id3]
     "__http__": {
-        "url": "/dictionary/sentence/",
+        "url": "/api/dictionary/sentence/",
         "methods": [
             {
                 "name": "create"
@@ -51,7 +51,7 @@
         "pattern": ["icontains"]
     },
     "__http__": {
-        "url": "/dictionary/sentence/",
+        "url": "/api/dictionary/sentence/",
         "methods": [
             {
                 "name": "retrieve",
@@ -64,7 +64,7 @@
 {   "__name__": "sentence_tag",
     "name @primary": "",
     "__http__": {
-        "url": "/dictionary/sentence_tag/",
+        "url": "/api/dictionary/sentence_tag/",
         "methods": [
             {
                 "name": "create"

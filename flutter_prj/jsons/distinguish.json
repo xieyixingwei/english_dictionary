@@ -6,7 +6,7 @@
     "vedio": "$SingleFile video",
     "wordsForeign @foreign_manytomany": ["$word"],
     "__http__": {
-        "url": "/dictionary/distinguish_word/",
+        "url": "/api/dictionary/distinguish_word/",
         "methods": [
             {
                 "name": "create"
@@ -43,7 +43,7 @@
         "content": ["icontains"]
     },
     "__http__": {
-        "url": "/dictionary/distinguish_word/",
+        "url": "/api/dictionary/distinguish_word/",
         "methods": [
             {
                 "name": "retrieve",

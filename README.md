@@ -1,1 +1,3 @@
-# mydjango
+- This a English Dictionary App
+  - Web use flutter
+  - Server use django

@@ -40,25 +40,25 @@ class WordSerializer {
   List<DistinguishSerializer> distinguishSet = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/dictionary/word/', data:data ?? _formData, queries:queries, cache:cache);
+    var res = await Http().request(HttpType.POST, '/api/dictionary/word/', data:data ?? _formData, queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.PUT, '/dictionary/word/$name/', data:data ?? _formData, queries:queries, cache:cache);
+    var res = await Http().request(HttpType.PUT, '/api/dictionary/word/$name/', data:data ?? _formData, queries:queries, cache:cache);
     return res != null;
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.GET, '/dictionary/word/$name/', queries:queries, cache:cache);
+    var res = await Http().request(HttpType.GET, '/api/dictionary/word/$name/', queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     if(_name == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/dictionary/word/$name/', data:data ?? _formData, queries:queries, cache:cache);
+    var res = await Http().request(HttpType.DELETE, '/api/dictionary/word/$name/', data:data ?? _formData, queries:queries, cache:cache);
     /*
     if(paraphraseSet != null){paraphraseSet.forEach((e){e.delete();});}
     if(sentencePatternSet != null){sentencePatternSet.forEach((e){e.delete();});}

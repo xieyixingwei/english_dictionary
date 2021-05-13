@@ -37,19 +37,19 @@ class UserSerializer {
   List<StudySentenceSerializer> studySentenceSet = [];
 
   static Future<List<UserSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.GET, '/user/', queries:queries, cache:cache);
+    var res = await Http().request(HttpType.GET, '/api/user/', queries:queries, cache:cache);
     return res != null ? res.data.map<UserSerializer>((e) => UserSerializer().fromJson(e)).toList() : [];
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.GET, '/user/$uname/', queries:queries, cache:cache);
+    var res = await Http().request(HttpType.GET, '/api/user/$uname/', queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     if(_id == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/user/$uname/', data:data ?? toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.DELETE, '/api/user/$uname/', data:data ?? toJson(), queries:queries, cache:cache);
     /*
     if(studyPlan != null){studyPlan.delete();}
     if(studyGrammarSet != null){studyGrammarSet.forEach((e){e.delete();});}
@@ -60,12 +60,12 @@ class UserSerializer {
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.PUT, '/user/$uname/', data:data ?? toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.PUT, '/api/user/$uname/', data:data ?? toJson(), queries:queries, cache:cache);
     return res != null;
   }
 
   Future<bool> register({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/user/register/', data:data ?? toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.POST, '/api/user/register/', data:data ?? toJson(), queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
   }

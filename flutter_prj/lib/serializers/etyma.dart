@@ -20,25 +20,25 @@ class EtymaSerializer {
   SingleFile vedio = SingleFile('vedio', FileType.video);
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/dictionary/etyma/', data:data ?? _formData, queries:queries, cache:cache);
+    var res = await Http().request(HttpType.POST, '/api/dictionary/etyma/', data:data ?? _formData, queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.PUT, '/dictionary/etyma/$name/', data:data ?? _formData, queries:queries, cache:cache);
+    var res = await Http().request(HttpType.PUT, '/api/dictionary/etyma/$name/', data:data ?? _formData, queries:queries, cache:cache);
     return res != null;
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.GET, '/dictionary/etyma/$name/', queries:queries, cache:cache);
+    var res = await Http().request(HttpType.GET, '/api/dictionary/etyma/$name/', queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     if(_name == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/dictionary/etyma/$name/', data:data ?? _formData, queries:queries, cache:cache);
+    var res = await Http().request(HttpType.DELETE, '/api/dictionary/etyma/$name/', data:data ?? _formData, queries:queries, cache:cache);
     /*
     
     */

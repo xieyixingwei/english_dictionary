@@ -1,4 +1,14 @@
 asgiref==3.2.10
+beautifulsoup4==4.9.3
+bs4==0.0.1
 Django==3.1.1
+django-cors-headers==3.7.0
+django-filter==2.4.0
+django-rest-framework==0.1.0
+djangorestframework==3.12.2
+Pillow==8.1.0
 pytz==2020.1
+soupsieve==2.2.1
 sqlparse==0.3.1
+urllib3==1.26.4
+uWSGI==2.0.19.1

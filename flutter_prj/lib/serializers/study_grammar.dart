@@ -22,20 +22,20 @@ class StudyGrammarSerializer {
   num repeats = 0;
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/study/grammar/', data:data ?? toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.POST, '/api/study/grammar/', data:data ?? toJson(), queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.GET, '/study/grammar/$id/', queries:queries, cache:cache);
+    var res = await Http().request(HttpType.GET, '/api/study/grammar/$id/', queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     if(_id == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/study/grammar/$id/', data:data ?? toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.DELETE, '/api/study/grammar/$id/', data:data ?? toJson(), queries:queries, cache:cache);
     /*
     
     */
@@ -43,7 +43,7 @@ class StudyGrammarSerializer {
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.PUT, '/study/grammar/$id/', data:data ?? toJson(), queries:queries, cache:cache);
+    var res = await Http().request(HttpType.PUT, '/api/study/grammar/$id/', data:data ?? toJson(), queries:queries, cache:cache);
     return res != null;
   }
 
