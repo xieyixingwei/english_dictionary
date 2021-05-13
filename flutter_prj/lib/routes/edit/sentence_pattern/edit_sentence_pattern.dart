@@ -64,7 +64,7 @@ class _EditSentencePatternState extends State<EditSentencePattern> {
                     maxLines: 1,
                     style: textStyle,
                     decoration: InputDecoration(
-                      labelText: "单词",
+                      labelText: "id",
                       border: OutlineInputBorder(),
                       suffixIcon: IconButton(
                         splashRadius: 1.0,
@@ -82,7 +82,7 @@ class _EditSentencePatternState extends State<EditSentencePattern> {
                   SizedBox(height: 20,),
                   TextFormField(
                     autofocus: false,
-                    keyboardType: TextInputType.number, // 键盘回车键的样式
+                    keyboardType: TextInputType.text, // 键盘回车键的样式
                     textInputAction: TextInputAction.next,
                     controller: TextEditingController(text:widget._sentencePattern.content),
                     maxLines: 1,

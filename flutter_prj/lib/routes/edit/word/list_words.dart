@@ -141,7 +141,7 @@ class _ListWordsState extends State<ListWords> {
           if(ret) setState((){});
         },
         perPage: _perPage,
-        perPages: [2, 5, 10, 20, 30, 50],
+        perPages: [10, 20, 30, 50],
         perPageChange: (v) async {
           _pageIndex = 1;
           _perPage = v;

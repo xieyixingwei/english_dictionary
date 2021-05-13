@@ -88,7 +88,7 @@ class _EditGrammarState extends State<EditGrammar> {
                             child: Text('添加',),
                             onPressed: () => popSelectDialog(
                               context: context,
-                              title: Text('选择词根词缀'),
+                              title: Text('选择语法的类型'),
                               options: Global.grammarTypeOptions,
                               close: (v) => setState(() => widget._grammar.type.add(v)),
                             ),
@@ -110,7 +110,7 @@ class _EditGrammarState extends State<EditGrammar> {
                             child: Text('添加',),
                             onPressed: () => popSelectDialog(
                               context: context,
-                              title: Text('选择Tag'),
+                              title: Text('选择语法的Tag'),
                               options: Global.grammarTagOptions,
                               close: (v) => setState(() => widget._grammar.tag.add(v)),
                             ),

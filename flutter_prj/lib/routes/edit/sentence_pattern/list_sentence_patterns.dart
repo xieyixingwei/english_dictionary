@@ -13,7 +13,7 @@ class ListSentencePatterns extends StatefulWidget {
 class _ListSentencePatternsState extends State<ListSentencePatterns> {
   SentencePatternPaginationSerializer _sentencePatterns = SentencePatternPaginationSerializer();
   final textStyle = const TextStyle(fontSize: 12,);
-  num _perPage = 2;
+  num _perPage = 10;
   num _pageIndex = 1;
 
   @override
@@ -120,7 +120,7 @@ class _ListSentencePatternsState extends State<ListSentencePatterns> {
           if(ret) setState((){});
         },
         perPage: _perPage,
-        perPages: [2, 5, 10, 20, 30, 50],
+        perPages: [10, 20, 30, 50],
         perPageChange: (v) async {
           _pageIndex = 1;
           _perPage = v;

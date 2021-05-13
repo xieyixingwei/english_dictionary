@@ -12,7 +12,7 @@ class ListDistinguishes extends StatefulWidget {
 
 class _ListDistinguishesState extends State<ListDistinguishes> {
   DistinguishPaginationSerializer _distinguishes = DistinguishPaginationSerializer();
-  num _perPage = 2;
+  num _perPage = 10;
   num _pageIndex = 1;
 
   @override
@@ -117,7 +117,7 @@ Widget _buildFilterOptions(BuildContext context) =>
           if(ret) setState((){});
         },
         perPage: _perPage,
-        perPages: [2, 5, 10, 20, 30, 50],
+        perPages: [10, 20, 30, 50],
         perPageChange: (v) async {
           _pageIndex = 1;
           _perPage = v;

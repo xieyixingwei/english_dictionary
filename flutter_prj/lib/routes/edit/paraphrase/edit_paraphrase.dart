@@ -73,7 +73,7 @@ class _EditParaphraseState extends State<EditParaphrase> {
                   SizedBox(height: 20,),
                   TextFormField(
                     autofocus: false,
-                    keyboardType: TextInputType.number, // 键盘回车键的样式
+                    keyboardType: TextInputType.text, // 键盘回车键的样式
                     textInputAction: TextInputAction.next,
                     controller: TextEditingController(text:widget._paraphrase.interpret),
                     maxLines: null,

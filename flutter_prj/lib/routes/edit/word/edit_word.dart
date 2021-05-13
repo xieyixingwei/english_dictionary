@@ -139,7 +139,7 @@ class _EditWordState extends State<EditWord> {
                     ),
                     TextFormField(
                       autofocus: false,
-                      keyboardType: TextInputType.number, // 键盘回车键的样式
+                      keyboardType: TextInputType.multiline, // 键盘回车键的样式
                       textInputAction: TextInputAction.next,
                       controller: TextEditingController(text: widget.word.origin),
                       maxLines: null,

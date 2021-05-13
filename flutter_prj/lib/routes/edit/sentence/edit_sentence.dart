@@ -144,7 +144,7 @@ class _EditSentenceState extends State<EditSentence> {
                             onPressed: () => popSelectDialog(
                               context: context,
                               title: Text('选择Tag'),
-                              options: Global.etymaOptions,
+                              options: Global.sentenceTagOptions,
                               close: (v) => setState(() => widget._sentence.tag.add(v)),
                             ),
                           ),
@@ -178,7 +178,7 @@ class _EditSentenceState extends State<EditSentence> {
                         child: Text('添加',),
                         onPressed: () => popSelectDialog(
                           context: context,
-                          title: Text('选择Tag'),
+                          title: Text('选择句型'),
                           options: Global.sentenceFormOptions,
                           close: (v) => setState(() => widget._sentence.pattern.add(v)),
                         ),
