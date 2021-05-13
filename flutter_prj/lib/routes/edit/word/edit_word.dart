@@ -25,7 +25,7 @@ class EditWord extends StatefulWidget {
 class _EditWordState extends State<EditWord> {
   final GlobalKey _formKey =  GlobalKey<FormState>();
   final _textStyle = const TextStyle(fontSize: 14,);
-  static const List<String> _morphOptions = ['选择', '现在分词', '过去式', '过去分词', '第三人称单数', '名词', '形容词', '动词', '副词', '比较级', '最高级', '名词复数'];
+  static const List<String> _morphOptions = ['选择', '现在分词', '过去式', '过去分词', '第三人称单数', '名词', '复数', '形容词', '动词', '副词', '比较级', '最高级'];
   String _morphSelect = _morphOptions.first;
   String _morphInput = '';
 
