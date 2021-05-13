@@ -15,7 +15,7 @@ class _ListEtymasState extends State<ListEtymas> {
   EtymaPaginationSerializer _etymas = EtymaPaginationSerializer();
   static final List<String> _typeOptions = ['类型'] + Global.etymaTypeOptions;
   List<String> _selected = [_typeOptions.first];
-  num _perPage = 2;
+  num _perPage = 10;
   num _pageIndex = 1;
   final textStyle = const TextStyle(fontSize: 12,);
 
@@ -135,7 +135,7 @@ class _ListEtymasState extends State<ListEtymas> {
           if(ret) setState((){});
         },
         perPage: _perPage,
-        perPages: [2, 5, 10, 20, 30, 50],
+        perPages: [10, 20, 30, 50],
         perPageChange: (v) async {
           _pageIndex = 1;
           _perPage = v;

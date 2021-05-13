@@ -85,7 +85,7 @@ class _EditEtymaState extends State<EditEtyma> {
                         flex: 5,
                         child: TextFormField(
                           autofocus: false,
-                          keyboardType: TextInputType.number, // 键盘回车键的样式
+                          keyboardType: TextInputType.text, // 键盘回车键的样式
                           textInputAction: TextInputAction.next,
                           controller: TextEditingController(text:widget._etyma.name ?? ''),
                           maxLines: 1,
@@ -103,7 +103,7 @@ class _EditEtymaState extends State<EditEtyma> {
                   SizedBox(height: 20,),
                   TextFormField(
                     autofocus: false,
-                    keyboardType: TextInputType.number, // 键盘回车键的样式
+                    keyboardType: TextInputType.multiline, // 键盘回车键的样式
                     textInputAction: TextInputAction.next,
                     controller: TextEditingController(text:widget._etyma.interpretation),
                     minLines: 1,
