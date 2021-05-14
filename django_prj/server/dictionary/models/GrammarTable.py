@@ -8,6 +8,7 @@ class GrammarTable(models.Model):
     语法表
     """
     id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=128, default='')
     type = JSONFieldUtf8(null=True) # [时态,从句]
     tag = JSONFieldUtf8(null=True) # [重要]
     content = models.TextField() # 内容 markdown文本
