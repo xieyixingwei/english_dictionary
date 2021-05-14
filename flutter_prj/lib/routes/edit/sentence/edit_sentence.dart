@@ -23,11 +23,13 @@ class _EditSentenceState extends State<EditSentence> {
   final GlobalKey _formKey =  GlobalKey<FormState>();
   static const List<String> _types = ['句子', '短语', '固定搭配'];
   String _typeSelected;
-  String _tenseSelected = Global.tenseOptions.first;
+  String _tenseSelected;
+  final List<String> _tenseOptions = ['选择时态'] + Global.tenseOptions;
 
   @override
   void initState() { 
     super.initState();
+    _tenseSelected = widget._sentence.tense == null || widget._sentence.tense.isEmpty ? '选择时态' : widget._sentence.tense;
     _typeSelected = _types[widget._sentence.type];
   }
 
@@ -159,14 +161,14 @@ class _EditSentenceState extends State<EditSentence> {
                     DropdownButtonFormField(
                       autofocus: false,
                       value: _tenseSelected,
-                      items: Global.tenseOptions.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
+                      items: _tenseOptions.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
                       decoration: InputDecoration(
                         prefixText: '时态:  ',
                         prefixStyle: TextStyle(fontSize: 14, color: Color.fromRGBO(132,132,132,1.0)),
                         border: OutlineInputBorder(),
                       ),
                       onChanged: (v) {
-                        widget._sentence.tense = v;
+                        widget._sentence.tense = v == _tenseOptions.first ? '' : v;
                         setState(() => _tenseSelected = v);
                       },
                     ),
