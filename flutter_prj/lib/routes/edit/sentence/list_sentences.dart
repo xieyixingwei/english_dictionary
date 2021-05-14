@@ -17,7 +17,7 @@ class _ListSentencesState extends State<ListSentences> {
   static final List<String> _tenseOptions = ['时态'] + Global.tenseOptions;
   static final List<String> _formOptions = ['句型'] + Global.sentenceFormOptions;
   List<String> ddBtnValues = [_typeOptions.first, _tagOptions.first, _tenseOptions.first, _formOptions.first];
-  num _perPage = 2;
+  num _perPage = 10;
   num _pageIndex = 1;
   final textStyle = const TextStyle(fontSize: 12,);
 
@@ -45,7 +45,7 @@ class _ListSentencesState extends State<ListSentences> {
           if(ret) setState((){});
         },
         perPage: _perPage,
-        perPages: [2, 10, 20, 30, 50],
+        perPages: [10, 20, 30, 50],
         perPageChange: (v) async {
           _pageIndex = 1;
           _perPage = v;

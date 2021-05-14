@@ -155,7 +155,8 @@ class _ListGrammersState extends State<ListGrammers> {
           ListTile(
             dense: true,
             contentPadding: EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 0),
-            title: Text('${e.id}'),
+            leading: Text('${e.id}'),
+            title: Text('${e.title}'),
             trailing: EditDelete(
               edit: () async {
                 var grammar = (await Navigator.pushNamed(
