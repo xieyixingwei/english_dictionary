@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/serializers/index.dart';
-import 'package:flutter_prj/widgets/custom_table.dart';
 import 'package:flutter_prj/widgets/edit_delete.dart';
+import 'package:flutter_prj/widgets/pagination.dart';
 
 
 class ListGrammers extends StatefulWidget {
@@ -135,16 +135,16 @@ class _ListGrammersState extends State<ListGrammers> {
   Widget _buildListGrammars(BuildContext context) =>
     SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(6, 0, 6, 10),
-      child: CustomTable(
-        count: (_grammars.count + _perPage/2) ~/ _perPage,
-        index: _pageIndex,
+      child: Pagination(
+        pages: (_grammars.count / _perPage).ceil(),
+        curPage: _pageIndex,
         goto: (num index) async {
           _pageIndex = index;
           bool ret = await _grammars.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
           if(ret) setState((){});
         },
         perPage: _perPage,
-        perPages: [10, 20, 30, 50],
+        perPageSet: [10, 20, 30, 50],
         perPageChange: (v) async {
           _pageIndex = 1;
           _perPage = v;

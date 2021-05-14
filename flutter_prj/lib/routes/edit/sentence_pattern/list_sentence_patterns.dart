@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/serializers/index.dart';
-import 'package:flutter_prj/widgets/custom_table.dart';
+import 'package:flutter_prj/widgets/pagination.dart';
 import 'package:flutter_prj/widgets/edit_delete.dart';
 
 
@@ -111,16 +111,16 @@ class _ListSentencePatternsState extends State<ListSentencePatterns> {
   Widget _buildListSentencePatterns(BuildContext context) =>
     SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(6, 0, 6, 10),
-      child: CustomTable(
-        count: (_sentencePatterns.count + _perPage/2) ~/ _perPage,
-        index: _pageIndex,
+      child: Pagination(
+        pages: (_sentencePatterns.count / _perPage).ceil(),
+        curPage: _pageIndex,
         goto: (num index) async {
           _pageIndex = index;
           bool ret = await _sentencePatterns.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
           if(ret) setState((){});
         },
         perPage: _perPage,
-        perPages: [10, 20, 30, 50],
+        perPageSet: [10, 20, 30, 50],
         perPageChange: (v) async {
           _pageIndex = 1;
           _perPage = v;
