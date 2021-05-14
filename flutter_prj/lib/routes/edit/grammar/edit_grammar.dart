@@ -78,6 +78,21 @@ class _EditGrammarState extends State<EditGrammar> {
                       //onChanged: (v) => null,
                       //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
+                    TextFormField(
+                      autofocus: false,
+                      keyboardType: TextInputType.multiline, // 键盘回车键的样式
+                      textInputAction: TextInputAction.next,
+                      controller: TextEditingController(text: widget._grammar.content),
+                      minLines: 1,
+                      maxLines: null,
+                      style: TextStyle(fontSize: 14),
+                      decoration: InputDecoration(
+                        labelText: "标题",
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: (v) => widget._grammar.title = v.trim(),
+                      validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
+                    ),
                     WrapOutlineTag(
                       data: widget._grammar.type,
                       labelText: '类型',

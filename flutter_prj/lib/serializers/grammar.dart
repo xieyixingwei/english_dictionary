@@ -17,6 +17,7 @@ class GrammarSerializer {
   num id;
   List<String> type = [];
   List<String> tag = [];
+  String title = '';
   String content = '';
   SingleFile image = SingleFile('image', FileType.image);
   SingleFile vedio = SingleFile('vedio', FileType.video);
@@ -67,6 +68,7 @@ class GrammarSerializer {
     tag = json['tag'] == null
                 ? []
                 : json['tag'].map<String>((e) => e as String).toList();
+    title = json['title'] == null ? null : json['title'] as String;
     content = json['content'] == null ? null : json['content'] as String;
     image.url = json['image'] == null ? null : json['image'] as String;
     vedio.url = json['vedio'] == null ? null : json['vedio'] as String;
@@ -80,6 +82,7 @@ class GrammarSerializer {
     'id': id,
     'type': type == null ? null : type.map((e) => e).toList(),
     'tag': tag == null ? null : tag.map((e) => e).toList(),
+    'title': title,
     'content': content,
     'wordForeign': wordForeign,
     'sentenceForeign': sentenceForeign,
@@ -99,6 +102,7 @@ class GrammarSerializer {
     id = instance.id;
     type = List.from(instance.type);
     tag = List.from(instance.tag);
+    title = instance.title;
     content = instance.content;
     image.from(instance.image);
     vedio.from(instance.vedio);

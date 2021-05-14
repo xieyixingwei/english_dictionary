@@ -478,13 +478,19 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
               '$index. ',
               style: TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.bold, height: 1),
             ),
-            SelectableText(
-              gs.type.join(', '),
-              style: TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.bold, height: 1),
+            SizedBox(width: 8,),
+             SelectableText(
+              gs.title,
+              style: TextStyle(fontSize: 12, color: Colors.black54, fontWeight: FontWeight.bold, height: 1),
             ),
             SizedBox(width: 8,),
             SelectableText(
-              gs.tag.join(' / '),
+              gs.type.join('/'),
+              style: TextStyle(fontSize: 12, color: Colors.black54, fontWeight: FontWeight.bold, height: 1),
+            ),
+            SizedBox(width: 8,),
+            SelectableText(
+              gs.tag.join('/'),
               style: TextStyle(fontSize: 10, color: Colors.black54, height: 1),
             ),
             SizedBox(width: 8,),

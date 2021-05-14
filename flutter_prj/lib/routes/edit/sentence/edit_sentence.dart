@@ -93,7 +93,7 @@ class _EditSentenceState extends State<EditSentence> {
                       keyboardType: TextInputType.text, // 键盘回车键的样式
                       textInputAction: TextInputAction.next,
                       controller: TextEditingController(text:widget._sentence.en),
-                      maxLines: 1,
+                      maxLines: null,
                       style: textStyle,
                       decoration: InputDecoration(
                         labelText: "英文例句",
@@ -108,7 +108,7 @@ class _EditSentenceState extends State<EditSentence> {
                       keyboardType: TextInputType.text, // 键盘回车键的样式
                       textInputAction: TextInputAction.next,
                       controller: TextEditingController(text:widget._sentence.cn),
-                      maxLines: 1,
+                      maxLines: null,
                       style: textStyle,
                       decoration: InputDecoration(
                         labelText: "中文例句",

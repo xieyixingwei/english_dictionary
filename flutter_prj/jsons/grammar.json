@@ -2,6 +2,7 @@
     "id @primary": "num=null", //models.AutoField(primary_key=True)
     "type": [""], // models.JSONField(null=True) # [时态,从句]
     "tag": [""], // models.JSONField(null=True) # [重要]
+    "title": "",
     "content": "", // models.TextField(null=False, blank=True) # 内容 markdown文本
     "image": "$SingleFile image", 
     "vedio": "$SingleFile video",
