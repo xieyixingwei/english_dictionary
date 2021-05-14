@@ -11,14 +11,17 @@ class Global {
   static SharedPreferences _prefs;
   static LocalStoreSerializer localStore = LocalStoreSerializer();
   static NetCache netCache = NetCache(); // 网络缓存对象
-  static List<String> wordTagOptions = [];//["现在分词", "过去分词", "完成时", "第三人称单数", "名词形式", "副词形式", "形容词形式"]
+  static List<String> wordTagOptions = [];
   static List<String> sentenceTagOptions = [];
   static List<String> grammarTypeOptions = [];
   static List<String> grammarTagOptions = [];
   static List<String> etymaOptions = [];
-  static const List<String> partOfSpeechOptions = const ["n.", "vt.", "vi.", "v.", "adj."];
-  static const List<String> tenseOptions = const ["一般现在时", "一般过去时", "将来时"];
-  static const List<String> sentenceFormOptions = const ["定语从句","主语从句","被动句"];
+  static const List<String> partOfSpeechOptions = const ['n.', 'adj.', 'adv.', 'v.', 'vt.', 'vi.', 'pron.', 'num.', 'interj.', 'prep.', 'conj.', 'art.'];
+  static const List<String> tenseOptions = const ['一般过去时', '一般现在时', '一般将来时', '一般过去将来时',
+                                                  '过去进行时', '现在进行时', '将来进行时', '过去将来进行时',
+                                                  '过去完成时', '现在完成时', '将来完成时', '过去将来完成时',
+                                                  '过去完成进行时', '现在完成进行时', '将来完成进行时', '过去将来完成进行时'];
+  static const List<String> sentenceFormOptions = const ['简单句', '复合句', '复合句', '复杂句', '主语从句', '定语从句', '状语从句', '名词性从句'];
   static final List<String> etymaTypeOptions = ['前缀', '后缀', '词根'];
   static List<bool> onOffWidget = [true, true, true];
   static bool isLogin = false;

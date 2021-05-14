@@ -143,13 +143,13 @@ class _ShowWordState extends State<ShowWord> {
       ],
     ) : null;
 
-  Widget get _voiceUsShow => widget.word.voiceUs.isNotEmpty ?
+  Widget get _voiceUsShow =>
     Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         SelectableText(
-          '美 ${widget.word.voiceUs}',
+          '美 ${widget.word.voiceUs ?? ''}',
           style: TextStyle(fontSize: 12, color: Colors.black87, height: 1,),
         ),
         SizedBox(width: 6,),
@@ -169,9 +169,9 @@ class _ShowWordState extends State<ShowWord> {
           onTap: () async {if(widget.word.audioUsWoman == null) return; _audioPlayer.setUrl(widget.word.audioUsWoman); _audioPlayer.start(0);},
         ),
       ]
-    ) : null;
+    );
 
-  Widget get _voiceUkShow => widget.word.voiceUk.isNotEmpty ?
+  Widget get _voiceUkShow =>
     Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -196,7 +196,7 @@ class _ShowWordState extends State<ShowWord> {
           onTap: () async {if(widget.word.audioUkWoman == null) return; _audioPlayer.setUrl(widget.word.audioUkWoman); _audioPlayer.start(0);},
         ),
       ]
-    ) : null;
+    );
 
   Widget get _tagShow => widget.word.tag.isNotEmpty ?
     Text(
