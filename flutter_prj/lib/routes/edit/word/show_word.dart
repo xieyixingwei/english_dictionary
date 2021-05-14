@@ -478,10 +478,10 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
               '$index. ',
               style: TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.bold, height: 1),
             ),
-            SizedBox(width: 8,),
+            SizedBox(width: 2,),
              SelectableText(
               gs.title,
-              style: TextStyle(fontSize: 12, color: Colors.black54, fontWeight: FontWeight.bold, height: 1),
+              style: TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.bold, height: 1),
             ),
             SizedBox(width: 8,),
             SelectableText(
