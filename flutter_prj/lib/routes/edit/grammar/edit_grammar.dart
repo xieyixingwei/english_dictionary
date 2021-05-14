@@ -82,7 +82,7 @@ class _EditGrammarState extends State<EditGrammar> {
                       autofocus: false,
                       keyboardType: TextInputType.multiline, // 键盘回车键的样式
                       textInputAction: TextInputAction.next,
-                      controller: TextEditingController(text: widget._grammar.content),
+                      controller: TextEditingController(text: widget._grammar.title),
                       minLines: 1,
                       maxLines: null,
                       style: TextStyle(fontSize: 14),
