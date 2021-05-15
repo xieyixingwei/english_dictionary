@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_prj/routes/edit/distinguish_word/show_distinguish.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/edit_delete.dart';
 import 'package:flutter_prj/widgets/pagination.dart';
@@ -34,7 +35,7 @@ class _ListDistinguishesState extends State<ListDistinguishes> {
         centerTitle: true,
       ),
       body: Container(
-        padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
+        padding: EdgeInsets.fromLTRB(6, 20, 6, 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -70,44 +71,33 @@ Widget _buildFilterOptions(BuildContext context) =>
 
   Widget _buildFilter(BuildContext context) =>
     Container(
-      //color: Colors.white,
-      padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(flex: 1, child: Container(),),
-          Expanded(
-            flex: 5,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  onChanged: (val) => _distinguishes.filter.content__icontains = val.trim().isEmpty ? null : val.trim(),
-                  decoration: InputDecoration(
-                    labelText: '词义关键字',
-                    border: OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      splashRadius: 1.0,
-                      tooltip: '搜索',
-                      icon: Icon(Icons.search),
-                      onPressed: () async {
-                        bool ret = await _distinguishes.retrieve(queries:{'page_size': 10, 'page_index':1});
-                        if(ret) setState((){});
-                      },
-                    ),
-                  ),
-                ),
-                _buildFilterOptions(context),
-              ],
+          TextField(
+            onChanged: (val) => _distinguishes.filter.content__icontains = val.trim().isEmpty ? null : val.trim(),
+            decoration: InputDecoration(
+              labelText: '词义关键字',
+              border: OutlineInputBorder(),
+              suffixIcon: IconButton(
+                splashRadius: 1.0,
+                tooltip: '搜索',
+                icon: Icon(Icons.search),
+                onPressed: () async {
+                  bool ret = await _distinguishes.retrieve(queries:{'page_size': 10, 'page_index':1});
+                  if(ret) setState((){});
+                },
+              ),
             ),
           ),
-          Expanded(flex: 1, child: Container(),),
+          _buildFilterOptions(context),
         ],
       ),
     );
 
   Widget _buildListDistinguishs(BuildContext context) =>
     SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(6, 0, 6, 10),
+      padding: EdgeInsets.only(top: 20),
       child: Pagination(
         pages: (_distinguishes.count / _perPage).ceil(),
         curPage: _pageIndex,
@@ -125,10 +115,9 @@ Widget _buildFilterOptions(BuildContext context) =>
           if(ret) setState((){});
         },
         rows: _distinguishes.results.map<Widget>((e) => 
-          ListTile(
-            dense: true,
-            contentPadding: EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 0),
-            title: Text('${e.id}'),
+          distinguishItem(
+            context: context,
+            distinguish: e,
             trailing: EditDelete(
               edit: () async {
                 var distinguish = (await Navigator.pushNamed(
@@ -138,7 +127,11 @@ Widget _buildFilterOptions(BuildContext context) =>
                 if(distinguish != null) await e.from(distinguish).save();
                 setState(() {});
               },
-              delete: () {e.delete(); setState(() => _distinguishes.results.remove(e));},
+              delete: () {
+                e.delete();
+                _distinguishes.results.remove(e);
+                setState(() {});
+              },
             ),
           )
         ).toList(),

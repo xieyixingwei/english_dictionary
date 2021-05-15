@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/edit/grammar/show_grammar.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/edit_delete.dart';
 import 'package:flutter_prj/widgets/pagination.dart';
@@ -16,7 +17,7 @@ class _ListGrammersState extends State<ListGrammers> {
   static final List<String> typeOptions = ["类型"] + Global.grammarTypeOptions;
   static final List<String> tagOptions = ["Tag"] + Global.grammarTagOptions;
   List<String> ddBtnValues = [typeOptions.first, tagOptions.first];
-  final textStyle = const TextStyle(fontSize: 12,);
+  final textStyle = const TextStyle(fontSize: 12, color: Colors.black45);
   num _perPage = 10;
   num _pageIndex = 1;
 
@@ -39,7 +40,7 @@ class _ListGrammersState extends State<ListGrammers> {
         centerTitle: true,
       ),
       body: Container(
-        padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
+        margin: EdgeInsets.fromLTRB(6, 20, 6, 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -57,7 +58,7 @@ class _ListGrammersState extends State<ListGrammers> {
       spacing: 10,
       children: [
         SizedBox(width: 2,),
-        Text('过滤:', style: TextStyle(fontSize: 12, color: Color.fromRGBO(132,132,132,1.0), fontWeight: FontWeight.bold)),
+        Text('过滤:', style: TextStyle(fontSize: 12, color: Colors.black38, fontWeight: FontWeight.bold)),
         DropdownButton(
           isDense: true,
           value: ddBtnValues[0],
@@ -96,45 +97,34 @@ class _ListGrammersState extends State<ListGrammers> {
 
   Widget _buildFilter(BuildContext context) {
     return Container(
-      //color: Colors.white,
-      padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(flex: 1, child: Container(),),
-          Expanded(
-            flex: 5,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  onChanged: (val) => _grammars.filter.content__icontains = val.trim().length == 0 ? null : val.trim(),
-                  decoration: InputDecoration(
-                    labelText: '关键字',
-                    border: OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      splashRadius: 1.0,
-                      tooltip: '搜索',
-                      icon: Icon(Icons.search),
-                      onPressed: () async {
-                        bool ret = await _grammars.retrieve(queries:{'page_size': _perPage, 'page_index':_pageIndex});
-                        if(ret) setState((){});
-                      },
-                    ),
-                  ),
-                ),
-                _buildFilterOptions(context),
-              ]
+          TextField(
+            onChanged: (val) => _grammars.filter.content__icontains = val.trim().length == 0 ? null : val.trim(),
+            decoration: InputDecoration(
+              labelText: '关键字',
+              border: OutlineInputBorder(),
+              suffixIcon: IconButton(
+                splashRadius: 1.0,
+                tooltip: '搜索',
+                icon: Icon(Icons.search),
+                onPressed: () async {
+                  bool ret = await _grammars.retrieve(queries:{'page_size': _perPage, 'page_index':_pageIndex});
+                  if(ret) setState((){});
+                },
+              ),
             ),
           ),
-          Expanded(flex: 1, child: Container(),),
-        ],
+          _buildFilterOptions(context),
+        ]
       ),
     );
   }
 
   Widget _buildListGrammars(BuildContext context) =>
     SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(6, 0, 6, 10),
+      padding: EdgeInsets.only(top: 20),
       child: Pagination(
         pages: (_grammars.count / _perPage).ceil(),
         curPage: _pageIndex,
@@ -152,11 +142,9 @@ class _ListGrammersState extends State<ListGrammers> {
           if(ret) setState((){});
         },
         rows: _grammars.results.map<Widget>((e) => 
-          ListTile(
-            dense: true,
-            contentPadding: EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 0),
-            leading: Text('${e.id}'),
-            title: Text('${e.title}'),
+          grammarItem(
+            context: context,
+            grammar: e,
             trailing: EditDelete(
               edit: () async {
                 var grammar = (await Navigator.pushNamed(
@@ -166,7 +154,11 @@ class _ListGrammersState extends State<ListGrammers> {
                 if(grammar != null) await e.from(grammar).save();
                 setState(() {});
               },
-              delete: () {e.delete(); setState(() => _grammars.results.remove(e));},
+              delete: () {
+                e.delete();
+                _grammars.results.remove(e);
+                setState(() {});
+              },
             ),
           )
         ).toList(),

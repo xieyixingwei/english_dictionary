@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/edit/word/show_word.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/pagination.dart';
 import 'package:flutter_prj/widgets/edit_delete.dart';
@@ -38,7 +39,7 @@ class _ListWordsState extends State<ListWords> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
+        padding: EdgeInsets.fromLTRB(6, 20, 6, 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -88,50 +89,38 @@ class _ListWordsState extends State<ListWords> {
       ],
     );
 
-  Widget _buildFilter(BuildContext context) {
-    return Container(
-      //color: Colors.white,
-      padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
-      child: Row(
-        children: [
-          Expanded(flex: 1, child: Container(),),
-          Expanded(
-            flex: 5,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  style: TextStyle(fontSize: 14,),
-                  onChanged: (v) => _words.filter.name = v.trim().isEmpty ? null : v.trim(),
-                  decoration: InputDecoration(
-                    isDense: true,
-                    contentPadding: EdgeInsets.only(left: 6, right: 6),
-                    hintText: '单词',
-                    border: OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      splashRadius: 1.0,
-                      tooltip: '搜索',
-                      icon: Icon(Icons.search),
-                      onPressed: () async {
-                        bool ret = await _words.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
-                        if(ret) setState((){});
-                      },
-                    ),
-                  ),
-                ),
-                _buildFilterOptions(context),
-              ],
+  Widget _buildFilter(BuildContext context) =>
+    Container(
+      child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          style: TextStyle(fontSize: 14,),
+          onChanged: (v) => _words.filter.name = v.trim().isEmpty ? null : v.trim(),
+          decoration: InputDecoration(
+            isDense: true,
+            contentPadding: EdgeInsets.only(left: 6, right: 6),
+            hintText: '单词',
+            border: OutlineInputBorder(),
+            suffixIcon: IconButton(
+              splashRadius: 1.0,
+              tooltip: '搜索',
+              icon: Icon(Icons.search),
+              onPressed: () async {
+                bool ret = await _words.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+                if(ret) setState((){});
+              },
             ),
           ),
-          Expanded(flex: 1, child: Container(),),
-        ],
-      ),
-    );
-  }
+        ),
+        _buildFilterOptions(context),
+      ],
+    ),
+  );
 
   Widget _buildListWords(BuildContext context) =>
     Container(
-      padding: EdgeInsets.fromLTRB(6, 0, 6, 10),
+      padding: EdgeInsets.only(top: 10),
       child: Pagination(
         pages: (_words.count / _perPage).ceil(),
         curPage: _pageIndex,
@@ -149,10 +138,9 @@ class _ListWordsState extends State<ListWords> {
           if(ret) setState((){});
         },
         rows: _words.results.map<Widget>((e) => 
-          ListTile(
-            dense: true,
-            contentPadding: EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 0),
-            title: Text(e.name),
+          wordItem(
+            context: context,
+            word: e,
             trailing: EditDelete(
               edit: () async {
                 var word = (await Navigator.pushNamed(
@@ -162,9 +150,12 @@ class _ListWordsState extends State<ListWords> {
                 if(word != null) await e.from(word).save();
                 setState(() {});
               },
-              delete: () {e.delete(); setState(() => _words.results.remove(e));},
+              delete: () {
+                e.delete();
+                _words.results.remove(e);
+                setState(() {});
+              },
             ),
-            onTap: () => Navigator.pushNamed(context, '/show_word', arguments: {'title': '${e.name}的$e', 'word': e}),
           )
         ).toList(),
       ),

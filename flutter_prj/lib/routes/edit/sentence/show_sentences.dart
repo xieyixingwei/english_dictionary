@@ -126,4 +126,19 @@ class _ShowSentencesPageState extends State<ShowSentencesPage> {
 
 
 
+Widget sentenceItem({BuildContext context, SentenceSerializer sentence, Widget trailing}) {
+  String subTitle = sentence.cn ?? ''  + '  ' + sentence.tag?.join('/') + '  ' + sentence.tense ?? '';
+
+  return ListTile(
+    dense: true,
+    horizontalTitleGap: 0,
+    minVerticalPadding: 0,
+    minLeadingWidth: 30,
+    contentPadding: EdgeInsets.only(left: 14, right: 14, top: 0, bottom: 0),
+    leading: Text('${sentence.id}', style: TextStyle(fontSize: 14, color: Colors.black45)),
+    title: Text('${sentence.en}', style: TextStyle(fontSize: 14, color: Colors.black87)),
+    subtitle: Text(subTitle, style: TextStyle(fontSize: 12, color: Colors.black45)),
+    trailing: trailing,
+  );
+}
 

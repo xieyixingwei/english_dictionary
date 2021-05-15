@@ -31,7 +31,6 @@ class Pagination extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
     Column(
-
       children: [
         title,
         header,
@@ -77,11 +76,11 @@ class Pagination extends StatelessWidget {
     final maxCountHalf = maxIndexs / 2;
     final count = pages < maxIndexs ? pages : maxIndexs;
     num start = 1;
-    if(curPage - maxCountHalf > 0 && curPage + maxCountHalf <= pages) {
-      start = curPage - maxCountHalf;
-    } else if(curPage - maxCountHalf <= 0) {
+    if(curPage < maxIndexs || curPage - maxCountHalf <= 0) {
       start = 1;
-    }else if(curPage + maxCountHalf > pages) {
+    } else if(curPage - maxCountHalf > 0 && curPage + maxCountHalf <= pages) {
+      start = curPage - maxCountHalf;
+    } else if(curPage + maxCountHalf > pages) {
       start = pages - maxIndexs + 1;
     }
     var indexs = List<Widget>.generate(count, (i) =>

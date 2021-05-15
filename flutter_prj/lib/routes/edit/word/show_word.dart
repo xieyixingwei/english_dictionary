@@ -655,3 +655,18 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
 }
 
 
+Widget wordItem({BuildContext context, WordSerializer word, Widget trailing}) {
+  String subTitle = word.tag.join('/');
+
+  return ListTile(
+    dense: true,
+    horizontalTitleGap: 0,
+    minVerticalPadding: 0,
+    minLeadingWidth: 30,
+    contentPadding: EdgeInsets.only(left: 14, right: 14, top: 0, bottom: 0),
+    title: Text('${word.name}', style: TextStyle(fontSize: 14, color: Colors.black87)),
+    subtitle: Text(subTitle, style: TextStyle(fontSize: 12, color: Colors.black45)),
+    trailing: trailing,
+    onTap: () => Navigator.pushNamed(context, '/show_word', arguments: {'title': '', 'word': word}),
+  );
+}

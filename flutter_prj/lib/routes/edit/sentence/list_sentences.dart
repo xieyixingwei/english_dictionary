@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/edit/sentence/show_sentences.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/edit_delete.dart';
 import 'package:flutter_prj/widgets/pagination.dart';
@@ -35,7 +36,7 @@ class _ListSentencesState extends State<ListSentences> {
 
   Widget _buildListSentences(BuildContext context) =>
     Container(
-      padding: EdgeInsets.fromLTRB(6, 0, 6, 10),
+      margin: EdgeInsets.only(top: 10),
       child: Pagination(
         pages: (_sentences.count / _perPage).ceil(),
         curPage: _pageIndex,
@@ -53,13 +54,9 @@ class _ListSentencesState extends State<ListSentences> {
           if(ret) setState((){});
         },
         rows: _sentences.results.map<Widget>((e) => 
-          ListTile(
-            dense: true,
-            contentPadding: EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 0),
-            minLeadingWidth: 20,
-            leading: Text('${e.id}'),
-            title: Text(e.en),
-            subtitle: Text(e.cn),
+          sentenceItem(
+            context: context,
+            sentence: e,
             trailing: EditDelete(
               edit: () async {
                 var sentence = (await Navigator.pushNamed(
@@ -69,7 +66,11 @@ class _ListSentencesState extends State<ListSentences> {
                 if(sentence != null) await e.from(sentence).save();
                 setState(() {});
               },
-              delete: () {e.delete(); setState(() => _sentences.results.remove(e));},
+              delete: () {
+                e.delete();
+                _sentences.results.remove(e);
+                setState(() {});
+              },
             ),
           )
         ).toList(),
@@ -84,7 +85,7 @@ class _ListSentencesState extends State<ListSentences> {
               centerTitle: true,
             ),
             body: SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                padding: EdgeInsets.fromLTRB(6, 20, 6, 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -163,43 +164,33 @@ class _ListSentencesState extends State<ListSentences> {
       ],
     );
 
-  Widget _buildFilter(BuildContext context) {
-    return Container(
-        child: Row(
-          children: [
-            Expanded(flex: 1, child: Container(),),
-            Expanded(
-              flex: 5,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextField(
-                    style: textStyle,
-                    maxLines: null,
-                    onChanged: (v) {
-                      _sentences.filter.en__icontains = v.trim().isNotEmpty ? v.trim() : null;
-                    },
-                    decoration: InputDecoration(
-                      hintText: '关键字',
-                      border: OutlineInputBorder(),
-                      suffixIcon: IconButton(
-                        splashRadius: 1.0,
-                        tooltip: '搜索',
-                        icon: Icon(Icons.search),
-                        onPressed: () async {
-                          bool ret = await _sentences.retrieve(queries:{'page_size': 10, 'page_index':1});
-                          if(ret) setState((){});
-                        },
-                      ),
-                    ),
-                  ),
-                _buildFilterOptions(context),
-                ],
+  Widget _buildFilter(BuildContext context) =>
+    Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            style: textStyle,
+            maxLines: null,
+            onChanged: (v) {
+              _sentences.filter.en__icontains = v.trim().isNotEmpty ? v.trim() : null;
+            },
+            decoration: InputDecoration(
+              hintText: '关键字',
+              border: OutlineInputBorder(),
+              suffixIcon: IconButton(
+                splashRadius: 1.0,
+                tooltip: '搜索',
+                icon: Icon(Icons.search),
+                onPressed: () async {
+                  bool ret = await _sentences.retrieve(queries:{'page_size': 10, 'page_index':1});
+                  if(ret) setState((){});
+                },
               ),
             ),
-            Expanded(flex: 1, child: Container(),),
-          ],
-        ),
-      );
-  }
+          ),
+        _buildFilterOptions(context),
+        ],
+      ),
+    );
 }
