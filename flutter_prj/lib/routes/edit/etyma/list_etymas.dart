@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/edit/etyma/show_etyma.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/pagination.dart';
 import 'package:flutter_prj/widgets/edit_delete.dart';
@@ -37,8 +38,8 @@ class _ListEtymasState extends State<ListEtymas> {
         title: Text('编辑词根词缀'),
         centerTitle: true,
       ),
-      body: Container(
-        padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.fromLTRB(6, 20, 6, 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -83,49 +84,37 @@ class _ListEtymasState extends State<ListEtymas> {
     );
 
 
-  Widget _buildFilter(BuildContext context) {
-    return Container(
-      //color: Colors.white,
-      padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
-      child: Row(
+  Widget _buildFilter(BuildContext context) =>
+    Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(flex: 1, child: Container(),),
-          Expanded(
-            flex: 5,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  maxLines: 1,
-                  style: TextStyle(fontSize: 14,),
-                  onChanged: (val) => (v) => _etymas.filter.name__icontains = v.trim().isNotEmpty ? v.trim() : null,
-                  decoration: InputDecoration(
-                    hintText: '词根词缀',
-                    border: OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      splashRadius: 1.0,
-                      tooltip: '搜索',
-                      icon: Icon(Icons.search),
-                      onPressed: () async {
-                        await _etymas.retrieve(queries:{"page_size": 10, "page_index":1});
-                        setState((){});
-                      },
-                    ),
-                  ),
-                ),
-                _buildFilterOptions(context),
-              ],
+          TextField(
+            maxLines: 1,
+            style: TextStyle(fontSize: 14,),
+            onChanged: (val) => (v) => _etymas.filter.name__icontains = v.trim().isNotEmpty ? v.trim() : null,
+            decoration: InputDecoration(
+              hintText: '词根词缀',
+              border: OutlineInputBorder(),
+              suffixIcon: IconButton(
+                splashRadius: 1.0,
+                tooltip: '搜索',
+                icon: Icon(Icons.search),
+                onPressed: () async {
+                  await _etymas.retrieve(queries:{"page_size": 10, "page_index":1});
+                  setState((){});
+                },
+              ),
             ),
           ),
-          Expanded(flex: 1, child: Container(),),
+          _buildFilterOptions(context),
         ],
       ),
     );
-  }
 
   Widget _buildListEtyma(BuildContext context) =>
-    SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(6, 0, 6, 10),
+    Container(
+      padding: EdgeInsets.only(top: 10),
       child: Pagination(
         pages: (_etymas.count / _perPage).ceil(),
         curPage: _pageIndex,
@@ -143,10 +132,9 @@ class _ListEtymasState extends State<ListEtymas> {
           if(ret) setState((){});
         },
         rows: _etymas.results.map<Widget>((e) => 
-          ListTile(
-            dense: true,
-            contentPadding: EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 0),
-            title: Text(e.name),
+          etymaItem(
+            context: context,
+            etyma: e,
             trailing: EditDelete(
               edit: () async {
                 var etyma = (await Navigator.pushNamed(
@@ -156,7 +144,11 @@ class _ListEtymasState extends State<ListEtymas> {
                 if(etyma != null) await e.from(etyma).save();
                 setState(() {});
               },
-              delete: () {e.delete(); setState(() => _etymas.results.remove(e));},
+              delete: () {
+                e.delete();
+                _etymas.results.remove(e);
+                setState(() {});
+              },
             ),
           )
         ).toList(),

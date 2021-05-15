@@ -125,10 +125,16 @@ class _ShowSentencesPageState extends State<ShowSentencesPage> {
     );
 
 
-
 Widget sentenceItem({BuildContext context, SentenceSerializer sentence, Widget trailing}) {
-  String subTitle = sentence.cn ?? ''  + '  ' + sentence.tag?.join('/') + '  ' + sentence.tense ?? '';
-
+  Widget subtitle = Text.rich(
+    TextSpan(
+        children: [
+          TextSpan(text: '${sentence.cn}', style: TextStyle(fontSize: 12, color: Colors.black45)),
+          TextSpan(text: '    ${sentence.tag?.join('/')}', style: TextStyle(fontSize: 10, color: Colors.black45)),
+          TextSpan(text: '    ${sentence.tense ?? ""}', style: TextStyle(fontSize: 10, color: Colors.black45)),
+        ]
+      )
+  );
   return ListTile(
     dense: true,
     horizontalTitleGap: 0,
@@ -137,7 +143,7 @@ Widget sentenceItem({BuildContext context, SentenceSerializer sentence, Widget t
     contentPadding: EdgeInsets.only(left: 14, right: 14, top: 0, bottom: 0),
     leading: Text('${sentence.id}', style: TextStyle(fontSize: 14, color: Colors.black45)),
     title: Text('${sentence.en}', style: TextStyle(fontSize: 14, color: Colors.black87)),
-    subtitle: Text(subTitle, style: TextStyle(fontSize: 12, color: Colors.black45)),
+    subtitle: subtitle,
     trailing: trailing,
   );
 }

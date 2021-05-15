@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/Tag.dart';
+import 'package:flutter_prj/widgets/column_space.dart';
 import 'package:flutter_prj/widgets/wrap_custom.dart';
 
 
@@ -53,8 +54,9 @@ class _EditSentencePatternState extends State<EditSentencePattern> {
             child: Form(
               key: _formKey, //设置globalKey，用于后面获取FormState
               autovalidateMode: AutovalidateMode.always, //开启自动校验
-              child:Column(
+              child: ColumnSpace(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                divider: SizedBox(height: 20,),
                 children: [
                   TextFormField(
                     autofocus: false,
@@ -79,7 +81,6 @@ class _EditSentencePatternState extends State<EditSentencePattern> {
                     onChanged: (v) => widget._sentencePattern.id = num.parse(v.trim()),
                     validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                   ),
-                  SizedBox(height: 20,),
                   TextFormField(
                     autofocus: false,
                     keyboardType: TextInputType.text, // 键盘回车键的样式
@@ -94,13 +95,12 @@ class _EditSentencePatternState extends State<EditSentencePattern> {
                     onChanged: (v) => widget._sentencePattern.content = v.trim(),
                     validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                   ),
-                  SizedBox(height: 20,),
-                  WrapOutline(
-                    labelText: '释义',
+                  ListOutline(
+                    labelText: '释义(markdown)',
                     children: widget._sentencePattern.paraphraseSet.map<Widget>((e) =>
                       Tag(
                         label: InkWell(
-                          child: Text('${e.interpret}', style: TextStyle(color: Colors.black87)),
+                          child: Text('${e.partOfSpeech} ${e.interpret}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                           onTap: () async {
                             var paraphrase = (await Navigator.pushNamed(context, '/edit_paraphrase', arguments: {'title':'编辑常用句型的释义', 'paraphrase': ParaphraseSerializer().from(e)})) as ParaphraseSerializer;
                             if(paraphrase != null) {

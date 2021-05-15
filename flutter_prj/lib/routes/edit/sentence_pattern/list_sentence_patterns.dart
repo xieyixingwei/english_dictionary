@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_prj/routes/edit/sentence_pattern/show_sentence_pattern.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/pagination.dart';
 import 'package:flutter_prj/widgets/edit_delete.dart';
@@ -34,8 +35,8 @@ class _ListSentencePatternsState extends State<ListSentencePatterns> {
         title: Text('编辑常用句型'),
         centerTitle: true,
       ),
-      body: Container(
-        padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.fromLTRB(6, 20, 6, 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -68,49 +69,37 @@ class _ListSentencePatternsState extends State<ListSentencePatterns> {
     );
 
             
-  Widget _buildFilter(BuildContext context) {
-    return Container(
-      //color: Colors.white,
-      padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
-      child: Row(
-          children: [
-            Expanded(flex: 1, child: Container(),),
-            Expanded(
-              flex: 5,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextField(
-                    maxLines: 1,
-                    style: TextStyle(fontSize: 14,),
-                    onChanged: (v) => {},
-                    decoration: InputDecoration(
-                      hintText: '关键字',
-                      border: OutlineInputBorder(),
-                      suffixIcon: IconButton(
-                        splashRadius: 1.0,
-                        tooltip: '搜索',
-                        icon: Icon(Icons.search),
-                        onPressed: () async {
-                          await _sentencePatterns.retrieve(queries:{"page_size": 10, "page_index":1});
-                          setState((){});
-                        },
-                      ),
-                    ),
-                  ),
-                  _buildFilterOptions(context),
-                ],
+  Widget _buildFilter(BuildContext context) =>
+    Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            maxLines: 1,
+            style: TextStyle(fontSize: 14,),
+            onChanged: (v) => {},
+            decoration: InputDecoration(
+              hintText: '关键字',
+              border: OutlineInputBorder(),
+              suffixIcon: IconButton(
+                splashRadius: 1.0,
+                tooltip: '搜索',
+                icon: Icon(Icons.search),
+                onPressed: () async {
+                  await _sentencePatterns.retrieve(queries:{"page_size": 10, "page_index":1});
+                  setState((){});
+                },
               ),
             ),
-            Expanded(flex: 1, child: Container(),),
-          ],
-        ),
-      );
-  }
+          ),
+          _buildFilterOptions(context),
+        ],
+      ),
+    );
 
   Widget _buildListSentencePatterns(BuildContext context) =>
-    SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(6, 0, 6, 10),
+    Container(
+      padding: EdgeInsets.only(top: 10),
       child: Pagination(
         pages: (_sentencePatterns.count / _perPage).ceil(),
         curPage: _pageIndex,
@@ -128,10 +117,9 @@ class _ListSentencePatternsState extends State<ListSentencePatterns> {
           if(ret) setState((){});
         },
         rows: _sentencePatterns.results.map<Widget>((e) => 
-          ListTile(
-            dense: true,
-            contentPadding: EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 0),
-            title: Text('${e.id}'),
+          sentencePattrenItem(
+            context: context,
+            sp: e,
             trailing: EditDelete(
               edit: () async {
                 var sentencePattern = (await Navigator.pushNamed(
@@ -141,7 +129,11 @@ class _ListSentencePatternsState extends State<ListSentencePatterns> {
                 if(sentencePattern != null) e.from(sentencePattern).save();
                 setState(() {});
               },
-              delete: () {e.delete(); setState(() => _sentencePatterns.results.remove(e));},
+              delete: () {
+                e.delete();
+                _sentencePatterns.results.remove(e);
+                setState(() {});
+              },
             ),
           )
         ).toList(),

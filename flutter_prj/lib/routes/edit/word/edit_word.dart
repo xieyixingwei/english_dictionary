@@ -145,21 +145,22 @@ class _EditWordState extends State<EditWord> {
                       maxLines: null,
                       style: _textStyle,
                       decoration: InputDecoration(
-                        labelText: "词源",
+                        labelText: "词源(markdown)",
                         border: OutlineInputBorder(),
                       ),
                       onChanged: (v) => widget.word.origin = v.trim(),
                       //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
-                    WrapOutline(
+                    ListOutline(
                       labelText: '释义',
                       children: widget.word.paraphraseSet.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: ConstrainedBox(
-                              child: Text('${e.partOfSpeech} ${e.interpret}', overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.black87)),
-                              constraints: BoxConstraints(maxWidth:80.0),
-                            ),
+                            child: //ConstrainedBox(
+                              //child: 
+                              Text('${e.partOfSpeech} ${e.interpret}', overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
+                              //constraints: BoxConstraints(maxWidth:80.0),
+                            //),
                             onTap: () async {
                               var p = ParaphraseSerializer()..id = e.id;
                               bool ret = await p.retrieve();
@@ -173,7 +174,8 @@ class _EditWordState extends State<EditWord> {
                             },
                           ),
                           onDeleted: () => setState(() => widget.word.antonym.remove(e)),
-                        )).toList(),
+                        )
+                      ).toList(),
                       suffix: TextButton(
                         child: Text('添加'),
                         onPressed: () async {
@@ -187,12 +189,12 @@ class _EditWordState extends State<EditWord> {
                         },
                       ),
                     ),
-                    WrapOutline(
+                    ListOutline(
                       labelText: '常用句型',
                       children: widget.word.sentencePatternSet.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text('${e.content}', style: TextStyle(color: Colors.black87)),
+                            child: Text('${e.content}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                             onTap: () async {
                               var s = SentencePatternSerializer()..id = e.id;
                               bool ret = await s.retrieve();
@@ -208,24 +210,24 @@ class _EditWordState extends State<EditWord> {
                           onDeleted: () => setState(() => widget.word.sentencePatternSet.remove(e)),
                         )).toList(),
                       suffix: TextButton(
-                            child: Text('添加',),
-                            onPressed: () async {
-                              var s = (await Navigator.pushNamed(context, '/edit_sentence_pattern', arguments: {'title':'给${widget.word.name}添加常用句型'})) as SentencePatternSerializer;
-                              if(s != null) {
-                                bool ret = await s.save();
-                                if(ret) {
-                                  setState(() => widget.word.sentencePatternSet.add(s));
-                                }
-                              }
-                            },
-                          ),
+                        child: Text('添加',),
+                        onPressed: () async {
+                          var s = (await Navigator.pushNamed(context, '/edit_sentence_pattern', arguments: {'title':'给${widget.word.name}添加常用句型'})) as SentencePatternSerializer;
+                          if(s != null) {
+                            bool ret = await s.save();
+                            if(ret) {
+                              setState(() => widget.word.sentencePatternSet.add(s));
+                            }
+                          }
+                        },
+                      ),
                     ),
-                    WrapOutline(
+                    ListOutline(
                       labelText: '相关语法',
                       children: widget.word.grammarSet.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text('${e.id}', style: TextStyle(color: Colors.black87)),
+                            child: Text('${e.title}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                             onTap: () async {
                               var g = GrammarSerializer()..id = e.id;
                               bool ret = await g.retrieve();
@@ -253,12 +255,12 @@ class _EditWordState extends State<EditWord> {
                         },
                       ),
                     ),
-                    WrapOutline(
+                    ListOutline(
                       labelText: '词义辨析',
                       children: widget.word.distinguishSet.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text('${e.id}', style: TextStyle(color: Colors.black87)),
+                            child: Text('${e.wordsForeign.join(", ")}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                             onTap: () async {
                               var d = DistinguishSerializer()..id = e.id;
                               bool ret = await d.retrieve();
@@ -287,8 +289,7 @@ class _EditWordState extends State<EditWord> {
                       ),
                     ),
                     TextFormField(
-                      autofocus: false,
-                      keyboardType: TextInputType.number, // 键盘回车键的样式
+                      keyboardType: TextInputType.multiline, // 键盘回车键的样式
                       textInputAction: TextInputAction.next,
                       controller: TextEditingController(text: widget.word.shorthand),
                       maxLines: null,
@@ -305,7 +306,7 @@ class _EditWordState extends State<EditWord> {
                       children: widget.word.synonym.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text(e, style: TextStyle(color: Colors.black87)),
+                            child: Text(e, style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                             onTap: () async {
                               var word = WordSerializer()..name = e;
                               bool ret = await word.retrieve();
@@ -338,7 +339,7 @@ class _EditWordState extends State<EditWord> {
                       children: widget.word.antonym.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text(e, style: TextStyle(color: Colors.black87)),
+                            child: Text(e, style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                             onTap: () async {
                               var word = WordSerializer()..name = e;
                               bool ret = await word.retrieve();

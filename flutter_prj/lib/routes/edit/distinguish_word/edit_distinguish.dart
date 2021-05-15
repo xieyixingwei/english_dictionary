@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/serializers/distinguish.dart';
+import 'package:flutter_prj/widgets/column_space.dart';
 import 'package:flutter_prj/widgets/pop_dialog.dart';
 import 'package:flutter_prj/widgets/wrap_custom.dart';
 
@@ -47,8 +48,9 @@ class _EditDistinguishState extends State<EditDistinguish> {
               child: Form(
                 key: _formKey, //设置globalKey，用于后面获取FormState
                 autovalidateMode: AutovalidateMode.always, //开启自动校验
-                child:Column(
+                child: ColumnSpace(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  divider: SizedBox(height: 20,),
                   children: [
                     TextFormField(
                       autofocus: false,
@@ -73,7 +75,6 @@ class _EditDistinguishState extends State<EditDistinguish> {
                       onChanged: (v) => widget._distinguish.id = num.parse(v.trim()),
                       //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
-                    SizedBox(height: 20,),
                     WrapOutlineTag(
                       data: widget._distinguish.wordsForeign,
                       labelText: '辨析单词',
@@ -86,9 +87,7 @@ class _EditDistinguishState extends State<EditDistinguish> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20,),
                     TextFormField(
-                      autofocus: false,
                       keyboardType: TextInputType.multiline,
                       textInputAction: TextInputAction.newline,
                       controller: TextEditingController(text: widget._distinguish.content),

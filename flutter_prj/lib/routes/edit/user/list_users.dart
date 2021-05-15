@@ -25,25 +25,6 @@ class _ListUsersState extends State<ListUsers> {
     setState(() => _users = users);
   }
 
-  _buildListUsers(BuildContext context) =>
-    Expanded(
-      child: ListView(
-        children: _users.map<Widget>((e) =>
-          ListTile(
-            title: Text(e.uname),
-            trailing: EditDelete(
-              edit: () async {
-                var user = (await Navigator.pushNamed(context, '/edit_user', arguments:{'title':'编辑用户','user': UserSerializer().from(e)})) as UserSerializer;
-                if(user != null) await e.from(user).update();
-                setState(() {});
-              },
-              delete: () { e.delete(); setState(() => _users.remove(e));},
-            ),
-          )
-        ).toList(),
-      )
-    );
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,31 +32,57 @@ class _ListUsersState extends State<ListUsers> {
           title: Text('管理用户'),
           centerTitle: true,
         ),
-        body: Container(
-            padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildListUsers(context),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: ElevatedButton(
-                        child: Text("添加用户"),
-                        onPressed: () async {
-                           var user = (await Navigator.pushNamed(context, '/edit_user', arguments:{'title':'编辑用户'})) as UserSerializer;
-                          if(user != null) {
-                            bool ret = await user.register();
-                            if(ret) setState(() => _users.add(user));
-                          }
-                        },
-                      ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(6, 20, 6, 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildListUsers(context),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: ElevatedButton(
+                      child: Text("添加用户"),
+                      onPressed: () async {
+                        var user = (await Navigator.pushNamed(context, '/edit_user', arguments:{'title':'编辑用户'})) as UserSerializer;
+                        if(user != null) {
+                          bool ret = await user.register();
+                          if(ret) setState(() => _users.add(user));
+                        }
+                      },
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        );
+        ),
+      );
   }
+
+  _buildListUsers(BuildContext context) =>
+    Container(
+      child: Column(
+        children: _users.map<Widget>((e) =>
+          ListTile(
+            title: Text(e.uname),
+            trailing: EditDelete(
+              edit: () async {
+                var user = (await Navigator.pushNamed(context,
+                                                      '/edit_user',
+                                                      arguments:{'title':'编辑用户','user': UserSerializer().from(e)})
+                ) as UserSerializer;
+                if(user != null) await e.from(user).update();
+                setState(() {});
+              },
+              delete: () {
+                e.delete();
+                _users.remove(e);
+                setState(() {});
+              },
+            ),
+          )
+        ).toList(),
+      )
+    );
 }

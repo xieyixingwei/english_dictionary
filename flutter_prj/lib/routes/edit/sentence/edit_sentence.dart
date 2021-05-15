@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/widgets/Tag.dart';
 import 'package:flutter_prj/serializers/index.dart';
+import 'package:flutter_prj/widgets/column_space.dart';
 import 'package:flutter_prj/widgets/pop_dialog.dart';
 import 'package:flutter_prj/widgets/wrap_custom.dart';
 
@@ -62,11 +63,11 @@ class _EditSentenceState extends State<EditSentence> {
               child: Form(
                 key: _formKey, //设置globalKey，用于后面获取FormState
                 //autovalidateMode: AutovalidateMode.always, //开启自动校验
-                child: Column(
+                child: ColumnSpace(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  divider: SizedBox(height: 20,),
                   children: [
                     TextFormField(
-                      autofocus: false,
                       keyboardType: TextInputType.number, // 键盘回车键的样式
                       textInputAction: TextInputAction.next,
                       controller: idctrl,
@@ -89,9 +90,7 @@ class _EditSentenceState extends State<EditSentence> {
                       //onChanged: (v) => null,
                       //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
-                    SizedBox(height: 20,),
                     TextFormField(
-                      autofocus: false,
                       keyboardType: TextInputType.text, // 键盘回车键的样式
                       textInputAction: TextInputAction.next,
                       controller: TextEditingController(text:widget._sentence.en),
@@ -104,9 +103,7 @@ class _EditSentenceState extends State<EditSentence> {
                       onChanged: (v) => widget._sentence.en = v.trim(),
                       validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
-                    SizedBox(height: 20,),
                     TextFormField(
-                      autofocus: false,
                       keyboardType: TextInputType.text, // 键盘回车键的样式
                       textInputAction: TextInputAction.next,
                       controller: TextEditingController(text:widget._sentence.cn),
@@ -119,9 +116,7 @@ class _EditSentenceState extends State<EditSentence> {
                       onChanged: (v) => widget._sentence.cn = v.trim(),
                       validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
-                    SizedBox(height: 20,),
                     DropdownButtonFormField(
-                      autofocus: false,
                       value: _typeSelected,
                       items: _types.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
                       decoration: InputDecoration(
@@ -134,7 +129,6 @@ class _EditSentenceState extends State<EditSentence> {
                         setState(() => _typeSelected = v);
                       },
                     ),
-                    SizedBox(height: 20,),
                     WrapOutlineTag(
                       data: widget._sentence.tag,
                       labelText: 'Tag',
@@ -157,9 +151,7 @@ class _EditSentenceState extends State<EditSentence> {
                         ]
                       )
                     ),
-                    SizedBox(height: 20,),
                     DropdownButtonFormField(
-                      autofocus: false,
                       value: _tenseSelected,
                       items: _tenseOptions.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
                       decoration: InputDecoration(
@@ -172,7 +164,6 @@ class _EditSentenceState extends State<EditSentence> {
                         setState(() => _tenseSelected = v);
                       },
                     ),
-                    SizedBox(height: 20,),
                     WrapOutlineTag(
                       data: widget._sentence.pattern,
                       labelText: '句型',
@@ -186,13 +177,12 @@ class _EditSentenceState extends State<EditSentence> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20,),
                     WrapOutline(
                       labelText: '同义句',
                       children: widget._sentence.synonym.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text('$e', style: TextStyle(color: Colors.black87)),
+                            child: Text('$e', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                             onTap: () async {
                               var sentence = SentenceSerializer()..id = e;
                               bool ret = await sentence.retrieve();
@@ -223,13 +213,12 @@ class _EditSentenceState extends State<EditSentence> {
                         },
                       ),
                     ),
-                    SizedBox(height: 20,),
                     WrapOutline(
                       labelText: '反义句',
                       children: widget._sentence.antonym.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text('$e', style: TextStyle(color: Colors.black87)),
+                            child: Text('$e', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                             onTap: () async {
                               var sentence = SentenceSerializer()..id = e;
                               bool ret = await sentence.retrieve();
@@ -257,13 +246,12 @@ class _EditSentenceState extends State<EditSentence> {
                         },
                       ),
                     ),
-                    SizedBox(height: 20,),
-                    WrapOutline(
+                    ListOutline(
                       labelText: '相关语法',
                       children: widget._sentence.grammarSet.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text('${e.id}', style: TextStyle(color: Colors.black87)),
+                            child: Text('${e.title}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                             onTap: () async {
                               var grammar = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title':'编辑句子的语法', 'grammar': GrammarSerializer().from(e)})) as GrammarSerializer;
                               if(grammar != null) {

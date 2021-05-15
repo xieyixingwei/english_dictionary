@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/serializers/etyma.dart';
+import 'package:flutter_prj/widgets/column_space.dart';
 
 
 class EditEtyma extends StatefulWidget {
@@ -55,8 +56,9 @@ class _EditEtymaState extends State<EditEtyma> {
             child: Form(
               key: _formKey, //设置globalKey，用于后面获取FormState
               autovalidateMode: AutovalidateMode.always, //开启自动校验
-              child:Column(
+              child: ColumnSpace(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                divider: SizedBox(height: 20,),
                 children: [
                   Row(
                     children: [
@@ -84,7 +86,6 @@ class _EditEtymaState extends State<EditEtyma> {
                       Expanded(
                         flex: 5,
                         child: TextFormField(
-                          autofocus: false,
                           keyboardType: TextInputType.text, // 键盘回车键的样式
                           textInputAction: TextInputAction.next,
                           controller: TextEditingController(text:widget._etyma.name ?? ''),
@@ -100,9 +101,7 @@ class _EditEtymaState extends State<EditEtyma> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20,),
                   TextFormField(
-                    autofocus: false,
                     keyboardType: TextInputType.multiline, // 键盘回车键的样式
                     textInputAction: TextInputAction.next,
                     controller: TextEditingController(text:widget._etyma.interpretation),
@@ -110,7 +109,7 @@ class _EditEtymaState extends State<EditEtyma> {
                     maxLines: null,
                     style: textStyle,
                     decoration: InputDecoration(
-                      labelText: "含义",
+                      labelText: "含义(markdown)",
                       border: OutlineInputBorder(),
                     ),
                     onChanged: (value) => widget._etyma.interpretation = value.trim(),

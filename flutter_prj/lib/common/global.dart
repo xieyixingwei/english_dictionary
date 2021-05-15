@@ -21,7 +21,7 @@ class Global {
                                                   '过去进行时', '现在进行时', '将来进行时', '过去将来进行时',
                                                   '过去完成时', '现在完成时', '将来完成时', '过去将来完成时',
                                                   '过去完成进行时', '现在完成进行时', '将来完成进行时', '过去将来完成进行时'];
-  static const List<String> sentenceFormOptions = const ['简单句', '复合句', '复合句', '复杂句', '主语从句', '定语从句', '状语从句', '名词性从句'];
+  static const List<String> sentenceFormOptions = const ['简单句', '复合句', '复杂句', '主语从句', '定语从句', '状语从句', '名词性从句'];
   static final List<String> etymaTypeOptions = ['前缀', '后缀', '词根'];
   static List<bool> onOffWidget = [true, true, true];
   static bool isLogin = false;

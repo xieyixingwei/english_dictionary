@@ -59,3 +59,23 @@ class _ShowEtymaPageState extends State<ShowEtymaPage> {
     );
 }
 
+
+Widget etymaItem({BuildContext context, EtymaSerializer etyma, Widget trailing}) {
+  Widget title = Text.rich(
+    TextSpan(
+        children: [
+          TextSpan(text: '${etyma.name}', style: TextStyle(fontSize: 14, color: Colors.black87)),
+          TextSpan(text: '    ${EditEtyma.options[etyma.type]}', style: TextStyle(fontSize: 10, color: Colors.black45)),
+        ]
+      )
+  );
+  return ListTile(
+    dense: true,
+    horizontalTitleGap: 0,
+    minVerticalPadding: 0,
+    minLeadingWidth: 30,
+    contentPadding: EdgeInsets.only(left: 14, right: 14, top: 0, bottom: 0),
+    title: title,
+    trailing: trailing,
+  );
+}
