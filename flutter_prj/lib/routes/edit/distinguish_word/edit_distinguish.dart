@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/serializers/distinguish.dart';
+import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
 import 'package:flutter_prj/widgets/pop_dialog.dart';
 import 'package:flutter_prj/widgets/wrap_custom.dart';
@@ -80,11 +81,15 @@ class _EditDistinguishState extends State<EditDistinguish> {
                       labelText: '辨析单词',
                       suffix: TextButton(
                         child: Text('添加',),
-                        onPressed: () => popInputDialog(
-                          context: context,
-                          title: Text('输入辨析单词'),
-                          close: (v) => setState(() => widget._distinguish.wordsForeign.add(v)),
-                        ),
+                        onPressed: () async {
+                          var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'添加辨析单词'})) as WordSerializer;
+                          if(word != null && word.name.isNotEmpty) {
+                            var ret = await word.save();
+                            if(ret)
+                              widget._distinguish.wordsForeign.add(word.name);
+                          }
+                          setState((){});
+                        }
                       ),
                     ),
                     TextFormField(
