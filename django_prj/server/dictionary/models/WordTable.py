@@ -150,7 +150,7 @@ class DistinguishWordTable(models.Model):
     词义辨析表
     """
     id = models.AutoField(primary_key=True)
-    content = models.TextField() # 内容 markdown文本
+    content = models.TextField(null=True, blank=True) # 内容 markdown文本
     image = models.ImageField(upload_to='distinguish_word_images/', null=True, blank=True, verbose_name="图片讲解") # 图片讲解
     vedio = models.FileField(upload_to='distinguish_word_videos/', null=True, blank=True, verbose_name="视频讲解") # 视频讲解
     wordsForeign = models.ManyToManyField(to=WordTable, related_name='distinguishSet', blank=True)
