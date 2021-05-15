@@ -99,7 +99,33 @@ class _EditDistinguishState extends State<EditDistinguish> {
                         border: OutlineInputBorder(),
                       ),
                       onChanged: (v) => widget._distinguish.content = v.trim(),
-                      validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
+                      //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
+                    ),
+                    WrapOutline(
+                      labelText: '相关图片',
+                      children: [
+                        SelectableText(widget._distinguish.image.mptFile?.filename ?? (widget._distinguish.image.url ?? '')),
+                      ],
+                      suffix: TextButton(
+                        child: Text('添加',),
+                        onPressed: () async {
+                          await widget._distinguish.image.pick();
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                    WrapOutline(
+                      labelText: '相关视频',
+                      children: [
+                        SelectableText(widget._distinguish.vedio.mptFile?.filename ?? (widget._distinguish.vedio.url ?? '')),
+                      ],
+                      suffix: TextButton(
+                        child: Text('添加',),
+                        onPressed: () async {
+                          await widget._distinguish.vedio.pick();
+                          setState(() {});
+                        },
+                      ),
                     ),
                   ]
               ),
