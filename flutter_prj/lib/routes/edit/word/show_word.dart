@@ -479,7 +479,7 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
               style: TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.bold, height: 1),
             ),
             SizedBox(width: 2,),
-             SelectableText(
+            SelectableText(
               gs.title,
               style: TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.bold, height: 1),
             ),
@@ -519,10 +519,16 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
             ),
           ].where((e) => e != null).toList(),
         ),
+        gs.content != null ?
         Padding(
           padding: EdgeInsets.only(left: 14),
           child: MarkDown(text: gs.content).render(),
-        ),
+        ) : null,
+        gs.vedio.url != null ?
+        Align(
+          alignment: Alignment.center,
+          child: VedioPlayerWeb(url: gs.vedio.url),
+        ) : null,
       ],
     );
 
@@ -586,10 +592,16 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
             ),
           ],
         ),
+        ds.content != null ?
         Padding(
           padding: EdgeInsets.only(left: 14),
           child: MarkDown(text:ds.content).render()
-        ),
+        ) : null,
+        ds.vedio.url != null ?
+        Align(
+          alignment: Alignment.center,
+          child: VedioPlayerWeb(url: ds.vedio.url),
+        ) : null,
       ],
     );
 
