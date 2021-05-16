@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/serializers/distinguish.dart';
 import 'package:flutter_prj/serializers/index.dart';
+import 'package:flutter_prj/widgets/Tag.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
-import 'package:flutter_prj/widgets/pop_dialog.dart';
 import 'package:flutter_prj/widgets/wrap_custom.dart';
 
 
@@ -21,6 +21,22 @@ class EditDistinguish extends StatefulWidget {
 
 class _EditDistinguishState extends State<EditDistinguish> {
   final GlobalKey _formKey =  GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    _init();
+    super.initState();
+  }
+
+  void _init() async {
+    widget._distinguish.sentences.clear();
+    Future.forEach(widget._distinguish.sentencesForeign, (e) async {
+      var s =  SentenceSerializer()..id = e;
+      bool ret = await s.retrieve();
+      if(ret) widget._distinguish.sentences.add(s);
+    });
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +103,42 @@ class _EditDistinguishState extends State<EditDistinguish> {
                             var ret = await word.save();
                             if(ret)
                               widget._distinguish.wordsForeign.add(word.name);
+                          }
+                          setState((){});
+                        }
+                      ),
+                    ),
+                    ListOutline(
+                      children: widget._distinguish.sentences.map((e) =>
+                        Tag(
+                          label: InkWell(
+                            child: Text('${e.en}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
+                            onTap: () async {
+                              var newSentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'编辑句子', 'sentence': SentenceSerializer().from(e)})) as SentenceSerializer;
+                              if(newSentence != null) {
+                                await e.from(newSentence).save();
+                              }
+                              setState((){});
+                            },
+                          ),
+                          onDeleted: () {
+                            widget._distinguish.sentences.remove(e);
+                            widget._distinguish.sentencesForeign.remove(e.id);
+                            setState(() {});
+                          },
+                        )
+                      ).toList(),
+                      labelText: '辨析句子',
+                      suffix: TextButton(
+                        child: Text('添加',),
+                        onPressed: () async {
+                          var s = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'添加句子'})) as SentenceSerializer;
+                          if(s != null) {
+                            bool ret = await s.save();
+                            if(ret) {
+                              widget._distinguish.sentencesForeign.add(s.id);
+                              widget._distinguish.sentences.add(s);
+                            }
                           }
                           setState((){});
                         }

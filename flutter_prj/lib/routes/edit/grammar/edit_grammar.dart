@@ -150,7 +150,7 @@ class _EditGrammarState extends State<EditGrammar> {
                         border: OutlineInputBorder(),
                       ),
                       onChanged: (v) => widget._grammar.content = v.trim(),
-                      validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
+                      //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
                     WrapOutline(
                       labelText: '相关图片',

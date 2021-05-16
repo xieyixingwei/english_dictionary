@@ -7,6 +7,7 @@ import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/Tag.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
 import 'package:flutter_prj/widgets/pop_dialog.dart';
+import 'package:flutter_prj/widgets/row_space.dart';
 import 'package:flutter_prj/widgets/wrap_custom.dart';
 
 
@@ -60,30 +61,82 @@ class _EditWordState extends State<EditWord> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   divider: SizedBox(height: 20,),
                   children: [
-                    textFiledForm(
-                      text: widget.word.name,
-                      labelText: '单词',
-                      suffixIcon: IconButton(
-                        splashRadius: 1.0,
-                        icon: Icon(Icons.search),
-                        tooltip: '搜索',
+                    RowSpace(
+                      divider: SizedBox(width: 8,),
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: textFiledForm(
+                            text: widget.word.name,
+                            labelText: '单词',
+                            suffixIcon: IconButton(
+                              splashRadius: 1.0,
+                              icon: Icon(Icons.search),
+                              tooltip: '搜索',
+                              onPressed: () async {
+                                bool ret = await widget.word.retrieve();
+                                if(ret) setState((){});
+                              },
+                            ),
+                            onChanged: (v) => widget.word.name = v,
+                            validator: (v) => v.isNotEmpty ? null : "不能为空",
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: textFiledForm(
+                            text: widget.word.voiceUs,
+                            labelText: '音标(美)',
+                            onChanged: (v) => widget.word.voiceUs = v,
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: textFiledForm(
+                            text: widget.word.voiceUk,
+                            labelText: '音标(英)',
+                            onChanged: (v) => widget.word.voiceUk = v,
+                          ),
+                        )
+                      ]
+                    ),
+                    ListOutline(
+                      labelText: '释义',
+                      children: widget.word.paraphraseSet.map<Widget>((e) =>
+                        Tag(
+                          label: InkWell(
+                            child: //ConstrainedBox(
+                              //child: 
+                              Text('${e.partOfSpeech} ${e.interpret}', overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
+                              //constraints: BoxConstraints(maxWidth:80.0),
+                            //),
+                            onTap: () async {
+                              var p = ParaphraseSerializer()..id = e.id;
+                              bool ret = await p.retrieve();
+                              if(ret) {
+                                p = (await Navigator.pushNamed(context, '/edit_paraphrase', arguments: {'title':'编辑${widget.word.name}的释义', 'paraphrase': ParaphraseSerializer().from(p)})) as ParaphraseSerializer;
+                                if(p != null) {
+                                  await e.from(p).save();
+                                }
+                              }
+                              setState((){});
+                            },
+                          ),
+                          onDeleted: () => setState(() => widget.word.antonym.remove(e)),
+                        )
+                      ).toList(),
+                      suffix: TextButton(
+                        child: Text('添加'),
                         onPressed: () async {
-                          bool ret = await widget.word.retrieve();
-                          if(ret) setState((){});
+                          var p = (await Navigator.pushNamed(context, '/edit_paraphrase', arguments: {'title':'给${widget.word.name}添加释义'})) as ParaphraseSerializer;
+                          if(p != null) {
+                            bool ret = await p.save();
+                            if(ret) {
+                              setState(() => widget.word.paraphraseSet.add(p));
+                            }
+                          }
                         },
                       ),
-                      onChanged: (v) => widget.word.name = v,
-                      validator: (v) => v.isNotEmpty ? null : "不能为空",
-                    ),
-                    textFiledForm(
-                      text: widget.word.voiceUs,
-                      labelText: '音标(美)',
-                      onChanged: (v) => widget.word.voiceUs = v,
-                    ),
-                    textFiledForm(
-                      text: widget.word.voiceUk,
-                      labelText: '音标(英)',
-                      onChanged: (v) => widget.word.voiceUk = v,
                     ),
                     WrapOutlineTag(
                       data: widget.word.morph,
@@ -152,44 +205,6 @@ class _EditWordState extends State<EditWord> {
                       //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
                     ListOutline(
-                      labelText: '释义',
-                      children: widget.word.paraphraseSet.map<Widget>((e) =>
-                        Tag(
-                          label: InkWell(
-                            child: //ConstrainedBox(
-                              //child: 
-                              Text('${e.partOfSpeech} ${e.interpret}', overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
-                              //constraints: BoxConstraints(maxWidth:80.0),
-                            //),
-                            onTap: () async {
-                              var p = ParaphraseSerializer()..id = e.id;
-                              bool ret = await p.retrieve();
-                              if(ret) {
-                                p = (await Navigator.pushNamed(context, '/edit_paraphrase', arguments: {'title':'编辑${widget.word.name}的释义', 'paraphrase': ParaphraseSerializer().from(p)})) as ParaphraseSerializer;
-                                if(p != null) {
-                                  await e.from(p).save();
-                                }
-                              }
-                              setState((){});
-                            },
-                          ),
-                          onDeleted: () => setState(() => widget.word.antonym.remove(e)),
-                        )
-                      ).toList(),
-                      suffix: TextButton(
-                        child: Text('添加'),
-                        onPressed: () async {
-                          var p = (await Navigator.pushNamed(context, '/edit_paraphrase', arguments: {'title':'给${widget.word.name}添加释义'})) as ParaphraseSerializer;
-                          if(p != null) {
-                            bool ret = await p.save();
-                            if(ret) {
-                              setState(() => widget.word.paraphraseSet.add(p));
-                            }
-                          }
-                        },
-                      ),
-                    ),
-                    ListOutline(
                       labelText: '常用句型',
                       children: widget.word.sentencePatternSet.map<Widget>((e) =>
                         Tag(
@@ -208,7 +223,8 @@ class _EditWordState extends State<EditWord> {
                             },
                           ),
                           onDeleted: () => setState(() => widget.word.sentencePatternSet.remove(e)),
-                        )).toList(),
+                        )
+                      ).toList(),
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {

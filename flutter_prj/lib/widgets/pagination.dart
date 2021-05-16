@@ -106,7 +106,7 @@ class Pagination extends StatelessWidget {
                   ));
           indexs.insert(1,Text('......', style: TextStyle(fontSize: 17, color: Colors.black38),),);
         }
-        if(curPage + maxCountHalf < pages) {
+        if(count > maxIndexs && curPage + maxCountHalf < pages) {
           indexs.add(Text('......', style: TextStyle(fontSize: 17, color: Colors.black38),),);
           indexs.add(
                   TextButton(

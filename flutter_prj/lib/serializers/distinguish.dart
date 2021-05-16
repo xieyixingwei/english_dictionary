@@ -3,10 +3,10 @@
 // JsonSerializer
 // **************************************************************************
 
-import 'dart:convert';
 import 'single_file.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:dio/dio.dart';
+import 'sentence.dart';
 import 'package:flutter_prj/common/http.dart';
 
 
@@ -15,11 +15,12 @@ class DistinguishSerializer {
 
   num _id;
   num id;
-  List<String> words = [];
   String content = '';
   SingleFile image = SingleFile('image', FileType.image);
   SingleFile vedio = SingleFile('vedio', FileType.video);
   List<String> wordsForeign = [];
+  List<num> sentencesForeign = [];
+  List<SentenceSerializer> sentences = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/dictionary/distinguish_word/', data:data ?? _formData, queries:queries, cache:cache);
@@ -42,7 +43,7 @@ class DistinguishSerializer {
     if(_id == null) return true;
     var res = await Http().request(HttpType.DELETE, '/api/dictionary/distinguish_word/$id/', data:data ?? _formData, queries:queries, cache:cache);
     /*
-    
+    if(sentences != null){sentences.forEach((e){e.delete();});}
     */
     return res != null ? res.statusCode == 204 : false;
   }
@@ -50,37 +51,43 @@ class DistinguishSerializer {
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     bool res = false;
     if(_id == null) {
-      res = await create(data:data, queries:queries, cache:cache);
+      var clone = DistinguishSerializer().from(this); // create will update self, maybe refresh the member of self.
+      res = await clone.create(data:data, queries:queries, cache:cache);
+      if(res == false) return false;
+      id = clone.id;
+      if(sentences != null){await Future.forEach(sentences, (e) async { await e.save();});}
+      res = await retrieve();
     } else {
       res = await update(data:data, queries:queries, cache:cache);
+      if(sentences != null){await Future.forEach(sentences, (e) async { await e.save();});}
     }
     return res;
   }
 
   DistinguishSerializer fromJson(Map<String, dynamic> json) {
     id = json['id'] == null ? null : json['id'] as num;
-    words = json['words'] == null
-                ? []
-                : json['words'].map<String>((e) => e as String).toList();
     content = json['content'] == null ? null : json['content'] as String;
     image.url = json['image'] == null ? null : json['image'] as String;
     vedio.url = json['vedio'] == null ? null : json['vedio'] as String;
     wordsForeign = json['wordsForeign'] == null
                 ? []
                 : json['wordsForeign'].map<String>((e) => e as String).toList();
+    sentencesForeign = json['sentencesForeign'] == null
+                ? []
+                : json['sentencesForeign'].map<num>((e) => e as num).toList();
     _id = id;
     return this;
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
     'id': id,
-    'words': words == null ? null : words.map((e) => e).toList(),
     'content': content,
     'wordsForeign': wordsForeign == null ? null : wordsForeign.map((e) => e).toList(),
+    'sentencesForeign': sentencesForeign == null ? null : sentencesForeign.map((e) => e).toList(),
   };
   FormData get _formData {
     var jsonObj = toJson();
-    jsonObj['words'] = json.encode(jsonObj['words']);
+    
     var formData = FormData.fromMap(jsonObj, ListFormat.multi);
     if(image.mptFile != null) formData.files.add(image.file);
     if(vedio.mptFile != null) formData.files.add(vedio.file);
@@ -90,11 +97,12 @@ class DistinguishSerializer {
   DistinguishSerializer from(DistinguishSerializer instance) {
     if(instance == null) return this;
     id = instance.id;
-    words = List.from(instance.words);
     content = instance.content;
     image.from(instance.image);
     vedio.from(instance.vedio);
     wordsForeign = List.from(instance.wordsForeign);
+    sentencesForeign = List.from(instance.sentencesForeign);
+    sentences = List.from(instance.sentences.map((e) => SentenceSerializer().from(e)).toList());
     _id = instance._id;
     return this;
   }

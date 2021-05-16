@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/routes/edit/distinguish_word/edit_distinguish.dart';
 import 'package:flutter_prj/routes/edit/distinguish_word/list_distinguishes.dart';
+import 'package:flutter_prj/routes/edit/distinguish_word/show_distinguish.dart';
 import 'package:flutter_prj/routes/edit/etyma/list_etymas.dart';
 import 'package:flutter_prj/routes/edit/etyma/show_etyma.dart';
+import 'package:flutter_prj/routes/edit/grammar/show_grammar.dart';
 import 'package:flutter_prj/routes/edit/paraphrase/edit_paraphrase.dart';
 import 'package:flutter_prj/routes/edit/sentence/edit_sentence.dart';
 import 'package:flutter_prj/routes/edit/sentence/list_sentences.dart';
@@ -81,6 +83,9 @@ final _routes = {
   '/study_settings': (context, {arguments}) => StudySettings(plan: arguments['plan']),
   '/favorite_page': (context) => FavoritePage(),
   '/list_favorite_page': (context, {arguments}) => ListFavoritePage(type: arguments['type']),
+
+  '/show_grammar': (context, {arguments}) => ShowGrammarPage(title: arguments['title'], grammar: arguments['grammar'],),
+  '/show_distinguish': (context, {arguments}) => ShowDistinguishPage(title: arguments['title'], distinguish: arguments['distinguish'],),
 };
 
 

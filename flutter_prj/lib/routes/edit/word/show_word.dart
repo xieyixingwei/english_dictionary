@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/markdown/markdown.dart';
 import 'package:flutter_prj/routes/edit/common/utils.dart';
+import 'package:flutter_prj/routes/edit/distinguish_word/show_distinguish.dart';
+import 'package:flutter_prj/routes/edit/grammar/show_grammar.dart';
 import 'package:flutter_prj/routes/edit/sentence/show_sentences.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/OnOffWidget.dart';
@@ -138,6 +140,16 @@ class _ShowWordState extends State<ShowWord> {
             ) as WordSerializer;
             if(word != null) await widget.word.from(word).save();
             setState(() {});
+          },
+        ) : null,
+        Global.localStore.user.uname == 'root' ?
+        TextButton(
+          child: Text('添加单词', style: TextStyle(fontSize: 12)),
+          onPressed: () async {
+            var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'添加单词'})) as WordSerializer;
+            if(word != null && word.name.isNotEmpty) {
+              await word.save();
+            }
           },
         ) : null,
       ],
@@ -460,77 +472,11 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
         child: ColumnSpace(
           divider: SizedBox(height: 8,),
           children: widget.word.grammarSet.asMap().map((i, e) =>
-            MapEntry(i, _grammarShow(i+1, e))
+            MapEntry(i, grammarShow(context, i+1, e, () => setState((){})))
           ).values.toList(),
         ),
       ),
     ) : null;
-
-  Widget _grammarShow(num index, GrammarSerializer gs) =>
-    ColumnSpace(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      divider: SizedBox(height: 8,),
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SelectableText(
-              '$index. ',
-              style: TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.bold, height: 1),
-            ),
-            SizedBox(width: 2,),
-            SelectableText(
-              gs.title,
-              style: TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.bold, height: 1),
-            ),
-            SizedBox(width: 8,),
-            SelectableText(
-              gs.type.join('/'),
-              style: TextStyle(fontSize: 12, color: Colors.black54, fontWeight: FontWeight.bold, height: 1),
-            ),
-            SizedBox(width: 8,),
-            SelectableText(
-              gs.tag.join('/'),
-              style: TextStyle(fontSize: 10, color: Colors.black54, height: 1),
-            ),
-            SizedBox(width: 8,),
-            InkWell(
-              splashColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              child: Icon(Icons.star, color: getStudyGrammar(gs.id) == null ? Colors.black54 : Colors.redAccent, size: 14),
-              onTap: () async {
-                var sg = getStudyGrammar(gs.id);
-                if(sg == null) {
-                  var category = await popSelectGrammarCategoryDialog(context);
-                  if(category == null) return;
-                  var newSg = StudyGrammarSerializer()..grammar = gs.id
-                                                  ..foreignUser = Global.localStore.user.id
-                                                  ..category = category;
-                  Global.localStore.user.studyGrammarSet.add(newSg);
-                  await newSg.save();
-                } else {
-                  await sg.delete();
-                  Global.localStore.user.studyGrammarSet.remove(sg);
-                }
-                Global.saveLocalStore();
-                setState(() {});
-              },
-            ),
-          ].where((e) => e != null).toList(),
-        ),
-        gs.content != null ?
-        Padding(
-          padding: EdgeInsets.only(left: 14),
-          child: MarkDown(text: gs.content).render(),
-        ) : null,
-        gs.vedio.url != null ?
-        Align(
-          alignment: Alignment.center,
-          child: VedioPlayerWeb(url: gs.vedio.url),
-        ) : null,
-      ],
-    );
 
   Widget _distinguishSetShow(BuildContext context) => widget.word.distinguishSet.isNotEmpty ?
     OnOffWidget(
@@ -540,70 +486,11 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
         child: ColumnSpace(
           divider: SizedBox(height: 8,),
           children: widget.word.distinguishSet.asMap().map((i, e) =>
-            MapEntry(i, _distinguishShow(context, i+1, e))
+            MapEntry(i, distinguishShow(context, i+1, e, () => setState((){})))
           ).values.toList(),
         ),
       ),
     ) : null;
-
-  Widget _distinguishShow(BuildContext context, num index, DistinguishSerializer ds) =>
-    ColumnSpace(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      divider: SizedBox(height: 8,),
-      children: [
-        RowSpace(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SelectableText(
-              '$index. ',
-              style: TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.bold, height: 1),
-            ),
-            RowSpace(
-              divider: Text(', '),
-              children: ds.wordsForeign.map((e) => 
-                InkWell(
-                  child: Text(e, style: TextStyle(fontSize: 12, color: Colors.blueAccent, fontWeight: FontWeight.bold)),
-                  onTap: () async {
-                    var w = WordSerializer()..name = e;
-                    bool ret = await w.retrieve();
-                    if(ret) {
-                      Navigator.pushNamed(context, '/show_word', arguments: {'title': '$e', 'word': w});
-                    }
-                  },
-                )
-              ).toList(),
-            ),
-            SizedBox(width: 8.0,),
-            InkWell(
-              splashColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              child: Icon(Icons.star, color: isFavoriteDistinguish(ds.id) == false ? Colors.black54 : Colors.redAccent, size: 14),
-              onTap: () async {
-                if(!isFavoriteDistinguish(ds.id)) {
-                  Global.localStore.user.studyPlan.distinguishes.add(ds.id);
-                } else {
-                  Global.localStore.user.studyPlan.distinguishes.remove(ds.id);
-                }
-                await Global.localStore.user.studyPlan.save();
-                Global.saveLocalStore();
-                setState(() {});
-              }
-            ),
-          ],
-        ),
-        ds.content != null ?
-        Padding(
-          padding: EdgeInsets.only(left: 14),
-          child: MarkDown(text:ds.content).render()
-        ) : null,
-        ds.vedio.url != null ?
-        Align(
-          alignment: Alignment.center,
-          child: VedioPlayerWeb(url: ds.vedio.url),
-        ) : null,
-      ],
-    );
 
    Widget _synonymsShow(BuildContext context) => widget.word.synonym.isNotEmpty ?
     OnOffWidget(

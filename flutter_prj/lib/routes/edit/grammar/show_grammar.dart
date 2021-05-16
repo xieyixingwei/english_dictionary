@@ -1,6 +1,100 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/markdown/markdown.dart';
+import 'package:flutter_prj/routes/edit/common/utils.dart';
 import 'package:flutter_prj/serializers/grammar.dart';
+import 'package:flutter_prj/serializers/index.dart';
+import 'package:flutter_prj/widgets/column_space.dart';
+import 'package:flutter_prj/widgets/row_space.dart';
+import 'package:flutter_prj/widgets/vedio_player.dart';
 
+
+class ShowGrammarPage extends StatelessWidget {
+  ShowGrammarPage({Key key, this.title, this.grammar}) : super(key: key);
+
+  final String title;
+  final GrammarSerializer grammar;
+
+  @override
+  Widget build(BuildContext context) =>
+    Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.fromLTRB(10, 30, 10, 30),
+        child: grammarShow(context, null, grammar, null),
+      ),
+    );
+}
+
+Widget grammarShow(BuildContext context, num index, GrammarSerializer grammar, Function update) =>
+  ColumnSpace(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    divider: SizedBox(height: 8,),
+    children: [
+      RowSpace(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          index != null ? SelectableText(
+            '$index. ',
+            style: TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.bold, height: 1),
+          ) : null,
+          SizedBox(width: 2,),
+          SelectableText(
+            grammar.title,
+            style: TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.bold, height: 1),
+          ),
+          SizedBox(width: 8,),
+          SelectableText(
+            grammar.type.join('/'),
+            style: TextStyle(fontSize: 12, color: Colors.black54, fontWeight: FontWeight.bold, height: 1),
+          ),
+          SizedBox(width: 8,),
+          SelectableText(
+            grammar.tag.join('/'),
+            style: TextStyle(fontSize: 10, color: Colors.black54, height: 1),
+          ),
+          SizedBox(width: 8,),
+          update != null ?
+          InkWell(
+            splashColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            child: Icon(Icons.star, color: getStudyGrammar(grammar.id) == null ? Colors.black54 : Colors.redAccent, size: 14),
+            onTap: () async {
+              var sg = getStudyGrammar(grammar.id);
+              if(sg == null) {
+                var category = await popSelectGrammarCategoryDialog(context);
+                if(category == null) return;
+                var newSg = StudyGrammarSerializer()..grammar = grammar.id
+                                                ..foreignUser = Global.localStore.user.id
+                                                ..category = category;
+                Global.localStore.user.studyGrammarSet.add(newSg);
+                await newSg.save();
+              } else {
+                await sg.delete();
+                Global.localStore.user.studyGrammarSet.remove(sg);
+              }
+              Global.saveLocalStore();
+              update();
+            },
+          ) : null,
+        ],
+      ),
+      grammar.content != null ?
+      Padding(
+        padding: EdgeInsets.only(left: 14),
+        child: MarkDown(text: grammar.content).render(),
+      ) : null,
+      grammar.vedio.url != null ?
+      Align(
+        alignment: Alignment.center,
+        child: VedioPlayerWeb(url: grammar.vedio.url),
+      ) : null,
+    ],
+  );
 
 Widget grammarItem({BuildContext context, GrammarSerializer grammar, Widget trailing}) {
   Widget title = Text.rich(
@@ -22,5 +116,6 @@ Widget grammarItem({BuildContext context, GrammarSerializer grammar, Widget trai
     leading: Text('${grammar.id}', style: TextStyle(fontSize: 14, color: Colors.black54),),
     title: title,
     trailing: trailing,
+    onTap: () => Navigator.pushNamed(context, '/show_grammar', arguments: {'title': '语法', 'grammar': grammar}),
   );
 }
