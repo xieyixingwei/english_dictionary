@@ -98,7 +98,7 @@ Widget distinguishShow(BuildContext context, num index, DistinguishSerializer ds
 
 
 Widget distinguishItem({BuildContext context, DistinguishSerializer distinguish, Widget trailing}) {
-  String title = distinguish.wordsForeign.join(', ') + '  ' + distinguish.sentencesForeign.map((e) => e.en).join(',');
+  String title = distinguish.wordsForeign.join(', ') + '  ' + distinguish.sentencesForeign.map((e) => e.en).join(', ');
   return ListTile(
     dense: true,
     horizontalTitleGap: 0,

@@ -22,7 +22,6 @@ class DistinguishSerializer {
   SingleFile vedio = SingleFile('vedio', FileType.video);
   List<String> wordsForeign = [];
   List<SentenceSerializer> sentencesForeign = [];
-  List<SentenceSerializer> sentences = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/dictionary/distinguish/', data:data ?? _formData, queries:queries, cache:cache, options: Options(contentType: "multipart/form-data"));
