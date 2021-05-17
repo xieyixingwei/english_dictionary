@@ -16,7 +16,7 @@ class Http {
   Options _options;
   static Dio _dio = new Dio(
     BaseOptions(
-      baseUrl: 'http://gncloud.download:8051', //'http://192.168.1.10:5005',
+      baseUrl: 'http://192.168.2.10:5005',//'http://gncloud.download:8051', //'http://192.168.1.10:5005',
       receiveDataWhenStatusError: true,
     )
   );
@@ -46,8 +46,8 @@ class Http {
     }
   }
 
-  Future<Response> request(HttpType type, String path, {dynamic data, Map<String, dynamic> queries, bool cache=true}) async {
-    Options opt = _options.copyWith(
+  Future<Response> request(HttpType type, String path, {dynamic data, Map<String, dynamic> queries, bool cache=true, Options options}) async {
+    Options opt = options ?? _options.copyWith(
             extra: {
               "noCache": cache, //本接口禁用缓存
             }

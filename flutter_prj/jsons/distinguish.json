@@ -4,10 +4,10 @@
     "image": "$SingleFile image", 
     "vedio": "$SingleFile video",
     "wordsForeign @foreign_manytomany": ["$word"], // 相关单词列表
-    "sentencesForeign @foreign_manytomany": ["$sentence"], // 相关句子列表
+    "sentencesForeign": ["$sentence"], // 相关句子列表
     "__sentences": ["$sentence"],
     "__http__": {
-        "url": "/api/dictionary/distinguish_word/",
+        "url": "/api/dictionary/distinguish/",
         "methods": [
             {
                 "name": "create"
@@ -44,7 +44,7 @@
         "content": ["icontains"]
     },
     "__http__": {
-        "url": "/api/dictionary/distinguish_word/",
+        "url": "/api/dictionary/distinguish/",
         "methods": [
             {
                 "name": "retrieve",

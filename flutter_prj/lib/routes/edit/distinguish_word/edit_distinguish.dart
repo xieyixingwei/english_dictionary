@@ -23,22 +23,6 @@ class _EditDistinguishState extends State<EditDistinguish> {
   final GlobalKey _formKey =  GlobalKey<FormState>();
 
   @override
-  void initState() {
-    _init();
-    super.initState();
-  }
-
-  void _init() async {
-    widget._distinguish.sentences.clear();
-    Future.forEach(widget._distinguish.sentencesForeign, (e) async {
-      var s =  SentenceSerializer()..id = e;
-      bool ret = await s.retrieve();
-      if(ret) widget._distinguish.sentences.add(s);
-    });
-    setState(() {});
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
             resizeToAvoidBottomInset: true,
@@ -109,21 +93,20 @@ class _EditDistinguishState extends State<EditDistinguish> {
                       ),
                     ),
                     ListOutline(
-                      children: widget._distinguish.sentences.map((e) =>
+                      children: widget._distinguish.sentencesForeign.map((e) =>
                         Tag(
                           label: InkWell(
                             child: Text('${e.en}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                             onTap: () async {
                               var newSentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'编辑句子', 'sentence': SentenceSerializer().from(e)})) as SentenceSerializer;
                               if(newSentence != null) {
-                                await e.from(newSentence).save();
+                                e.from(newSentence);
                               }
                               setState((){});
                             },
                           ),
                           onDeleted: () {
-                            widget._distinguish.sentences.remove(e);
-                            widget._distinguish.sentencesForeign.remove(e.id);
+                            widget._distinguish.sentencesForeign.remove(e);
                             setState(() {});
                           },
                         )
@@ -134,11 +117,10 @@ class _EditDistinguishState extends State<EditDistinguish> {
                         onPressed: () async {
                           var s = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'添加句子'})) as SentenceSerializer;
                           if(s != null) {
-                            bool ret = await s.save();
-                            if(ret) {
-                              widget._distinguish.sentencesForeign.add(s.id);
-                              widget._distinguish.sentences.add(s);
-                            }
+                            //bool ret = await s.save();
+                            //if(ret) {
+                              widget._distinguish.sentencesForeign.add(s);
+                            //}
                           }
                           setState((){});
                         }
