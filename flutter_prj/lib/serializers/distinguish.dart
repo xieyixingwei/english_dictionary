@@ -95,8 +95,7 @@ class DistinguishSerializer {
     //print(jsonObj);
     //jsonObj['sentencesForeign'] = json.encode(jsonObj['sentencesForeign']);
     //print(jsonObj);
-    var formData = FormData.fromMap(jsonObj, ListFormat.pipes);
-
+    var formData = FormData.fromMap(jsonObj, ListFormat.multi);
     if(image.mptFile != null) formData.files.add(image.file);
     if(vedio.mptFile != null) formData.files.add(vedio.file);
     return formData;
