@@ -1,6 +1,6 @@
 from django.db import models
 from user.models import UserTable
-from dictionary.models import WordTable
+from dictionary.models.WordTable import WordTable
 from server.models  import JSONFieldUtf8
 
 

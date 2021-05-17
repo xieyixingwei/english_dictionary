@@ -1,8 +1,13 @@
 from django.conf.urls import url
-from .views.WordView import WordView, WordTagView, EtymaView, SentencePatternView, ParaphraseView
+from .views.WordView import WordView
+from .views.ParaphraseView import ParaphraseView
+from .views.SentencePatternView import SentencePatternView
+from .views.WordTagView import WordTagView
+from .views.EtymaView import EtymaView
+
 from .views.SentenceView import SentenceView, SentenceTagView
 from .views.GrammarView import GrammarView, GrammarTagView, GrammarTypeView
-from .views.DistinguishWordView import DistinguishWordView
+from .views.DistinguishView import DistinguishView
 from .views.PronunciationView import SoundmarkView
 
 
@@ -31,8 +36,8 @@ urlpatterns = [
     url(r'^etyma/$', EtymaView.as_view({'post':'create', 'get':'list'})),
     url(r'^etyma/(?P<pk>\w+)/$', EtymaView.as_view({'put':'update', 'get':'retrieve', 'delete':'destroy'})),
 
-    url(r'^distinguish_word/$', DistinguishWordView.as_view({'post':'create', 'get':'list'})),
-    url(r'^distinguish_word/(?P<pk>\d+)/$', DistinguishWordView.as_view({'put':'update', 'get':'retrieve', 'delete':'destroy'})),
+    url(r'^distinguish/$', DistinguishView.as_view({'post':'create', 'get':'list'})),
+    url(r'^distinguish/(?P<pk>\d+)/$', DistinguishView.as_view({'put':'update', 'get':'retrieve', 'delete':'destroy'})),
 
     url(r'^sentence_pattern/$', SentencePatternView.as_view({'post':'create', 'get':'list'})),
     url(r'^sentence_pattern/(?P<pk>\d+)/$', SentencePatternView.as_view({'put':'update', 'get':'retrieve', 'delete':'destroy'})),

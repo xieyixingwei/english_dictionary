@@ -91,68 +91,7 @@ class WordTable(models.Model):
 #        It is that very much.
 
 
-class SentencePatternTable(models.Model):
-    """
-    常用句型表
-    """
-    id = models.AutoField(primary_key=True)
-    content = models.CharField(max_length=64)  # 内容
-    wordForeign = models.ForeignKey(to=WordTable, related_name='sentencePatternSet', null=True, on_delete=models.CASCADE)
-    class Meta:
-        ordering = ['id']
-
-class ParaphraseTable(models.Model):
-    """
-    释义表
-    """
-    id = models.AutoField(primary_key=True)
-    interpret = models.CharField(max_length=128)     # 翻译\含义
-    partOfSpeech = models.CharField(max_length=32)   # 词性
-    wordForeign = models.ForeignKey(to=WordTable, null=True, related_name='paraphraseSet', on_delete=models.CASCADE)
-    sentencePatternForeign = models.ForeignKey(to=SentencePatternTable, null=True, related_name='paraphraseSet', on_delete=models.CASCADE)
-    class Meta:
-        ordering = ['id'] 
-
-class EtymaTable(models.Model):
-    """
-    词根词缀表
-    """
-    name = models.CharField(max_length=32, primary_key=True) # 词根 (primary key)
-    interpretation = models.TextField(max_length=512, null=True) # 含义 markdown
-    type = models.IntegerField(null=True) # 类型: 前缀|后缀|词根
-    image = models.ImageField(upload_to='etyma_images/', null=True, blank=True, verbose_name="图片讲解") # 图片讲解
-    vedio = models.FileField(upload_to='etyma_videos/', null=True, blank=True, verbose_name="视频内容") # 视频讲解
-
-    class Meta:
-        ordering = ['name']  # 消除list警告UnorderedObjectListWarning: Pagination may yield inconsistent results with an unordered object_list
-
-    @property
-    def _type(self) -> str:
-        if self.type == 0:
-            return "prefix"
-        elif self.type == 1:
-            return "suffix"
-        elif self.type == 2:
-            return "etyma"
-        else:
-            return "unkown"
 
 
-class WordTagTable(models.Model):
-    """
-    单词 Tags
-    """
-    name = models.CharField(max_length=32, primary_key=True)
 
 
-class DistinguishWordTable(models.Model):
-    """
-    词义辨析表
-    """
-    id = models.AutoField(primary_key=True)
-    content = models.TextField(null=True, blank=True) # 内容 markdown文本
-    image = models.ImageField(upload_to='distinguish_word_images/', null=True, blank=True, verbose_name="图片讲解") # 图片讲解
-    vedio = models.FileField(upload_to='distinguish_word_videos/', null=True, blank=True, verbose_name="视频讲解") # 视频讲解
-    wordsForeign = models.ManyToManyField(to=WordTable, related_name='distinguishSet', blank=True)
-    class Meta:
-        ordering = ['id'] 

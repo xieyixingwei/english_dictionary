@@ -2,7 +2,7 @@
 
 from rest_framework import serializers, response, request, generics
 from server import permissions
-from dictionary.models import SentenceTable
+from dictionary.models.SentenceTable import SentenceTable
 from .GrammarView import GrammarSerializer
 from server.views import ModelViewSetPermissionSerializerMap
 from rest_framework.pagination import PageNumberPagination
@@ -76,7 +76,7 @@ class SentenceView(ModelViewSetPermissionSerializerMap):
     filter_class = _SentenceFilter
 
 
-from dictionary.models import SentenceTagTable
+from dictionary.models.SentenceTable import SentenceTagTable
 
 
 class _SentenceTagSerializer(serializers.ModelSerializer):

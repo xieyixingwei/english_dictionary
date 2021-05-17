@@ -1,6 +1,6 @@
 from rest_framework import serializers, response, request, generics
 from server import permissions
-from dictionary.models import SoundmarkTable, PronunciationTable
+from dictionary.models.PronunciationTable import SoundmarkTable, PronunciationTable
 from server.views import ModelViewSetPermissionSerializerMap as ModelViewSetPSM
 
 

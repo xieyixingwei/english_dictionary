@@ -1,6 +1,6 @@
 from django.db import models
 from user.models import UserTable
-from dictionary.models import GrammarTable
+from dictionary.models.GrammarTable import GrammarTable
 from server.models  import JSONFieldUtf8
 
 

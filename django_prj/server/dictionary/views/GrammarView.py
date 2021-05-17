@@ -1,6 +1,6 @@
 from rest_framework import serializers, response, request, generics
 from server import permissions
-from dictionary.models import GrammarTable
+from dictionary.models.GrammarTable import GrammarTable
 from server.views import ModelViewSetPermissionSerializerMap
 from rest_framework.pagination import PageNumberPagination
 from django_filters import filterset, fields
@@ -51,7 +51,7 @@ class GrammarView(ModelViewSetPermissionSerializerMap):
     filter_class = _GrammarFilter
 
 
-from dictionary.models import GrammarTypeTable
+from dictionary.models.GrammarTable import GrammarTypeTable
 
 
 class _GrammarTypeSerializer(serializers.ModelSerializer):
@@ -71,7 +71,7 @@ class GrammarTypeView(ModelViewSetPermissionSerializerMap):
         'list': (permissions.AllowAny,),
     }
 
-from dictionary.models import GrammarTagTable
+from dictionary.models.GrammarTable import GrammarTagTable
 
 
 class _GrammarTagSerializer(serializers.ModelSerializer):

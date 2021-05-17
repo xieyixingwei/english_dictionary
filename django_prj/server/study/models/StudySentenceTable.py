@@ -1,6 +1,6 @@
 from django.db import models
 from user.models import UserTable
-from dictionary.models import SentenceTable
+from dictionary.models.SentenceTable import SentenceTable
 from server.models  import JSONFieldUtf8
 
 

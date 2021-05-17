@@ -1,6 +1,7 @@
 from django.db import models
 from server.models  import JSONFieldUtf8
-from dictionary.models import ParaphraseTable
+from dictionary.models.ParaphraseTable import ParaphraseTable
+
 
 class SentenceTable(models.Model):
     """
