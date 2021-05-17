@@ -9,14 +9,14 @@ from dictionary.models.DistinguishTable import DistinguishTable
 from server.views import ModelViewSetPermissionSerializerMap
 from .SentenceView import SentenceSerializer
 from dictionary.models.SentenceTable import SentenceTable
+from drf_writable_nested import WritableNestedModelSerializer
 
-class DistinguishSerializer(serializers.ModelSerializer):
-    sentencesForeign = SentenceSerializer(many=True, write_only=False)
-    #sentences = SentenceSerializer(read_only=True, many=True)
-    #sentencesForeign = serializers.PrimaryKeyRelatedField(queryset=SentenceTable.objects.all(), many=True)
+
+class DistinguishSerializer(WritableNestedModelSerializer):
+    sentencesForeign = SentenceSerializer(many=True)
     class Meta:
         model = DistinguishTable
-        fields = ('id', 'content', 'image', 'vedio', 'wordsForeign', 'sentencesForeign') #'__all__'
+        fields = '__all__'
 
 
 # 分页自定义
