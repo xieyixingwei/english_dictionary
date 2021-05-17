@@ -22,7 +22,7 @@ class EditSentence extends StatefulWidget {
 
 class _EditSentenceState extends State<EditSentence> {
   final GlobalKey _formKey =  GlobalKey<FormState>();
-  static const List<String> _types = ['句子', '短语', '固定搭配'];
+  static const List<String> _types = ['句子', '名词短语', '介词短语', '形容/副词短语', '动词短语', '固定搭配'];
   String _typeSelected;
   String _tenseSelected;
   final List<String> _tenseOptions = ['选择时态'] + Global.tenseOptions;

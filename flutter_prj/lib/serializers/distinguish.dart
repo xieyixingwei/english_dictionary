@@ -108,7 +108,6 @@ class DistinguishSerializer {
     vedio.from(instance.vedio);
     wordsForeign = List.from(instance.wordsForeign);
     sentencesForeign = List.from(instance.sentencesForeign.map((e) => SentenceSerializer().from(e)).toList());
-    sentences = List.from(instance.sentences.map((e) => SentenceSerializer().from(e)).toList());
     _id = instance._id;
     return this;
   }
