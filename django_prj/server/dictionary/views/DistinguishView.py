@@ -8,13 +8,13 @@ from server import permissions
 from server.serializer import ListSerializer
 from dictionary.models.DistinguishTable import DistinguishTable
 from server.views import ModelViewSetPermissionSerializerMap
-from .SentenceView import SentenceSerializer
+from .SentencePatternView import SentencePatternSerializer
 from dictionary.models.SentenceTable import SentenceTable
 from drf_writable_nested import WritableNestedModelSerializer
 
 
 class DistinguishSerializer(WritableNestedModelSerializer):
-    sentencesForeign = ListSerializer(child=SentenceSerializer())
+    sentencePatternForeign = ListSerializer(child=SentencePatternSerializer())
     class Meta:
         model = DistinguishTable
         fields = '__all__'

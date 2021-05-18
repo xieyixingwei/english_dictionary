@@ -1,6 +1,7 @@
 from django.db import models
 from dictionary.models.WordTable import WordTable
 from dictionary.models.SentenceTable import SentenceTable
+from dictionary.models.SentencePatternTable import SentencePatternTable
 
 
 class DistinguishTable(models.Model):
@@ -12,6 +13,6 @@ class DistinguishTable(models.Model):
     image = models.ImageField(upload_to='distinguish_images/', null=True, blank=True, verbose_name="图片讲解") # 图片讲解
     vedio = models.FileField(upload_to='distinguish_videos/', null=True, blank=True, verbose_name="视频讲解") # 视频讲解
     wordsForeign = models.ManyToManyField(to=WordTable, related_name='distinguishSet', blank=True)
-    sentencesForeign = models.ManyToManyField(to=SentenceTable, related_name='distinguishSet', blank=True)
+    sentencePatternForeign = models.ManyToManyField(to=SentencePatternTable, related_name='distinguishSet', blank=True)
     class Meta:
         ordering = ['id']
