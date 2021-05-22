@@ -181,7 +181,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
         onTap: () async {
           var text = order ? _curSentence.cn : _curSentence.en;
           var res = await Http().request(HttpType.GET, '/api/dictionary/text_to_voice/', queries:{'text': text, 'lang': order ? 'zh-TW' : 'en'});
-          _audioPlayer.setUrl(Http.baseUrl + res.data.toString()); _audioPlayer.start(0);
+          _audioPlayer.setUrl(Http.baseUrl + '/static/tmp/text_to_voice_46ca95d4.mp3'); _audioPlayer.start(0); //res.data.toString()
         }
       )
     );
