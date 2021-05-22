@@ -1,16 +1,16 @@
 # -*- coding:utf-8 -*- 
+from rest_framework import serializers
+from rest_framework.pagination import PageNumberPagination
+from django_filters import filterset
+from django.db import models
+import django_filters
 
-from rest_framework import serializers, response, request, generics
+
+from .GrammarView import GrammarSerializer
 from server import permissions
 from dictionary.models.SentenceTable import SentenceTable
 from .GrammarView import GrammarSerializer
 from server.views import ModelViewSetPermissionSerializerMap
-from rest_framework.pagination import PageNumberPagination
-from django_filters import filterset, fields
-from rest_framework import filters
-from django.db import models
-import django_filters
-from .GrammarView import GrammarSerializer
 
 
 class SentenceSerializer(serializers.ModelSerializer):

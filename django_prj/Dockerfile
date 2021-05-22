@@ -6,6 +6,14 @@ MAINTAINER GaoNian
 ENV PYTHONUNBUFFERED 1
 ENV SITE_FOLDER django_prj
 
+ENV MY_PROXY_URL="192.168.1.10:8118"
+ENV HTTP_PROXY=$MY_PROXY_URL \
+    HTTPS_PROXY=$MY_PROXY_URL \
+    FTP_PROXY=$MY_PROXY_URL \
+    http_proxy=$MY_PROXY_URL \
+    https_proxy=$MY_PROXY_URL \
+    ftp_proxy=$MY_PROXY_URL
+
 # 设置pip源为国内源
 COPY ./pip.conf /root/.pip/pip.conf
 

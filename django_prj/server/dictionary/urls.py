@@ -9,6 +9,7 @@ from .views.SentenceView import SentenceView, SentenceTagView
 from .views.GrammarView import GrammarView, GrammarTagView, GrammarTypeView
 from .views.DistinguishView import DistinguishView
 from .views.PronunciationView import SoundmarkView
+from .views.TextToVoiceView import TextToVoiceView
 
 
 urlpatterns = [
@@ -47,4 +48,6 @@ urlpatterns = [
 
     url(r'^soundmark/$', SoundmarkView.as_view({'post':'create', 'get':'list'})),
     url(r'^soundmark/(?P<pk>\w+)/$', SoundmarkView.as_view({'put':'update', 'get':'retrieve', 'delete':'destroy'})),
+
+    url(r'^text_to_voice/$', TextToVoiceView.as_view()),
 ]
