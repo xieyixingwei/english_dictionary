@@ -9,19 +9,20 @@ from server.settings import STATIC_ROOT
 
 
 class TextToVoiceView(View):
-    savePath = STATIC_ROOT / 'tmp'
+    savePath = STATIC_ROOT / 'sentences'
 
     def get(self, request):
-        fname = 'text_to_voice_%s.mp3' % uuid.uuid4().hex[0:8]
-        #self._clearStaticTmp()
-
+        id = request.GET.get('id')
+        lang = request.GET.get('lang')
+        fname = 'sentence_%s_%s.mp3' % (id, lang)
+        if os.path.exists(self.savePath / fname):
+            return HttpResponse('/static/sentences/%s' % fname)
         try:
             text = request.GET.get('text')
-            lang = request.GET.get('lang')
             text_to_mp3(text, self.savePath / fname, lang)
         except Exception as e:
             return HttpResponse("failed")
-        return HttpResponse('/static/tmp/%s' % fname)
+        return HttpResponse('/static/sentences/%s' % fname)
 
     def _clearStaticTmp(self):
         shutil.rmtree(self.savePath)
