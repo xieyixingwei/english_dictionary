@@ -13,7 +13,7 @@ class TextToVoiceView(View):
 
     def get(self, request):
         fname = 'text_to_voice_%s.mp3' % uuid.uuid4().hex[0:8]
-        self._clearStaticTmp()
+        #self._clearStaticTmp()
 
         try:
             text = request.GET.get('text')
