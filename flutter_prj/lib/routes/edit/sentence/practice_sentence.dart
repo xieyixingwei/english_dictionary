@@ -28,11 +28,25 @@ class _PracticeSentenceState extends State<PracticeSentence> {
   final _style2 = TextStyle(color: Colors.black54, fontWeight: FontWeight.normal, fontSize: 17);
   //Timer timer;
 
+  @override
+  void initState() {
+    _sentenceToVoice();
+    super.initState();
+  }
+
+  void _sentenceToVoice() async {
+    await Future.forEach<SentenceSerializer>(widget.sentences, (e) async {
+      var res = await Http().request(HttpType.GET, '/api/dictionary/text_to_voice/', queries:{'id': e.id, 'text': e.en, 'lang': 'en'});
+      e.enVoice = Http.baseUrl + res.data.toString();
+      res = await Http().request(HttpType.GET, '/api/dictionary/text_to_voice/', queries:{'id': e.id, 'text': e.cn, 'lang': 'zh'});
+      e.cnVoice = Http.baseUrl + res.data.toString();
+    });
+  }
+
   void _timerCallback(Timer t) {
     _next();
 
-    //if(_curWord.audioUsMan == null) return; _audioPlayer.setUrl(_curWord.audioUsMan); _audioPlayer.start(0);
-    //if(cycle == false && (index == widget.words.length - 1)) {timer.cancel(); auto = false;}
+    
     setState((){});
   }
 
@@ -139,10 +153,9 @@ class _PracticeSentenceState extends State<PracticeSentence> {
               fontSize: 17,
             ),
           ),
-          onTap: () async {
-            var text = order ? _curSentence.en : _curSentence.cn;
-            var res = await Http().request(HttpType.GET, '/api/dictionary/text_to_voice/', queries:{'text': text, 'lang': order ? 'en' : 'zh-TW'});
-            _audioPlayer.setUrl(Http.baseUrl + res.data.toString()); _audioPlayer.start(0);
+          onTap: () {
+            _audioPlayer.setUrl(order ? _curSentence.enVoice : _curSentence.cnVoice);
+            _audioPlayer.start(0);
           },
         ),
         Offstage(
@@ -156,10 +169,11 @@ class _PracticeSentenceState extends State<PracticeSentence> {
       ],
     );
 
-  void _next() {
+  void _next() async {
     if(cycle && (index == widget.sentences.length - 1)) index = 0;
     else if(index < (widget.sentences.length - 1)) index += 1;
   }
+
   void _previous() {
     if(cycle && index == 0) index = widget.sentences.length - 1;
     else if(index > 0) index -= 1;
@@ -179,9 +193,8 @@ class _PracticeSentenceState extends State<PracticeSentence> {
           ],
         ),
         onTap: () async {
-          var text = order ? _curSentence.cn : _curSentence.en;
-          //var res = await Http().request(HttpType.GET, '/api/dictionary/text_to_voice/', queries:{'text': text, 'lang': order ? 'zh-TW' : 'en'});
-          _audioPlayer.setUrl(Http.baseUrl + '/static/tmp/text_to_voice_46ca95d4.mp3'); _audioPlayer.start(0); //res.data.toString()
+          _audioPlayer.setUrl(order ? _curSentence.cnVoice : _curSentence.enVoice);
+          _audioPlayer.start(0); 
         }
       )
     );

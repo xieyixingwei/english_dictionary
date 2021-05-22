@@ -1,7 +1,9 @@
 {
     "id @primary": "num=null", //models.AutoField(primary_key=True)
     "en": "", // 英文
+    "__enVoice": "",
     "cn": "", // 中文
+    "__cnVoice": "",
     "type": 0, //  models.IntegerField(default=0)  # sentence|phrase
     "tag": [""], // models.JSONField(null=True)    # 标记 [日常用语,商务用语]
     "tense": "", //  models.JSONField(null=True)   # 时态 [一般过去式,被动语态]

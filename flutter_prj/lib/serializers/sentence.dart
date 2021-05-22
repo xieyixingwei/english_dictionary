@@ -14,7 +14,9 @@ class SentenceSerializer {
   num _id;
   num id;
   String en = '';
+  String enVoice = '';
   String cn = '';
+  String cnVoice = '';
   num type = 0;
   List<String> tag = [];
   String tense = '';

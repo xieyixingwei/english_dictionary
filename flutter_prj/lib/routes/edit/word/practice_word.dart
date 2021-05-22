@@ -79,7 +79,17 @@ class _PracticeWordState extends State<PracticeWord> {
                 onChanged: (v) {
                   if(v) {
                     timer = Timer.periodic(Duration(seconds: 3), _timerCallback);
-                    if(_curWord.audioUsMan == null) return; _audioPlayer.setUrl(_curWord.audioUsMan); _audioPlayer.start(0);
+                    _audioPlayer.setVolume(0);
+                    widget.words.forEach((e) {
+                      if(e.audioUsMan != null && e.audioUsMan.isNotEmpty) {
+                        _audioPlayer.setUrl(e.audioUsMan);
+                        _audioPlayer.start(0);
+                      }
+                    });
+                    _audioPlayer.setVolume(0.8);
+                    if(_curWord.audioUsMan == null || _curWord.audioUsMan.isEmpty) return;
+                    _audioPlayer.setUrl(_curWord.audioUsMan);
+                    _audioPlayer.start(0);
                   } else {
                     timer.cancel();
                   }
