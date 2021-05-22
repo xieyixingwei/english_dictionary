@@ -12,7 +12,7 @@ class Pagination extends StatelessWidget {
     this.curPage,
     this.perPage,
     this.perPageSet,
-    this.maxIndexs = 5,
+    this.maxIndexs = 3,
     this.goto,
     this.perPageChange
   }) : super(key: key);
@@ -44,12 +44,14 @@ class Pagination extends StatelessWidget {
               icon: Icon(Icons.arrow_back_ios, size: 20, color: (curPage > 1) ? Colors.blueAccent : Colors.black26,),
               splashRadius: 17,
               onPressed: () => goto != null && (curPage > 1) ? goto(curPage - 1) : null,
+              padding: EdgeInsets.only(left: 4, right: 4),
             )
           ] + _indexs() + <Widget>[
             IconButton(
               icon: Icon(Icons.arrow_forward_ios, size: 20, color: (curPage < pages) ? Colors.blueAccent : Colors.black26),
               splashRadius: 17,
               onPressed: () => goto != null && (curPage < pages) ? goto(curPage + 1) : null,
+              padding: EdgeInsets.only(left: 4, right: 4),
             ),
           ].where((e) => e != null).toList(),
         ),
