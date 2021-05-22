@@ -11,27 +11,32 @@ abstract class MarkBlockItem {
 
 
 class MarkTitle extends MarkBlockItem {
+  final List<double> _levelFontSize = [28, 24, 20, 17, 14, 12];
+
   @override
-  RegExp get regExp => RegExp(r'^ *#+ *([^\n]+?)(?:\n+|$)');
+  RegExp get regExp => RegExp(r'^ *(#)+ *([^\n]+?)(?:\n+|$)');
 
   @override
   Widget render(RegExpMatch match) =>
     Container(
       margin: EdgeInsets.only(bottom: 14, top: 14),
-      child: Column(
+      child: ColumnSpace(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SelectableText(
-            match[1],
+            match[2],
             style: TextStyle(
-              fontSize: 17,
+              fontSize: _levelFontSize[match[1].length > 6 ? 6 : match[1].length],
               color: Colors.black87,
               fontWeight: FontWeight.bold,
               decoration: TextDecoration.none
             ),
           ),
-          SizedBox(height: 8,),
-          Divider(height: 1, color: Colors.black12, indent: 17, endIndent: 34,),
+          match[1].length < 3 ?
+          Padding(
+            padding: EdgeInsets.only(top: 8),
+            child: Divider(height: 1, color: Colors.black12, indent: 17, endIndent: 34,),
+          ) : null,
         ],
       ),
     );

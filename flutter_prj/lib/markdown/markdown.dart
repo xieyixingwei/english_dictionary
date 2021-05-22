@@ -36,7 +36,7 @@ class MarkDown {
         }
       }
       count++;
-      if(count > 10) break;
+      if(count > 2000) break;
     }
 
     return Column(

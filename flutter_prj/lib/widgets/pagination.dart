@@ -12,7 +12,7 @@ class Pagination extends StatelessWidget {
     this.curPage,
     this.perPage,
     this.perPageSet,
-    this.maxIndexs = 6,
+    this.maxIndexs = 5,
     this.goto,
     this.perPageChange
   }) : super(key: key);
@@ -73,16 +73,23 @@ class Pagination extends StatelessWidget {
     );
 
   List<Widget> _indexs() {
-    final maxCountHalf = maxIndexs / 2;
+    final maxCountHalf = maxIndexs ~/ 2;
     final count = pages < maxIndexs ? pages : maxIndexs;
+
+    final startIndex = curPage - maxCountHalf;
+    final endIndex = curPage + maxCountHalf;
+
     num start = 1;
-    if(curPage < maxIndexs || curPage - maxCountHalf <= 0) {
+    if(startIndex > 0 && endIndex <= pages) {
+      start = startIndex;
+    } else if(startIndex <= 0) {
       start = 1;
-    } else if(curPage - maxCountHalf > 0 && curPage + maxCountHalf <= pages) {
-      start = curPage - maxCountHalf;
-    } else if(curPage + maxCountHalf > pages) {
+    } else if(endIndex > pages) {
       start = pages - maxIndexs + 1;
+    } else {
+      start = 1;
     }
+
     var indexs = List<Widget>.generate(count, (i) =>
                 TextButton(
                   child: Text('${i+start}', style: TextStyle(fontSize: 17, color: Colors.black38),),
@@ -94,7 +101,7 @@ class Pagination extends StatelessWidget {
                   onPressed: () => goto != null ? goto(i+start) : null,
                 )
               );
-        if(start > 1) {
+        if(start > 2) {
           indexs.insert(0,
                   TextButton(
                     child: Text('1', style: TextStyle(fontSize: 17, color: Colors.black38),),
@@ -104,10 +111,10 @@ class Pagination extends StatelessWidget {
                     ),
                     onPressed: () => goto != null ? goto(1) : null,
                   ));
-          indexs.insert(1,Text('......', style: TextStyle(fontSize: 17, color: Colors.black38),),);
+          indexs.insert(1,Text('...', style: TextStyle(fontSize: 17, color: Colors.black38),),);
         }
-        if(count > maxIndexs && curPage + maxCountHalf < pages) {
-          indexs.add(Text('......', style: TextStyle(fontSize: 17, color: Colors.black38),),);
+        if(pages > maxIndexs && endIndex < (pages - 1)) {
+          indexs.add(Text('...', style: TextStyle(fontSize: 17, color: Colors.black38),),);
           indexs.add(
                   TextButton(
                     child: Text('$pages', style: TextStyle(fontSize: 17, color: Colors.black38),),
