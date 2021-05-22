@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_prj/routes/tabs/practice/sentence_practice.dart';
 import 'package:flutter_prj/routes/tabs/practice/word_practice.dart';
 
 
@@ -32,7 +33,11 @@ class _TabPractice extends State<TabPractice> {
                     builder: (context) => WordPracticePage(),
                   )
                 )),
-            _card(context, '句子', (){}),
+            _card(context, '句子', ()=>Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SentencePracticePage(),
+                  )
+                )),
             _card(context, '语法', (){}),
             _card(context, '词义辨析', (){}),
           ],

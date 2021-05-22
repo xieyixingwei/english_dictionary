@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
+import 'package:flutter_prj/widgets/pagination.dart';
 
 
 class FavoritePage extends StatefulWidget {
@@ -114,7 +115,7 @@ class _ListFavoritePageState extends State<ListFavoritePage> {
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
-        child: ColumnSpace(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: _children(),
         ),
@@ -125,9 +126,8 @@ class _ListFavoritePageState extends State<ListFavoritePage> {
     switch(widget.type) {
       case FavoriteType.word:
         return Global.localStore.user.studyWordSet.map((e) =>
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
+          rowData(
+            cols: [
               Text(e.word),
               TextButton(
                 child: Text('加入学习计划'),
@@ -147,7 +147,7 @@ class _ListFavoritePageState extends State<ListFavoritePage> {
       case FavoriteType.distinguish:
         return Global.localStore.user.studyPlan.distinguishes.map((e) =>
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text('$e'),
               TextButton(
@@ -163,7 +163,7 @@ class _ListFavoritePageState extends State<ListFavoritePage> {
       case FavoriteType.sentence:
         return Global.localStore.user.studySentenceSet.map((e) =>
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text('${e.sentence}'),
               TextButton(
@@ -184,7 +184,7 @@ class _ListFavoritePageState extends State<ListFavoritePage> {
       case FavoriteType.grammar:
         return Global.localStore.user.studyGrammarSet.map((e) =>
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text('${e.grammar}'),
               TextButton(

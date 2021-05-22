@@ -130,3 +130,25 @@ class Pagination extends StatelessWidget {
     return indexs;
   }
 }
+
+Widget rowData({List<Widget> cols, List<Alignment> aligns, List<num> flexs}) =>
+  Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    mainAxisSize: MainAxisSize.max,
+    children: cols.asMap().map((i, e) =>
+      MapEntry(i,
+        Expanded(
+          flex: flexs == null ? 1 : flexs[i],
+          child: Container(
+            alignment: flexs == null ? Alignment.centerLeft : aligns[i],
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                e
+              ],
+            ),
+          ),
+        )
+      )
+    ).values.toList(),
+  );

@@ -6,35 +6,38 @@ import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
 
 
-class PracticeWord extends StatefulWidget {
-  PracticeWord({Key key, this.title, this.words}) : super(key: key);
+class PracticeSentence extends StatefulWidget {
+  PracticeSentence({Key key, this.title, this.sentences}) : super(key: key);
 
   final Widget title;
-  final List<WordSerializer> words;
+  final List<SentenceSerializer> sentences;
 
   @override
-  _PracticeWordState createState() => _PracticeWordState();
+  _PracticeSentenceState createState() => _PracticeSentenceState();
 }
 
-class _PracticeWordState extends State<PracticeWord> {
+class _PracticeSentenceState extends State<PracticeSentence> {
   num index = 0;
   bool auto = false;
   bool cycle = true;
-  WrappedPlayer _audioPlayer = WrappedPlayer();
+  bool order = false;
+  bool _hide = true;
+  //WrappedPlayer _audioPlayer = WrappedPlayer();
   final _style = TextStyle(fontSize: 14, color: Colors.black45);
-  Timer timer;
+  final _style2 = TextStyle(color: Colors.black54, fontWeight: FontWeight.normal, fontSize: 17);
+  //Timer timer;
 
   void _timerCallback(Timer t) {
     _next();
 
-    if(_curWord.audioUsMan == null) return; _audioPlayer.setUrl(_curWord.audioUsMan); _audioPlayer.start(0);
-    if(cycle == false && (index == widget.words.length - 1)) {timer.cancel(); auto = false;}
+    //if(_curWord.audioUsMan == null) return; _audioPlayer.setUrl(_curWord.audioUsMan); _audioPlayer.start(0);
+    //if(cycle == false && (index == widget.words.length - 1)) {timer.cancel(); auto = false;}
     setState((){});
   }
 
   @override
   void dispose() {
-    if(timer != null && timer.isActive) timer.cancel();
+    //if(timer != null && timer.isActive) timer.cancel();
     super.dispose();
   }
 
@@ -45,7 +48,7 @@ class _PracticeWordState extends State<PracticeWord> {
         backgroundColor: Color.fromRGBO(250, 250, 250, 1),
         titleSpacing: 3,
         title: Text(
-          '${index+1}/${widget.words.length}  |  ${_preWord.name}',
+          '${index+1}/${widget.sentences.length}',
           style: TextStyle(
             fontSize: 14,
             color: Colors.black45
@@ -58,6 +61,17 @@ class _PracticeWordState extends State<PracticeWord> {
         ),
         centerTitle: false,
         actions: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('英汉', style: _style,),
+              SizedBox(width: 3,),
+              Switch(
+                value: order,
+                onChanged: (v) => setState(() => order = v),
+              ),
+            ],
+          ),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -78,10 +92,10 @@ class _PracticeWordState extends State<PracticeWord> {
                 value: auto,
                 onChanged: (v) {
                   if(v) {
-                    timer = Timer.periodic(Duration(seconds: 3), _timerCallback);
-                    if(_curWord.audioUsMan == null) return; _audioPlayer.setUrl(_curWord.audioUsMan); _audioPlayer.start(0);
+                    //timer = Timer.periodic(Duration(seconds: 3), _timerCallback);
+                    //if(_curWord.audioUsMan == null) return; _audioPlayer.setUrl(_curWord.audioUsMan); _audioPlayer.start(0);
                   } else {
-                    timer.cancel();
+                    //timer.cancel();
                   }
                   setState(() {auto = v;});
                 },
@@ -99,8 +113,11 @@ class _PracticeWordState extends State<PracticeWord> {
           child: ColumnSpace(
             divider: SizedBox(height: 20,),
             children: [
-              _word,
-              _detail(context),
+              Container(
+                height: 200,
+                child: _sentence,
+              ),
+              //_detail(context),
               auto ? null : _goto,
             ],
           ),
@@ -108,58 +125,53 @@ class _PracticeWordState extends State<PracticeWord> {
       ),
     );
 
-  Widget get _word =>
+  Widget get _sentence =>
     ColumnSpace(
       divider: SizedBox(height: 10,),
       children: [
-        InkWell(
-          child: Text(
-            _curWord.name,
-            style: TextStyle(
-              color: Colors.black87,
-              fontWeight: FontWeight.w700,
-              fontSize: 28,
-            ),
-          ),
-          onTap: () async {if(_curWord.audioUsMan == null) return; _audioPlayer.setUrl(_curWord.audioUsMan); _audioPlayer.start(0);},
-        ),
-        _curWord.voiceUs != null && _curWord.voiceUs.isNotEmpty ?
         Text(
-          _curWord.voiceUs,
+          order ? _curSentence.en : _curSentence.cn,
           style: TextStyle(
             color: Colors.black87,
-            fontWeight: FontWeight.normal,
-            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            fontSize: 17,
           ),
-        ) : null,
+        ),
+        Offstage(
+          offstage: !_hide,
+          child: IconButton(
+            icon: Icon(Icons.more_horiz),
+            onPressed: () => setState(() => _hide = false),
+          )
+        ),
+        _detail(),
       ],
     );
 
   void _next() {
-    if(cycle && (index == widget.words.length - 1)) index = 0;
-    else if(index < (widget.words.length - 1)) index += 1;
+    if(cycle && (index == widget.sentences.length - 1)) index = 0;
+    else if(index < (widget.sentences.length - 1)) index += 1;
   }
   void _previous() {
-    if(cycle && index == 0) index = widget.words.length - 1;
+    if(cycle && index == 0) index = widget.sentences.length - 1;
     else if(index > 0) index -= 1;
   }
-  WordSerializer get _curWord => widget.words[index];
-  WordSerializer get _preWord {
-    num preIndex = index;
-    if(cycle && index == 0) preIndex = widget.words.length - 1;
-    else if(index > 0) preIndex = index - 1;
-    else preIndex = 0;
-    return  widget.words[preIndex];
-  }
+  SentenceSerializer get _curSentence => widget.sentences[index];
 
-  Widget _detail(BuildContext context) =>
-    IconButton(
-      icon: Icon(Icons.more_horiz),
-      onPressed: () async {
-        if(timer != null && timer.isActive) timer.cancel();
-        await Navigator.pushNamed(context, '/show_word', arguments: {'title': '', 'word': _curWord});
-        if(auto) timer = Timer.periodic(Duration(seconds: 3), _timerCallback);
-      },
+  Widget _detail() =>
+    Offstage(
+      offstage: _hide,
+      child: InkWell(
+        child: Column(
+          children: [
+            Text(
+              order ? _curSentence.cn : _curSentence.en,
+              style: _style2,
+            ),
+          ],
+        ),
+        onTap: () => setState(() => _hide = true),
+      )
     );
 
   Widget get _goto =>
@@ -169,12 +181,12 @@ class _PracticeWordState extends State<PracticeWord> {
         IconButton(
           icon: Icon(Icons.arrow_back_ios, size: 30, color: Colors.blueAccent,),
           splashRadius: 17,
-          onPressed: () => setState(() => _previous()),
+          onPressed: () => setState(() {_hide = true; _previous();}),
         ),
         IconButton(
           icon: Icon(Icons.arrow_forward_ios, size: 30, color: Colors.blueAccent),
           splashRadius: 17,
-          onPressed: () => setState(() => _next()),
+          onPressed: () => setState(() {_hide = true; _next();}),
         ),
       ],
     );

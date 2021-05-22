@@ -13,6 +13,7 @@ import 'package:flutter_prj/routes/edit/edit_tags.dart';
 import 'package:flutter_prj/routes/edit/grammar/edit_grammar.dart';
 import 'package:flutter_prj/routes/edit/grammar/list_grammars.dart';
 import 'package:flutter_prj/routes/edit/etyma/edit_etyma.dart';
+import 'package:flutter_prj/routes/edit/sentence/practice_sentence.dart';
 import 'package:flutter_prj/routes/edit/sentence/show_sentences.dart';
 import 'package:flutter_prj/routes/edit/sentence_pattern/edit_sentence_pattern.dart';
 import 'package:flutter_prj/routes/edit/sentence_pattern/list_sentence_patterns.dart';
@@ -89,6 +90,8 @@ final _routes = {
   '/show_distinguish': (context, {arguments}) => ShowDistinguishPage(title: arguments['title'], distinguish: arguments['distinguish'],),
 
   '/practice_word': (context, {arguments}) => PracticeWord(title: arguments['title'], words: arguments['words'],),
+  '/practice_sentence': (context, {arguments}) => PracticeSentence(title: arguments['title'], sentences: arguments['sentences'],),
+  
 };
 
 
