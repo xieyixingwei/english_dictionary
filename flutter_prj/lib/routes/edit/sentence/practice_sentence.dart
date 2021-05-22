@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:audioplayers/audioplayers_web.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_prj/common/http.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
 
@@ -22,7 +23,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
   bool cycle = true;
   bool order = false;
   bool _hide = true;
-  //WrappedPlayer _audioPlayer = WrappedPlayer();
+  WrappedPlayer _audioPlayer = WrappedPlayer();
   final _style = TextStyle(fontSize: 14, color: Colors.black45);
   final _style2 = TextStyle(color: Colors.black54, fontWeight: FontWeight.normal, fontSize: 17);
   //Timer timer;
@@ -129,13 +130,20 @@ class _PracticeSentenceState extends State<PracticeSentence> {
     ColumnSpace(
       divider: SizedBox(height: 10,),
       children: [
-        Text(
-          order ? _curSentence.en : _curSentence.cn,
-          style: TextStyle(
-            color: Colors.black87,
-            fontWeight: FontWeight.w700,
-            fontSize: 17,
+        InkWell(
+          child: Text(
+            order ? _curSentence.en : _curSentence.cn,
+            style: TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.w700,
+              fontSize: 17,
+            ),
           ),
+          onTap: () async {
+            var text = order ? _curSentence.en : _curSentence.cn;
+            var res = await Http().request(HttpType.GET, '/api/dictionary/text_to_voice/', queries:{'text': text, 'lang': order ? 'en' : 'zh-TW'});
+            _audioPlayer.setUrl(Http.baseUrl + res.data.toString()); _audioPlayer.start(0);
+          },
         ),
         Offstage(
           offstage: !_hide,
@@ -170,7 +178,11 @@ class _PracticeSentenceState extends State<PracticeSentence> {
             ),
           ],
         ),
-        onTap: () => setState(() => _hide = true),
+        onTap: () async {
+          var text = order ? _curSentence.cn : _curSentence.en;
+          var res = await Http().request(HttpType.GET, '/api/dictionary/text_to_voice/', queries:{'text': text, 'lang': order ? 'zh-TW' : 'en'});
+          _audioPlayer.setUrl(Http.baseUrl + res.data.toString()); _audioPlayer.start(0);
+        }
       )
     );
 
