@@ -394,7 +394,7 @@ class HttpMethods {
         return
 """
   Future<bool> $methodName({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    if(${fatherSerializer.primaryMember.hidePrimaryMemberName} == null) return true;
+    if(${fatherSerializer.primaryMember.name} == null) return true;
     var res = await Http().request(HttpType.DELETE, '$requestUrl', $data, $queries, $cache);
     /*
     ${fatherSerializer.membersDelete}

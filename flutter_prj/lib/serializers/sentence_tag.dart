@@ -24,7 +24,7 @@ class SentenceTagSerializer {
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    if(_name == null) return true;
+    if(name == null) return true;
     var res = await Http().request(HttpType.DELETE, '/api/dictionary/sentence_tag/$name/', data:data ?? toJson(), queries:queries, cache:cache);
     /*
     

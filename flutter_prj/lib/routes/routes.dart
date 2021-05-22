@@ -20,6 +20,7 @@ import 'package:flutter_prj/routes/edit/user/edit_user.dart';
 import 'package:flutter_prj/routes/edit/user/list_users.dart';
 import 'package:flutter_prj/routes/edit/word/edit_word.dart';
 import 'package:flutter_prj/routes/edit/word/list_words.dart';
+import 'package:flutter_prj/routes/edit/word/practice_word.dart';
 import 'package:flutter_prj/routes/edit/word/show_word.dart';
 import 'package:flutter_prj/routes/favorite_page.dart';
 import 'package:flutter_prj/routes/login.dart';
@@ -86,6 +87,8 @@ final _routes = {
 
   '/show_grammar': (context, {arguments}) => ShowGrammarPage(title: arguments['title'], grammar: arguments['grammar'],),
   '/show_distinguish': (context, {arguments}) => ShowDistinguishPage(title: arguments['title'], distinguish: arguments['distinguish'],),
+
+  '/practice_word': (context, {arguments}) => PracticeWord(title: arguments['title'], words: arguments['words'],),
 };
 
 
