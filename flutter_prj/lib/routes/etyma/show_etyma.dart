@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_prj/routes/edit/etyma/edit_etyma.dart';
+import 'package:flutter_prj/routes/etyma/edit_etyma.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
 

@@ -1,8 +1,18 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/serializers/index.dart';
 
+
+List<Map<String, List<ParaphraseSerializer>>> sortParaphraseSet(List<ParaphraseSerializer> paraphrases) {
+  List<Map<String, List<ParaphraseSerializer>>> ret = [];
+  paraphrases.forEach( (e) {
+    var find = ret.singleWhere((ele) => ele.keys.first == e.partOfSpeech, orElse: () => null);
+    find == null
+          ? ret.add({e.partOfSpeech: [e]})
+          : find.values.first.add(e);
+  });
+  return ret;
+}
 
 StudyWordSerializer getStudyWord(String word) {
   if(Global.localStore.user.studyWordSet.isEmpty)

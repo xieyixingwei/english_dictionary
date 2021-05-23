@@ -154,6 +154,27 @@
     }
 }
 
+{ // 分页查询 单词
+    "__name__": "paraphrase_pagination",
+    "count": 0,
+    "next": "",
+    "previous": "",
+    "results": ["$paraphrase"],
+    "__filter__": {
+        "__serializer__": "$paraphrase",
+        "interpret": ["icontains"]
+    },
+    "__http__": {
+        "url": "/api/dictionary/paraphrase/",
+        "methods": [
+            {
+                "name": "retrieve",
+                "filter": true
+            }
+        ]
+    }
+}
+
 {
     "__name__": "word_tag",
     "name @primary": "",

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_prj/routes/edit/sentence_pattern/show_sentence_pattern.dart';
+import 'package:flutter_prj/routes/sentence_pattern/show_sentence_pattern.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/pagination.dart';
 import 'package:flutter_prj/widgets/edit_delete.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_prj/routes/edit/common/appbar.dart';
-import 'package:flutter_prj/routes/edit/common/text_form_field.dart';
+import 'package:flutter_prj/routes/common/appbar.dart';
+import 'package:flutter_prj/routes/common/text_form_field.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
 

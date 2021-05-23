@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/markdown/markdown.dart';
 import 'package:flutter_prj/routes/routes.dart';
-import 'package:flutter_prj/routes/tabs/home/home.dart';
+import 'package:flutter_prj/routes/tabs/home.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'common/global.dart';

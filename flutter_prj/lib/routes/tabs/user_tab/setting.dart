@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/serializers/index.dart';
-import '../common/global.dart';
+import '../../../common/global.dart';
 
 
 class Setting extends StatelessWidget {

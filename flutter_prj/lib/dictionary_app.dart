@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'routes/tabs/discover.dart';
-import 'routes/tabs/home/home.dart';
+import 'routes/tabs/home.dart';
 import 'routes/tabs/practice/practice.dart';
 import 'routes/tabs/user_tab.dart';
 

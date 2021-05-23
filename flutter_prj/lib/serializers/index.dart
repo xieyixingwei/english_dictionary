@@ -20,6 +20,7 @@ export 'word_pagination.dart';
 export 'sentence_pattern.dart';
 export 'sentence_pattern_pagination.dart';
 export 'paraphrase.dart';
+export 'paraphrase_pagination.dart';
 export 'word_tag.dart';
 export 'etyma.dart';
 export 'etyma_pagination.dart';

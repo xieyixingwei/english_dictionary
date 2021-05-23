@@ -2,10 +2,11 @@ import 'package:audioplayers/audioplayers_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/markdown/markdown.dart';
-import 'package:flutter_prj/routes/edit/common/utils.dart';
-import 'package:flutter_prj/routes/edit/distinguish_word/show_distinguish.dart';
-import 'package:flutter_prj/routes/edit/grammar/show_grammar.dart';
-import 'package:flutter_prj/routes/edit/sentence/show_sentences.dart';
+import 'package:flutter_prj/routes/common/common.dart';
+import 'package:flutter_prj/routes/distinguish/show_distinguish.dart';
+import 'package:flutter_prj/routes/grammar/show_grammar.dart';
+import 'package:flutter_prj/routes/paraphrase/show_paraphrase.dart';
+import 'package:flutter_prj/routes/sentence_pattern/show_sentence_pattern.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/OnOffWidget.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
@@ -336,94 +337,11 @@ class _ShowWordState extends State<ShowWord> {
       label: Text('详细释义', style: _labelStyle),
       child: Container(
         padding: EdgeInsets.only(top:14),
-        child: _paraphraseListShow(context, widget.word.paraphraseSet),
+        child: paraphraseListShow(context, widget.word.paraphraseSet, ()=>setState((){})),
       ),
     ) : null;
 
-  Widget _paraphraseListShow(BuildContext context, List<ParaphraseSerializer> paraphraseSet) =>
-    ColumnSpace(
-      divider: SizedBox(height: 14,),
-      children: sortParaphraseSet(paraphraseSet).map((e) =>
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              e.keys.first,
-              style: TextStyle(fontSize: 14, color: Colors.blue, fontWeight: FontWeight.bold),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(12, 8, 0, 0),
-              child: ColumnSpace(
-                divider: SizedBox(height: 8,),
-                children: e.values.first.asMap().map((i, v) =>
-                  MapEntry(i, _paraphraseShow(context, i+1, v))
-                ).values.toList(),
-              )
-            ),
-          ]
-        )
-      ).toList(),
-    );
 
-Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer paraphrase) =>
-  Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      RowSpace(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          SelectableText(
-            '$index. ',
-            style: TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.bold, height: 1),
-          ),
-          SelectableText(
-            paraphrase.interpret,
-            style: TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.bold, height: 1),
-          ),
-          SizedBox(width: 8,),
-          Global.localStore.user.uname == 'root' ?
-          InkWell(
-            child: Text('修改', style: TextStyle(fontSize: 12, color: Colors.blueAccent),),
-            onTap: () async {
-             var p = (await Navigator.pushNamed(
-                                  context, '/edit_paraphrase',
-                                  arguments: {
-                                    'title':'编辑${widget.word.name}的释义',
-                                    'paraphrase': ParaphraseSerializer().from(paraphrase)})
-                      ) as ParaphraseSerializer;
-              if(p != null) {
-                await paraphrase.from(p).save();
-              }
-              setState(() {});
-            },
-          ) : null,
-        ],
-      ),
-      paraphrase.sentenceSet.isNotEmpty ? 
-      Container(
-        padding: EdgeInsets.only(left: 16, top: 8),
-        child: _sentenceSetShow(context, paraphrase.sentenceSet),
-      ) : null,
-    ].where((e) => e != null).toList(),
-  );
-
-  Widget _sentenceSetShow(BuildContext context, List<SentenceSerializer> sentenceSet) =>
-    ColumnSpace(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      divider: SizedBox(height: 8,),
-      children: sentenceSet.map((e) => sentenceShow(context, e, ()=>setState((){}))).toList(),
-    );
-
-  List<Map<String, List<ParaphraseSerializer>>> sortParaphraseSet(List<ParaphraseSerializer> paraphrases) {
-    List<Map<String, List<ParaphraseSerializer>>> ret = [];
-    paraphrases.forEach( (e) {
-      var find = ret.singleWhere((ele) => ele.keys.first == e.partOfSpeech, orElse: () => null);
-      find == null
-            ? ret.add({e.partOfSpeech: [e]})
-            : find.values.first.add(e);
-    });
-    return ret;
-  }
 
   Widget _sentencePatternSetShow(BuildContext context) => widget.word.sentencePatternSet.isNotEmpty ?
     OnOffWidget(
@@ -433,36 +351,11 @@ Widget _paraphraseShow(BuildContext context, int index, ParaphraseSerializer par
         child: ColumnSpace(
           divider: SizedBox(height: 8,),
           children: widget.word.sentencePatternSet.asMap().map((i, e) =>
-            MapEntry(i, _sentencePatternShow(context, i+1, e))
+            MapEntry(i, sentencePatternShow(context, i+1, e, ()=>setState((){})))
           ).values.toList(),
         ),
       ),
     ) : null;
-
-  Widget _sentencePatternShow(BuildContext context, num index, SentencePatternSerializer sp) =>
-    Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SelectableText(
-              '[$index]. ',
-              style: TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.bold, height: 1),
-            ),
-            SelectableText(
-              sp.content,
-              style: TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.bold, height: 1),
-            ),
-          ].where((e) => e != null).toList(),
-        ),
-        sp.paraphraseSet.isNotEmpty ?
-        Container(
-          padding: EdgeInsets.only(left: 16, top: 8),
-          child: _paraphraseListShow(context, sp.paraphraseSet),
-        ) : null,
-      ].where((e) => e != null).toList(),
-    );
 
   Widget get _grammerSetShow => widget.word.grammarSet.isNotEmpty ?
     OnOffWidget(

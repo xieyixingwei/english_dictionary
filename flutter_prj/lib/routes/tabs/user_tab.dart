@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
-import '../login.dart';
+import '../user/login.dart';
 
 
 class UserTab extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_prj/routes/edit/distinguish_word/show_distinguish.dart';
+import 'package:flutter_prj/routes/distinguish/show_distinguish.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/edit_delete.dart';
 import 'package:flutter_prj/widgets/pagination.dart';

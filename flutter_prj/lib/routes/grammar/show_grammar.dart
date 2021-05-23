@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/markdown/markdown.dart';
-import 'package:flutter_prj/routes/edit/common/utils.dart';
+import 'package:flutter_prj/routes/common/common.dart';
 import 'package:flutter_prj/serializers/grammar.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/column_space.dart';

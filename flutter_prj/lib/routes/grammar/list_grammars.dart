@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
-import 'package:flutter_prj/routes/edit/grammar/show_grammar.dart';
+import 'package:flutter_prj/routes/grammar/show_grammar.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/edit_delete.dart';
 import 'package:flutter_prj/widgets/pagination.dart';
