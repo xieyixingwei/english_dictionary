@@ -185,7 +185,7 @@ class Member {
     membersForeignToMeOfTypeSerializer = typeSerializer.members.where((e) => e.isForeign ? e.serializerJsonName == fatherSerializer.jsonName : false).toList();
     List<String>eForeignNames = membersForeignToMeOfTypeSerializer.map((e) => e.name).toList();
     String eAssignForeign = eForeignNames.map((e) => 'e.$e = ${fatherSerializer.primaryMember.name};').toList().join(' ');
-    return isList ? 'if($name != null){await Future.forEach($name, (e) async {$eAssignForeign await e.save();});}' : 'if($name != null){$eAssignForeign await $name.save();}';
+    return isList ? 'await Future.forEach($name, (e) async {$eAssignForeign await e.save();});' : 'if($name != null){$eAssignForeign await $name.save();}';
   }
 
   String get delete {
@@ -207,18 +207,19 @@ class Member {
     String jsonMember = jsonType == JsonType.Map ? 'json[\'$name\']' : 'json';
     String type = isFileType ? 'String' : unListType;
     String eFromJson = isSerializerType ? '$type().fromJson(e as Map<String, dynamic>)' : 'e as $type';
+    String memberName = isFileType ? '$name.url' : name;
     String unListFromJson = isSerializerType ? 
 """$jsonMember == null
-                ? null
-                : $unListType().fromJson($jsonMember as Map<String, dynamic>)""" : '$jsonMember == null ? null : $jsonMember as $type';
+                ? $memberName
+                : $unListType().fromJson($jsonMember as Map<String, dynamic>)""" : '$jsonMember == null ? $memberName : $jsonMember as $type';
 
     String listFromJson = 
 """$jsonMember == null
-                ? []
+                ? $memberName
                 : $jsonMember.map<$unListType>((e) => $eFromJson).toList()""";
 
     String memberFromJson = isList ? listFromJson : unListFromJson;
-    return isFileType ? '$name.url = $memberFromJson' : '$name = $memberFromJson';
+    return '$memberName = $memberFromJson';
   }
 
   String get toJson {
@@ -259,12 +260,11 @@ import 'package:file_picker/file_picker.dart';
 
 
 class SingleFile {
-  SingleFile(String field, FileType type)
-    : this.field = field, this.type = type;
+  SingleFile(this.field, this.type);
 
-  final FileType type;
   final String field;
-  String url;
+  final FileType type;
+  String url = '';
   MultipartFile mptFile;
 
   MapEntry<String, MultipartFile> get file => MapEntry(field, mptFile);
@@ -313,6 +313,7 @@ class HttpMethods {
   bool get hasSave => methodsConfig.indexWhere((e) => e['name'] == 'save') != -1;
   bool get hasUpdate => methodsConfig.indexWhere((e) => e['name'] == 'update') != -1;
   bool get hasDelete => methodsConfig.indexWhere((e) => e['name'] == 'delete') != -1;
+  String get uploadFile => fatherSerializer.hasFileType ? 'res = await uploadFile();' : '';
 
   HttpMethods(this.fatherSerializer, this.httpConfig) {
     methodsConfig = httpConfig['methods'];
@@ -324,24 +325,17 @@ class HttpMethods {
       String methodName = e['name'];
 
       if(methodName == 'save') {
-        String saveForeign = fatherSerializer.membersSave.isNotEmpty ? '\n      ${fatherSerializer.membersSave}' : '';
-        String update = hasUpdate ? 'res = await update(data:data, queries:queries, cache:cache);' : '';
-        String create = fatherSerializer.membersSave.isNotEmpty ? 
-"""var clone = $serializerType().from(this); // create will update self, maybe refresh the member of self.
-      res = await clone.create(data:data, queries:queries, cache:cache);
-      if(res == false) return false;
-      ${fatherSerializer.primaryMember.name} = clone.${fatherSerializer.primaryMember.name};
-      ${fatherSerializer.membersSave}
-      res = await retrieve();""" : """res = await create(data:data, queries:queries, cache:cache);""";
+        String saveForeign = fatherSerializer.membersSave.isNotEmpty ? '\n    if(res) {\n      ${fatherSerializer.membersSave}\n    }' : '';
+        String update = hasUpdate ? 'await update(data:data, queries:queries, cache:cache)' : '';
+        String create = 'await create(data:data, queries:queries, cache:cache)';
         return
 """
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    bool res = false;
-    if(${fatherSerializer.primaryMember.hidePrimaryMemberName} == null) {
-      $create
-    } else {
-      $update$saveForeign
-    }
+    bool res = ${fatherSerializer.primaryMember.hidePrimaryMemberName} == null ?
+      $create :
+      $update;
+$saveForeign
+    $uploadFile
     return res;
   }
 """;
@@ -349,16 +343,20 @@ class HttpMethods {
 
       String requestUrl = baseUrl + (e["url"] != null ? e["url"] : '');
       String requestType = e["requst"] != null ? e["requst"] : methodMap[methodName];
-      String data = fatherSerializer.hasFileType ? 'data:data ?? _formData' : 'data:data ?? toJson()';
+      String data = 'data:data ?? toJson()';
       String queries = 'queries:queries';
       String cache = 'cache:cache';
+      String primaryMemberName = fatherSerializer.primaryMember?.name;
 
       if(requestType == "post") {
         return
 """
   Future<bool> $methodName({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '$requestUrl', $data, $queries, $cache);
-    if(res != null) fromJson(res.data);
+    if(res != null) {
+      var jsonObj = {'$primaryMemberName': res.data['$primaryMemberName'] ?? $primaryMemberName};
+      fromJson(jsonObj); // Only update primary member after create
+    }
     return res != null;
   }
 """;
@@ -531,7 +529,7 @@ class JsonSerializer {
     jsonType == JsonType.Map ?
 """  Map<String, dynamic> toJson() => <String, dynamic>{
     $toJsonMembers
-  };""" :
+  }..removeWhere((k, v) => v==null);""" :
 """
   List toJson() =>
     $toJsonMembers
@@ -546,18 +544,19 @@ class JsonSerializer {
     return this;
   }""";
 
-  String get jsonEncodeOfMembers => members.map((e) => e.jsonEncode).where((e) => e != null).toList().join('\n    ');
   String get addToFormDataOfMembers => members.map((e) => e.addToFormData).where((e) => e != null).toList().join('\n    ');
   bool get hasFileType => members.where((e) => e.isFileType).isNotEmpty;
 
-  String get formData => hasFileType ?
+  String get uploadFile => hasFileType ?
 """
-  FormData get _formData {
-    var jsonObj = toJson();
-    $jsonEncodeOfMembers
+  Future<bool> uploadFile() async {
+    var jsonObj = {'${primaryMember.name}': ${primaryMember.name}};
     var formData = FormData.fromMap(jsonObj, ListFormat.multi);
     $addToFormDataOfMembers
-    return formData;
+    if(formData.length > 1) {
+      return await update(data:formData);
+    }
+    return true;
   }
 """ : '';
 
@@ -587,7 +586,8 @@ $httpMethods
 $fromJson
 
 $toJson
-$formData
+
+$uploadFile
 $from
 }
 
