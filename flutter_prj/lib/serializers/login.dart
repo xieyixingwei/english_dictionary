@@ -13,16 +13,16 @@ class LoginSerializer {
   num status = 0;
   String token;
 
-  Future<bool> login({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/api/user/login/', data:data ?? toJson(), queries:queries, cache:cache);
+  Future<bool> login({Map<String, dynamic> queries, bool cache=false}) async {
+    var res = await Http().request(HttpType.GET, '/api/user/login/', queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
   }
 
   LoginSerializer fromJson(Map<String, dynamic> json) {
-    msg = json['msg'] == null ? null : json['msg'] as String;
-    status = json['status'] == null ? null : json['status'] as num;
-    token = json['token'] == null ? null : json['token'] as String;
+    msg = json['msg'] == null ? msg : json['msg'] as String;
+    status = json['status'] == null ? status : json['status'] as num;
+    token = json['token'] == null ? token : json['token'] as String;
     return this;
   }
 
@@ -30,7 +30,8 @@ class LoginSerializer {
     'msg': msg,
     'status': status,
     'token': token,
-  };
+  }..removeWhere((k, v) => v==null);
+
 
   LoginSerializer from(LoginSerializer instance) {
     if(instance == null) return this;

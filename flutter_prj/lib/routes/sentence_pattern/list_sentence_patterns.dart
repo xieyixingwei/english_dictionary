@@ -122,12 +122,15 @@ class _ListSentencePatternsState extends State<ListSentencePatterns> {
             sp: e,
             trailing: EditDelete(
               edit: () async {
-                var sentencePattern = (await Navigator.pushNamed(
-                  context, '/edit_sentence_pattern',
-                  arguments:{'title':'编辑常用句型','sentence_pattern': SentencePatternSerializer().from(e)})
-                ) as SentencePatternSerializer;
-                if(sentencePattern != null) e.from(sentencePattern).save();
-                setState(() {});
+                var sp = (await Navigator.pushNamed(context,
+                                                   '/edit_sentence_pattern',
+                                                    arguments: {'title':'编辑常用句型',
+                                                    'sentence_pattern': SentencePatternSerializer().from(e)})
+                          ) as SentencePatternSerializer;
+                if(sp != null) {
+                  await e.from(sp).save();
+                  setState(() {});
+                }
               },
               delete: () {
                 e.delete();

@@ -24,7 +24,10 @@ class StudyWordSerializer {
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/study/word/', data:data ?? toJson(), queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    if(res != null) {
+      var jsonObj = {'id': res.data['id'] ?? id};
+      fromJson(jsonObj); // Only update primary member after create
+    }
     return res != null;
   }
 
@@ -49,28 +52,27 @@ class StudyWordSerializer {
   }
 
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    bool res = false;
-    if(_id == null) {
-      res = await create(data:data, queries:queries, cache:cache);
-    } else {
-      res = await update(data:data, queries:queries, cache:cache);
-    }
+    bool res = _id == null ?
+      await create(data:data, queries:queries, cache:cache) :
+      await update(data:data, queries:queries, cache:cache);
+
+    
     return res;
   }
 
   StudyWordSerializer fromJson(Map<String, dynamic> json) {
-    id = json['id'] == null ? null : json['id'] as num;
-    foreignUser = json['foreignUser'] == null ? null : json['foreignUser'] as num;
-    word = json['word'] == null ? null : json['word'] as String;
-    category = json['category'] == null ? null : json['category'] as String;
-    familiarity = json['familiarity'] == null ? null : json['familiarity'] as num;
+    id = json['id'] == null ? id : json['id'] as num;
+    foreignUser = json['foreignUser'] == null ? foreignUser : json['foreignUser'] as num;
+    word = json['word'] == null ? word : json['word'] as String;
+    category = json['category'] == null ? category : json['category'] as String;
+    familiarity = json['familiarity'] == null ? familiarity : json['familiarity'] as num;
     learnRecord = json['learnRecord'] == null
-                ? []
+                ? learnRecord
                 : json['learnRecord'].map<String>((e) => e as String).toList();
-    inplan = json['inplan'] == null ? null : json['inplan'] as bool;
-    isFavorite = json['isFavorite'] == null ? null : json['isFavorite'] as bool;
-    comments = json['comments'] == null ? null : json['comments'] as String;
-    repeats = json['repeats'] == null ? null : json['repeats'] as num;
+    inplan = json['inplan'] == null ? inplan : json['inplan'] as bool;
+    isFavorite = json['isFavorite'] == null ? isFavorite : json['isFavorite'] as bool;
+    comments = json['comments'] == null ? comments : json['comments'] as String;
+    repeats = json['repeats'] == null ? repeats : json['repeats'] as num;
     _id = id;
     return this;
   }
@@ -86,7 +88,8 @@ class StudyWordSerializer {
     'isFavorite': isFavorite,
     'comments': comments,
     'repeats': repeats,
-  };
+  }..removeWhere((k, v) => v==null);
+
 
   StudyWordSerializer from(StudyWordSerializer instance) {
     if(instance == null) return this;

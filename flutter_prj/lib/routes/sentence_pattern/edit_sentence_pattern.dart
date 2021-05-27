@@ -102,24 +102,33 @@ class _EditSentencePatternState extends State<EditSentencePattern> {
                         label: InkWell(
                           child: Text('${e.partOfSpeech} ${e.interpret}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                           onTap: () async {
-                            var paraphrase = (await Navigator.pushNamed(context, '/edit_paraphrase', arguments: {'title':'编辑常用句型的释义', 'paraphrase': ParaphraseSerializer().from(e)})) as ParaphraseSerializer;
-                            if(paraphrase != null) {
-                              e.from(paraphrase);
+                            var p = (await Navigator.pushNamed(context,
+                                                                        '/edit_paraphrase',
+                                                                        arguments: {'title': '编辑常用句型的释义',
+                                                                        'paraphrase': ParaphraseSerializer().from(e)})
+                                              ) as ParaphraseSerializer;
+                            if(p != null) {
+                              e.from(p);
+                              setState(() {});
                             }
-                            setState((){});
                           },
                         ),
                         onDeleted: () {
                           e.delete();
-                          setState(() => widget._sentencePattern.paraphraseSet.remove(e));
+                          widget._sentencePattern.paraphraseSet.remove(e);
+                          setState(() {});
                         },
                       )).toList(),
                     suffix: TextButton(
                       child: Text('添加',),
                       onPressed: () async {
-                        var paraphrase = (await Navigator.pushNamed(context, '/edit_paraphrase', arguments: {'title':'给常用句型添加释义'})) as ParaphraseSerializer;
-                        if(paraphrase != null) {
-                            setState(() => widget._sentencePattern.paraphraseSet.add(paraphrase));
+                        var p = (await Navigator.pushNamed(context,
+                                                          '/edit_paraphrase',
+                                                          arguments: {'title':'给常用句型添加释义'})
+                                ) as ParaphraseSerializer;
+                        if(p != null) {
+                          widget._sentencePattern.paraphraseSet.add(p);
+                          setState(() {});
                         }
                       },
                     ),

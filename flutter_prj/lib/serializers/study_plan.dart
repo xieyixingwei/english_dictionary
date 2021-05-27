@@ -24,7 +24,10 @@ class StudyPlanSerializer {
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/study/plan/', data:data ?? toJson(), queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    if(res != null) {
+      var jsonObj = {'id': res.data['id'] ?? id};
+      fromJson(jsonObj); // Only update primary member after create
+    }
     return res != null;
   }
 
@@ -49,35 +52,34 @@ class StudyPlanSerializer {
   }
 
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    bool res = false;
-    if(_id == null) {
-      res = await create(data:data, queries:queries, cache:cache);
-    } else {
-      res = await update(data:data, queries:queries, cache:cache);
-    }
+    bool res = _id == null ?
+      await create(data:data, queries:queries, cache:cache) :
+      await update(data:data, queries:queries, cache:cache);
+
+    
     return res;
   }
 
   StudyPlanSerializer fromJson(Map<String, dynamic> json) {
-    id = json['id'] == null ? null : json['id'] as num;
-    foreignUser = json['foreignUser'] == null ? null : json['foreignUser'] as num;
-    onceWords = json['onceWords'] == null ? null : json['onceWords'] as num;
-    onceSentences = json['onceSentences'] == null ? null : json['onceSentences'] as num;
-    onceGrammers = json['onceGrammers'] == null ? null : json['onceGrammers'] as num;
+    id = json['id'] == null ? id : json['id'] as num;
+    foreignUser = json['foreignUser'] == null ? foreignUser : json['foreignUser'] as num;
+    onceWords = json['onceWords'] == null ? onceWords : json['onceWords'] as num;
+    onceSentences = json['onceSentences'] == null ? onceSentences : json['onceSentences'] as num;
+    onceGrammers = json['onceGrammers'] == null ? onceGrammers : json['onceGrammers'] as num;
     wordCategory = json['wordCategory'] == null
-                ? []
+                ? wordCategory
                 : json['wordCategory'].map<String>((e) => e as String).toList();
     sentenceCategory = json['sentenceCategory'] == null
-                ? []
+                ? sentenceCategory
                 : json['sentenceCategory'].map<String>((e) => e as String).toList();
     grammarCategory = json['grammarCategory'] == null
-                ? []
+                ? grammarCategory
                 : json['grammarCategory'].map<String>((e) => e as String).toList();
     distinguishCategory = json['distinguishCategory'] == null
-                ? []
+                ? distinguishCategory
                 : json['distinguishCategory'].map<String>((e) => e as String).toList();
     distinguishes = json['distinguishes'] == null
-                ? []
+                ? distinguishes
                 : json['distinguishes'].map<num>((e) => e as num).toList();
     _id = id;
     return this;
@@ -94,7 +96,8 @@ class StudyPlanSerializer {
     'grammarCategory': grammarCategory == null ? null : grammarCategory.map((e) => e).toList(),
     'distinguishCategory': distinguishCategory == null ? null : distinguishCategory.map((e) => e).toList(),
     'distinguishes': distinguishes == null ? null : distinguishes.map((e) => e).toList(),
-  };
+  }..removeWhere((k, v) => v==null);
+
 
   StudyPlanSerializer from(StudyPlanSerializer instance) {
     if(instance == null) return this;

@@ -25,7 +25,10 @@ class StudySentenceSerializer {
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/study/sentence/', data:data ?? toJson(), queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    if(res != null) {
+      var jsonObj = {'id': res.data['id'] ?? id};
+      fromJson(jsonObj); // Only update primary member after create
+    }
     return res != null;
   }
 
@@ -50,30 +53,29 @@ class StudySentenceSerializer {
   }
 
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    bool res = false;
-    if(_id == null) {
-      res = await create(data:data, queries:queries, cache:cache);
-    } else {
-      res = await update(data:data, queries:queries, cache:cache);
-    }
+    bool res = _id == null ?
+      await create(data:data, queries:queries, cache:cache) :
+      await update(data:data, queries:queries, cache:cache);
+
+    
     return res;
   }
 
   StudySentenceSerializer fromJson(Map<String, dynamic> json) {
-    id = json['id'] == null ? null : json['id'] as num;
-    foreignUser = json['foreignUser'] == null ? null : json['foreignUser'] as num;
-    sentence = json['sentence'] == null ? null : json['sentence'] as num;
-    category = json['category'] == null ? null : json['category'] as String;
-    familiarity = json['familiarity'] == null ? null : json['familiarity'] as num;
+    id = json['id'] == null ? id : json['id'] as num;
+    foreignUser = json['foreignUser'] == null ? foreignUser : json['foreignUser'] as num;
+    sentence = json['sentence'] == null ? sentence : json['sentence'] as num;
+    category = json['category'] == null ? category : json['category'] as String;
+    familiarity = json['familiarity'] == null ? familiarity : json['familiarity'] as num;
     learnRecord = json['learnRecord'] == null
-                ? []
+                ? learnRecord
                 : json['learnRecord'].map<String>((e) => e as String).toList();
-    inplan = json['inplan'] == null ? null : json['inplan'] as bool;
-    isFavorite = json['isFavorite'] == null ? null : json['isFavorite'] as bool;
-    comments = json['comments'] == null ? null : json['comments'] as String;
-    repeats = json['repeats'] == null ? null : json['repeats'] as num;
+    inplan = json['inplan'] == null ? inplan : json['inplan'] as bool;
+    isFavorite = json['isFavorite'] == null ? isFavorite : json['isFavorite'] as bool;
+    comments = json['comments'] == null ? comments : json['comments'] as String;
+    repeats = json['repeats'] == null ? repeats : json['repeats'] as num;
     newWords = json['newWords'] == null
-                ? []
+                ? newWords
                 : json['newWords'].map<String>((e) => e as String).toList();
     _id = id;
     return this;
@@ -91,7 +93,8 @@ class StudySentenceSerializer {
     'comments': comments,
     'repeats': repeats,
     'newWords': newWords == null ? null : newWords.map((e) => e).toList(),
-  };
+  }..removeWhere((k, v) => v==null);
+
 
   StudySentenceSerializer from(StudySentenceSerializer instance) {
     if(instance == null) return this;

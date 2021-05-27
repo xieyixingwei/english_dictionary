@@ -14,7 +14,10 @@ class WordTagSerializer {
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/dictionary/word_tag/', data:data ?? toJson(), queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    if(res != null) {
+      var jsonObj = {'name': res.data['name'] ?? name};
+      fromJson(jsonObj); // Only update primary member after create
+    }
     return res != null;
   }
 
@@ -24,7 +27,7 @@ class WordTagSerializer {
   }
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    if(name == null) return true;
+    if(_name == null) return true;
     var res = await Http().request(HttpType.DELETE, '/api/dictionary/word_tag/$name/', data:data ?? toJson(), queries:queries, cache:cache);
     /*
     
@@ -33,14 +36,15 @@ class WordTagSerializer {
   }
 
   WordTagSerializer fromJson(Map<String, dynamic> json) {
-    name = json['name'] == null ? null : json['name'] as String;
+    name = json['name'] == null ? name : json['name'] as String;
     _name = name;
     return this;
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
     'name': name,
-  };
+  }..removeWhere((k, v) => v==null);
+
 
   WordTagSerializer from(WordTagSerializer instance) {
     if(instance == null) return this;

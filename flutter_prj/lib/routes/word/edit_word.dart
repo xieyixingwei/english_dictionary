@@ -109,29 +109,34 @@ class _EditWordState extends State<EditWord> {
                               //constraints: BoxConstraints(maxWidth:80.0),
                             //),
                             onTap: () async {
-                              var p = ParaphraseSerializer()..id = e.id;
-                              bool ret = await p.retrieve();
-                              if(ret) {
-                                p = (await Navigator.pushNamed(context, '/edit_paraphrase', arguments: {'title':'编辑${widget.word.name}的释义', 'paraphrase': ParaphraseSerializer().from(p)})) as ParaphraseSerializer;
-                                if(p != null) {
-                                  await e.from(p).save();
-                                }
+                              var p = (await Navigator.pushNamed(context,
+                                                                '/edit_paraphrase',
+                                                                arguments: {'title':'编辑${widget.word.name}的释义',
+                                                                            'paraphrase': ParaphraseSerializer().from(e)})
+                                      ) as ParaphraseSerializer;
+                              if(p != null) {
+                                e.from(p);
+                                setState((){});
                               }
-                              setState((){});
                             },
                           ),
-                          onDeleted: () => setState(() => widget.word.antonym.remove(e)),
+                          onDeleted: () {
+                            e.delete();
+                            widget.word.paraphraseSet.remove(e);
+                            setState(() {});
+                          }
                         )
                       ).toList(),
                       suffix: TextButton(
                         child: Text('添加'),
                         onPressed: () async {
-                          var p = (await Navigator.pushNamed(context, '/edit_paraphrase', arguments: {'title':'给${widget.word.name}添加释义'})) as ParaphraseSerializer;
+                          var p = (await Navigator.pushNamed(context,
+                                                             '/edit_paraphrase',
+                                                             arguments: {'title':'给${widget.word.name}添加释义'})
+                                  ) as ParaphraseSerializer;
                           if(p != null) {
-                            bool ret = await p.save();
-                            if(ret) {
-                              setState(() => widget.word.paraphraseSet.add(p));
-                            }
+                            widget.word.paraphraseSet.add(p);
+                            setState(() {});
                           }
                         },
                       ),
@@ -209,29 +214,34 @@ class _EditWordState extends State<EditWord> {
                           label: InkWell(
                             child: Text('${e.content}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                             onTap: () async {
-                              var s = SentencePatternSerializer()..id = e.id;
-                              bool ret = await s.retrieve();
-                              if(ret) {
-                                s = (await Navigator.pushNamed(context, '/edit_sentence_pattern', arguments: {'title':'编辑${widget.word.name}的常用句型', 'sentence_pattern': SentencePatternSerializer().from(s)})) as SentencePatternSerializer;
+                                var s = (await Navigator.pushNamed(context,
+                                                                  '/edit_sentence_pattern',
+                                                                  arguments: {'title':'编辑${widget.word.name}的常用句型',
+                                                                              'sentence_pattern': SentencePatternSerializer().from(e)})
+                                        ) as SentencePatternSerializer;
                                 if(s != null) {
-                                  await e.from(s).save();
+                                  e.from(s);
+                                  setState(() {});
                                 }
-                              }
-                              setState((){});
                             },
                           ),
-                          onDeleted: () => setState(() => widget.word.sentencePatternSet.remove(e)),
+                          onDeleted: () {
+                            e.delete();
+                            widget.word.sentencePatternSet.remove(e);
+                            setState(() {});
+                          }
                         )
                       ).toList(),
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          var s = (await Navigator.pushNamed(context, '/edit_sentence_pattern', arguments: {'title':'给${widget.word.name}添加常用句型'})) as SentencePatternSerializer;
+                          var s = (await Navigator.pushNamed(context,
+                                                             '/edit_sentence_pattern',
+                                                             arguments: {'title': '给${widget.word.name}添加常用句型'})
+                                  ) as SentencePatternSerializer;
                           if(s != null) {
-                            bool ret = await s.save();
-                            if(ret) {
-                              setState(() => widget.word.sentencePatternSet.add(s));
-                            }
+                            widget.word.sentencePatternSet.add(s);
+                            setState(() {});
                           }
                         },
                       ),
@@ -243,28 +253,34 @@ class _EditWordState extends State<EditWord> {
                           label: InkWell(
                             child: Text('${e.title}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                             onTap: () async {
-                              var g = GrammarSerializer()..id = e.id;
-                              bool ret = await g.retrieve();
-                              if(ret) {
-                                g = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title':'编辑${widget.word.name}的相关语法', 'grammar': GrammarSerializer().from(g)})) as GrammarSerializer;
-                                if(g != null) {
-                                  await e.from(g).save();
-                                }
+                              var g = (await Navigator.pushNamed(context,
+                                                                 '/edit_grammar',
+                                                                 arguments: {'title':'编辑${widget.word.name}的相关语法',
+                                                                             'grammar': GrammarSerializer().from(e)})
+                                      ) as GrammarSerializer;
+                              if(g != null) {
+                                e.from(g);
+                                setState(() {});
                               }
-                              setState((){widget.word.grammarSet.add(g);});
                             },
                           ),
-                          onDeleted: () => setState(() => widget.word.grammarSet.remove(e)),
-                        )).toList(),
+                          onDeleted: () {
+                            e.delete();
+                            widget.word.grammarSet.remove(e);
+                            setState(() {});
+                          },
+                        )
+                      ).toList(),
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          var g = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title':'给${widget.word.name}添加相关语法'})) as GrammarSerializer;
+                          var g = (await Navigator.pushNamed(context,
+                                                             '/edit_grammar',
+                                                             arguments: {'title': '给${widget.word.name}添加相关语法'})
+                                  ) as GrammarSerializer;
                           if(g != null) {
-                            bool ret = await g.save();
-                            if(ret) {
-                              setState(() => widget.word.grammarSet.add(g));
-                            }
+                            widget.word.grammarSet.add(g);
+                            setState(() {});
                           }
                         },
                       ),
@@ -274,30 +290,35 @@ class _EditWordState extends State<EditWord> {
                       children: widget.word.distinguishSet.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text('${e.wordsForeign.join(", ")}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
+                            child: Text('${e.wordsForeign.join(", ") + e.sentencePatternForeignSet.map((e) => e.content).join(", ")}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                             onTap: () async {
-                              var d = DistinguishSerializer()..id = e.id;
-                              bool ret = await d.retrieve();
-                              if(ret) {
-                                d = (await Navigator.pushNamed(context, '/edit_distinguish', arguments: {'title':'编辑${widget.word.name}的词义辨析', 'distinguish': DistinguishSerializer().from(d)})) as DistinguishSerializer;
-                                if(d != null) {
-                                  await e.from(d).save();
-                                }
+                              var d = (await Navigator.pushNamed(context,
+                                                                  '/edit_distinguish',
+                                                                  arguments: {'title': '编辑${widget.word.name}的词义辨析',
+                                                                  'distinguish': DistinguishSerializer().from(e)})
+                                      ) as DistinguishSerializer;
+                              if(d != null) {
+                                e.from(d);
+                                setState(() {});
                               }
-                              setState((){});
                             },
                           ),
-                          onDeleted: () => setState(() => widget.word.distinguishSet.remove(e)),
+                          onDeleted: () {
+                            e.delete();
+                            widget.word.distinguishSet.remove(e);
+                            setState(() {});
+                          }
                         )).toList(),
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          var d = (await Navigator.pushNamed(context, '/edit_distinguish', arguments: {'title':'给${widget.word.name}添加词义辨析'})) as DistinguishSerializer;
+                          var d = (await Navigator.pushNamed(context,
+                                                             '/edit_distinguish',
+                                                             arguments: {'title':'给${widget.word.name}添加词义辨析'})
+                                  ) as DistinguishSerializer;
                           if(d != null) {
-                            bool ret = await d.save();
-                            if(ret) {
-                              setState(() => widget.word.distinguishSet.add(d));
-                            }
+                            widget.word.distinguishSet.add(d);
+                            setState(() {});
                           }
                         },
                       ),
@@ -384,7 +405,7 @@ class _EditWordState extends State<EditWord> {
                     WrapOutline(
                       labelText: '相关图片',
                       children: [
-                        SelectableText(widget.word.image.mptFile?.filename ?? (widget.word.image.url ?? '')),
+                        SelectableText(widget.word.image.mptFile?.filename ?? (widget.word.image.url)),
                         //_testImagePath != null ? Image.network(_testImagePath) : Text(''),
                         //_testImage != null ? Image.file(_testImage) : Text(''),
                       ],
@@ -409,7 +430,7 @@ class _EditWordState extends State<EditWord> {
                     WrapOutline(
                       labelText: '相关视频',
                       children: [
-                        SelectableText(widget.word.vedio.mptFile?.filename ?? (widget.word.vedio.url ?? '')),
+                        SelectableText(widget.word.vedio.mptFile?.filename ?? (widget.word.vedio.url)),
                       ],
                       suffix: TextButton(
                         child: Text('添加',),

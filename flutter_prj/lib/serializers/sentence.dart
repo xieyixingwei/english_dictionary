@@ -28,7 +28,10 @@ class SentenceSerializer {
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/dictionary/sentence/', data:data ?? toJson(), queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    if(res != null) {
+      var jsonObj = {'id': res.data['id'] ?? id};
+      fromJson(jsonObj); // Only update primary member after create
+    }
     return res != null;
   }
 
@@ -53,42 +56,38 @@ class SentenceSerializer {
   }
 
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    bool res = false;
-    if(_id == null) {
-      var clone = SentenceSerializer().from(this); // create will update self, maybe refresh the member of self.
-      res = await clone.create(data:data, queries:queries, cache:cache);
-      if(res == false) return false;
-      id = clone.id;
-      if(grammarSet != null){await Future.forEach(grammarSet, (e) async {e.sentenceForeign = id; await e.save();});}
-      res = await retrieve();
-    } else {
-      res = await update(data:data, queries:queries, cache:cache);
-      if(grammarSet != null){await Future.forEach(grammarSet, (e) async {e.sentenceForeign = id; await e.save();});}
+    bool res = _id == null ?
+      await create(data:data, queries:queries, cache:cache) :
+      await update(data:data, queries:queries, cache:cache);
+
+    if(res) {
+      await Future.forEach(grammarSet, (e) async {e.sentenceForeign = id; await e.save();});
     }
+    
     return res;
   }
 
   SentenceSerializer fromJson(Map<String, dynamic> json) {
-    id = json['id'] == null ? null : json['id'] as num;
-    en = json['en'] == null ? null : json['en'] as String;
-    cn = json['cn'] == null ? null : json['cn'] as String;
-    type = json['type'] == null ? null : json['type'] as num;
+    id = json['id'] == null ? id : json['id'] as num;
+    en = json['en'] == null ? en : json['en'] as String;
+    cn = json['cn'] == null ? cn : json['cn'] as String;
+    type = json['type'] == null ? type : json['type'] as num;
     tag = json['tag'] == null
-                ? []
+                ? tag
                 : json['tag'].map<String>((e) => e as String).toList();
-    tense = json['tense'] == null ? null : json['tense'] as String;
+    tense = json['tense'] == null ? tense : json['tense'] as String;
     pattern = json['pattern'] == null
-                ? []
+                ? pattern
                 : json['pattern'].map<String>((e) => e as String).toList();
     synonym = json['synonym'] == null
-                ? []
+                ? synonym
                 : json['synonym'].map<num>((e) => e as num).toList();
     antonym = json['antonym'] == null
-                ? []
+                ? antonym
                 : json['antonym'].map<num>((e) => e as num).toList();
-    paraphraseForeign = json['paraphraseForeign'] == null ? null : json['paraphraseForeign'] as num;
+    paraphraseForeign = json['paraphraseForeign'] == null ? paraphraseForeign : json['paraphraseForeign'] as num;
     grammarSet = json['grammarSet'] == null
-                ? []
+                ? grammarSet
                 : json['grammarSet'].map<GrammarSerializer>((e) => GrammarSerializer().fromJson(e as Map<String, dynamic>)).toList();
     _id = id;
     return this;
@@ -105,13 +104,16 @@ class SentenceSerializer {
     'synonym': synonym == null ? null : synonym.map((e) => e).toList(),
     'antonym': antonym == null ? null : antonym.map((e) => e).toList(),
     'paraphraseForeign': paraphraseForeign,
-  };
+  }..removeWhere((k, v) => v==null);
+
 
   SentenceSerializer from(SentenceSerializer instance) {
     if(instance == null) return this;
     id = instance.id;
     en = instance.en;
+    enVoice = instance.enVoice;
     cn = instance.cn;
+    cnVoice = instance.cnVoice;
     type = instance.type;
     tag = List.from(instance.tag);
     tense = instance.tense;

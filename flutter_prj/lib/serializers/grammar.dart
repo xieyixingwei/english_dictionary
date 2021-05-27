@@ -25,13 +25,16 @@ class GrammarSerializer {
   num sentenceForeign;
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/api/dictionary/grammar/', data:data ?? _formData, queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    var res = await Http().request(HttpType.POST, '/api/dictionary/grammar/', data:data ?? toJson(), queries:queries, cache:cache);
+    if(res != null) {
+      var jsonObj = {'id': res.data['id'] ?? id};
+      fromJson(jsonObj); // Only update primary member after create
+    }
     return res != null;
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.PUT, '/api/dictionary/grammar/$id/', data:data ?? _formData, queries:queries, cache:cache);
+    var res = await Http().request(HttpType.PUT, '/api/dictionary/grammar/$id/', data:data ?? toJson(), queries:queries, cache:cache);
     return res != null;
   }
 
@@ -43,7 +46,7 @@ class GrammarSerializer {
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     if(_id == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/api/dictionary/grammar/$id/', data:data ?? _formData, queries:queries, cache:cache);
+    var res = await Http().request(HttpType.DELETE, '/api/dictionary/grammar/$id/', data:data ?? toJson(), queries:queries, cache:cache);
     /*
     
     */
@@ -51,29 +54,28 @@ class GrammarSerializer {
   }
 
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    bool res = false;
-    if(_id == null) {
-      res = await create(data:data, queries:queries, cache:cache);
-    } else {
-      res = await update(data:data, queries:queries, cache:cache);
-    }
+    bool res = _id == null ?
+      await create(data:data, queries:queries, cache:cache) :
+      await update(data:data, queries:queries, cache:cache);
+
+    res = await uploadFile();
     return res;
   }
 
   GrammarSerializer fromJson(Map<String, dynamic> json) {
-    id = json['id'] == null ? null : json['id'] as num;
+    id = json['id'] == null ? id : json['id'] as num;
     type = json['type'] == null
-                ? []
+                ? type
                 : json['type'].map<String>((e) => e as String).toList();
     tag = json['tag'] == null
-                ? []
+                ? tag
                 : json['tag'].map<String>((e) => e as String).toList();
-    title = json['title'] == null ? null : json['title'] as String;
-    content = json['content'] == null ? null : json['content'] as String;
-    image.url = json['image'] == null ? null : json['image'] as String;
-    vedio.url = json['vedio'] == null ? null : json['vedio'] as String;
-    wordForeign = json['wordForeign'] == null ? null : json['wordForeign'] as String;
-    sentenceForeign = json['sentenceForeign'] == null ? null : json['sentenceForeign'] as num;
+    title = json['title'] == null ? title : json['title'] as String;
+    content = json['content'] == null ? content : json['content'] as String;
+    image.url = json['image'] == null ? image.url : json['image'] as String;
+    vedio.url = json['vedio'] == null ? vedio.url : json['vedio'] as String;
+    wordForeign = json['wordForeign'] == null ? wordForeign : json['wordForeign'] as String;
+    sentenceForeign = json['sentenceForeign'] == null ? sentenceForeign : json['sentenceForeign'] as num;
     _id = id;
     return this;
   }
@@ -86,15 +88,20 @@ class GrammarSerializer {
     'content': content,
     'wordForeign': wordForeign,
     'sentenceForeign': sentenceForeign,
-  };
-  FormData get _formData {
-    var jsonObj = toJson();
-    jsonObj['type'] = json.encode(jsonObj['type']);
-    jsonObj['tag'] = json.encode(jsonObj['tag']);
+  }..removeWhere((k, v) => v==null);
+
+  Future<bool> uploadFile() async {
+    var jsonObj = {'id': id};
     var formData = FormData.fromMap(jsonObj, ListFormat.multi);
     if(image.mptFile != null) formData.files.add(image.file);
     if(vedio.mptFile != null) formData.files.add(vedio.file);
-    return formData;
+    bool ret = true;
+    if(formData.files.isNotEmpty) {
+      ret = await update(data:formData);
+      if(image.mptFile != null) image.mptFile = null;
+      if(vedio.mptFile != null) vedio.mptFile = null;
+    }
+    return ret;
   }
 
   GrammarSerializer from(GrammarSerializer instance) {

@@ -20,7 +20,10 @@ class ParaphraseSerializer {
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/dictionary/paraphrase/', data:data ?? toJson(), queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    if(res != null) {
+      var jsonObj = {'id': res.data['id'] ?? id};
+      fromJson(jsonObj); // Only update primary member after create
+    }
     return res != null;
   }
 
@@ -45,29 +48,25 @@ class ParaphraseSerializer {
   }
 
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    bool res = false;
-    if(_id == null) {
-      var clone = ParaphraseSerializer().from(this); // create will update self, maybe refresh the member of self.
-      res = await clone.create(data:data, queries:queries, cache:cache);
-      if(res == false) return false;
-      id = clone.id;
-      if(sentenceSet != null){await Future.forEach(sentenceSet, (e) async {e.paraphraseForeign = id; await e.save();});}
-      res = await retrieve();
-    } else {
-      res = await update(data:data, queries:queries, cache:cache);
-      if(sentenceSet != null){await Future.forEach(sentenceSet, (e) async {e.paraphraseForeign = id; await e.save();});}
+    bool res = _id == null ?
+      await create(data:data, queries:queries, cache:cache) :
+      await update(data:data, queries:queries, cache:cache);
+
+    if(res) {
+      await Future.forEach(sentenceSet, (e) async {e.paraphraseForeign = id; await e.save();});
     }
+    
     return res;
   }
 
   ParaphraseSerializer fromJson(Map<String, dynamic> json) {
-    id = json['id'] == null ? null : json['id'] as num;
-    interpret = json['interpret'] == null ? null : json['interpret'] as String;
-    partOfSpeech = json['partOfSpeech'] == null ? null : json['partOfSpeech'] as String;
-    wordForeign = json['wordForeign'] == null ? null : json['wordForeign'] as String;
-    sentencePatternForeign = json['sentencePatternForeign'] == null ? null : json['sentencePatternForeign'] as num;
+    id = json['id'] == null ? id : json['id'] as num;
+    interpret = json['interpret'] == null ? interpret : json['interpret'] as String;
+    partOfSpeech = json['partOfSpeech'] == null ? partOfSpeech : json['partOfSpeech'] as String;
+    wordForeign = json['wordForeign'] == null ? wordForeign : json['wordForeign'] as String;
+    sentencePatternForeign = json['sentencePatternForeign'] == null ? sentencePatternForeign : json['sentencePatternForeign'] as num;
     sentenceSet = json['sentenceSet'] == null
-                ? []
+                ? sentenceSet
                 : json['sentenceSet'].map<SentenceSerializer>((e) => SentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
     _id = id;
     return this;
@@ -79,7 +78,8 @@ class ParaphraseSerializer {
     'partOfSpeech': partOfSpeech,
     'wordForeign': wordForeign,
     'sentencePatternForeign': sentencePatternForeign,
-  };
+  }..removeWhere((k, v) => v==null);
+
 
   ParaphraseSerializer from(ParaphraseSerializer instance) {
     if(instance == null) return this;

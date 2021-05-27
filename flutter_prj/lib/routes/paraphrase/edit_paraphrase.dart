@@ -86,28 +86,40 @@ class _EditParaphraseState extends State<EditParaphrase> {
                     validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                   ),
                   SizedBox(height: 20,),
-                  WrapOutline(
+                  ListOutline(
                     labelText: '例句',
                     children: widget._paraphrase.sentenceSet.map<Widget>((e) =>
                       Tag(
                         label: InkWell(
-                          child: Text('${e.id}', style: TextStyle(color: Colors.black87)),
+                          child: Text('${e.en}', style: TextStyle(color: Colors.blueAccent)),
                           onTap: () async {
-                            var sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'编辑释义的例句', 'sentence': SentenceSerializer().from(e)})) as SentenceSerializer;
-                            if(sentence != null) {
-                              e.from(sentence);
+                            var s = (await Navigator.pushNamed(context,
+                                                              '/edit_sentence',
+                                                              arguments: {'title':'编辑释义的例句',
+                                                              'sentence': SentenceSerializer().from(e)})
+                                    ) as SentenceSerializer;
+                            if(s != null) {
+                              e.from(s);
+                              setState(() {});
                             }
-                            setState((){});
                           },
                         ),
-                        onDeleted: () => setState(() => widget._paraphrase.sentenceSet.remove(e)),
+                        onDeleted: () {
+                          e.delete();
+                          widget._paraphrase.sentenceSet.remove(e);
+                          setState(() {});
+                        }
                       )).toList(),
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          var sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'添加例句'})) as SentenceSerializer;
-                          if(sentence != null) {
-                              setState(() => widget._paraphrase.sentenceSet.add(sentence));
+                          var s = (await Navigator.pushNamed(context,
+                                                             '/edit_sentence',
+                                                             arguments: {'title':'添加例句'})
+                                  ) as SentenceSerializer;
+                          if(s != null) {
+                            widget._paraphrase.sentenceSet.add(s);
+                            setState(() {});
                           }
                         },
                       ),

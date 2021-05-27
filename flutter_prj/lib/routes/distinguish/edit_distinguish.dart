@@ -82,47 +82,56 @@ class _EditDistinguishState extends State<EditDistinguish> {
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'添加辨析单词'})) as WordSerializer;
+                          var word = (await Navigator.pushNamed(context,
+                                                                '/edit_word',
+                                                                arguments: {'title': '添加辨析单词'})
+                                     ) as WordSerializer;
                           if(word != null && word.name.isNotEmpty) {
                             var ret = await word.save();
-                            if(ret)
-                              widget._distinguish.wordsForeign.add(word.name);
+                            if(ret) widget._distinguish.wordsForeign.add(word.name);
+                              setState(() {});
                           }
-                          setState((){});
                         }
                       ),
                     ),
                     ListOutline(
-                      children: widget._distinguish.sentencesForeign.map((e) =>
+                      labelText: '辨析句子',
+                      children: widget._distinguish.sentencePatternForeignSet.map((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text('${e.en}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
+                            child: Text('${e.content}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                             onTap: () async {
-                              var newSentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'编辑句子', 'sentence': SentenceSerializer().from(e)})) as SentenceSerializer;
-                              if(newSentence != null) {
-                                e.from(newSentence);
+                              var sp = (await Navigator.pushNamed(context,
+                                                   '/edit_sentence_pattern',
+                                                    arguments: {'title':'编辑常用句型',
+                                                    'sentence_pattern': SentencePatternSerializer().from(e)})
+                                        ) as SentencePatternSerializer;
+                              if(sp != null) {
+                                e.from(sp);
+                                setState(() {});
                               }
-                              setState((){});
                             },
                           ),
                           onDeleted: () {
-                            widget._distinguish.sentencesForeign.remove(e);
+                            widget._distinguish.sentencePatternForeign.remove(e.id);
+                            widget._distinguish.sentencePatternForeign.remove(e);
                             setState(() {});
                           },
                         )
                       ).toList(),
-                      labelText: '辨析句子',
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          var s = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'添加句子'})) as SentenceSerializer;
-                          if(s != null) {
-                            //bool ret = await s.save();
-                            //if(ret) {
-                              widget._distinguish.sentencesForeign.add(s);
-                            //}
+                          var sp = (await Navigator.pushNamed(context,
+                                                              '/edit_sentence_pattern',
+                                                              arguments:{'title':'添加常用句型'})
+                                   ) as SentencePatternSerializer;
+                          if(sp != null) {
+                            await sp.save();
+                            widget._distinguish.sentencePatternForeign.add(sp.id);
+                            widget._distinguish.sentencePatternForeignSet.add(sp);
+                            setState(() {});
                           }
-                          setState((){});
                         }
                       ),
                     ),
@@ -143,7 +152,7 @@ class _EditDistinguishState extends State<EditDistinguish> {
                     WrapOutline(
                       labelText: '相关图片',
                       children: [
-                        SelectableText(widget._distinguish.image.mptFile?.filename ?? (widget._distinguish.image.url ?? '')),
+                        SelectableText(widget._distinguish.image.mptFile?.filename ?? (widget._distinguish.image.url)),
                       ],
                       suffix: TextButton(
                         child: Text('添加',),
@@ -156,7 +165,7 @@ class _EditDistinguishState extends State<EditDistinguish> {
                     WrapOutline(
                       labelText: '相关视频',
                       children: [
-                        SelectableText(widget._distinguish.vedio.mptFile?.filename ?? (widget._distinguish.vedio.url ?? '')),
+                        SelectableText(widget._distinguish.vedio.mptFile?.filename ?? (widget._distinguish.vedio.url)),
                       ],
                       suffix: TextButton(
                         child: Text('添加',),

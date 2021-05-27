@@ -3,12 +3,11 @@ import 'package:file_picker/file_picker.dart';
 
 
 class SingleFile {
-  SingleFile(String field, FileType type)
-    : this.field = field, this.type = type;
+  SingleFile(this.field, this.type);
 
-  final FileType type;
   final String field;
-  String url;
+  final FileType type;
+  String url = '';
   MultipartFile mptFile;
 
   MapEntry<String, MultipartFile> get file => MapEntry(field, mptFile);

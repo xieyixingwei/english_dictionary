@@ -23,7 +23,10 @@ class StudyGrammarSerializer {
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/study/grammar/', data:data ?? toJson(), queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    if(res != null) {
+      var jsonObj = {'id': res.data['id'] ?? id};
+      fromJson(jsonObj); // Only update primary member after create
+    }
     return res != null;
   }
 
@@ -48,27 +51,26 @@ class StudyGrammarSerializer {
   }
 
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    bool res = false;
-    if(_id == null) {
-      res = await create(data:data, queries:queries, cache:cache);
-    } else {
-      res = await update(data:data, queries:queries, cache:cache);
-    }
+    bool res = _id == null ?
+      await create(data:data, queries:queries, cache:cache) :
+      await update(data:data, queries:queries, cache:cache);
+
+    
     return res;
   }
 
   StudyGrammarSerializer fromJson(Map<String, dynamic> json) {
-    id = json['id'] == null ? null : json['id'] as num;
-    foreignUser = json['foreignUser'] == null ? null : json['foreignUser'] as num;
-    grammar = json['grammar'] == null ? null : json['grammar'] as num;
-    category = json['category'] == null ? null : json['category'] as String;
-    familiarity = json['familiarity'] == null ? null : json['familiarity'] as num;
+    id = json['id'] == null ? id : json['id'] as num;
+    foreignUser = json['foreignUser'] == null ? foreignUser : json['foreignUser'] as num;
+    grammar = json['grammar'] == null ? grammar : json['grammar'] as num;
+    category = json['category'] == null ? category : json['category'] as String;
+    familiarity = json['familiarity'] == null ? familiarity : json['familiarity'] as num;
     learnRecord = json['learnRecord'] == null
-                ? []
+                ? learnRecord
                 : json['learnRecord'].map<String>((e) => e as String).toList();
-    inplan = json['inplan'] == null ? null : json['inplan'] as bool;
-    isFavorite = json['isFavorite'] == null ? null : json['isFavorite'] as bool;
-    repeats = json['repeats'] == null ? null : json['repeats'] as num;
+    inplan = json['inplan'] == null ? inplan : json['inplan'] as bool;
+    isFavorite = json['isFavorite'] == null ? isFavorite : json['isFavorite'] as bool;
+    repeats = json['repeats'] == null ? repeats : json['repeats'] as num;
     _id = id;
     return this;
   }
@@ -83,7 +85,8 @@ class StudyGrammarSerializer {
     'inplan': inplan,
     'isFavorite': isFavorite,
     'repeats': repeats,
-  };
+  }..removeWhere((k, v) => v==null);
+
 
   StudyGrammarSerializer from(StudyGrammarSerializer instance) {
     if(instance == null) return this;

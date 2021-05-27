@@ -16,11 +16,11 @@ class LocalStoreSerializer {
 
   LocalStoreSerializer fromJson(Map<String, dynamic> json) {
     user = json['user'] == null
-                ? null
+                ? user
                 : UserSerializer().fromJson(json['user'] as Map<String, dynamic>);
-    token = json['token'] == null ? null : json['token'] as String;
+    token = json['token'] == null ? token : json['token'] as String;
     netCacheConfig = json['netCacheConfig'] == null
-                ? null
+                ? netCacheConfig
                 : NetCacheConfigSerializer().fromJson(json['netCacheConfig'] as Map<String, dynamic>);
     return this;
   }
@@ -29,7 +29,8 @@ class LocalStoreSerializer {
     'user': user == null ? null : user.toJson(),
     'token': token,
     'netCacheConfig': netCacheConfig == null ? null : netCacheConfig.toJson(),
-  };
+  }..removeWhere((k, v) => v==null);
+
 
   LocalStoreSerializer from(LocalStoreSerializer instance) {
     if(instance == null) return this;

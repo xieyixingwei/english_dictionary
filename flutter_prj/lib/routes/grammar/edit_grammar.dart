@@ -155,7 +155,7 @@ class _EditGrammarState extends State<EditGrammar> {
                     WrapOutline(
                       labelText: '相关图片',
                       children: [
-                        SelectableText(widget._grammar.image.mptFile?.filename ?? (widget._grammar.image.url ?? '')),
+                        SelectableText(widget._grammar.image.mptFile?.filename ?? (widget._grammar.image.url)),
                       ],
                       suffix: TextButton(
                         child: Text('添加',),
@@ -168,7 +168,7 @@ class _EditGrammarState extends State<EditGrammar> {
                     WrapOutline(
                       labelText: '相关视频',
                       children: [
-                        Text(widget._grammar.vedio.mptFile?.filename ?? (widget._grammar.vedio.url ?? '')),
+                        Text(widget._grammar.vedio.mptFile?.filename ?? (widget._grammar.vedio.url)),
                       ],
                       suffix: TextButton(
                         child: Text('添加',),

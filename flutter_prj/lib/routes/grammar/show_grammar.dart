@@ -83,12 +83,12 @@ Widget grammarShow(BuildContext context, num index, GrammarSerializer grammar, F
           ) : null,
         ],
       ),
-      grammar.content != null ?
+      grammar.content.isNotEmpty ?
       Padding(
         padding: EdgeInsets.only(left: 14),
         child: MarkDown(text: grammar.content).render(),
       ) : null,
-      grammar.vedio.url != null ?
+      grammar.vedio.url.isNotEmpty ?
       Align(
         alignment: Alignment.center,
         child: VedioPlayerWeb(url: grammar.vedio.url),

@@ -25,11 +25,11 @@ class GrammarPaginationSerializer {
   }
 
   GrammarPaginationSerializer fromJson(Map<String, dynamic> json) {
-    count = json['count'] == null ? null : json['count'] as num;
-    next = json['next'] == null ? null : json['next'] as String;
-    previous = json['previous'] == null ? null : json['previous'] as String;
+    count = json['count'] == null ? count : json['count'] as num;
+    next = json['next'] == null ? next : json['next'] as String;
+    previous = json['previous'] == null ? previous : json['previous'] as String;
     results = json['results'] == null
-                ? []
+                ? results
                 : json['results'].map<GrammarSerializer>((e) => GrammarSerializer().fromJson(e as Map<String, dynamic>)).toList();
     return this;
   }
@@ -39,7 +39,8 @@ class GrammarPaginationSerializer {
     'next': next,
     'previous': previous,
     'results': results == null ? null : results.map((e) => e.toJson()).toList(),
-  };
+  }..removeWhere((k, v) => v==null);
+
 
   GrammarPaginationSerializer from(GrammarPaginationSerializer instance) {
     if(instance == null) return this;

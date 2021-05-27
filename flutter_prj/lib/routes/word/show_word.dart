@@ -302,7 +302,7 @@ class _ShowWordState extends State<ShowWord> {
       ],
     ) : null;
 
-  Widget get _shorthandShow => widget.word.shorthand.isNotEmpty || widget.word.image.url != null || widget.word.vedio.url != null ?
+  Widget get _shorthandShow => widget.word.shorthand.isNotEmpty || widget.word.image.url.isNotEmpty || widget.word.vedio.url.isNotEmpty ?
     OnOffWidget(
       label: Text('图文助记', style: _labelStyle),
       child: Container(
@@ -312,7 +312,7 @@ class _ShowWordState extends State<ShowWord> {
           divider: SizedBox(height: 14,),
           children: [
             widget.word.shorthand.isNotEmpty ? MarkDown(text: widget.word.shorthand).render() : null,
-            widget.word.image.url != null ?
+            widget.word.image.url.isNotEmpty ?
             Align(
               alignment: Alignment.center,
               child: Image.network(
@@ -322,7 +322,7 @@ class _ShowWordState extends State<ShowWord> {
                 fit: BoxFit.cover,
               )
             ) : null,
-            widget.word.vedio.url != null ?
+            widget.word.vedio.url.isNotEmpty ?
             Align(
               alignment: Alignment.center,
               child: VedioPlayerWeb(url: widget.word.vedio.url),

@@ -253,21 +253,31 @@ class _EditSentenceState extends State<EditSentence> {
                           label: InkWell(
                             child: Text('${e.title}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                             onTap: () async {
-                              var grammar = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title':'编辑句子的语法', 'grammar': GrammarSerializer().from(e)})) as GrammarSerializer;
-                              if(grammar != null) {
-                                e.from(grammar);
+                              var g = (await Navigator.pushNamed(context,
+                                                                 '/edit_grammar',
+                                                                 arguments: {'title':'编辑句子的语法',
+                                                                             'grammar': GrammarSerializer().from(e)})
+                                      ) as GrammarSerializer;
+                              if(g != null) {
+                                e.from(g);
+                                setState(() {});
                               }
-                              setState((){});
                             },
                           ),
-                          onDeleted: () => setState(() => widget._sentence.grammarSet.remove(e)),
-                        )).toList(),
+                          onDeleted: () {
+                            e.delete();
+                            widget._sentence.grammarSet.remove(e);
+                             setState(() {});
+                          },
+                        )
+                      ).toList(),
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          var grammar = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title':'给句子添加语法'})) as GrammarSerializer;
-                          if(grammar != null) {
-                            setState(() => widget._sentence.grammarSet.add(grammar));
+                          var g = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title': '给句子添加语法'})) as GrammarSerializer;
+                          if(g != null) {
+                            widget._sentence.grammarSet.add(g);
+                            setState(() {});
                           }
                         },
                       ),

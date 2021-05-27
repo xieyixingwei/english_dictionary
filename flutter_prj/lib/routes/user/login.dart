@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
     if ((_formKey.currentState as FormState).validate()) {
       ///showLoading(context);
       LoginSerializer login = LoginSerializer();
-      var ret = await login.login(data:{"uname":Global.localStore.user.uname, "passwd":Global.localStore.user.passwd});
+      var ret = await login.login(queries:{"uname":Global.localStore.user.uname, "passwd":Global.localStore.user.passwd});
       if(!ret) return;
 
       Global.localStore.token = login.token;

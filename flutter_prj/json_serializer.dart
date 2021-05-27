@@ -247,6 +247,7 @@ class Member {
 
   String get jsonEncode => (isForeign || isForeignManyToMany || unToJson) ? null : (isList || isMap ? 'jsonObj[\'$name\'] = json.encode(jsonObj[\'$name\']);' : null);
   String get addToFormData => isFileType ? 'if($name.mptFile != null) formData.files.add($name.file);' : null;
+  String get removeMtpFile => isFileType ? 'if($name.mptFile != null) $name.mptFile = null;' : null;
 }
 
 
@@ -392,7 +393,7 @@ $saveForeign
         return
 """
   Future<bool> $methodName({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    if(${fatherSerializer.primaryMember.name} == null) return true;
+    if(${fatherSerializer.primaryMember.hidePrimaryMemberName} == null) return true;
     var res = await Http().request(HttpType.DELETE, '$requestUrl', $data, $queries, $cache);
     /*
     ${fatherSerializer.membersDelete}
@@ -545,6 +546,7 @@ class JsonSerializer {
   }""";
 
   String get addToFormDataOfMembers => members.map((e) => e.addToFormData).where((e) => e != null).toList().join('\n    ');
+  String get removeMtpFiles => members.map((e) => e.removeMtpFile).where((e) => e != null).toList().join('\n      ');
   bool get hasFileType => members.where((e) => e.isFileType).isNotEmpty;
 
   String get uploadFile => hasFileType ?
@@ -553,10 +555,12 @@ class JsonSerializer {
     var jsonObj = {'${primaryMember.name}': ${primaryMember.name}};
     var formData = FormData.fromMap(jsonObj, ListFormat.multi);
     $addToFormDataOfMembers
-    if(formData.length > 1) {
-      return await update(data:formData);
+    bool ret = true;
+    if(formData.files.isNotEmpty) {
+      ret = await update(data:formData);
+      $removeMtpFiles
     }
-    return true;
+    return ret;
   }
 """ : '';
 

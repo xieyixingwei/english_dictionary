@@ -6,9 +6,7 @@
 import 'single_file.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:dio/dio.dart';
-import 'sentence.dart';
-import 'dart:convert';
-import 'sentence.dart';
+import 'sentence_pattern.dart';
 import 'package:flutter_prj/common/http.dart';
 
 
@@ -21,16 +19,20 @@ class DistinguishSerializer {
   SingleFile image = SingleFile('image', FileType.image);
   SingleFile vedio = SingleFile('vedio', FileType.video);
   List<String> wordsForeign = [];
-  List<SentenceSerializer> sentencesForeign = [];
+  List<num> sentencePatternForeign = [];
+  List<SentencePatternSerializer> sentencePatternForeignSet = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/api/dictionary/distinguish/', data:data ?? _formData, queries:queries, cache:cache, options: Options(contentType: "multipart/form-data"));
-    if(res != null) fromJson(res.data);
+    var res = await Http().request(HttpType.POST, '/api/dictionary/distinguish/', data:data ?? toJson(), queries:queries, cache:cache);
+    if(res != null) {
+      var jsonObj = {'id': res.data['id'] ?? id};
+      fromJson(jsonObj); // Only update primary member after create
+    }
     return res != null;
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.PUT, '/api/dictionary/distinguish/$id/', data:data ?? _formData, queries:queries, cache:cache);
+    var res = await Http().request(HttpType.PUT, '/api/dictionary/distinguish/$id/', data:data ?? toJson(), queries:queries, cache:cache);
     return res != null;
   }
 
@@ -42,43 +44,36 @@ class DistinguishSerializer {
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     if(_id == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/api/dictionary/distinguish/$id/', data:data ?? _formData, queries:queries, cache:cache);
+    var res = await Http().request(HttpType.DELETE, '/api/dictionary/distinguish/$id/', data:data ?? toJson(), queries:queries, cache:cache);
     /*
-    if(sentencesForeign != null){sentencesForeign.forEach((e){e.delete();});}
-    if(sentences != null){sentences.forEach((e){e.delete();});}
+    if(sentencePatternForeignSet != null){sentencePatternForeignSet.forEach((e){e.delete();});}
     */
     return res != null ? res.statusCode == 204 : false;
   }
 
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    bool res = false;
-    if(_id == null) {
-      var clone = DistinguishSerializer().from(this); // create will update self, maybe refresh the member of self.
-      res = await clone.create(data:data, queries:queries, cache:cache);
-      if(res == false) return false;
-      id = clone.id;
-      //if(sentencesForeign != null){await Future.forEach(sentencesForeign, (e) async { await e.save();});}
-      //if(sentences != null){await Future.forEach(sentences, (e) async { await e.save();});}
-      res = await retrieve();
-    } else {
-      res = await update(data:data, queries:queries, cache:cache);
-      //if(sentencesForeign != null){await Future.forEach(sentencesForeign, (e) async { await e.save();});}
-      //if(sentences != null){await Future.forEach(sentences, (e) async { await e.save();});}
+    bool res = _id == null ?
+      await create(data:data, queries:queries, cache:cache) :
+      await update(data:data, queries:queries, cache:cache);
+
+    if(res) {
+      await Future.forEach(sentencePatternForeignSet, (e) async { await e.save();});
     }
+    res = await uploadFile();
     return res;
   }
 
   DistinguishSerializer fromJson(Map<String, dynamic> json) {
-    id = json['id'] == null ? null : json['id'] as num;
-    content = json['content'] == null ? null : json['content'] as String;
-    image.url = json['image'] == null ? null : json['image'] as String;
-    vedio.url = json['vedio'] == null ? null : json['vedio'] as String;
+    id = json['id'] == null ? id : json['id'] as num;
+    content = json['content'] == null ? content : json['content'] as String;
+    image.url = json['image'] == null ? image.url : json['image'] as String;
+    vedio.url = json['vedio'] == null ? vedio.url : json['vedio'] as String;
     wordsForeign = json['wordsForeign'] == null
-                ? []
+                ? wordsForeign
                 : json['wordsForeign'].map<String>((e) => e as String).toList();
-    sentencesForeign = json['sentencesForeign'] == null
-                ? []
-                : json['sentencesForeign'].map<SentenceSerializer>((e) => SentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
+    sentencePatternForeign = json['sentencePatternForeign'] == null
+                ? sentencePatternForeign
+                : json['sentencePatternForeign'].map<num>((e) => e as num).toList();
     _id = id;
     return this;
   }
@@ -87,17 +82,21 @@ class DistinguishSerializer {
     'id': id,
     'content': content,
     'wordsForeign': wordsForeign == null ? null : wordsForeign.map((e) => e).toList(),
-    'sentencesForeign': sentencesForeign == null ? null : sentencesForeign.map((e) => e.toJson()).toList(),
-  };
-  FormData get _formData {
-    var jsonObj = toJson();
-    //print(jsonObj);
-    //jsonObj['sentencesForeign'] = json.encode(jsonObj['sentencesForeign']);
-    //print(jsonObj);
+    'sentencePatternForeign': sentencePatternForeign == null ? null : sentencePatternForeign.map((e) => e).toList(),
+  }..removeWhere((k, v) => v==null);
+
+  Future<bool> uploadFile() async {
+    var jsonObj = {'id': id};
     var formData = FormData.fromMap(jsonObj, ListFormat.multi);
     if(image.mptFile != null) formData.files.add(image.file);
     if(vedio.mptFile != null) formData.files.add(vedio.file);
-    return formData;
+    bool ret = true;
+    if(formData.files.isNotEmpty) {
+      ret = await update(data:formData);
+      if(image.mptFile != null) image.mptFile = null;
+      if(vedio.mptFile != null) vedio.mptFile = null;
+    }
+    return ret;
   }
 
   DistinguishSerializer from(DistinguishSerializer instance) {
@@ -107,7 +106,8 @@ class DistinguishSerializer {
     image.from(instance.image);
     vedio.from(instance.vedio);
     wordsForeign = List.from(instance.wordsForeign);
-    sentencesForeign = List.from(instance.sentencesForeign.map((e) => SentenceSerializer().from(e)).toList());
+    sentencePatternForeign = List.from(instance.sentencePatternForeign);
+    sentencePatternForeignSet = List.from(instance.sentencePatternForeignSet.map((e) => SentencePatternSerializer().from(e)).toList());
     _id = instance._id;
     return this;
   }

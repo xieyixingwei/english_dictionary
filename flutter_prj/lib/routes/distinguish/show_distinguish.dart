@@ -55,9 +55,9 @@ Widget distinguishShow(BuildContext context, num index, DistinguishSerializer ds
                   }
                 },
               )
-            ).toList() + ds.sentencesForeign.map((e) =>
+            ).toList() + ds.sentencePatternForeignSet.map((e) =>
               InkWell(
-                child: Text(e.en, style: TextStyle(fontSize: 12, color: Colors.blueAccent, fontWeight: FontWeight.bold)),
+                child: Text(e.content, style: TextStyle(fontSize: 12, color: Colors.blueAccent, fontWeight: FontWeight.bold)),
                 onTap: () async {
                   },
               )
@@ -83,12 +83,12 @@ Widget distinguishShow(BuildContext context, num index, DistinguishSerializer ds
           ) : null,
         ],
       ),
-      ds.content != null ?
+      ds.content.isNotEmpty ?
       Padding(
         padding: EdgeInsets.only(left: 14),
         child: MarkDown(text:ds.content).render()
       ) : null,
-      ds.vedio.url != null ?
+      ds.vedio.url.isNotEmpty ?
       Align(
         alignment: Alignment.center,
         child: VedioPlayerWeb(url: ds.vedio.url),
@@ -98,7 +98,7 @@ Widget distinguishShow(BuildContext context, num index, DistinguishSerializer ds
 
 
 Widget distinguishItem({BuildContext context, DistinguishSerializer distinguish, Widget trailing}) {
-  String title = distinguish.wordsForeign.join(', ') + '  ' + distinguish.sentencesForeign.map((e) => e.en).join(', ');
+  String title = distinguish.wordsForeign.join(', ') + '  ' + distinguish.sentencePatternForeignSet.map((e) => e.content).join(', ');
   return ListTile(
     dense: true,
     horizontalTitleGap: 0,

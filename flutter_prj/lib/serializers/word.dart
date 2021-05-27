@@ -40,13 +40,16 @@ class WordSerializer {
   List<DistinguishSerializer> distinguishSet = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.POST, '/api/dictionary/word/', data:data ?? _formData, queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    var res = await Http().request(HttpType.POST, '/api/dictionary/word/', data:data ?? toJson(), queries:queries, cache:cache);
+    if(res != null) {
+      var jsonObj = {'name': res.data['name'] ?? name};
+      fromJson(jsonObj); // Only update primary member after create
+    }
     return res != null;
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    var res = await Http().request(HttpType.PUT, '/api/dictionary/word/$name/', data:data ?? _formData, queries:queries, cache:cache);
+    var res = await Http().request(HttpType.PUT, '/api/dictionary/word/$name/', data:data ?? toJson(), queries:queries, cache:cache);
     return res != null;
   }
 
@@ -58,7 +61,7 @@ class WordSerializer {
 
   Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     if(_name == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/api/dictionary/word/$name/', data:data ?? _formData, queries:queries, cache:cache);
+    var res = await Http().request(HttpType.DELETE, '/api/dictionary/word/$name/', data:data ?? toJson(), queries:queries, cache:cache);
     /*
     if(paraphraseSet != null){paraphraseSet.forEach((e){e.delete();});}
     if(sentencePatternSet != null){sentencePatternSet.forEach((e){e.delete();});}
@@ -69,65 +72,58 @@ class WordSerializer {
   }
 
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    bool res = false;
-    if(_name == null) {
-      var clone = WordSerializer().from(this); // create will update self, maybe refresh the member of self.
-      res = await clone.create(data:data, queries:queries, cache:cache);
-      if(res == false) return false;
-      name = clone.name;
-      if(paraphraseSet != null){await Future.forEach(paraphraseSet, (e) async {e.wordForeign = name; await e.save();});}
-      if(sentencePatternSet != null){await Future.forEach(sentencePatternSet, (e) async {e.wordForeign = name; await e.save();});}
-      if(grammarSet != null){await Future.forEach(grammarSet, (e) async {e.wordForeign = name; await e.save();});}
-      if(distinguishSet != null){await Future.forEach(distinguishSet, (e) async { await e.save();});}
-      res = await retrieve();
-    } else {
-      res = await update(data:data, queries:queries, cache:cache);
-      if(paraphraseSet != null){await Future.forEach(paraphraseSet, (e) async {e.wordForeign = name; await e.save();});}
-      if(sentencePatternSet != null){await Future.forEach(sentencePatternSet, (e) async {e.wordForeign = name; await e.save();});}
-      if(grammarSet != null){await Future.forEach(grammarSet, (e) async {e.wordForeign = name; await e.save();});}
-      if(distinguishSet != null){await Future.forEach(distinguishSet, (e) async { await e.save();});}
+    bool res = _name == null ?
+      await create(data:data, queries:queries, cache:cache) :
+      await update(data:data, queries:queries, cache:cache);
+
+    if(res) {
+      await Future.forEach(paraphraseSet, (e) async {e.wordForeign = name; await e.save();});
+      await Future.forEach(sentencePatternSet, (e) async {e.wordForeign = name; await e.save();});
+      await Future.forEach(grammarSet, (e) async {e.wordForeign = name; await e.save();});
+      await Future.forEach(distinguishSet, (e) async { await e.save();});
     }
+    res = await uploadFile();
     return res;
   }
 
   WordSerializer fromJson(Map<String, dynamic> json) {
-    name = json['name'] == null ? null : json['name'] as String;
-    voiceUs = json['voiceUs'] == null ? null : json['voiceUs'] as String;
-    voiceUk = json['voiceUk'] == null ? null : json['voiceUk'] as String;
-    audioUsMan = json['audioUsMan'] == null ? null : json['audioUsMan'] as String;
-    audioUsWoman = json['audioUsWoman'] == null ? null : json['audioUsWoman'] as String;
-    audioUkMan = json['audioUkMan'] == null ? null : json['audioUkMan'] as String;
-    audioUkWoman = json['audioUkWoman'] == null ? null : json['audioUkWoman'] as String;
+    name = json['name'] == null ? name : json['name'] as String;
+    voiceUs = json['voiceUs'] == null ? voiceUs : json['voiceUs'] as String;
+    voiceUk = json['voiceUk'] == null ? voiceUk : json['voiceUk'] as String;
+    audioUsMan = json['audioUsMan'] == null ? audioUsMan : json['audioUsMan'] as String;
+    audioUsWoman = json['audioUsWoman'] == null ? audioUsWoman : json['audioUsWoman'] as String;
+    audioUkMan = json['audioUkMan'] == null ? audioUkMan : json['audioUkMan'] as String;
+    audioUkWoman = json['audioUkWoman'] == null ? audioUkWoman : json['audioUkWoman'] as String;
     morph = json['morph'] == null
-                ? []
+                ? morph
                 : json['morph'].map<String>((e) => e as String).toList();
     tag = json['tag'] == null
-                ? []
+                ? tag
                 : json['tag'].map<String>((e) => e as String).toList();
     etyma = json['etyma'] == null
-                ? []
+                ? etyma
                 : json['etyma'].map<String>((e) => e as String).toList();
-    origin = json['origin'] == null ? null : json['origin'] as String;
-    shorthand = json['shorthand'] == null ? null : json['shorthand'] as String;
+    origin = json['origin'] == null ? origin : json['origin'] as String;
+    shorthand = json['shorthand'] == null ? shorthand : json['shorthand'] as String;
     synonym = json['synonym'] == null
-                ? []
+                ? synonym
                 : json['synonym'].map<String>((e) => e as String).toList();
     antonym = json['antonym'] == null
-                ? []
+                ? antonym
                 : json['antonym'].map<String>((e) => e as String).toList();
-    image.url = json['image'] == null ? null : json['image'] as String;
-    vedio.url = json['vedio'] == null ? null : json['vedio'] as String;
+    image.url = json['image'] == null ? image.url : json['image'] as String;
+    vedio.url = json['vedio'] == null ? vedio.url : json['vedio'] as String;
     paraphraseSet = json['paraphraseSet'] == null
-                ? []
+                ? paraphraseSet
                 : json['paraphraseSet'].map<ParaphraseSerializer>((e) => ParaphraseSerializer().fromJson(e as Map<String, dynamic>)).toList();
     sentencePatternSet = json['sentencePatternSet'] == null
-                ? []
+                ? sentencePatternSet
                 : json['sentencePatternSet'].map<SentencePatternSerializer>((e) => SentencePatternSerializer().fromJson(e as Map<String, dynamic>)).toList();
     grammarSet = json['grammarSet'] == null
-                ? []
+                ? grammarSet
                 : json['grammarSet'].map<GrammarSerializer>((e) => GrammarSerializer().fromJson(e as Map<String, dynamic>)).toList();
     distinguishSet = json['distinguishSet'] == null
-                ? []
+                ? distinguishSet
                 : json['distinguishSet'].map<DistinguishSerializer>((e) => DistinguishSerializer().fromJson(e as Map<String, dynamic>)).toList();
     _name = name;
     return this;
@@ -144,16 +140,20 @@ class WordSerializer {
     'shorthand': shorthand,
     'synonym': synonym == null ? null : synonym.map((e) => e).toList(),
     'antonym': antonym == null ? null : antonym.map((e) => e).toList(),
-  };
-  FormData get _formData {
-    var jsonObj = toJson();
-    jsonObj['morph'] = json.encode(jsonObj['morph']);
-    jsonObj['tag'] = json.encode(jsonObj['tag']);
-    jsonObj['etyma'] = json.encode(jsonObj['etyma']);
+  }..removeWhere((k, v) => v==null);
+
+  Future<bool> uploadFile() async {
+    var jsonObj = {'name': name};
     var formData = FormData.fromMap(jsonObj, ListFormat.multi);
     if(image.mptFile != null) formData.files.add(image.file);
     if(vedio.mptFile != null) formData.files.add(vedio.file);
-    return formData;
+    bool ret = true;
+    if(formData.files.isNotEmpty) {
+      ret = await update(data:formData);
+      if(image.mptFile != null) image.mptFile = null;
+      if(vedio.mptFile != null) vedio.mptFile = null;
+    }
+    return ret;
   }
 
   WordSerializer from(WordSerializer instance) {

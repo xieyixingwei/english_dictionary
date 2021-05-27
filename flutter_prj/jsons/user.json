@@ -55,7 +55,7 @@
         "methods": [
             {
                 "name": "login",
-                "requst": "post",
+                "requst": "get",
                 "url": "login/"
             }
         ]
