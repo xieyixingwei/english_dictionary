@@ -5,16 +5,11 @@ from django.db import models
 import django_filters
 
 from server import permissions
-from server.serializer import ListSerializer
 from dictionary.models.DistinguishTable import DistinguishTable
 from server.views import ModelViewSetPermissionSerializerMap
-from .SentencePatternView import SentencePatternSerializer
-from dictionary.models.SentenceTable import SentenceTable
-from drf_writable_nested import WritableNestedModelSerializer
 
 
-class DistinguishSerializer(WritableNestedModelSerializer):
-    sentencePatternForeign = ListSerializer(child=SentencePatternSerializer())
+class DistinguishSerializer(serializers.ModelSerializer):
     class Meta:
         model = DistinguishTable
         fields = '__all__'

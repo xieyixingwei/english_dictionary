@@ -12,7 +12,7 @@ class GrammarTable(models.Model):
     title = models.CharField(max_length=128, default='')
     type = JSONFieldUtf8(null=True) # [时态,从句]
     tag = JSONFieldUtf8(null=True) # [重要]
-    content = models.TextField(null=True) # 内容 markdown文本
+    content = models.TextField(null=True, blank=True) # 内容 markdown文本
     image = models.ImageField(upload_to='grammar_images/', null=True, blank=True, verbose_name="图片讲解") # 图片讲解
     vedio = models.FileField(upload_to='grammar_vedios/', null=True, blank=True, verbose_name="视频讲解") # 视频讲解
     wordForeign = models.ForeignKey(to=WordTable, related_name='grammarSet', null=True, on_delete=models.SET_NULL)

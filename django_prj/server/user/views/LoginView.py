@@ -14,7 +14,7 @@ class LoginSerializer(serializers.ModelSerializer):
         fields = ('id','uname','passwd')
 
 # 登陆 path/login/
-class LoginView(generics.CreateAPIView):
+class LoginView(generics.RetrieveAPIView):
     '''
     登陆
     '''
@@ -22,9 +22,9 @@ class LoginView(generics.CreateAPIView):
     queryset = UserTable.objects.all()
     permission_classes = (permissions.AllowAny,) # 允许所有用户
 
-    def post(self, request, *args, **kwargs):
-        uname = request.data.get('uname')
-        passwd = request.data.get('passwd')
+    def get(self, request, *args, **kwargs):
+        uname = request.GET.get('uname')
+        passwd = request.GET.get('passwd')
         try:
             user = UserTable.objects.get(uname=uname)
             if user.passwd != passwd:
