@@ -14,18 +14,6 @@ from .SentencePatternView import SentencePatternSerializer
 
 
 class _WordSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = WordTable
-        fields = '__all__'
-
-
-class _WordUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = WordTable
-        exclude = ('name',)
-
-
-class _WordRetrieveSerializer(serializers.ModelSerializer):
     paraphraseSet = ParaphraseSerializer(many=True, read_only=True)
     sentencePatternSet = SentencePatternSerializer(many=True, read_only=True)
     grammarSet = GrammarSerializer(many=True, read_only=True)
@@ -67,11 +55,6 @@ class WordView(ModelViewSetPermissionSerializerMap):
     """
     queryset = WordTable.objects.all()
     serializer_class = _WordSerializer
-    serializer_class_map = {
-        'update': _WordUpdateSerializer,
-        'retrieve': _WordRetrieveSerializer,
-        'list': _WordRetrieveSerializer,
-    }
     permission_classes = (permissions.IsRootUser,)
     permission_classes_map = {
         'retrieve': (permissions.AllowAny,),

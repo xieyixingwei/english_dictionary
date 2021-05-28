@@ -17,13 +17,6 @@ class SentencePatternSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class _SentencePatternRetrieveSerializer(serializers.ModelSerializer):
-    paraphraseSet = ParaphraseSerializer(many=True, read_only=True)
-    class Meta:
-        model = SentencePatternTable
-        fields = '__all__'
-
-
 # 分页自定义
 class _SentencePatternPagination(PageNumberPagination):
     page_size = 4 # 表示每页的默认显示数量
@@ -54,10 +47,6 @@ class SentencePatternView(ModelViewSetPermissionSerializerMap):
     """
     queryset = SentencePatternTable.objects.all()
     serializer_class = SentencePatternSerializer
-    serializer_class_map = {
-        'retrieve': _SentencePatternRetrieveSerializer,
-        'list': _SentencePatternRetrieveSerializer,
-    }
     permission_classes = (permissions.IsRootUser,)
     permission_classes_map = {
         'retrieve': (permissions.AllowAny,),

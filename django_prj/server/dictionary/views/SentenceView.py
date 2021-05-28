@@ -19,13 +19,6 @@ class SentenceSerializer(serializers.ModelSerializer):
         model = SentenceTable
         fields = '__all__'
 
-'''
-class _RetrieveSentenceSerializer(serializers.ModelSerializer):
-    grammarSet = GrammarSerializer(many=True, read_only=True)
-    class Meta:
-        model = SentenceTable
-        fields = ('__all__')
-'''
 
 # 分页自定义
 class _SentencePagination(PageNumberPagination):
@@ -62,10 +55,6 @@ class SentenceView(ModelViewSetPermissionSerializerMap):
     """
     queryset = SentenceTable.objects.all()
     serializer_class = SentenceSerializer
-    #serializer_class_map = {
-    #    'retrieve': _RetrieveSentenceSerializer,
-    #    'list': _RetrieveSentenceSerializer,
-    #}
     permission_classes = (permissions.IsRootUser,)
     permission_classes_map = {
         'retrieve': (permissions.AllowAny,),

@@ -17,13 +17,6 @@ class ParaphraseSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class _ParaphraseRetrieveSerializer(serializers.ModelSerializer):
-    sentenceSet = SentenceSerializer(many=True, read_only=True)
-    class Meta:
-        model = ParaphraseTable
-        fields = '__all__'
-
-
 # 分页自定义
 class _ParaphrasePagination(PageNumberPagination):
     page_size = 4 # 表示每页的默认显示数量
@@ -55,10 +48,6 @@ class ParaphraseView(ModelViewSetPermissionSerializerMap):
     """
     queryset = ParaphraseTable.objects.all()
     serializer_class = ParaphraseSerializer
-    serializer_class_map = {
-        'retrieve': _ParaphraseRetrieveSerializer,
-        'list': _ParaphraseRetrieveSerializer,
-    }
     permission_classes = (permissions.IsRootUser,)
     permission_classes_map = {
         'retrieve': (permissions.AllowAny,),
