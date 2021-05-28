@@ -26,8 +26,8 @@ class _TabPractice extends State<TabPractice> {
           child: Wrap(
             spacing: 10,
             runSpacing: 10,
-            alignment: WrapAlignment.center,
-            runAlignment: WrapAlignment.center,
+            alignment: WrapAlignment.spaceAround,
+            runAlignment: WrapAlignment.spaceAround,
             children: [
               _card(context, '单词', ()=>Navigator.of(context).push(
                     MaterialPageRoute(

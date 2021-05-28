@@ -24,30 +24,32 @@ class _WordPracticePageState extends State<WordPracticePage> {
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
-        child: Wrap(
-          spacing: 10,
-          runSpacing: 10,
-          alignment: WrapAlignment.center,
-          runAlignment: WrapAlignment.center,
-          children: Global .wordTagOptions.map((e) =>
-            _card(context, e, () async {
-              _words.filter.tag__icontains = e;
-              bool ret = await _words.retrieve(queries:{'page_size':50, 'page_index':1});
-              if(ret && _words.results.isNotEmpty)
-                Navigator.pushNamed(context, '/practice_word', arguments: {'title': null, 'words': _words.results});
-            })
-          ).toList() + [
-            _card(context, '收藏的单词', () async {
-              List<WordSerializer> words = [];
-              await Future.forEach<StudyWordSerializer>(Global.localStore.user.studyWordSet, (e) async {
-                  WordSerializer word = WordSerializer()..name = e.word;
-                  bool ret = await word.retrieve();
-                  if(ret) words.add(word);
-              });
-              if(words.isNotEmpty)
-                Navigator.pushNamed(context, '/practice_word', arguments: {'title': null, 'words': words});
-            })
-          ],
+        child: Center(
+          child: Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            alignment: WrapAlignment.center,
+            runAlignment: WrapAlignment.center,
+            children: Global .wordTagOptions.map((e) =>
+              _card(context, e, () async {
+                _words.filter.tag__icontains = e;
+                bool ret = await _words.retrieve(queries:{'page_size':50, 'page_index':1});
+                if(ret && _words.results.isNotEmpty)
+                  Navigator.pushNamed(context, '/practice_word', arguments: {'title': null, 'words': _words.results});
+              })
+            ).toList() + [
+              _card(context, '收藏的单词', () async {
+                List<WordSerializer> words = [];
+                await Future.forEach<StudyWordSerializer>(Global.localStore.user.studyWordSet, (e) async {
+                    WordSerializer word = WordSerializer()..name = e.word;
+                    bool ret = await word.retrieve();
+                    if(ret) words.add(word);
+                });
+                if(words.isNotEmpty)
+                  Navigator.pushNamed(context, '/practice_word', arguments: {'title': null, 'words': words});
+              })
+            ],
+          ),
         ),
       ),
     );

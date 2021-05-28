@@ -23,30 +23,32 @@ class _SentencePracticePageState extends State<SentencePracticePage> {
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
-        child: Wrap(
-          spacing: 10,
-          runSpacing: 10,
-          alignment: WrapAlignment.start,
-          runAlignment: WrapAlignment.start,
-          children: Global.sentenceTagOptions.map((e) =>
-            _card(context, e, () async {
-              _sentences.filter.tag__icontains = e;
-              bool ret = await _sentences.retrieve(queries:{'page_size':50, 'page_index':1});
-              if(ret && _sentences.results.isNotEmpty)
-                Navigator.pushNamed(context, '/practice_sentence', arguments: {'title': null, 'sentences': _sentences.results});
-            })
-          ).toList() + [
-            _card(context, '收藏的句子', () async {
-              List<SentenceSerializer> sentences = [];
-              await Future.forEach<StudySentenceSerializer>(Global.localStore.user.studySentenceSet, (e) async {
-                  SentenceSerializer ste = SentenceSerializer()..id = e.sentence;
-                  bool ret = await ste.retrieve();
-                  if(ret) sentences.add(ste);
-              });
-              if(sentences.isNotEmpty)
-                Navigator.pushNamed(context, '/practice_sentence', arguments: {'title': null, 'sentences': sentences});
-            })
-          ],
+        child: Center(
+          child: Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            alignment: WrapAlignment.start,
+            runAlignment: WrapAlignment.start,
+            children: Global.sentenceTagOptions.map((e) =>
+              _card(context, e, () async {
+                _sentences.filter.tag__icontains = e;
+                bool ret = await _sentences.retrieve(queries:{'page_size':50, 'page_index':1});
+                if(ret && _sentences.results.isNotEmpty)
+                  Navigator.pushNamed(context, '/practice_sentence', arguments: {'title': null, 'sentences': _sentences.results});
+              })
+            ).toList() + [
+              _card(context, '收藏的句子', () async {
+                List<SentenceSerializer> sentences = [];
+                await Future.forEach<StudySentenceSerializer>(Global.localStore.user.studySentenceSet, (e) async {
+                    SentenceSerializer ste = SentenceSerializer()..id = e.sentence;
+                    bool ret = await ste.retrieve();
+                    if(ret) sentences.add(ste);
+                });
+                if(sentences.isNotEmpty)
+                  Navigator.pushNamed(context, '/practice_sentence', arguments: {'title': null, 'sentences': sentences});
+              })
+            ],
+          ),
         ),
       ),
     );
