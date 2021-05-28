@@ -170,38 +170,41 @@ class _PracticeWordState extends State<PracticeWord> {
   }
 
   Widget get _sentences =>
-    Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    ColumnSpace(
+      divider: SizedBox(height: 7,),
       children: _curWord.paraphraseSet.map<Widget>((e) =>
         Column(
           children: [
-            Text('${e.partOfSpeech}  ${e.interpret}', style: TextStyle(fontSize: 17, color: Colors.black54),),
-            Padding(
-              padding: EdgeInsets.only(left: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: e.sentenceSet.map((s) =>
-                  _sentence(s)
-                ).toList(),
-              ),
-            )
+            Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(text: '${e.partOfSpeech}  ', style: TextStyle(fontSize: 17, color: Colors.black87)),
+                  TextSpan(text: e.interpret, style: TextStyle(fontSize: 17, color: Colors.black87, fontWeight: FontWeight.w800)),
+                ]
+              )
+            ),
+            ColumnSpace(
+              divider: SizedBox(height: 3,),
+              children: e.sentenceSet.map((s) =>
+                _sentence(s)
+              ).toList(),
+            ),
           ],
         )
       ).toList(),
     );
 
   Widget _sentence(SentenceSerializer s) =>
-    Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    ColumnSpace(
       children: [
         InkWell(
-          child: Text(s.cn),
-          onTap: () => setState(() => s.offstage = false),
+          child: Text(s.cn, style: TextStyle(fontSize: 14, color: Colors.black54),),
+          onTap: () => setState(() => s.offstage = !s.offstage),
         ),
         Offstage(
           offstage: s.offstage,
           child: InkWell(
-            child: Text(s.en),
+            child: Text(s.en, style: TextStyle(fontSize: 14, color: Colors.black54),),
             onTap: () async {
               if(s.enVoice.isEmpty) {
                 var res = await Http().request(HttpType.GET, '/api/dictionary/text_to_voice/', queries:{'id': s.id, 'text': s.en, 'lang': 'en'});
