@@ -46,7 +46,7 @@ final _routes = {
                                     title: Text('编辑单词 Tag',),
                                     tags: Global.wordTagOptions,
                                     add: (String tag) => WordTagSerializer().create(data:{'name':tag}),
-                                    remove: (String tag) => WordTagSerializer()..name = tag ..delete(),
+                                    remove: (String tag) => WordTagSerializer()..delete(pk:tag),
                                     ),
   '/list_sentences': (context) => ListSentences(),
   '/edit_sentence': (context, {arguments}) => EditSentence(title:arguments['title'], sentence:arguments['sentence']),
@@ -54,7 +54,7 @@ final _routes = {
                                         title: Text('编辑句子 Tag',),
                                         tags: Global.sentenceTagOptions,
                                         add: (String tag) => SentenceTagSerializer().create(data:{'name':tag}),
-                                        remove: (String tag) => SentenceTagSerializer()..name = tag ..delete(),
+                                        remove: (String tag) => SentenceTagSerializer()..delete(pk:tag),
                                         ),
   '/list_grammars': (context) => ListGrammers(),
   '/edit_grammar': (context, {arguments}) => EditGrammar(title:arguments['title'], grammar:arguments['grammar']),
@@ -62,13 +62,13 @@ final _routes = {
                                         title: Text('编辑语法 Type',),
                                         tags: Global.grammarTypeOptions,
                                         add: (String tag) => GrammarTypeSerializer().create(data:{'name':tag}),
-                                        remove: (String tag) => GrammarTypeSerializer()..name = tag ..delete(),
+                                        remove: (String tag) => GrammarTypeSerializer()..delete(pk:tag),
                                         ),
   '/edit_grammar_tag': (context) => EditTags(
                                         title: Text('编辑语法 Tag',),
                                         tags: Global.grammarTagOptions,
                                         add: (String tag) => GrammarTagSerializer().create(data:{'name':tag}),
-                                        remove: (String tag) => GrammarTagSerializer()..name = tag ..delete(),
+                                        remove: (String tag) => GrammarTagSerializer()..delete(pk:tag),
                                         ),
   '/list_etymas': (context) => ListEtymas(),
   '/edit_etyma': (context, {arguments}) => EditEtyma(title:arguments['title'], etyma:arguments['etyma']),
@@ -91,7 +91,6 @@ final _routes = {
 
   '/practice_word': (context, {arguments}) => PracticeWord(title: arguments['title'], words: arguments['words'],),
   '/practice_sentence': (context, {arguments}) => PracticeSentence(title: arguments['title'], sentences: arguments['sentences'],),
-  
 };
 
 

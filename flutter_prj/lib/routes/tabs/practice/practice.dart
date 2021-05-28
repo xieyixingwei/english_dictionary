@@ -22,25 +22,27 @@ class _TabPractice extends State<TabPractice> {
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
-        child: Wrap(
-          spacing: 10,
-          runSpacing: 10,
-          alignment: WrapAlignment.start,
-          runAlignment: WrapAlignment.start,
-          children: [
-            _card(context, '单词', ()=>Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => WordPracticePage(),
-                  )
-                )),
-            _card(context, '句子', ()=>Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => SentencePracticePage(),
-                  )
-                )),
-            _card(context, '语法', (){}),
-            _card(context, '词义辨析', (){}),
-          ],
+        child: Center(
+          child: Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            alignment: WrapAlignment.center,
+            runAlignment: WrapAlignment.center,
+            children: [
+              _card(context, '单词', ()=>Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => WordPracticePage(),
+                    )
+                  )),
+              _card(context, '句子', ()=>Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => SentencePracticePage(),
+                    )
+                  )),
+              _card(context, '语法', (){}),
+              _card(context, '词义辨析', (){}),
+            ],
+          ),
         ),
       ),
     );

@@ -3,7 +3,6 @@
 // JsonSerializer
 // **************************************************************************
 
-import 'dart:convert';
 import 'grammar.dart';
 import 'package:flutter_prj/common/http.dart';
 
@@ -25,6 +24,7 @@ class SentenceSerializer {
   List<num> antonym = [];
   num paraphraseForeign;
   List<GrammarSerializer> grammarSet = [];
+  bool offstage = true;
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/dictionary/sentence/', data:data ?? toJson(), queries:queries, cache:cache);
@@ -46,9 +46,10 @@ class SentenceSerializer {
     return res != null;
   }
 
-  Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    if(_id == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/api/dictionary/sentence/$id/', data:data ?? toJson(), queries:queries, cache:cache);
+  Future<bool> delete({num pk}) async {
+    if(_id == null && pk == null) return true;
+    if(pk != null) id = pk;
+    var res = await Http().request(HttpType.DELETE, '/api/dictionary/sentence/$id/');
     /*
     if(grammarSet != null){grammarSet.forEach((e){e.delete();});}
     */
@@ -122,6 +123,7 @@ class SentenceSerializer {
     antonym = List.from(instance.antonym);
     paraphraseForeign = instance.paraphraseForeign;
     grammarSet = List.from(instance.grammarSet.map((e) => GrammarSerializer().from(e)).toList());
+    offstage = instance.offstage;
     _id = instance._id;
     return this;
   }

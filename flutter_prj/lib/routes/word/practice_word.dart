@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:audioplayers/audioplayers_web.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_prj/common/http.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
 
@@ -109,8 +110,8 @@ class _PracticeWordState extends State<PracticeWord> {
           child: ColumnSpace(
             divider: SizedBox(height: 20,),
             children: [
-              _word,
-              _detail(context),
+              _word(context),
+              _sentences,
               auto ? null : _goto,
             ],
           ),
@@ -118,7 +119,7 @@ class _PracticeWordState extends State<PracticeWord> {
       ),
     );
 
-  Widget get _word =>
+  Widget _word(BuildContext context) =>
     ColumnSpace(
       divider: SizedBox(height: 10,),
       children: [
@@ -131,9 +132,14 @@ class _PracticeWordState extends State<PracticeWord> {
               fontSize: 28,
             ),
           ),
-          onTap: () async {if(_curWord.audioUsMan == null) return; _audioPlayer.setUrl(_curWord.audioUsMan); _audioPlayer.start(0);},
+          onTap: () async {_audioPlayer.setUrl(_curWord.audioUsMan); _audioPlayer.start(0);},
+          onDoubleTap: () async {
+            if(timer != null && timer.isActive) timer.cancel();
+            await Navigator.pushNamed(context, '/show_word', arguments: {'title': '', 'word': _curWord});
+            if(auto) timer = Timer.periodic(Duration(seconds: 3), _timerCallback);
+          },
         ),
-        _curWord.voiceUs != null && _curWord.voiceUs.isNotEmpty ?
+        _curWord.voiceUs.isNotEmpty ?
         Text(
           _curWord.voiceUs,
           style: TextStyle(
@@ -149,6 +155,7 @@ class _PracticeWordState extends State<PracticeWord> {
     if(cycle && (index == widget.words.length - 1)) index = 0;
     else if(index < (widget.words.length - 1)) index += 1;
   }
+
   void _previous() {
     if(cycle && index == 0) index = widget.words.length - 1;
     else if(index > 0) index -= 1;
@@ -162,14 +169,50 @@ class _PracticeWordState extends State<PracticeWord> {
     return  widget.words[preIndex];
   }
 
-  Widget _detail(BuildContext context) =>
-    IconButton(
-      icon: Icon(Icons.more_horiz),
-      onPressed: () async {
-        if(timer != null && timer.isActive) timer.cancel();
-        await Navigator.pushNamed(context, '/show_word', arguments: {'title': '', 'word': _curWord});
-        if(auto) timer = Timer.periodic(Duration(seconds: 3), _timerCallback);
-      },
+  Widget get _sentences =>
+    Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: _curWord.paraphraseSet.map<Widget>((e) =>
+        Column(
+          children: [
+            Text('${e.partOfSpeech}  ${e.interpret}', style: TextStyle(fontSize: 17, color: Colors.black54),),
+            Padding(
+              padding: EdgeInsets.only(left: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: e.sentenceSet.map((s) =>
+                  _sentence(s)
+                ).toList(),
+              ),
+            )
+          ],
+        )
+      ).toList(),
+    );
+
+  Widget _sentence(SentenceSerializer s) =>
+    Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
+          child: Text(s.cn),
+          onTap: () => setState(() => s.offstage = false),
+        ),
+        Offstage(
+          offstage: s.offstage,
+          child: InkWell(
+            child: Text(s.en),
+            onTap: () async {
+              if(s.enVoice.isEmpty) {
+                var res = await Http().request(HttpType.GET, '/api/dictionary/text_to_voice/', queries:{'id': s.id, 'text': s.en, 'lang': 'en'});
+                s.enVoice = Http.baseUrl + res.data.toString();
+              }
+              _audioPlayer.setUrl(s.enVoice);
+              _audioPlayer.start(0);
+            },
+          ),
+        )
+      ]
     );
 
   Widget get _goto =>

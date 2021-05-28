@@ -154,7 +154,6 @@ class Member {
     if(isForeign || isForeignManyToMany) return '';
     if(serializerJsonName != null) import.add('import \'$serializerJsonName.dart\';');
     if(isFileType) import.add(SingleFileType.import);
-    if(jsonEncode != null) import.add('import \'dart:convert\';');
     return import.join('\n');
   }
 
@@ -392,9 +391,10 @@ $saveForeign
       else if(requestType == "delete") {
         return
 """
-  Future<bool> $methodName({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    if(${fatherSerializer.primaryMember.hidePrimaryMemberName} == null) return true;
-    var res = await Http().request(HttpType.DELETE, '$requestUrl', $data, $queries, $cache);
+  Future<bool> $methodName({${fatherSerializer.primaryMember.type} pk}) async {
+    if(${fatherSerializer.primaryMember.hidePrimaryMemberName} == null && pk == null) return true;
+    if(pk != null) ${fatherSerializer.primaryMember.name} = pk;
+    var res = await Http().request(HttpType.DELETE, '$requestUrl');
     /*
     ${fatherSerializer.membersDelete}
     */

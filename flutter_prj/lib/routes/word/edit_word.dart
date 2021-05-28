@@ -349,13 +349,14 @@ class _EditWordState extends State<EditWord> {
                                 word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'编辑近义词', 'word': WordSerializer().from(word)})) as WordSerializer;
                                 if(word != null) {
                                   await word.save();
+                                  setState(() {});
                                 }
                               }
-                              setState((){});
                             },
                           ),
                           onDeleted: () => setState(() => widget.word.synonym.remove(e)),
-                        )).toList(),
+                        )
+                      ).toList(),
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
@@ -382,13 +383,14 @@ class _EditWordState extends State<EditWord> {
                                 word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'编辑反义词', 'word': WordSerializer().from(word)})) as WordSerializer;
                                 if(word != null) {
                                   await word.save();
+                                  setState(() {});
                                 }
                               }
-                              setState((){});
                             },
                           ),
                           onDeleted: () => setState(() => widget.word.antonym.remove(e)),
-                        )).toList(),
+                        )
+                      ).toList(),
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {

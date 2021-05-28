@@ -42,9 +42,10 @@ class DistinguishSerializer {
     return res != null;
   }
 
-  Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    if(_id == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/api/dictionary/distinguish/$id/', data:data ?? toJson(), queries:queries, cache:cache);
+  Future<bool> delete({num pk}) async {
+    if(_id == null && pk == null) return true;
+    if(pk != null) id = pk;
+    var res = await Http().request(HttpType.DELETE, '/api/dictionary/distinguish/$id/');
     /*
     if(sentencePatternForeignSet != null){sentencePatternForeignSet.forEach((e){e.delete();});}
     */

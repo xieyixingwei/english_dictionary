@@ -3,7 +3,6 @@
 // JsonSerializer
 // **************************************************************************
 
-import 'dart:convert';
 import 'single_file.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:dio/dio.dart';
@@ -59,9 +58,10 @@ class WordSerializer {
     return res != null;
   }
 
-  Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    if(_name == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/api/dictionary/word/$name/', data:data ?? toJson(), queries:queries, cache:cache);
+  Future<bool> delete({String pk}) async {
+    if(_name == null && pk == null) return true;
+    if(pk != null) name = pk;
+    var res = await Http().request(HttpType.DELETE, '/api/dictionary/word/$name/');
     /*
     if(paraphraseSet != null){paraphraseSet.forEach((e){e.delete();});}
     if(sentencePatternSet != null){sentencePatternSet.forEach((e){e.delete();});}

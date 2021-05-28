@@ -39,9 +39,10 @@ class EtymaSerializer {
     return res != null;
   }
 
-  Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    if(_name == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/api/dictionary/etyma/$name/', data:data ?? toJson(), queries:queries, cache:cache);
+  Future<bool> delete({String pk}) async {
+    if(_name == null && pk == null) return true;
+    if(pk != null) name = pk;
+    var res = await Http().request(HttpType.DELETE, '/api/dictionary/etyma/$name/');
     /*
     
     */

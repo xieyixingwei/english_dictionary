@@ -3,7 +3,6 @@
 // JsonSerializer
 // **************************************************************************
 
-import 'dart:convert';
 import 'single_file.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:dio/dio.dart';
@@ -44,9 +43,10 @@ class GrammarSerializer {
     return res != null;
   }
 
-  Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    if(_id == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/api/dictionary/grammar/$id/', data:data ?? toJson(), queries:queries, cache:cache);
+  Future<bool> delete({num pk}) async {
+    if(_id == null && pk == null) return true;
+    if(pk != null) id = pk;
+    var res = await Http().request(HttpType.DELETE, '/api/dictionary/grammar/$id/');
     /*
     
     */

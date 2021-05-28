@@ -27,8 +27,8 @@ class _WordPracticePageState extends State<WordPracticePage> {
         child: Wrap(
           spacing: 10,
           runSpacing: 10,
-          alignment: WrapAlignment.start,
-          runAlignment: WrapAlignment.start,
+          alignment: WrapAlignment.center,
+          runAlignment: WrapAlignment.center,
           children: Global .wordTagOptions.map((e) =>
             _card(context, e, () async {
               _words.filter.tag__icontains = e;

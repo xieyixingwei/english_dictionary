@@ -5,11 +5,8 @@
 
 import 'study_plan.dart';
 import 'study_grammar.dart';
-import 'dart:convert';
 import 'study_word.dart';
-import 'dart:convert';
 import 'study_sentence.dart';
-import 'dart:convert';
 import 'package:flutter_prj/common/http.dart';
 
 
@@ -47,9 +44,10 @@ class UserSerializer {
     return res != null;
   }
 
-  Future<bool> delete({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    if(_id == null) return true;
-    var res = await Http().request(HttpType.DELETE, '/api/user/$uname/', data:data ?? toJson(), queries:queries, cache:cache);
+  Future<bool> delete({num pk}) async {
+    if(_id == null && pk == null) return true;
+    if(pk != null) id = pk;
+    var res = await Http().request(HttpType.DELETE, '/api/user/$uname/');
     /*
     if(studyPlan != null){studyPlan.delete();}
     if(studyGrammarSet != null){studyGrammarSet.forEach((e){e.delete();});}
