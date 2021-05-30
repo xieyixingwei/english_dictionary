@@ -145,6 +145,7 @@ class _PracticeWordState extends State<PracticeWord> {
           style: TextStyle(
             color: Colors.black87,
             fontWeight: FontWeight.normal,
+            fontFamily: 'Arial',
             fontSize: 20,
           ),
         ) : null,
