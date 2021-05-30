@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-final _textStyle = const TextStyle(fontSize: 14,);
+final _textStyle = const TextStyle(fontSize: 14, fontFamily: 'Arial');
 
 Widget textFiledForm({
   String text,

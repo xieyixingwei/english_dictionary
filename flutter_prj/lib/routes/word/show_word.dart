@@ -163,7 +163,7 @@ class _ShowWordState extends State<ShowWord> {
       children: [
         SelectableText(
           '美 ${widget.word.voiceUs ?? ''}',
-          style: TextStyle(fontSize: 12, color: Colors.black87, height: 1,),
+          style: TextStyle(fontSize: 12, color: Colors.black87, height: 1, fontFamily: 'Arial'),
         ),
         SizedBox(width: 6,),
         InkWell(
@@ -190,7 +190,7 @@ class _ShowWordState extends State<ShowWord> {
       children: [
         SelectableText(
           '英 ${widget.word.voiceUk}',
-          style: TextStyle(fontSize: 12, color: Colors.black87, height: 1,),
+          style: TextStyle(fontSize: 12, color: Colors.black87, height: 1, fontFamily: 'Arial'),
         ),
         SizedBox(width: 6,),
         InkWell(

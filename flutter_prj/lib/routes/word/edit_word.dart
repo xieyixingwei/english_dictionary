@@ -103,11 +103,10 @@ class _EditWordState extends State<EditWord> {
                       children: widget.word.paraphraseSet.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: //ConstrainedBox(
-                              //child: 
-                              Text('${e.partOfSpeech} ${e.interpret}', overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
-                              //constraints: BoxConstraints(maxWidth:80.0),
-                            //),
+                            child: ConstrainedBox(
+                              child: Text('${e.partOfSpeech} ${e.interpret}', overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
+                              constraints: BoxConstraints(maxWidth: 260.0),
+                            ),
                             onTap: () async {
                               var p = (await Navigator.pushNamed(context,
                                                                 '/edit_paraphrase',
@@ -407,7 +406,7 @@ class _EditWordState extends State<EditWord> {
                     WrapOutline(
                       labelText: '相关图片',
                       children: [
-                        SelectableText(widget.word.image.mptFile?.filename ?? (widget.word.image.url)),
+                        SelectableText(widget.word.image.htmlFile?.name ?? (widget.word.image.url)),
                         //_testImagePath != null ? Image.network(_testImagePath) : Text(''),
                         //_testImage != null ? Image.file(_testImage) : Text(''),
                       ],
@@ -424,21 +423,19 @@ class _EditWordState extends State<EditWord> {
                           for(var f in result.files)
                             print('--- ${f.path} ${f.name} ${f.size}');
                           */
-                          await widget.word.image.pick();
-                          setState(() {});
+                          await widget.word.image.pick(() => setState(() {}));
                         },
                       ),
                     ),
                     WrapOutline(
                       labelText: '相关视频',
                       children: [
-                        SelectableText(widget.word.vedio.mptFile?.filename ?? (widget.word.vedio.url)),
+                        SelectableText(widget.word.vedio.htmlFile?.name ?? (widget.word.vedio.url)),
                       ],
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          await widget.word.vedio.pick();
-                          setState(() {});
+                          await widget.word.vedio.pick(() => setState(() {}));
                         },
                       ),
                     ),

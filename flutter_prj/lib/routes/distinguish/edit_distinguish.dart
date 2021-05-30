@@ -152,26 +152,24 @@ class _EditDistinguishState extends State<EditDistinguish> {
                     WrapOutline(
                       labelText: '相关图片',
                       children: [
-                        SelectableText(widget._distinguish.image.mptFile?.filename ?? (widget._distinguish.image.url)),
+                        SelectableText(widget._distinguish.image.htmlFile?.name ?? (widget._distinguish.image.url)),
                       ],
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          await widget._distinguish.image.pick();
-                          setState(() {});
+                          await widget._distinguish.image.pick(() => setState(() {}));
                         },
                       ),
                     ),
                     WrapOutline(
                       labelText: '相关视频',
                       children: [
-                        SelectableText(widget._distinguish.vedio.mptFile?.filename ?? (widget._distinguish.vedio.url)),
+                        SelectableText(widget._distinguish.vedio.htmlFile?.name ?? (widget._distinguish.vedio.url)),
                       ],
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          await widget._distinguish.vedio.pick();
-                          setState(() {});
+                          await widget._distinguish.vedio.pick(() => setState(() {}));
                         },
                       ),
                     ),

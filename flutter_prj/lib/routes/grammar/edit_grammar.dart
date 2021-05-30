@@ -155,26 +155,24 @@ class _EditGrammarState extends State<EditGrammar> {
                     WrapOutline(
                       labelText: '相关图片',
                       children: [
-                        SelectableText(widget._grammar.image.mptFile?.filename ?? (widget._grammar.image.url)),
+                        SelectableText(widget._grammar.image.htmlFile?.name ?? (widget._grammar.image.url)),
                       ],
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          await widget._grammar.image.pick();
-                          setState(() {});
+                          await widget._grammar.image.pick(() => setState(() {}));
                         },
                       ),
                     ),
                     WrapOutline(
                       labelText: '相关视频',
                       children: [
-                        Text(widget._grammar.vedio.mptFile?.filename ?? (widget._grammar.vedio.url)),
+                        Text(widget._grammar.vedio.htmlFile?.name ?? (widget._grammar.vedio.url)),
                       ],
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          await widget._grammar.vedio.pick();
-                          setState(() {});
+                          await widget._grammar.vedio.pick(() => setState(() {}));
                         },
                       ),
                     ),

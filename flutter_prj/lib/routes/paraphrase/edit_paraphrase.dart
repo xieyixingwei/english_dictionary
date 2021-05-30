@@ -91,7 +91,10 @@ class _EditParaphraseState extends State<EditParaphrase> {
                     children: widget._paraphrase.sentenceSet.map<Widget>((e) =>
                       Tag(
                         label: InkWell(
-                          child: Text('${e.en}', style: TextStyle(color: Colors.blueAccent)),
+                          child: ConstrainedBox(
+                            child: Text('${e.en}', overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.blueAccent)),
+                            constraints: BoxConstraints(maxWidth: 260.0),
+                          ),
                           onTap: () async {
                             var s = (await Navigator.pushNamed(context,
                                                               '/edit_sentence',

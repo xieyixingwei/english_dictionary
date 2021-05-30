@@ -3,6 +3,8 @@
 // JsonSerializer
 // **************************************************************************
 
+import 'package:flutter_prj/common/global.dart';
+
 import 'single_file.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:dio/dio.dart';
@@ -11,6 +13,7 @@ import 'sentence_pattern.dart';
 import 'grammar.dart';
 import 'distinguish.dart';
 import 'package:flutter_prj/common/http.dart';
+import 'dart:html' as html;
 
 
 class WordSerializer {
@@ -142,6 +145,7 @@ class WordSerializer {
     'antonym': antonym == null ? null : antonym.map((e) => e).toList(),
   }..removeWhere((k, v) => v==null);
 
+  /*
   Future<bool> uploadFile() async {
     var jsonObj = {'name': name};
     var formData = FormData.fromMap(jsonObj, ListFormat.multi);
@@ -153,6 +157,32 @@ class WordSerializer {
       if(image.mptFile != null) image.mptFile = null;
       if(vedio.mptFile != null) vedio.mptFile = null;
     }
+    return ret;
+  }*/
+
+  Future<bool> uploadFile() async {
+    bool ret = true;
+    var formData = html.FormData();
+    formData.append('name', name);
+    if(image.htmlFile != null) formData.appendBlob('image', image.htmlFile);
+    if(vedio.htmlFile != null) formData.appendBlob('vedio', vedio.htmlFile);
+
+    if(image.htmlFile != null || vedio.htmlFile != null) {
+      var res = await html.HttpRequest.request(
+        Http.baseUrl + '/api/dictionary/word/$name/',
+        method: 'PUT',
+        sendData: formData,
+        requestHeaders: {"authorization": Global.localStore.token},
+      ).catchError((e) {}, test: (e) {
+        var ev = e as html.ProgressEvent;
+        print('--- error $ev');
+        return true;
+      });
+      if(res.status != 200)
+        print('*** Error: ${res.responseText}');
+    }
+    if(image.htmlFile != null) image.htmlFile = null;
+    if(vedio.htmlFile != null) vedio.htmlFile = null;
     return ret;
   }
 
