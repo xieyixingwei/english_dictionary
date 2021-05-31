@@ -10,6 +10,7 @@ from .views.GrammarView import GrammarView, GrammarTagView, GrammarTypeView
 from .views.DistinguishView import DistinguishView
 from .views.PronunciationView import SoundmarkView
 from .views.TextToVoiceView import TextToVoiceView
+from .views.DialogView import DialogView, DialogTagView
 
 
 urlpatterns = [
@@ -50,4 +51,10 @@ urlpatterns = [
     url(r'^soundmark/(?P<pk>\w+)/$', SoundmarkView.as_view({'put':'update', 'get':'retrieve', 'delete':'destroy'})),
 
     url(r'^text_to_voice/$', TextToVoiceView.as_view()),
+
+    url(r'^dialog/$', DialogView.as_view({'post':'create', 'get':'list'})),
+    url(r'^dialog/(?P<pk>\d+)/$', DialogView.as_view({'put':'update', 'get':'retrieve', 'delete':'destroy'})),
+
+    url(r'^dialog_tag/$', DialogTagView.as_view({'post':'create', 'get':'list'})),
+    url(r'^dialog_tag/(?P<pk>\w+)/$', DialogTagView.as_view({'delete': 'destroy'})),
 ]
