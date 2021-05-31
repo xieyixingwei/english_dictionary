@@ -1,3 +1,6 @@
+export 'dialog.dart';
+export 'dialog_pagination.dart';
+export 'dialog_tag.dart';
 export 'distinguish.dart';
 export 'distinguish_pagination.dart';
 export 'grammar.dart';

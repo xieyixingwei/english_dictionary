@@ -23,6 +23,7 @@ class SentenceSerializer {
   List<num> synonym = [];
   List<num> antonym = [];
   num paraphraseForeign;
+  num dialogForeign;
   List<GrammarSerializer> grammarSet = [];
   bool offstage = true;
 
@@ -71,7 +72,9 @@ class SentenceSerializer {
   SentenceSerializer fromJson(Map<String, dynamic> json) {
     id = json['id'] == null ? id : json['id'] as num;
     en = json['en'] == null ? en : json['en'] as String;
+    enVoice = json['enVoice'] == null ? enVoice : json['enVoice'] as String;
     cn = json['cn'] == null ? cn : json['cn'] as String;
+    cnVoice = json['cnVoice'] == null ? cnVoice : json['cnVoice'] as String;
     type = json['type'] == null ? type : json['type'] as num;
     tag = json['tag'] == null
                 ? tag
@@ -87,6 +90,7 @@ class SentenceSerializer {
                 ? antonym
                 : json['antonym'].map<num>((e) => e as num).toList();
     paraphraseForeign = json['paraphraseForeign'] == null ? paraphraseForeign : json['paraphraseForeign'] as num;
+    dialogForeign = json['dialogForeign'] == null ? dialogForeign : json['dialogForeign'] as num;
     grammarSet = json['grammarSet'] == null
                 ? grammarSet
                 : json['grammarSet'].map<GrammarSerializer>((e) => GrammarSerializer().fromJson(e as Map<String, dynamic>)).toList();
@@ -105,6 +109,7 @@ class SentenceSerializer {
     'synonym': synonym == null ? null : synonym.map((e) => e).toList(),
     'antonym': antonym == null ? null : antonym.map((e) => e).toList(),
     'paraphraseForeign': paraphraseForeign,
+    'dialogForeign': dialogForeign,
   }..removeWhere((k, v) => v==null);
 
 
@@ -122,6 +127,7 @@ class SentenceSerializer {
     synonym = List.from(instance.synonym);
     antonym = List.from(instance.antonym);
     paraphraseForeign = instance.paraphraseForeign;
+    dialogForeign = instance.dialogForeign;
     grammarSet = List.from(instance.grammarSet.map((e) => GrammarSerializer().from(e)).toList());
     offstage = instance.offstage;
     _id = instance._id;

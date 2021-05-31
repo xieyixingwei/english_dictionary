@@ -16,6 +16,7 @@ class Global {
   static List<String> grammarTypeOptions = [];
   static List<String> grammarTagOptions = [];
   static List<String> etymaOptions = [];
+  static List<String> dialogTagOptions = [];
   static const List<String> partOfSpeechOptions = const ['n.', 'adj.', 'adv.', 'v.', 'vt.', 'vi.', 'pron.', 'num.', 'interj.', 'prep.', 'conj.', 'art.'];
   static const List<String> tenseOptions = const ['一般过去时', '一般现在时', '一般将来时', '一般过去将来时',
                                                   '过去进行时', '现在进行时', '将来进行时', '过去将来进行时',
@@ -52,6 +53,9 @@ class Global {
     await etymas.retrieve();
     etymaOptions = etymas.results.map((e) => e.name).toList();
 
+    var dTags = await DialogTagSerializer.list();
+    dialogTagOptions = dTags.map((e) => e.name).toList();
+  
     isLogin = await localStore.user.retrieve();
   }
 

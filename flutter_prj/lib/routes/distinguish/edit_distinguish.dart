@@ -23,6 +23,11 @@ class _EditDistinguishState extends State<EditDistinguish> {
   final GlobalKey _formKey =  GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
             resizeToAvoidBottomInset: true,
@@ -76,8 +81,28 @@ class _EditDistinguishState extends State<EditDistinguish> {
                       onChanged: (v) => widget._distinguish.id = num.parse(v.trim()),
                       //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
-                    WrapOutlineTag(
-                      data: widget._distinguish.wordsForeign,
+                    WrapOutline(
+                      children: widget._distinguish.wordsForeign.map((e) =>
+                        Tag(
+                          label: InkWell(
+                            child: Text('$e', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
+                            onTap: () async {
+                              var w = WordSerializer()..name = e;
+                              await w.retrieve();
+                              var word = (await Navigator.pushNamed(context,
+                                                                    '/edit_word',
+                                                                    arguments: {'title': '编辑单词',
+                                                                                'word': WordSerializer().from(w)})
+                                          ) as WordSerializer;
+                              if(word != null) await word.save();
+                            },
+                          ),
+                          onDeleted: () {
+                            widget._distinguish.wordsForeign.remove(e);
+                            setState(() {});
+                          },
+                        )
+                      ).toList(),
                       labelText: '辨析单词',
                       suffix: TextButton(
                         child: Text('添加',),
@@ -114,7 +139,7 @@ class _EditDistinguishState extends State<EditDistinguish> {
                           ),
                           onDeleted: () {
                             widget._distinguish.sentencePatternForeign.remove(e.id);
-                            widget._distinguish.sentencePatternForeign.remove(e);
+                            widget._distinguish.sentencePatternForeignSet.remove(e);
                             setState(() {});
                           },
                         )
@@ -152,24 +177,26 @@ class _EditDistinguishState extends State<EditDistinguish> {
                     WrapOutline(
                       labelText: '相关图片',
                       children: [
-                        SelectableText(widget._distinguish.image.htmlFile?.name ?? (widget._distinguish.image.url)),
+                        SelectableText(widget._distinguish.image.mptFile?.filename ?? (widget._distinguish.image.url)),
                       ],
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          await widget._distinguish.image.pick(() => setState(() {}));
+                          await widget._distinguish.image.pick();
+                          setState(() {});
                         },
                       ),
                     ),
                     WrapOutline(
                       labelText: '相关视频',
                       children: [
-                        SelectableText(widget._distinguish.vedio.htmlFile?.name ?? (widget._distinguish.vedio.url)),
+                        SelectableText(widget._distinguish.vedio.mptFile?.filename ?? (widget._distinguish.vedio.url)),
                       ],
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          await widget._distinguish.vedio.pick(() => setState(() {}));
+                          await widget._distinguish.vedio.pick();
+                          setState(() {});
                         },
                       ),
                     ),

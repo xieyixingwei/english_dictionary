@@ -1,34 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
-import 'package:flutter_prj/serializers/grammar.dart';
+import 'package:flutter_prj/serializers/index.dart';
+import 'package:flutter_prj/widgets/Tag.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
 import 'package:flutter_prj/widgets/pop_dialog.dart';
 import 'package:flutter_prj/widgets/wrap_custom.dart';
 
 
-class EditGrammar extends StatefulWidget {
-  final String _title;
-  final GrammarSerializer _grammar;
+class EditDialog extends StatefulWidget {
+  EditDialog({Key key, this.title, this.dialog}) : super(key:key);
 
-  EditGrammar({Key key, String title, GrammarSerializer grammar})
-    : _title = title,
-      _grammar = grammar ?? GrammarSerializer(),
-      super(key:key);
+  final String title;
+  final DialogSerializer dialog;
 
   @override
-  _EditGrammarState createState() => _EditGrammarState();
+  _EditDialogState createState() => _EditDialogState();
 }
 
-class _EditGrammarState extends State<EditGrammar> {
+class _EditDialogState extends State<EditDialog> {
   final GlobalKey _formKey =  GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final idctrl = TextEditingController(text: widget._grammar.id.toString());
     return Scaffold(
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
-              title: Text(widget._title),
+              title: Text(widget.title),
               centerTitle: true,
               //automaticallyImplyLeading: false, // 取消返回按钮
               leading: TextButton(
@@ -40,7 +42,7 @@ class _EditGrammarState extends State<EditGrammar> {
                   child: Text('确定', style: TextStyle(color: Colors.white),),
                   onPressed: () {
                     if((_formKey.currentState as FormState).validate()) // 验证各个表单字段是否合法
-                      Navigator.pop(context, widget._grammar);
+                      Navigator.pop(context, widget.dialog);
                   },
                 ),
               ],
@@ -50,15 +52,15 @@ class _EditGrammarState extends State<EditGrammar> {
               child: Form(
                 key: _formKey, //设置globalKey，用于后面获取FormState
                 autovalidateMode: AutovalidateMode.always, //开启自动校验
-                child:ColumnSpace(
+                child: ColumnSpace(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   divider: SizedBox(height: 20,),
                   children: [
                     TextFormField(
                       autofocus: false,
+                      initialValue: widget.dialog.id.toString(),
                       keyboardType: TextInputType.number, // 键盘回车键的样式
                       textInputAction: TextInputAction.next,
-                      controller: idctrl,
                       maxLines: 1,
                       style: TextStyle(fontSize: 14),
                       decoration: InputDecoration(
@@ -69,20 +71,18 @@ class _EditGrammarState extends State<EditGrammar> {
                           icon: Icon(Icons.search),
                           tooltip: '搜索',
                           onPressed: () async {
-                            var g = GrammarSerializer()..id = num.parse(idctrl.text.trim());
-                            bool ret = await g.retrieve();
-                            if(ret) setState(() => widget._grammar.from(g));
+                            bool ret = await widget.dialog.retrieve();
+                            if(ret) setState((){});
                           },
                         ),
                       ),
-                      //onChanged: (v) => null,
+                      onChanged: (v) => widget.dialog.id = num.parse(v.trim()),
                       //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
                     TextFormField(
-                      autofocus: false,
-                      keyboardType: TextInputType.multiline, // 键盘回车键的样式
-                      textInputAction: TextInputAction.next,
-                      controller: TextEditingController(text: widget._grammar.title),
+                      keyboardType: TextInputType.multiline,
+                      textInputAction: TextInputAction.newline,
+                      controller: TextEditingController(text: widget.dialog.title),
                       minLines: 1,
                       maxLines: null,
                       style: TextStyle(fontSize: 14),
@@ -90,33 +90,11 @@ class _EditGrammarState extends State<EditGrammar> {
                         labelText: "标题",
                         border: OutlineInputBorder(),
                       ),
-                      onChanged: (v) => widget._grammar.title = v.trim(),
+                      onChanged: (v) => widget.dialog.title = v.trim(),
                       validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
                     WrapOutlineTag(
-                      data: widget._grammar.type,
-                      labelText: '类型',
-                      suffix: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextButton(
-                            child: Text('添加',),
-                            onPressed: () => popSelectDialog(
-                              context: context,
-                              title: Text('选择语法的类型'),
-                              options: Global.grammarTypeOptions,
-                              close: (v) => setState(() => widget._grammar.type.add(v)),
-                            ),
-                          ),
-                          TextButton(
-                            child: Text('编辑'),
-                            onPressed: () => Navigator.pushNamed(context, '/edit_grammar_type'),
-                          ),
-                        ]
-                      ),
-                    ),
-                    WrapOutlineTag(
-                      data: widget._grammar.tag,
+                      data: widget.dialog.tag,
                       labelText: 'Tag',
                       suffix: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -125,55 +103,69 @@ class _EditGrammarState extends State<EditGrammar> {
                             child: Text('添加',),
                             onPressed: () => popSelectDialog(
                               context: context,
-                              title: Text('选择语法的Tag'),
-                              options: Global.grammarTagOptions,
-                              close: (v) => setState(() => widget._grammar.tag.add(v)),
+                              title: Text('选择Tag'),
+                              options: Global.dialogTagOptions,
+                              close: (v) => setState(() => widget.dialog.tag.add(v)),
                             ),
                           ),
                           TextButton(
                             child: Text('编辑'),
-                            onPressed: () => Navigator.pushNamed(context, '/edit_grammar_tag'),
+                            onPressed: () => Navigator.pushNamed(context, '/edit_dialog_tag'),
                           ),
                         ]
-                      ),
+                      )
                     ),
-                    TextFormField(
-                      autofocus: false,
-                      keyboardType: TextInputType.multiline, // 键盘回车键的样式
-                      textInputAction: TextInputAction.next,
-                      controller: TextEditingController(text: widget._grammar.content),
-                      minLines: 1,
-                      maxLines: null,
-                      style: TextStyle(fontSize: 14),
-                      decoration: InputDecoration(
-                        labelText: "语法(markdown)",
-                        border: OutlineInputBorder(),
-                      ),
-                      onChanged: (v) => widget._grammar.content = v.trim(),
-                      //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
-                    ),
-                    WrapOutline(
-                      labelText: '相关图片',
-                      children: [
-                        SelectableText(widget._grammar.image.mptFile?.filename ?? (widget._grammar.image.url)),
-                      ],
+                    ListOutline(
+                    labelText: '对话例句',
+                    children: widget.dialog.sentenceSet.asMap().map((i, e) =>
+                      MapEntry(i, Tag(
+                        label: InkWell(
+                          child: ConstrainedBox(
+                            child: Text('${e.en}', overflow: TextOverflow.ellipsis, style: TextStyle(color: i % 2 == 0 ? Colors.blueAccent : Colors.blueGrey)),
+                            constraints: BoxConstraints(maxWidth: 230.0),
+                          ),
+                          onTap: () async {
+                            var s = (await Navigator.pushNamed(context,
+                                                              '/edit_sentence',
+                                                              arguments: {'title':'编辑释义的例句',
+                                                              'sentence': SentenceSerializer().from(e)})
+                                    ) as SentenceSerializer;
+                            if(s != null) {
+                              e.from(s);
+                              setState(() {});
+                            }
+                          },
+                        ),
+                        onDeleted: () {
+                          e.delete();
+                          widget.dialog.sentenceSet.remove(e);
+                          setState(() {});
+                        }
+                      ))
+                      ).values.toList(),
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          await widget._grammar.image.pick();
-                          setState(() {});
+                          var s = (await Navigator.pushNamed(context,
+                                                             '/edit_sentence',
+                                                             arguments: {'title':'添加例句'})
+                                  ) as SentenceSerializer;
+                          if(s != null) {
+                            widget.dialog.sentenceSet.add(s);
+                            setState(() {});
+                          }
                         },
                       ),
                     ),
                     WrapOutline(
                       labelText: '相关视频',
                       children: [
-                        Text(widget._grammar.vedio.mptFile?.filename ?? (widget._grammar.vedio.url)),
+                        SelectableText(widget.dialog.vedio.mptFile?.filename ?? (widget.dialog.vedio.url)),
                       ],
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          await widget._grammar.vedio.pick();
+                          await widget.dialog.vedio.pick();
                           setState(() {});
                         },
                       ),

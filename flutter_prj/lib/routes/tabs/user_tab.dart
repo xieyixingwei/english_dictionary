@@ -50,6 +50,11 @@ class UserTab extends StatelessWidget {
       'title': '编辑词义辨析',
       'icon': Icon(Icons.transform),
       'route': '/list_distinguishes'
+    },
+    {
+      'title': '编辑对话',
+      'icon': Icon(Icons.gamepad),
+      'route': '/list_dialog'
     }
   ];
   final statistics = [

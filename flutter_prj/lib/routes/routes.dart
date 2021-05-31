@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/dialog/edit_dialog.dart';
+import 'package:flutter_prj/routes/dialog/list_dialog.dart';
+import 'package:flutter_prj/routes/dialog/practice_dialog.dart';
 import 'package:flutter_prj/routes/distinguish/edit_distinguish.dart';
 import 'package:flutter_prj/routes/distinguish/list_distinguishes.dart';
 import 'package:flutter_prj/routes/distinguish/show_distinguish.dart';
@@ -91,6 +94,17 @@ final _routes = {
 
   '/practice_word': (context, {arguments}) => PracticeWord(title: arguments['title'], words: arguments['words'],),
   '/practice_sentence': (context, {arguments}) => PracticeSentence(title: arguments['title'], sentences: arguments['sentences'],),
+
+  '/list_dialog': (context) => ListDialog(),
+  '/edit_dialog': (context, {arguments}) => EditDialog(title: arguments['title'], dialog: arguments['dialog'],),
+  '/edit_dialog_tag': (context) => EditTags(
+                                        title: Text('编辑对话 Tag',),
+                                        tags: Global.dialogTagOptions,
+                                        add: (String tag) => DialogTagSerializer().create(data:{'name':tag}),
+                                        remove: (String tag) => DialogTagSerializer()..delete(pk:tag),
+                                        ),
+
+  '/practice_dialog': (context, {arguments}) => PracticeDialog(title: arguments['title'], dialog: arguments['dialog'],),
 };
 
 

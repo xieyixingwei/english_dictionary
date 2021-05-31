@@ -1,8 +1,6 @@
 import 'dart:async';
-
 import 'package:audioplayers/audioplayers_web.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_prj/common/http.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
 
@@ -28,25 +26,9 @@ class _PracticeSentenceState extends State<PracticeSentence> {
   final _style2 = TextStyle(color: Colors.black54, fontWeight: FontWeight.normal, fontSize: 17);
   //Timer timer;
 
-  @override
-  void initState() {
-    _sentenceToVoice();
-    super.initState();
-  }
-
-  void _sentenceToVoice() async {
-    await Future.forEach<SentenceSerializer>(widget.sentences, (e) async {
-      var res = await Http().request(HttpType.GET, '/api/dictionary/text_to_voice/', queries:{'id': e.id, 'text': e.en, 'lang': 'en'});
-      e.enVoice = Http.baseUrl + res.data.toString();
-      res = await Http().request(HttpType.GET, '/api/dictionary/text_to_voice/', queries:{'id': e.id, 'text': e.cn, 'lang': 'zh'});
-      e.cnVoice = Http.baseUrl + res.data.toString();
-    });
-  }
-
   void _timerCallback(Timer t) {
     _next();
 
-    
     setState((){});
   }
 
@@ -154,7 +136,8 @@ class _PracticeSentenceState extends State<PracticeSentence> {
             ),
           ),
           onTap: () {
-            _audioPlayer.setUrl(order ? _curSentence.enVoice : _curSentence.cnVoice);
+            if(order == false || _curSentence.enVoice.isEmpty) return;
+            _audioPlayer.setUrl(_curSentence.enVoice);
             _audioPlayer.start(0);
           },
         ),
@@ -169,7 +152,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
       ],
     );
 
-  void _next() async {
+  void _next() {
     if(cycle && (index == widget.sentences.length - 1)) index = 0;
     else if(index < (widget.sentences.length - 1)) index += 1;
   }
@@ -192,7 +175,8 @@ class _PracticeSentenceState extends State<PracticeSentence> {
             ),
           ],
         ),
-        onTap: () async {
+        onTap: () {
+          if(order == true || _curSentence.enVoice.isEmpty) return;
           _audioPlayer.setUrl(order ? _curSentence.cnVoice : _curSentence.enVoice);
           _audioPlayer.start(0); 
         }

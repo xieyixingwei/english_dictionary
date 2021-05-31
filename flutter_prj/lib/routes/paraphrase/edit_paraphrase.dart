@@ -93,7 +93,7 @@ class _EditParaphraseState extends State<EditParaphrase> {
                         label: InkWell(
                           child: ConstrainedBox(
                             child: Text('${e.en}', overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.blueAccent)),
-                            constraints: BoxConstraints(maxWidth: 260.0),
+                            constraints: BoxConstraints(maxWidth: 230.0),
                           ),
                           onTap: () async {
                             var s = (await Navigator.pushNamed(context,

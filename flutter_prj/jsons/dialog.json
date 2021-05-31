@@ -1,0 +1,72 @@
+{
+    "id @primary": "num=null",
+    "title": "",
+    "tag": [""],
+    "vedio": "$SingleFile video",
+    "_sentenceSet": ["$sentence"],
+    "__http__": {
+        "url": "/api/dictionary/dialog/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "update",
+                "url": "$id/"
+            },
+            {
+                "name": "retrieve",
+                "url": "$id/"
+            },
+            {
+                "name": "delete",
+                "url": "$id/"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
+}
+
+{ // 分页查询 句子
+    "__name__": "dialog_pagination",
+    "count": 0,
+    "next": "",
+    "previous": "",
+    "results": ["$dialog"],
+    "__filter__": {
+        "__serializer__": "$dialog",
+        "tag": ["icontains"],
+        "title": ["icontains"]
+    },
+    "__http__": {
+        "url": "/api/dictionary/dialog/",
+        "methods": [
+            {
+                "name": "retrieve",
+                "filter": true
+            }
+        ]
+    }
+}
+
+{   "__name__": "dialog_tag",
+    "name @primary": "",
+    "__http__": {
+        "url": "/api/dictionary/dialog_tag/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "list"
+            },
+            {
+                "name": "delete",
+                "url": "$name/"
+
+            }
+        ]
+    }
+}

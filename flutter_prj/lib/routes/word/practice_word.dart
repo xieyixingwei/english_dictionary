@@ -1,8 +1,6 @@
 import 'dart:async';
-
 import 'package:audioplayers/audioplayers_web.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_prj/common/http.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
 
@@ -206,11 +204,8 @@ class _PracticeWordState extends State<PracticeWord> {
           offstage: s.offstage,
           child: InkWell(
             child: Text(s.en, style: TextStyle(fontSize: 14, color: Colors.black54),),
-            onTap: () async {
-              if(s.enVoice.isEmpty) {
-                var res = await Http().request(HttpType.GET, '/api/dictionary/text_to_voice/', queries:{'id': s.id, 'text': s.en, 'lang': 'en'});
-                s.enVoice = Http.baseUrl + res.data.toString();
-              }
+            onTap: () {
+              if(s.enVoice.isEmpty) return;
               _audioPlayer.setUrl(s.enVoice);
               _audioPlayer.start(0);
             },
