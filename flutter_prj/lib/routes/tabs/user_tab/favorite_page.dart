@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
-import 'package:flutter_prj/widgets/column_space.dart';
-import 'package:flutter_prj/widgets/pagination.dart';
+import 'package:flutter_prj/serializers/index.dart';
 
 
 class FavoritePage extends StatefulWidget {
@@ -36,14 +35,27 @@ class _FavoritePageState extends State<FavoritePage> {
           alignment: WrapAlignment.start,
           runAlignment: WrapAlignment.start,
           children: [
-            _card(context, '收藏的单词', Global.localStore.user.studyWordSet.length, ()=>Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.word})),
-            _card(context, '收藏的词义辨析', Global.localStore.user.studyPlan == null ? 0 : Global.localStore.user.studyPlan.distinguishes.length, ()=>Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.distinguish})),
-            _card(context, '收藏的句子', Global.localStore.user.studySentenceSet.length, ()=>Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.sentence})),
-            _card(context, '收藏的语法', Global.localStore.user.studyGrammarSet.length, ()=>Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.grammar})),
+            _card(context, '收藏的单词', Global.localStore.user.studyWordSet.length,
+              () => Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.word})),
+            _card(context, '收藏的词义辨析', Global.localStore.user.studyPlan == null ? 0 : Global.localStore.user.studyPlan.distinguishes.length,
+              () => Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.distinguish})),
+            _card(context, '收藏的句子', Global.localStore.user.studySentenceSet.length,
+              () async {
+                await Future.forEach<StudySentenceSerializer>(Global.localStore.user.studySentenceSet, (e) async {
+                  if(e.sentenceObj != null) return;
+                  e.sentenceObj = SentenceSerializer()..id = e.sentence;
+                  await e.sentenceObj.retrieve();
+                });
+                Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.sentence});
+              }
+            ),
+            _card(context, '收藏的固定句型', Global.localStore.user.studyGrammarSet.length,
+              ()=>Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.sentencePattern})),
           ],
         ),
       ),
     );
+
 
   Widget _card(BuildContext context, String title, num count, Function onPressed) =>
     Container(
@@ -72,7 +84,7 @@ class _FavoritePageState extends State<FavoritePage> {
     );
 }
 
-enum FavoriteType { word, distinguish, sentence, grammar} 
+enum FavoriteType { word, distinguish, sentence, sentencePattern} 
 
 class ListFavoritePage extends StatefulWidget {
   ListFavoritePage({Key key, this.type}) : super(key:key);
@@ -91,16 +103,16 @@ class _ListFavoritePageState extends State<ListFavoritePage> {
   void initState() {
     switch(widget.type) {
       case FavoriteType.word:
-        _title = '收藏的单词';
+        _title = '单词';
         break;
       case FavoriteType.distinguish:
-        _title = '收藏的词义辨析';
+        _title = '词义辨析';
         break;
       case FavoriteType.sentence:
-        _title = '收藏的句子';
+        _title = '句子';
         break;
-      case FavoriteType.grammar:
-        _title = '收藏的语法';
+      case FavoriteType.sentencePattern:
+        _title = '固定表达';
         break;
     }
     super.initState();
@@ -126,80 +138,95 @@ class _ListFavoritePageState extends State<ListFavoritePage> {
     switch(widget.type) {
       case FavoriteType.word:
         return Global.localStore.user.studyWordSet.map((e) =>
-          rowData(
-            cols: [
-              Text(e.word),
-              TextButton(
-                child: Text('加入学习计划'),
-                onPressed: () => e.inplan = true,
-              ),
-              TextButton(
-                child: Text('取消收藏'),
-                onPressed: () {
-                  e.delete();
-                  Global.localStore.user.studyWordSet.remove(e);
-                  setState((){});
-                },
-              ),
-            ],
+          ListTile(
+            dense: true,
+            contentPadding: EdgeInsets.zero,
+            leading: Text(e.word, style: TextStyle(color: Colors.black87, fontSize: 17)),
+            title: Text('${e.familiarity} 熟悉度', style: TextStyle(color: Colors.black54, fontSize: 12)),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextButton(
+                  child: Text(e.inplan ? '取消学习' : '加入学习', style: TextStyle(color: e.inplan ? Colors.black54 : Colors.blue),),
+                  onPressed: () async {
+                    e.inplan = !e.inplan;
+                    await e.save();
+                    Global.saveLocalStore();
+                    setState(() {});
+                  }
+                ),
+                SizedBox(width: 10,),
+                TextButton(
+                  child: Text('取消收藏'),
+                  onPressed: () async {
+                    var ret = await e.delete();
+                    if(ret) {
+                      Global.localStore.user.studyWordSet.remove(e);
+                      Global.saveLocalStore();
+                      setState(() {});
+                    }
+                  },
+                ),
+              ],
+            )
           )
         ).toList();
       case FavoriteType.distinguish:
         return Global.localStore.user.studyPlan.distinguishes.map((e) =>
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text('$e'),
-              TextButton(
-                child: Text('取消收藏'),
-                onPressed: () {
-                  Global.localStore.user.studyPlan.distinguishes.remove(e);
-                  setState((){});
-                },
-              ),
-            ],
+          ListTile(
+            dense: true,
+            contentPadding: EdgeInsets.zero,
+            leading: Text(e.toString(), style: TextStyle(color: Colors.black87, fontSize: 17)),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextButton(
+                  child: Text('取消收藏'),
+                  onPressed: () async {
+                      Global.localStore.user.studyPlan.distinguishes.remove(e);
+                      await Global.localStore.user.studyPlan.save();
+                      Global.saveLocalStore();
+                      setState(() {});
+                  },
+                ),
+              ],
+            )
           )
         ).toList();
       case FavoriteType.sentence:
         return Global.localStore.user.studySentenceSet.map((e) =>
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text('${e.sentence}'),
-              TextButton(
-                child: Text('加入学习计划'),
-                onPressed: () => e.inplan = true,
-              ),
-              TextButton(
-                child: Text('取消收藏'),
-                onPressed: () {
-                  e.delete();
-                  Global.localStore.user.studySentenceSet.remove(e);
-                  setState((){});
-                },
-              ),
-            ],
-          )
-        ).toList();
-      case FavoriteType.grammar:
-        return Global.localStore.user.studyGrammarSet.map((e) =>
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text('${e.grammar}'),
-              TextButton(
-                child: Text('加入学习计划'),
-                onPressed: () => e.inplan = true,
-              ),
-              TextButton(
-                child: Text('取消收藏'),
-                onPressed: () {
-                  e.delete();
-                  Global.localStore.user.studyGrammarSet.remove(e);
-                  setState((){});
-                },
-              ),
-            ],
+         ListTile(
+            dense: true,
+            contentPadding: EdgeInsets.zero,
+            leading: Text(e.id.toString()),
+            title: Text(e.sentenceObj.en),
+            subtitle: Text(e.sentenceObj.cn),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextButton(
+                  child: Text(e.inplan ? '取消学习' : '加入学习', style: TextStyle(color: e.inplan ? Colors.black54 : Colors.blueAccent),),
+                  onPressed: () async {
+                    e.inplan = !e.inplan;
+                    await e.save();
+                    Global.saveLocalStore();
+                    setState(() {});
+                  }
+                ),
+                SizedBox(width: 10,),
+                TextButton(
+                  child: Text('取消收藏'),
+                  onPressed: () async {
+                    var ret = await e.delete();
+                    if(ret) {
+                      Global.localStore.user.studySentenceSet.remove(e);
+                      Global.saveLocalStore();
+                      setState(() {});
+                    }
+                  },
+                ),
+              ],
+            )
           )
         ).toList();
     }

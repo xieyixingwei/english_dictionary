@@ -3,6 +3,7 @@
 // JsonSerializer
 // **************************************************************************
 
+import 'word.dart';
 import 'package:flutter_prj/common/http.dart';
 
 
@@ -20,6 +21,7 @@ class StudyWordSerializer {
   bool isFavorite = false;
   String comments = '';
   num repeats = 0;
+  WordSerializer wordObj;
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/study/word/', data:data ?? toJson(), queries:queries, cache:cache);
@@ -41,7 +43,7 @@ class StudyWordSerializer {
     if(pk != null) id = pk;
     var res = await Http().request(HttpType.DELETE, '/api/study/word/$id/');
     /*
-    
+    if(wordObj != null){wordObj.delete();}
     */
     return res != null ? res.statusCode == 204 : false;
   }
@@ -103,6 +105,7 @@ class StudyWordSerializer {
     isFavorite = instance.isFavorite;
     comments = instance.comments;
     repeats = instance.repeats;
+    wordObj = WordSerializer().from(instance.wordObj);
     _id = instance._id;
     return this;
   }

@@ -3,6 +3,7 @@
 // JsonSerializer
 // **************************************************************************
 
+import 'sentence.dart';
 import 'package:flutter_prj/common/http.dart';
 
 
@@ -21,6 +22,7 @@ class StudySentenceSerializer {
   String comments = '';
   num repeats = 0;
   List<String> newWords = [];
+  SentenceSerializer sentenceObj;
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/study/sentence/', data:data ?? toJson(), queries:queries, cache:cache);
@@ -42,7 +44,7 @@ class StudySentenceSerializer {
     if(pk != null) id = pk;
     var res = await Http().request(HttpType.DELETE, '/api/study/sentence/$id/');
     /*
-    
+    if(sentenceObj != null){sentenceObj.delete();}
     */
     return res != null ? res.statusCode == 204 : false;
   }
@@ -57,6 +59,9 @@ class StudySentenceSerializer {
       await create(data:data, queries:queries, cache:cache) :
       await update(data:data, queries:queries, cache:cache);
 
+    if(res) {
+      if(sentenceObj != null){ await sentenceObj.save();}
+    }
     
     return res;
   }
@@ -109,6 +114,7 @@ class StudySentenceSerializer {
     comments = instance.comments;
     repeats = instance.repeats;
     newWords = List.from(instance.newWords);
+    sentenceObj = SentenceSerializer().from(instance.sentenceObj);
     _id = instance._id;
     return this;
   }

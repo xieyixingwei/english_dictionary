@@ -92,7 +92,7 @@ final _routes = {
   '/show_grammar': (context, {arguments}) => ShowGrammarPage(title: arguments['title'], grammar: arguments['grammar'],),
   '/show_distinguish': (context, {arguments}) => ShowDistinguishPage(title: arguments['title'], distinguish: arguments['distinguish'],),
 
-  '/practice_word': (context, {arguments}) => PracticeWord(title: arguments['title'], words: arguments['words'],),
+  '/practice_word': (context, {arguments}) => PracticeWord(title: arguments['title'], studyWords: arguments['studyWords'],),
   '/practice_sentence': (context, {arguments}) => PracticeSentence(title: arguments['title'], sentences: arguments['sentences'],),
 
   '/list_dialog': (context) => ListDialog(),

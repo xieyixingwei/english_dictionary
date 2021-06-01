@@ -6,10 +6,10 @@ import 'package:flutter_prj/widgets/column_space.dart';
 
 
 class PracticeWord extends StatefulWidget {
-  PracticeWord({Key key, this.title, this.words}) : super(key: key);
+  PracticeWord({Key key, this.title, this.studyWords}) : super(key: key);
 
   final Widget title;
-  final List<WordSerializer> words;
+  final List<StudyWordSerializer> studyWords;
 
   @override
   _PracticeWordState createState() => _PracticeWordState();
@@ -27,7 +27,7 @@ class _PracticeWordState extends State<PracticeWord> {
     _next();
 
     if(_curWord.audioUsMan == null) return; _audioPlayer.setUrl(_curWord.audioUsMan); _audioPlayer.start(0);
-    if(cycle == false && (index == widget.words.length - 1)) {timer.cancel(); auto = false;}
+    if(cycle == false && (index == widget.studyWords.length - 1)) {timer.cancel(); auto = false;}
     setState((){});
   }
 
@@ -44,7 +44,7 @@ class _PracticeWordState extends State<PracticeWord> {
         backgroundColor: Color.fromRGBO(250, 250, 250, 1),
         titleSpacing: 3,
         title: Text(
-          '${index+1}/${widget.words.length}  |  ${_preWord.name}',
+          '${index+1}/${widget.studyWords.length}  |  ${_preWord.name}',
           style: TextStyle(
             fontSize: 14,
             color: Colors.black45
@@ -78,14 +78,6 @@ class _PracticeWordState extends State<PracticeWord> {
                 onChanged: (v) {
                   if(v) {
                     timer = Timer.periodic(Duration(seconds: 3), _timerCallback);
-                    _audioPlayer.setVolume(0);
-                    widget.words.forEach((e) {
-                      if(e.audioUsMan != null && e.audioUsMan.isNotEmpty) {
-                        _audioPlayer.setUrl(e.audioUsMan);
-                        _audioPlayer.start(0);
-                      }
-                    });
-                    _audioPlayer.setVolume(0.8);
                     if(_curWord.audioUsMan == null || _curWord.audioUsMan.isEmpty) return;
                     _audioPlayer.setUrl(_curWord.audioUsMan);
                     _audioPlayer.start(0);
@@ -101,13 +93,52 @@ class _PracticeWordState extends State<PracticeWord> {
       ),
       body: Center(
         child: Container(
-          margin: EdgeInsets.fromLTRB(10, 100, 10, 30),
+          margin: EdgeInsets.fromLTRB(10, 50, 10, 30),
           decoration: BoxDecoration(
             //border: BoxBorde()
           ),
           child: ColumnSpace(
             divider: SizedBox(height: 20,),
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  PopupMenuButton<String> (
+                    padding: EdgeInsets.all(5), // 菜单项的内边距
+                    offset: Offset(0, 0),       // 控制菜单弹出的位置()
+                    initialValue: _curStudyWord.familiarity.toString(),
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '${_curStudyWord.familiarity}',
+                            style: TextStyle(color: Colors.blueAccent, fontSize: 17)
+                          ),
+                          TextSpan(
+                            text: ' 熟悉度',
+                            style: TextStyle(color: Colors.black45, fontSize: 14)
+                          ),
+                        ]
+                      )
+                    ),
+                    itemBuilder: (context) =>
+                      ['0', '1', '2', '3', '4', '5'].map((String e) =>
+                        PopupMenuItem<String>(
+                          value: e,
+                          textStyle: const TextStyle(fontWeight: FontWeight.w600), // 文本样式
+                          child: Text(e, style: const TextStyle(color: Colors.blue) ),    // 子控件
+                        )
+                      ).toList(),
+                    onSelected: (v) async {
+                      _curStudyWord.familiarity = num.parse(v);
+                      await _curStudyWord.save();
+                      setState(() {});
+                    }
+                  ),
+                  SizedBox(width: 100,),
+                ],
+              ),
+              SizedBox(height: 20,),
               _word(context),
               _sentences,
               auto ? null : _goto,
@@ -130,7 +161,10 @@ class _PracticeWordState extends State<PracticeWord> {
               fontSize: 28,
             ),
           ),
-          onTap: () async {_audioPlayer.setUrl(_curWord.audioUsMan); _audioPlayer.start(0);},
+          onTap: () async {
+            _audioPlayer.setUrl(_curWord.audioUsMan);
+            _audioPlayer.start(0);
+          },
           onDoubleTap: () async {
             if(timer != null && timer.isActive) timer.cancel();
             await Navigator.pushNamed(context, '/show_word', arguments: {'title': '', 'word': _curWord});
@@ -147,25 +181,35 @@ class _PracticeWordState extends State<PracticeWord> {
             fontSize: 20,
           ),
         ) : null,
+        _curWord.shorthand.isNotEmpty ?
+        Text(
+          _curWord.shorthand,
+          style: TextStyle(
+            color: Colors.black87,
+            fontWeight: FontWeight.normal,
+            fontSize: 15,
+          ),
+        ) : null,
       ],
     );
 
   void _next() {
-    if(cycle && (index == widget.words.length - 1)) index = 0;
-    else if(index < (widget.words.length - 1)) index += 1;
+    if(cycle && (index == widget.studyWords.length - 1)) index = 0;
+    else if(index < (widget.studyWords.length - 1)) index += 1;
   }
 
   void _previous() {
-    if(cycle && index == 0) index = widget.words.length - 1;
+    if(cycle && index == 0) index = widget.studyWords.length - 1;
     else if(index > 0) index -= 1;
   }
-  WordSerializer get _curWord => widget.words[index];
+  WordSerializer get _curWord => widget.studyWords[index].wordObj;
+  StudyWordSerializer get _curStudyWord => widget.studyWords[index];
   WordSerializer get _preWord {
     num preIndex = index;
-    if(cycle && index == 0) preIndex = widget.words.length - 1;
+    if(cycle && index == 0) preIndex = widget.studyWords.length - 1;
     else if(index > 0) preIndex = index - 1;
     else preIndex = 0;
-    return  widget.words[preIndex];
+    return  widget.studyWords[preIndex].wordObj;
   }
 
   Widget get _sentences =>

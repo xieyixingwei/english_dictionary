@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
-import 'package:flutter_prj/serializers/index.dart';
-import 'package:flutter_prj/serializers/word_pagination.dart';
 
 
 class WordPracticePage extends StatefulWidget {
@@ -13,7 +11,6 @@ class WordPracticePage extends StatefulWidget {
 
 
 class _WordPracticePageState extends State<WordPracticePage> {
-  WordPaginationSerializer _words = WordPaginationSerializer();
 
   @override
   Widget build(BuildContext context) =>
@@ -30,36 +27,25 @@ class _WordPracticePageState extends State<WordPracticePage> {
             runSpacing: 10,
             alignment: WrapAlignment.center,
             runAlignment: WrapAlignment.center,
-            children: Global .wordTagOptions.map((e) =>
-              _card(context, e, () async {
-                _words.filter.tag__icontains = e;
-                bool ret = await _words.retrieve(queries:{'page_size':50, 'page_index':1});
-                if(ret && _words.results.isNotEmpty)
-                  Navigator.pushNamed(context, '/practice_word', arguments: {'title': null, 'words': _words.results});
-              })
-            ).toList() + [
-              _card(context, '收藏的单词', () async {
-                List<WordSerializer> words = [];
-                await Future.forEach<StudyWordSerializer>(Global.localStore.user.studyWordSet, (e) async {
-                    WordSerializer word = WordSerializer()..name = e.word;
-                    bool ret = await word.retrieve();
-                    if(ret) words.add(word);
-                });
-                if(words.isNotEmpty)
-                  Navigator.pushNamed(context, '/practice_word', arguments: {'title': null, 'words': words});
-              })
-            ],
+            children: Global.wordTagOptions.map((tag) {
+              var studyWords = Global.localStore.user.studyWordSet.where((e) => e.inplan && e.wordObj.tag.contains(tag)).toList();
+              studyWords.sort((a, b) => a.familiarity.compareTo(b.familiarity));
+              return _card(context, tag, studyWords.length, () {
+                if(studyWords.isEmpty) return;
+                  Navigator.pushNamed(context, '/practice_word', arguments: {'title': null, 'studyWords': studyWords});
+              });
+            }).toList()
           ),
         ),
       ),
     );
 
-  Widget _card(BuildContext context, String title, Function onPressed) =>
+  Widget _card(BuildContext context, String title, num count, Function onPressed) =>
     Container(
       padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
       alignment: Alignment.center,
-      height: 160,
-      width: 160,
+      height: 120,
+      width: 120,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -68,9 +54,17 @@ class _WordPracticePageState extends State<WordPracticePage> {
           BoxShadow(color: Colors.black26, offset: Offset(1.0, 1.0)), BoxShadow(color: Colors.black26)
         ],*/
       ),
-      child: InkWell(
-        child: Text(title, style: TextStyle(fontSize: 17),),
-        onTap: onPressed,
+      child: Center(
+        child: InkWell(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(count.toString(), style: TextStyle(fontSize: 17),),
+              Text(title, style: TextStyle(fontSize: 17),),
+            ]
+          ),
+          onTap: onPressed,
+        ),
       ),
     );
 }

@@ -46,6 +46,7 @@ class Member {
   bool unFromJson = false;
   bool unToJson = false;
   bool isFileType =false;
+  bool unSave = false;
 
   Member(String key, dynamic value, this.fatherSerializer, this.serializeTool, {JsonType jsonType=JsonType.Map}) {
     this.jsonType = jsonType;
@@ -69,6 +70,7 @@ class Member {
 
     unToJson = key.trim().startsWith('_');   // the member is not in toJson
     unFromJson = key.trim().startsWith('__'); // the member is not in fromJson
+    unSave = key.trim().startsWith('___'); // don't save in father serializer
     name = _trim(key);
   }
 
@@ -180,6 +182,7 @@ class Member {
     if(isForeign) return null;
     if(typeSerializer.httpMethodsObj == null) return null;
     if(!typeSerializer.httpMethodsObj.hasSave) return null;
+    if(unSave) return null;
 
     membersForeignToMeOfTypeSerializer = typeSerializer.members.where((e) => e.isForeign ? e.serializerJsonName == fatherSerializer.jsonName : false).toList();
     List<String>eForeignNames = membersForeignToMeOfTypeSerializer.map((e) => e.name).toList();

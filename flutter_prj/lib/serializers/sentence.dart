@@ -4,6 +4,7 @@
 // **************************************************************************
 
 import 'grammar.dart';
+import 'sentence.dart';
 import 'package:flutter_prj/common/http.dart';
 
 
@@ -26,6 +27,7 @@ class SentenceSerializer {
   num dialogForeign;
   List<GrammarSerializer> grammarSet = [];
   bool offstage = true;
+  List<SentenceSerializer> synonymObjes = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/dictionary/sentence/', data:data ?? toJson(), queries:queries, cache:cache);
@@ -53,6 +55,7 @@ class SentenceSerializer {
     var res = await Http().request(HttpType.DELETE, '/api/dictionary/sentence/$id/');
     /*
     if(grammarSet != null){grammarSet.forEach((e){e.delete();});}
+    if(synonymObjes != null){synonymObjes.forEach((e){e.delete();});}
     */
     return res != null ? res.statusCode == 204 : false;
   }
@@ -130,6 +133,7 @@ class SentenceSerializer {
     dialogForeign = instance.dialogForeign;
     grammarSet = List.from(instance.grammarSet.map((e) => GrammarSerializer().from(e)).toList());
     offstage = instance.offstage;
+    synonymObjes = List.from(instance.synonymObjes.map((e) => SentenceSerializer().from(e)).toList());
     _id = instance._id;
     return this;
   }

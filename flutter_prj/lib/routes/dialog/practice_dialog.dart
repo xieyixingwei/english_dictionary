@@ -21,7 +21,6 @@ class _PracticeDialogState extends State<PracticeDialog> {
   List<SentenceSerializer> sentences = [];
   WrappedPlayer _audioPlayer = WrappedPlayer();
   final _style = TextStyle(fontSize: 14, color: Colors.black45);
-  final _style2 = TextStyle(color: Colors.black54, fontWeight: FontWeight.normal, fontSize: 17);
 
 
   @override
@@ -153,29 +152,56 @@ class _PracticeDialogState extends State<PracticeDialog> {
                 fontSize: 14,
               ),
             ),
-            onTap: () {
+            onTap: () async {
               s.offstage = !s.offstage;
+              if(s.synonym.isNotEmpty && s.synonymObjes.isEmpty) {
+                await Future.forEach<num>(s.synonym, (id) async {
+                  var ss = SentenceSerializer()..id = id;
+                  var ret = await ss.retrieve();
+                  if(ret) s.synonymObjes.add(ss);
+                });
+              }
               setState(() {});
             },
           ),
           Offstage(
             offstage: s.offstage,
-            child: InkWell(
-              child: Text(
-                s.en,
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 17,
+            child: Column(
+              crossAxisAlignment: reverse ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+              children: [
+                InkWell(
+                  child: Text(
+                    s.en,
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 17,
+                    ),
+                  ),
+                  onTap: () {
+                    if(s.enVoice.isEmpty) return;
+                    _audioPlayer.setUrl(s.enVoice);
+                    _audioPlayer.start(0);
+                  },
                 ),
-              ),
-              onTap: () {
-                if(s.enVoice.isEmpty) return;
-                _audioPlayer.setUrl(s.enVoice);
-                _audioPlayer.start(0);
-              },
+              ] + s.synonymObjes.map((se) =>
+                InkWell(
+                  child: Text(
+                    se.en,
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 17,
+                    ),
+                  ),
+                  onTap: () {
+                    if(se.enVoice.isEmpty) return;
+                    _audioPlayer.setUrl(se.enVoice);
+                    _audioPlayer.start(0);
+                  },
+                )
+              ).toList()
             ),
           ),
-      ],
+        ],
       )
     );
 

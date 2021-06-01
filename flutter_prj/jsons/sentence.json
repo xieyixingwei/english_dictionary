@@ -14,6 +14,7 @@
     "dialogForeign @foreign": "$dialog",
     "_grammarSet": ["$grammar"], //models.JSONField() # 语法 [id1,id2,id3]
     "__offstage": true,
+    "___synonymObjes": ["$sentence"],
     "__http__": {
         "url": "/api/dictionary/sentence/",
         "methods": [

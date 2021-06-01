@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/tabs/user_tab/user_tab.dart';
 import 'routes/tabs/discover.dart';
 import 'routes/tabs/home.dart';
 import 'routes/tabs/practice/practice.dart';
-import 'routes/tabs/user_tab.dart';
 
 
 class DictionaryApp extends StatefulWidget {
@@ -59,10 +60,10 @@ class _DictionaryApp extends State<DictionaryApp> {
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
         onTap: (int index) {
-          setState(() {
-            widget._currentIndex = index;
-          });
+          widget._currentIndex = index;
+          setState(() {});
         },
+
         items: _items,
       ),
     );

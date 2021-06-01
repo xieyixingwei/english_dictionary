@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/routes/tabs/practice/sentence_practice.dart';
 import 'package:flutter_prj/routes/tabs/practice/word_practice.dart';
+import 'package:flutter_prj/serializers/index.dart';
 
 
 class TabPractice extends StatefulWidget {
@@ -29,11 +31,18 @@ class _TabPractice extends State<TabPractice> {
             alignment: WrapAlignment.spaceAround,
             runAlignment: WrapAlignment.spaceAround,
             children: [
-              _card(context, '单词', ()=>Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => WordPracticePage(),
-                    )
-                  )),
+              _card(context, '单词', () async {
+                await Future.forEach<StudyWordSerializer>(Global.localStore.user.studyWordSet, (e) async {
+                  if(e.wordObj != null) return;
+                  e.wordObj = WordSerializer()..name = e.word;
+                  await e.wordObj.retrieve();
+                });
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => WordPracticePage(),
+                  )
+                );
+              }),
               _card(context, '句子', ()=>Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => SentencePracticePage(),

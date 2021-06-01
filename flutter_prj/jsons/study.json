@@ -84,6 +84,7 @@
     "comments": "",
     "repeats": 0,
     "newWords": [""],
+    "__sentenceObj": "$sentence=null",
     "__http__": {
         "url": "/api/study/sentence/",
         "methods": [
@@ -121,6 +122,7 @@
     "isFavorite": false,
     "comments": "",
     "repeats": 0,
+    "___wordObj": "$word=null",
     "__http__": {
         "url": "/api/study/word/",
         "methods": [
