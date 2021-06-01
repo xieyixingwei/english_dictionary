@@ -12,7 +12,7 @@ class StudyWordSerializer(serializers.ModelSerializer):
 
 class StudyWordView(ModelViewSetPermissionSerializerMap):
     """
-    学习计划 视图
+    单词学习计划 视图
     """
     queryset = StudyWordTable.objects.all()
     serializer_class = StudyWordSerializer
