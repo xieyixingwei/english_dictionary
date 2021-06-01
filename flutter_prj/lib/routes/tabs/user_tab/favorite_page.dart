@@ -49,7 +49,7 @@ class _FavoritePageState extends State<FavoritePage> {
                 Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.sentence});
               }
             ),
-            _card(context, '收藏的固定句型', Global.localStore.user.studyGrammarSet.length,
+            _card(context, '收藏的固定表达', Global.localStore.user.studyGrammarSet.length,
               ()=>Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.sentencePattern})),
           ],
         ),
@@ -103,16 +103,16 @@ class _ListFavoritePageState extends State<ListFavoritePage> {
   void initState() {
     switch(widget.type) {
       case FavoriteType.word:
-        _title = '单词';
+        _title = '收藏的单词';
         break;
       case FavoriteType.distinguish:
-        _title = '词义辨析';
+        _title = '收藏的词义辨析';
         break;
       case FavoriteType.sentence:
-        _title = '句子';
+        _title = '收藏的句子';
         break;
       case FavoriteType.sentencePattern:
-        _title = '固定表达';
+        _title = '收藏的固定表达';
         break;
     }
     super.initState();
@@ -141,7 +141,21 @@ class _ListFavoritePageState extends State<ListFavoritePage> {
           ListTile(
             dense: true,
             contentPadding: EdgeInsets.zero,
-            leading: Text(e.word, style: TextStyle(color: Colors.black87, fontSize: 17)),
+            leading: InkWell(
+              child: Text(e.word, style: TextStyle(color: Colors.black87, fontSize: 17)),
+              onTap: () async {
+                if(e.wordObj == null) {
+                  e.wordObj = WordSerializer()..name = e.word;
+                  await e.wordObj.retrieve();
+                }
+                var word = (await Navigator.pushNamed(
+                  context, '/edit_word',
+                  arguments: {'title':'编辑单词','word':WordSerializer().from(e.wordObj)})
+                ) as WordSerializer;
+                if(word != null) await e.wordObj.from(word).save();
+                setState(() {});
+              },
+            ),
             title: Text('${e.familiarity} 熟悉度', style: TextStyle(color: Colors.black54, fontSize: 12)),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -229,6 +243,8 @@ class _ListFavoritePageState extends State<ListFavoritePage> {
             )
           )
         ).toList();
+      case FavoriteType.sentencePattern:
+        return null;
     }
   }
 }

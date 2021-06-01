@@ -37,18 +37,27 @@ class _TabPractice extends State<TabPractice> {
                   e.wordObj = WordSerializer()..name = e.word;
                   await e.wordObj.retrieve();
                 });
+                if(Global.wordTagOptions.isEmpty) return;
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => WordPracticePage(),
                   )
                 );
               }),
-              _card(context, '句子', ()=>Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => SentencePracticePage(),
-                    )
-                  )),
-              _card(context, '语法', (){}),
+              _card(context, '句子', () async {
+                await Future.forEach<StudySentenceSerializer>(Global.localStore.user.studySentenceSet, (e) async {
+                  if(e.sentenceObj != null) return;
+                  e.sentenceObj = SentenceSerializer()..id = e.sentence;
+                  await e.sentenceObj.retrieve();
+                });
+                if(Global.sentenceTagOptions.isEmpty) return;
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SentencePracticePage(),
+                  )
+                );
+              }),
+              _card(context, '固定表达', (){}),
               _card(context, '词义辨析', (){}),
             ],
           ),

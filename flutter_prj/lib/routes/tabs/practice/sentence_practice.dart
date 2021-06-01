@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
-import 'package:flutter_prj/serializers/index.dart';
 
 
 class SentencePracticePage extends StatefulWidget {
@@ -12,7 +11,6 @@ class SentencePracticePage extends StatefulWidget {
 
 
 class _SentencePracticePageState extends State<SentencePracticePage> {
-  SentencePaginationSerializer _sentences = SentencePaginationSerializer();
 
   @override
   Widget build(BuildContext context) =>
@@ -29,36 +27,25 @@ class _SentencePracticePageState extends State<SentencePracticePage> {
             runSpacing: 10,
             alignment: WrapAlignment.start,
             runAlignment: WrapAlignment.start,
-            children: Global.sentenceTagOptions.map((e) =>
-              _card(context, e, () async {
-                _sentences.filter.tag__icontains = e;
-                bool ret = await _sentences.retrieve(queries:{'page_size':50, 'page_index':1});
-                if(ret && _sentences.results.isNotEmpty)
-                  Navigator.pushNamed(context, '/practice_sentence', arguments: {'title': null, 'sentences': _sentences.results});
-              })
-            ).toList() + [
-              _card(context, '收藏的句子', () async {
-                List<SentenceSerializer> sentences = [];
-                await Future.forEach<StudySentenceSerializer>(Global.localStore.user.studySentenceSet, (e) async {
-                    SentenceSerializer ste = SentenceSerializer()..id = e.sentence;
-                    bool ret = await ste.retrieve();
-                    if(ret) sentences.add(ste);
-                });
-                if(sentences.isNotEmpty)
-                  Navigator.pushNamed(context, '/practice_sentence', arguments: {'title': null, 'sentences': sentences});
-              })
-            ],
+            children: Global.sentenceTagOptions.map((tag) {
+              var studySentences = Global.localStore.user.studySentenceSet.where((e) => e.inplan && e.familiarity < 5 && e.sentenceObj.tag.contains(tag)).toList();
+              studySentences.sort((a, b) => a.familiarity.compareTo(b.familiarity));
+              return _card(context, tag, studySentences.length, () {
+                if(studySentences.isEmpty) return;
+                Navigator.pushNamed(context, '/practice_sentence', arguments: {'title': null, 'sentences': studySentences});
+              });
+            }).toList(),
           ),
         ),
       ),
     );
 
-  Widget _card(BuildContext context, String title, Function onPressed) =>
+  Widget _card(BuildContext context, String title, num count, Function onPressed) =>
     Container(
       padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
       alignment: Alignment.center,
-      height: 160,
-      width: 160,
+      height: 120,
+      width: 120,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -67,9 +54,17 @@ class _SentencePracticePageState extends State<SentencePracticePage> {
           BoxShadow(color: Colors.black26, offset: Offset(1.0, 1.0)), BoxShadow(color: Colors.black26)
         ],*/
       ),
-      child: InkWell(
-        child: Text(title, style: TextStyle(fontSize: 17),),
-        onTap: onPressed,
+      child: Center(
+        child: InkWell(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(count.toString(), style: TextStyle(fontSize: 17),),
+              Text(title, style: TextStyle(fontSize: 17),),
+            ]
+          ),
+          onTap: onPressed,
+        ),
       ),
     );
 }
