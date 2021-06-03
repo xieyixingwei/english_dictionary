@@ -37,7 +37,7 @@ class _ListDialogState extends State<ListDialog> {
         title: Text('编辑对话'),
         centerTitle: true,
       ),
-      body: Container(
+      body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(6, 20, 6, 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
