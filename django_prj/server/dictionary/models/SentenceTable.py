@@ -1,5 +1,7 @@
 from django.db import models
 import hashlib
+import re
+import os
 
 from server.models  import JSONFieldUtf8
 from dictionary.models.ParaphraseTable import ParaphraseTable
@@ -7,7 +9,6 @@ from dictionary.models.DialogTable import DialogTable
 from django.core.files.base import ContentFile
 from ..voice_text import text_to_mp3fp
 from server.settings import MEDIA_ROOT
-import re
 
 
 class SentenceTable(models.Model):
@@ -34,26 +35,36 @@ class SentenceTable(models.Model):
         # when create, id is None
         if self.id == None :
             super().save(*args, **kwargs)
-            return
-
-        tempFile = MEDIA_ROOT / 'sentence_voice/temp.mp3'
-        enHash = hashlib.md5(self.en.encode('utf-8')).hexdigest()[0:6]
-        if self.enVoice.name == None\
-            or self.enVoice.name == ''\
-            or enHash != self.hashFromName(self.enVoice.name):
-            fname = '%d_en_%s.mp3' % (self.id, enHash)
-            with open(tempFile, 'wb') as fp:
-                text_to_mp3fp(text=self.en, fp=fp, lang='en')
-            with open(tempFile, 'rb') as fp:
-                fileContent = ContentFile(fp.read())
-                pathName = self.enVoice.field.upload_to + fname
-                self.enVoice.name = pathName
-                self.enVoice.storage.save(pathName, fileContent)
+        self._fill_en_voice()
+        kwargs['force_insert'] = False
         super().save(*args, **kwargs)
 
-    def hashFromName(self, name:str):
-        _hash = re.findall(r"^.*_en_(\w+)\.mp3", name)
-        return _hash[0]
+    def _fill_en_voice(self):
+        """
+        自动填充英文例句的音频
+        """
+        def pickup_hash_from_filename(filename):
+            if filename == None:
+                return None
+            matches = re.findall(r"^.*_en_(\w+)\.mp3", filename)
+            return matches[0] if len(matches) > 0 else None
+
+        curHash = hashlib.md5(self.en.encode('utf-8')).hexdigest()[0:6]
+        oldHash = pickup_hash_from_filename(self.enVoice.name)
+        if curHash == oldHash and os.path.exists(MEDIA_ROOT / self.enVoice.name):
+            return
+
+        if self.enVoice.name != None and os.path.exists(MEDIA_ROOT / self.enVoice.name):
+            os.remove(MEDIA_ROOT / self.enVoice.name)
+        tempFile = MEDIA_ROOT / 'sentence_voice/temp.mp3'
+        fname = '%d_en_%s.mp3' % (self.id, curHash)
+        with open(tempFile, 'wb') as fp:
+            text_to_mp3fp(text=self.en, fp=fp, lang='en')
+        with open(tempFile, 'rb') as fp:
+            fileContent = ContentFile(fp.read())
+            pathName = self.enVoice.field.upload_to + fname
+            self.enVoice.name = pathName
+            self.enVoice.storage.save(pathName, fileContent)
 
 class SentenceTagTable(models.Model):
     """

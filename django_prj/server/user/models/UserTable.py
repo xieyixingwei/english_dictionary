@@ -1,5 +1,6 @@
 from django.db import models
 from server.models  import JSONFieldUtf8
+from server.settings import ROOT_USERS
 
 
 class UserTable(models.Model):
@@ -23,3 +24,14 @@ class UserTable(models.Model):
 
     def _gender(self) -> str:
         return '男' if self.gender else '女'
+
+    def save(self, *args, **kwargs):
+        self._set_isAdmin(kwargs['force_insert'])
+        super().save(*args, **kwargs)
+
+    def _set_isAdmin(self, force_insert:bool):
+        """
+        在用户注册的时候自动设置管理员
+        """
+        if force_insert and self.uname in ROOT_USERS:
+            self.isAdmin = True
