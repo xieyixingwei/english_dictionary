@@ -13,7 +13,7 @@ from .ParaphraseView import ParaphraseSerializer
 from .SentencePatternView import SentencePatternSerializer
 
 
-class _WordSerializer(serializers.ModelSerializer):
+class WordSerializer(serializers.ModelSerializer):
     paraphraseSet = ParaphraseSerializer(many=True, read_only=True)
     sentencePatternSet = SentencePatternSerializer(many=True, read_only=True)
     grammarSet = GrammarSerializer(many=True, read_only=True)
@@ -54,7 +54,7 @@ class WordView(ModelViewSetPermissionSerializerMap):
     单词 视图
     """
     queryset = WordTable.objects.all()
-    serializer_class = _WordSerializer
+    serializer_class = WordSerializer
     permission_classes = (permissions.IsRootUser,)
     permission_classes_map = {
         'retrieve': (permissions.AllowAny,),

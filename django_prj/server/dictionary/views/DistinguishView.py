@@ -7,12 +7,23 @@ import django_filters
 from server import permissions
 from dictionary.models.DistinguishTable import DistinguishTable
 from server.views import ModelViewSetPermissionSerializerMap
+from dictionary.views.SentencePatternView import SentencePatternSerializer
+from dictionary.models.SentencePatternTable import SentencePatternTable
 
 
 class DistinguishSerializer(serializers.ModelSerializer):
     class Meta:
         model = DistinguishTable
         fields = '__all__'
+
+    #def to_internal_value(self, data):
+    #    pass
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        sentencePatternForeign = response.pop('sentencePatternForeign')
+        response['sentencePatternForeign'] = [SentencePatternSerializer(SentencePatternTable.objects.get(pk=pk)).data for pk in sentencePatternForeign]
+        return response
 
 
 # 分页自定义
