@@ -56,3 +56,6 @@ db.sqlite3
 # static file
 static/
 media/
+
+compose/django_uwsgi/django-server-master.pid
+

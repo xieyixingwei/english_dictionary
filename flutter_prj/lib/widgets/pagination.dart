@@ -88,7 +88,7 @@ class Pagination extends StatelessWidget {
       start = 1;
     } else if(endIndex > pages) {
       start = pages - maxIndexs + 1;
-      start = start < 1 ? 1 : start;
+      if(start < 1) start = 1;
     } else {
       start = 1;
     }
