@@ -1,5 +1,5 @@
 {
-    "id @primary": "num=null",
+    "id @pk": "num=null",
     "title": "",
     "tag": [""],
     "vedio": "$SingleFile video",
@@ -52,7 +52,7 @@
 }
 
 {   "__name__": "dialog_tag",
-    "name @primary": "",
+    "name @pk": "",
     "__http__": {
         "url": "/api/dictionary/dialog_tag/",
         "methods": [

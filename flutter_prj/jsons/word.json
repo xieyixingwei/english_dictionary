@@ -1,5 +1,5 @@
 {
-    "name @primary": "",
+    "name @pk": "",
     "voiceUs": "",
     "voiceUk": "",
     "_audioUsMan": "String=null",
@@ -11,8 +11,8 @@
     "etyma": [""],
     "origin": "",
     "shorthand": "",
-    "synonym @foreign_manytomany": ["$word"], //  # 近义词 [word1,word2,...]
-    "antonym @foreign_manytomany": ["$word"],// 反义词 [word1,word2,...]
+    "synonym @fk_mm": ["$word"], //  # 近义词 [word1,word2,...]
+    "antonym @fk_mm": ["$word"],// 反义词 [word1,word2,...]
     "image": "$SingleFile image", 
     "vedio": "$SingleFile video",
     "_paraphraseSet": ["$paraphrase"], // 释义
@@ -71,9 +71,9 @@
 
 { // 常用句型
     "__name__": "sentence_pattern",
-    "id @primary": "num=null",
+    "id @pk": "num=null",
     "content": "",
-    "wordForeign @foreign": "$word",
+    "wordForeign @fk_mo": "$word",
     "_paraphraseSet": ["$paraphrase"],
     "__http__": {
         "url": "/api/dictionary/sentence_pattern/",
@@ -123,11 +123,11 @@
 
 { // 释义
     "__name__": "paraphrase",
-    "id @primary": "num=null",
+    "id @pk": "num=null",
     "interpret": "",
     "partOfSpeech": "",
-    "wordForeign @foreign": "$word",
-    "sentencePatternForeign @foreign": "$sentence_pattern",
+    "wordForeign @fk_mo": "$word",
+    "sentencePatternForeign @fk_mo": "$sentence_pattern",
     "_sentenceSet": ["$sentence"],
     "__http__": {
         "url": "/api/dictionary/paraphrase/",
@@ -177,7 +177,7 @@
 
 {
     "__name__": "word_tag",
-    "name @primary": "",
+    "name @pk": "",
     "__http__": {
         "url": "/api/dictionary/word_tag/",
         "methods": [
@@ -198,7 +198,7 @@
 
 {  // 词根词缀表
     "__name__": "etyma",
-    "name @primary": "",
+    "name @pk": "",
     "interpretation": "",
     "type": 0,
     "image": "$SingleFile image", 

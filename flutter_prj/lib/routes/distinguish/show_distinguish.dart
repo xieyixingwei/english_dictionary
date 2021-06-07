@@ -55,7 +55,7 @@ Widget distinguishShow(BuildContext context, num index, DistinguishSerializer ds
                   }
                 },
               )
-            ).toList() + ds.sentencePatternForeignSet.map((e) =>
+            ).toList() + ds.sentencePatternForeign.map((e) =>
               InkWell(
                 child: Text(e.content, style: TextStyle(fontSize: 12, color: Colors.blueAccent, fontWeight: FontWeight.bold)),
                 onTap: () async {
@@ -98,7 +98,7 @@ Widget distinguishShow(BuildContext context, num index, DistinguishSerializer ds
 
 
 Widget distinguishItem({BuildContext context, DistinguishSerializer distinguish, Widget trailing}) {
-  String title = distinguish.wordsForeign.join(', ') + '  ' + distinguish.sentencePatternForeignSet.map((e) => e.content).join(', ');
+  String title = distinguish.wordsForeign.join(', ') + '  ' + distinguish.sentencePatternForeign.map((e) => e.content).join(', ');
   return ListTile(
     dense: true,
     horizontalTitleGap: 0,

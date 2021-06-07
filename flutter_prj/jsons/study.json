@@ -1,7 +1,7 @@
 {
     "__name__": "study_plan",
-    "id @primary": "num=null",
-    "foreignUser @foreign": "$user",
+    "id @pk": "num=null",
+    "foreignUser @fk_oo": "$user",
     "onceWords": 0,
     "onceSentences": 0,
     "onceGrammers": 0,
@@ -37,9 +37,9 @@
 
 {
     "__name__": "study_grammar",
-    "id @primary": 0,
-    "foreignUser @foreign": "$user",
-    "grammar @foreign": "$grammar",
+    "id @pk": 0,
+    "foreignUser @fk_oo": "$user",
+    "grammar @fk_oo": "$grammar",
     "category": "",
     "familiarity": 0,
     "learnRecord": [""],
@@ -73,9 +73,9 @@
 
 {
     "__name__": "study_sentence",
-    "id @primary": 0,
-    "foreignUser @foreign": "$user",
-    "sentence @foreign": "$sentence",
+    "id @pk": 0,
+    "foreignUser @fk_oo": "$user",
+    "sentence @fk_oo": "$sentence",
     "category": "",
     "familiarity": 0,
     "learnRecord": [""],
@@ -112,9 +112,9 @@
 
 {
     "__name__": "study_word",
-    "id @primary": 0,
-    "foreignUser @foreign": "$user",
-    "word @foreign": "$word",
+    "id @pk": 0,
+    "foreignUser @fk_oo": "$user",
+    "word @fk_oo @nested_r": "$word",
     "category": "",
     "familiarity": 0,
     "learnRecord": [""],
@@ -122,7 +122,6 @@
     "isFavorite": false,
     "comments": "",
     "repeats": 0,
-    "___wordObj": "$word=null",
     "__http__": {
         "url": "/api/study/word/",
         "methods": [

@@ -13,7 +13,7 @@ class StudyWordSerializer {
   num _id;
   num id = 0;
   num foreignUser;
-  String word;
+  WordSerializer word;
   String category = '';
   num familiarity = 0;
   List<String> learnRecord = [];
@@ -21,7 +21,6 @@ class StudyWordSerializer {
   bool isFavorite = false;
   String comments = '';
   num repeats = 0;
-  WordSerializer wordObj;
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/study/word/', data:data ?? toJson(), queries:queries, cache:cache);
@@ -43,7 +42,7 @@ class StudyWordSerializer {
     if(pk != null) id = pk;
     var res = await Http().request(HttpType.DELETE, '/api/study/word/$id/');
     /*
-    if(wordObj != null){wordObj.delete();}
+    
     */
     return res != null ? res.statusCode == 204 : false;
   }
@@ -65,7 +64,9 @@ class StudyWordSerializer {
   StudyWordSerializer fromJson(Map<String, dynamic> json) {
     id = json['id'] == null ? id : json['id'] as num;
     foreignUser = json['foreignUser'] == null ? foreignUser : json['foreignUser'] as num;
-    word = json['word'] == null ? word : json['word'] as String;
+    word = json['word'] == null
+                ? word
+                : WordSerializer().fromJson(json['word'] as Map<String, dynamic>);
     category = json['category'] == null ? category : json['category'] as String;
     familiarity = json['familiarity'] == null ? familiarity : json['familiarity'] as num;
     learnRecord = json['learnRecord'] == null
@@ -82,7 +83,7 @@ class StudyWordSerializer {
   Map<String, dynamic> toJson() => <String, dynamic>{
     'id': id,
     'foreignUser': foreignUser,
-    'word': word,
+    'word': word == null ? null : word.name,
     'category': category,
     'familiarity': familiarity,
     'learnRecord': learnRecord == null ? null : learnRecord.map((e) => e).toList(),
@@ -97,7 +98,7 @@ class StudyWordSerializer {
     if(instance == null) return this;
     id = instance.id;
     foreignUser = instance.foreignUser;
-    word = instance.word;
+    word = WordSerializer().from(instance.word);
     category = instance.category;
     familiarity = instance.familiarity;
     learnRecord = List.from(instance.learnRecord);
@@ -105,7 +106,6 @@ class StudyWordSerializer {
     isFavorite = instance.isFavorite;
     comments = instance.comments;
     repeats = instance.repeats;
-    wordObj = WordSerializer().from(instance.wordObj);
     _id = instance._id;
     return this;
   }

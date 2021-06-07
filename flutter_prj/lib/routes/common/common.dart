@@ -17,7 +17,7 @@ List<Map<String, List<ParaphraseSerializer>>> sortParaphraseSet(List<ParaphraseS
 StudyWordSerializer getStudyWord(String word) {
   if(Global.localStore.user.studyWordSet.isEmpty)
     return null;
-  return Global.localStore.user.studyWordSet.singleWhere((e) => e.word==word, orElse: () => null);
+  return Global.localStore.user.studyWordSet.singleWhere((e) => e.word.name == word, orElse: () => null);
 }
 
 StudySentenceSerializer getStudySentence(num id) {

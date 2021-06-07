@@ -1,13 +1,13 @@
 { // 语法表
-    "id @primary": "num=null", //models.AutoField(primary_key=True)
+    "id @pk": "num=null", //models.AutoField(primary_key=True)
     "type": [""], // models.JSONField(null=True) # [时态,从句]
     "tag": [""], // models.JSONField(null=True) # [重要]
     "title": "",
     "content": "", // models.TextField(null=False, blank=True) # 内容 markdown文本
     "image": "$SingleFile image", 
     "vedio": "$SingleFile video",
-    "wordForeign @foreign": "$word",
-    "sentenceForeign @foreign": "$sentence",
+    "wordForeign @fk_mo": "$word",
+    "sentenceForeign @fk_mo": "$sentence",
     "__http__": {
         "url": "/api/dictionary/grammar/",
         "methods": [
@@ -57,7 +57,7 @@
 }
 
 {   "__name__": "grammar_type",
-    "name @primary": "",
+    "name @pk": "",
     "__http__": {
         "url": "/api/dictionary/grammar_type/",
         "methods": [
@@ -77,7 +77,7 @@
 }
 
 {   "__name__": "grammar_tag",
-    "name @primary": "",
+    "name @pk": "",
     "__http__": {
         "url": "/api/dictionary/grammar_tag/",
         "methods": [

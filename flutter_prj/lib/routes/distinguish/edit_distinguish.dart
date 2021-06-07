@@ -121,7 +121,7 @@ class _EditDistinguishState extends State<EditDistinguish> {
                     ),
                     ListOutline(
                       labelText: '辨析句子',
-                      children: widget._distinguish.sentencePatternForeignSet.map((e) =>
+                      children: widget._distinguish.sentencePatternForeign.map((e) =>
                         Tag(
                           label: InkWell(
                             child: Text('${e.content}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
@@ -138,8 +138,7 @@ class _EditDistinguishState extends State<EditDistinguish> {
                             },
                           ),
                           onDeleted: () {
-                            widget._distinguish.sentencePatternForeign.remove(e.id);
-                            widget._distinguish.sentencePatternForeignSet.remove(e);
+                            widget._distinguish.sentencePatternForeign.remove(e);
                             setState(() {});
                           },
                         )
@@ -153,8 +152,7 @@ class _EditDistinguishState extends State<EditDistinguish> {
                                    ) as SentencePatternSerializer;
                           if(sp != null) {
                             await sp.save();
-                            widget._distinguish.sentencePatternForeign.add(sp.id);
-                            widget._distinguish.sentencePatternForeignSet.add(sp);
+                            widget._distinguish.sentencePatternForeign.add(sp);
                             setState(() {});
                           }
                         }

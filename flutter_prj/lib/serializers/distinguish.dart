@@ -19,8 +19,7 @@ class DistinguishSerializer {
   SingleFile image = SingleFile('image', FileType.image);
   SingleFile vedio = SingleFile('vedio', FileType.video);
   List<String> wordsForeign = [];
-  List<num> sentencePatternForeign = [];
-  List<SentencePatternSerializer> sentencePatternForeignSet = [];
+  List<SentencePatternSerializer> sentencePatternForeign = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/dictionary/distinguish/', data:data ?? toJson(), queries:queries, cache:cache);
@@ -47,7 +46,7 @@ class DistinguishSerializer {
     if(pk != null) id = pk;
     var res = await Http().request(HttpType.DELETE, '/api/dictionary/distinguish/$id/');
     /*
-    if(sentencePatternForeignSet != null){sentencePatternForeignSet.forEach((e){e.delete();});}
+    
     */
     return res != null ? res.statusCode == 204 : false;
   }
@@ -57,9 +56,6 @@ class DistinguishSerializer {
       await create(data:data, queries:queries, cache:cache) :
       await update(data:data, queries:queries, cache:cache);
 
-    if(res) {
-      await Future.forEach(sentencePatternForeignSet, (e) async { await e.save();});
-    }
     res = await uploadFile();
     return res;
   }
@@ -74,7 +70,7 @@ class DistinguishSerializer {
                 : json['wordsForeign'].map<String>((e) => e as String).toList();
     sentencePatternForeign = json['sentencePatternForeign'] == null
                 ? sentencePatternForeign
-                : json['sentencePatternForeign'].map<num>((e) => e as num).toList();
+                : json['sentencePatternForeign'].map<SentencePatternSerializer>((e) => SentencePatternSerializer().fromJson(e as Map<String, dynamic>)).toList();
     _id = id;
     return this;
   }
@@ -83,7 +79,7 @@ class DistinguishSerializer {
     'id': id,
     'content': content,
     'wordsForeign': wordsForeign == null ? null : wordsForeign.map((e) => e).toList(),
-    'sentencePatternForeign': sentencePatternForeign == null ? null : sentencePatternForeign.map((e) => e).toList(),
+    'sentencePatternForeign': sentencePatternForeign == null ? null : sentencePatternForeign.map((e) => e.id).toList(),
   }..removeWhere((k, v) => v==null);
 
   Future<bool> uploadFile() async {
@@ -107,8 +103,7 @@ class DistinguishSerializer {
     image.from(instance.image);
     vedio.from(instance.vedio);
     wordsForeign = List.from(instance.wordsForeign);
-    sentencePatternForeign = List.from(instance.sentencePatternForeign);
-    sentencePatternForeignSet = List.from(instance.sentencePatternForeignSet.map((e) => SentencePatternSerializer().from(e)).toList());
+    sentencePatternForeign = List.from(instance.sentencePatternForeign.map((e) => SentencePatternSerializer().from(e)).toList());
     _id = instance._id;
     return this;
   }

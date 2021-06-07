@@ -142,17 +142,14 @@ class _ListFavoritePageState extends State<ListFavoritePage> {
             dense: true,
             contentPadding: EdgeInsets.zero,
             leading: InkWell(
-              child: Text(e.word, style: TextStyle(color: Colors.black87, fontSize: 17)),
+              child: Text(e.word.name, style: TextStyle(color: Colors.black87, fontSize: 17)),
               onTap: () async {
-                if(e.wordObj == null) {
-                  e.wordObj = WordSerializer()..name = e.word;
-                  await e.wordObj.retrieve();
-                }
-                var word = (await Navigator.pushNamed(
-                  context, '/edit_word',
-                  arguments: {'title':'编辑单词','word':WordSerializer().from(e.wordObj)})
-                ) as WordSerializer;
-                if(word != null) await e.wordObj.from(word).save();
+                var w = (await Navigator.pushNamed(context, '/edit_word',
+                                                   arguments: {
+                                                     'title': '编辑单词',
+                                                     'word': WordSerializer().from(e.word)})
+                            ) as WordSerializer;
+                if(w != null) await e.word.from(w).save();
                 setState(() {});
               },
             ),

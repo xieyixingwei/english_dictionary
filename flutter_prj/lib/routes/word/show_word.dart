@@ -118,7 +118,7 @@ class _ShowWordState extends State<ShowWord> {
             if(sw == null) {
               var category = await popSelectWordCategoryDialog(context);
               if(category == null) return;
-              var newSw = StudyWordSerializer()..word = widget.word.name
+              var newSw = StudyWordSerializer()..word = widget.word
                                                ..foreignUser = Global.localStore.user.id
                                                ..category = category;
               Global.localStore.user.studyWordSet.add(newSw);
