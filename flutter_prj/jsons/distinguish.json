@@ -1,11 +1,10 @@
 { // 词义辨析
-    "id @primary": "num=null",
+    "id @pk": "num=null",
     "content": "",
     "image": "$SingleFile image", 
     "vedio": "$SingleFile video",
-    "wordsForeign @foreign_manytomany": ["$word"], // 相关单词列表
-    "sentencePatternForeign @foreign_manytomany": ["$sentence_pattern"],
-    "__sentencePatternForeignSet": ["$sentence_pattern"],
+    "wordsForeign @fk_mm": ["$word"], // 相关单词列表
+    "sentencePatternForeign @fk_mm @nested_r": ["$sentence_pattern"],
     "__http__": {
         "url": "/api/dictionary/distinguish/",
         "methods": [

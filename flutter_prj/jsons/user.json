@@ -1,5 +1,5 @@
 {
-    "id @primary": "num=null",
+    "id @pk": "num=null",
     "uname": "",
     "passwd": "",
     "isAdmin": false,

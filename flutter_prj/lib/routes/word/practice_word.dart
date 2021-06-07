@@ -202,14 +202,14 @@ class _PracticeWordState extends State<PracticeWord> {
     if(cycle && index == 0) index = widget.studyWords.length - 1;
     else if(index > 0) index -= 1;
   }
-  WordSerializer get _curWord => widget.studyWords[index].wordObj;
+  WordSerializer get _curWord => widget.studyWords[index].word;
   StudyWordSerializer get _curStudyWord => widget.studyWords[index];
   WordSerializer get _preWord {
     num preIndex = index;
     if(cycle && index == 0) preIndex = widget.studyWords.length - 1;
     else if(index > 0) preIndex = index - 1;
     else preIndex = 0;
-    return  widget.studyWords[preIndex].wordObj;
+    return  widget.studyWords[preIndex].word;
   }
 
   Widget get _sentences =>

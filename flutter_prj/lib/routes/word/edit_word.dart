@@ -289,7 +289,7 @@ class _EditWordState extends State<EditWord> {
                       children: widget.word.distinguishSet.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text('${e.wordsForeign.join(", ") + e.sentencePatternForeignSet.map((e) => e.content).join(", ")}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
+                            child: Text('${e.wordsForeign.join(", ") + e.sentencePatternForeign.map((e) => e.content).join(", ")}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                             onTap: () async {
                               var d = (await Navigator.pushNamed(context,
                                                                   '/edit_distinguish',

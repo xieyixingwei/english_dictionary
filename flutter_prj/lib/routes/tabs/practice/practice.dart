@@ -31,12 +31,7 @@ class _TabPractice extends State<TabPractice> {
             alignment: WrapAlignment.spaceAround,
             runAlignment: WrapAlignment.spaceAround,
             children: [
-              _card(context, '单词', () async {
-                await Future.forEach<StudyWordSerializer>(Global.localStore.user.studyWordSet, (e) async {
-                  if(e.wordObj != null) return;
-                  e.wordObj = WordSerializer()..name = e.word;
-                  await e.wordObj.retrieve();
-                });
+              _card(context, '单词', () {
                 if(Global.wordTagOptions.isEmpty) return;
                 Navigator.of(context).push(
                   MaterialPageRoute(

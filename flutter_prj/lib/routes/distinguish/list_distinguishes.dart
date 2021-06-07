@@ -24,13 +24,6 @@ class _ListDistinguishesState extends State<ListDistinguishes> {
 
   _init() async {
     await _distinguishes.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
-    await Future.forEach<DistinguishSerializer>(_distinguishes.results, (e) async {
-      await Future.forEach<num>(e.sentencePatternForeign, (sid) async {
-        var sp = SentencePatternSerializer()..id = sid;
-        var ret = await sp.retrieve();
-        if(ret) e.sentencePatternForeignSet.add(sp);
-      });
-    });
     setState((){});
   }
 

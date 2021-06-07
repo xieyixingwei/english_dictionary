@@ -13,8 +13,16 @@ enum JsonType {
 
 enum ForeignType {
   Non,
-  Foreign,
-  ManyToMany
+  ManyToOne,
+  ManyToMany,
+  OneToOne
+}
+
+enum NestedType {
+  Non,
+  OnlyRead,
+  OnlyWrite,
+  WriteRead
 }
 
 String _jsonType(JsonType type) =>
@@ -38,7 +46,7 @@ class Member {
   String serializerJsonName;
   JsonSerializer fatherSerializer;
   List<Member> membersForeignToMeOfTypeSerializer;
-  bool isPrimary = false;
+  bool isPrimaryKey = false;
   bool isList = false;
   bool isMap = false;
   ForeignType foreign = ForeignType.Non;
@@ -47,6 +55,7 @@ class Member {
   bool unToJson = false;
   bool isFileType =false;
   bool unSave = false;
+  NestedType nested = NestedType.Non;
 
   Member(String key, dynamic value, this.fatherSerializer, this.serializeTool, {JsonType jsonType=JsonType.Map}) {
     this.jsonType = jsonType;
@@ -55,17 +64,25 @@ class Member {
   }
 
   void _parseKey(String key) {
-    if(key.contains('@primary')) {
-      key = key.replaceAll('@primary', '').trim();
-      isPrimary = true;
+    if(key.contains('@pk')) {
+      key = key.replaceAll('@pk', '').trim();
+      isPrimaryKey = true;
     }
 
-    if(key.contains('@foreign_manytomany')) {
-      key = key.replaceAll('@foreign_manytomany', '').trim();
+    if(key.contains('@fk_mm')) {
+      key = key.replaceAll('@fk_mm', '').trim();
       foreign = ForeignType.ManyToMany;
-    } else if(key.contains('@foreign')) {
-      key = key.replaceAll('@foreign', '').trim();
-      foreign = ForeignType.Foreign;
+    } else if(key.contains('@fk_mo')) {
+      key = key.replaceAll('@fk_mo', '').trim();
+      foreign = ForeignType.ManyToOne;
+    } else if(key.contains('@fk_oo')) {
+      key = key.replaceAll('@fk_oo', '').trim();
+      foreign = ForeignType.OneToOne;
+    }
+
+    if(key.contains('@nested_r')) {
+      key = key.replaceAll('@nested_r', '').trim();
+      nested = NestedType.OnlyRead;
     }
 
     unToJson = key.trim().startsWith('_');   // the member is not in toJson
@@ -153,7 +170,7 @@ class Member {
   // the type of foreign member is not a Serializer and don't need import serializer
   String get importSerializer {
     List<String> import = [];
-    if(isForeign || isForeignManyToMany) return '';
+    if(isForeign && nested == NestedType.Non) return '';
     if(serializerJsonName != null) import.add('import \'$serializerJsonName.dart\';');
     if(isFileType) import.add(SingleFileType.import);
     return import.join('\n');
@@ -170,9 +187,15 @@ class Member {
     return null;
   }
 
-  bool get isForeign => foreign == ForeignType.Foreign;
+  bool get isForeign => foreign != ForeignType.Non;
   bool get isForeignManyToMany => foreign == ForeignType.ManyToMany;
-  String get unListType => (isForeignManyToMany || isForeign) ? typeSerializer.primaryMember.type : _unListType;
+  String get unListType {
+    if(nested == NestedType.OnlyRead)
+      return _unListType;
+    if(isForeign)
+      return typeSerializer.primaryMember.type;
+    return _unListType;
+  }
   String get type => isList ? 'List<$unListType>' : unListType;
   String get init => isForeignManyToMany ? '[]' : (isForeign ? (isList ? '[]' : null) : _init);
 
@@ -228,6 +251,10 @@ class Member {
     if(unToJson) return null; // ignore member which name start with '_'
     String eToJson = isSerializerType ? 'e.toJson()' : 'e';
     String unListToJson = isSerializerType ? '$name == null ? null : $name.toJson()' : '$name';
+    if(nested == NestedType.OnlyRead) {
+      eToJson = 'e.${typeSerializer.primaryMember.name}';
+      unListToJson = '$name == null ? null : $name.${typeSerializer.primaryMember.name}';
+    }
     String listToJson = '$name == null ? null : $name.map((e) => $eToJson).toList()';
     String memberToJson = isList ? listToJson : unListToJson;
     return jsonType == JsonType.Map ? '\'$name\': $memberToJson,' : '$memberToJson;';
@@ -242,10 +269,10 @@ class Member {
     return isFileType ? '$name.from($from);' : '$name = $from;';
   }
 
-  String get hidePrimaryMemberName => isPrimary ? '_$name' : null;
-  String get hidePrimaryMember => isPrimary ? '$unListType $hidePrimaryMemberName;' : null;
-  String get hidePrimaryMemberFromJson => isPrimary ? '$hidePrimaryMemberName = $name' : null;
-  String get hidePrimaryMemberFrom => isPrimary ? '$hidePrimaryMemberName = instance.$hidePrimaryMemberName;' : null;
+  String get hidePrimaryMemberName => isPrimaryKey ? '_$name' : null;
+  String get hidePrimaryMember => isPrimaryKey ? '$unListType $hidePrimaryMemberName;' : null;
+  String get hidePrimaryMemberFromJson => isPrimaryKey ? '$hidePrimaryMemberName = $name' : null;
+  String get hidePrimaryMemberFrom => isPrimaryKey ? '$hidePrimaryMemberName = instance.$hidePrimaryMemberName;' : null;
 
   String get jsonEncode => (isForeign || isForeignManyToMany || unToJson) ? null : (isList || isMap ? 'jsonObj[\'$name\'] = json.encode(jsonObj[\'$name\']);' : null);
   String get addToFormData => isFileType ? 'if($name.mptFile != null) formData.files.add($name.file);' : null;
@@ -518,7 +545,7 @@ class JsonSerializer {
 
   String get membersSave => members.map((e) => e.save).toList().where((e) => e != null).join('\n      ');
   String get membersDelete => members.map((e) => e.delete).toList().where((e) => e != null).join('\n    ');
-  Member get primaryMember => members.firstWhere((e) => e.isPrimary, orElse: () => null);
+  Member get primaryMember => members.firstWhere((e) => e.isPrimaryKey, orElse: () => null);
 
   String get fromJsonMembers => (members.map((e) => e.fromJson).toList()
                                  + [primaryMember?.hidePrimaryMemberFromJson]).where((e) => e != null).join(';\n    ');
@@ -714,7 +741,13 @@ class JsonSerializeTool {
 
     await Future.forEach<JsonSerializer>(serializers,
       (e) async {
-        await e.save(distDir);
+        try {
+          await e.save(distDir);
+        } catch(error) {
+          print('*** Error: ${e.jsonName}.json');
+          print(error);
+        }
+        
         File(indexFile).writeAsStringSync('export \'${e.jsonName}.dart\';\n', mode: FileMode.append, flush: true);
       } 
     );

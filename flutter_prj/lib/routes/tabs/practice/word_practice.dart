@@ -28,7 +28,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
             alignment: WrapAlignment.center,
             runAlignment: WrapAlignment.center,
             children: Global.wordTagOptions.map((tag) {
-              var studyWords = Global.localStore.user.studyWordSet.where((e) => e.inplan && e.familiarity < 5 && e.wordObj.tag.contains(tag)).toList();
+              var studyWords = Global.localStore.user.studyWordSet.where((e) => e.inplan && e.familiarity < 5 && e.word.tag.contains(tag)).toList();
               studyWords.sort((a, b) => a.familiarity.compareTo(b.familiarity));
               return _card(context, tag, studyWords.length, () {
                 if(studyWords.isEmpty) return;
