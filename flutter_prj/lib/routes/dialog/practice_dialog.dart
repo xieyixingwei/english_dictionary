@@ -15,7 +15,7 @@ class PracticeDialog extends StatefulWidget {
 }
 
 class _PracticeDialogState extends State<PracticeDialog> {
-  num index = -1;
+  num index = 0;
   //bool auto = false;
   bool mode = false;
   bool reverse = false;
@@ -81,7 +81,12 @@ class _PracticeDialogState extends State<PracticeDialog> {
               SizedBox(width: 3,),
               Switch(
                 value: mode,
-                onChanged: (v) => setState(() => mode = v),
+                onChanged: (v) {
+                  mode = v;
+                  sentences.clear();
+                  index = 0;
+                  setState(() {});
+                },
               ),
             ],
           )
@@ -96,9 +101,9 @@ class _PracticeDialogState extends State<PracticeDialog> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: mode ? sentences.asMap().map((i, v) => 
                 MapEntry(i, _sentence(i, v))
-              ).values.toList() : widget.dialog.sentenceSet.map((e) => _sentenceB(e)).toList(),
+              ).values.toList() : sentences.map((e) => _sentenceC(e)).toList(),
             ),
-            mode ? _ok : null,
+            _ok,
           ]
         )
       )
@@ -217,11 +222,93 @@ class _PracticeDialogState extends State<PracticeDialog> {
       )
     );
 
+  Widget _sentenceC(SentenceSerializer s) =>
+    Container(
+      margin: EdgeInsets.only(top: 15),
+      padding: EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+        border: Border.all(color: Colors.blueAccent)
+      ),
+      child: ColumnSpace(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InkWell(
+            child: Text(
+              s.cn,
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 14,
+              ),
+            ),
+            onTap: () async {
+              s.offstage = !s.offstage;
+              if(s.synonym.isNotEmpty && s.synonymObjes.isEmpty) {
+                await Future.forEach<num>(s.synonym, (id) async {
+                  var ss = SentenceSerializer()..id = id;
+                  var ret = await ss.retrieve();
+                  if(ret) s.synonymObjes.add(ss);
+                });
+              }
+              setState(() {});
+            },
+          ),
+          Offstage(
+            offstage: s.offstage,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  child: Text(
+                    s.en,
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 17,
+                    ),
+                  ),
+                  onTap: () {
+                    if(s.enVoice.isEmpty) return;
+                    _audioPlayer.setUrl(s.enVoice);
+                    _audioPlayer.start(0);
+                  },
+                ),
+              ] + s.synonymObjes.map((se) =>
+                InkWell(
+                  child: Text(
+                    se.en,
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 17,
+                    ),
+                  ),
+                  onTap: () {
+                    if(se.enVoice.isEmpty) return;
+                    _audioPlayer.setUrl(se.enVoice);
+                    _audioPlayer.start(0);
+                  },
+                )
+              ).toList()
+            ),
+          ),
+        ],
+      )
+    );
+
+  num get lastIndex => mode ? widget.dialog.dialogSentences.length - 1 : widget.dialog.sentenceSet.length - 1;
+
   void _next() {
-    if(index < (widget.dialog.sentenceSet.length - 1)) index += 1;
+    if(index <= lastIndex) index += 1;
   }
 
-  SentenceSerializer get _curSentence => widget.dialog.sentenceSet[index];
+  SentenceSerializer get _curSentence {
+    if(index > lastIndex) return null;
+    if(mode) {
+      var id = widget.dialog.dialogSentences[index];
+      return widget.dialog.sentenceSet.singleWhere((e) => e.id == id);
+    }
+
+    return widget.dialog.sentenceSet[index];
+  }
 
   Widget get _ok =>
     Row(
@@ -231,9 +318,9 @@ class _PracticeDialogState extends State<PracticeDialog> {
           icon: Icon(Icons.navigate_next, size: 30, color: Colors.blueAccent,),
           splashRadius: 17,
           onPressed: () {
-            if(index >= (widget.dialog.sentenceSet.length - 1)) return;
-            _next();
+            if(_curSentence == null) return;
             sentences.add(_curSentence);
+            _next();
             setState(() {});
           }
         ),

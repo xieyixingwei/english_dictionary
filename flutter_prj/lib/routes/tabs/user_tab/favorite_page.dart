@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/word/list_favorite_words.dart';
 import 'package:flutter_prj/serializers/index.dart';
 
 
@@ -39,7 +40,10 @@ class _FavoritePageState extends State<FavoritePage> {
           runAlignment: WrapAlignment.start,
           children: [
             _card(context, '收藏的单词', _studyWordPagination.count,
-              () => Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.word})),
+              () => Navigator.push(context, MaterialPageRoute(
+                                              builder: (context) => ListFavoriteWordPage(),
+                                            ))
+            ),
             _card(context, '收藏的词义辨析', Global.localStore.user.studyPlan == null ? 0 : Global.localStore.user.studyPlan.distinguishes.length,
               () => Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.distinguish})),
             _card(context, '收藏的句子', Global.localStore.user.studySentenceSet.length,
@@ -105,9 +109,6 @@ class _ListFavoritePageState extends State<ListFavoritePage> {
   @override
   void initState() {
     switch(widget.type) {
-      case FavoriteType.word:
-        _title = '收藏的单词';
-        break;
       case FavoriteType.distinguish:
         _title = '收藏的词义辨析';
         break;
@@ -146,51 +147,6 @@ class _ListFavoritePageState extends State<ListFavoritePage> {
 
   List<Widget> _children() {
     switch(widget.type) {
-      case FavoriteType.word:
-        return _studyWordPagination.results.map((e) =>
-          ListTile(
-            dense: true,
-            contentPadding: EdgeInsets.zero,
-            leading: InkWell(
-              child: Text(e.word.name, style: TextStyle(color: Colors.black87, fontSize: 17)),
-              onTap: () async {
-                var w = (await Navigator.pushNamed(context, '/edit_word',
-                                                   arguments: {
-                                                     'title': '编辑单词',
-                                                     'word': WordSerializer().from(e.word)})
-                            ) as WordSerializer;
-                if(w != null) await e.word.from(w).save();
-                setState(() {});
-              },
-            ),
-            title: Text('${e.familiarity} 熟悉度', style: TextStyle(color: Colors.black54, fontSize: 12)),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextButton(
-                  child: Text(e.inplan ? '取消学习' : '加入学习', style: TextStyle(color: e.inplan ? Colors.black54 : Colors.blue),),
-                  onPressed: () async {
-                    e.inplan = !e.inplan;
-                    await e.save();
-                    Global.saveLocalStore();
-                    setState(() {});
-                  }
-                ),
-                SizedBox(width: 10,),
-                TextButton(
-                  child: Text('取消收藏'),
-                  onPressed: () async {
-                    var ret = await e.delete();
-                    if(ret) {
-                      _studyWordPagination.results.remove(e);
-                      setState(() {});
-                    }
-                  },
-                ),
-              ],
-            )
-          )
-        ).toList();
       case FavoriteType.distinguish:
         return Global.localStore.user.studyPlan.distinguishes.map((e) =>
           ListTile(

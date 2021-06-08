@@ -13,7 +13,7 @@ enum HttpType {
 }
 
 class Http {
-  static String baseUrl = 'http://192.168.2.10:5005';//'http://gncloud.download:8051'; 'http://192.168.2.10:5005'
+  static String baseUrl = 'http://gncloud.download:8051';//'http://gncloud.download:8051'; 'http://192.168.2.10:5005'
   Options _options;
   static Dio _dio = new Dio(
     BaseOptions(

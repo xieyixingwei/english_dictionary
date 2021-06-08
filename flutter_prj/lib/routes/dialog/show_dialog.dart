@@ -5,11 +5,11 @@ import 'package:flutter_prj/serializers/dialog.dart';
 Widget dialogItem({BuildContext context, DialogSerializer dialog, Widget trailing}) {
   Widget title = Text.rich(
     TextSpan(
-        children: [
-          TextSpan(text: '${dialog.title}', style: TextStyle(fontSize: 14, color: Colors.black87)),
-          TextSpan(text: '    ${dialog.tag.join('/')}', style: TextStyle(fontSize: 10, color: Colors.black45)),
-        ]
-      )
+      children: [
+        TextSpan(text: '${dialog.title}', style: TextStyle(fontSize: 14, color: Colors.black87)),
+        TextSpan(text: '    ${dialog.tag.join('/')}', style: TextStyle(fontSize: 10, color: Colors.black45)),
+      ]
+    )
   );
 
   return ListTile(

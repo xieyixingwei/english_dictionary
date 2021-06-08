@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:audioplayers/audioplayers_web.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_prj/common/http.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
+import 'package:flutter_prj/widgets/row_space.dart';
 
 
 class PracticeWord extends StatefulWidget {
@@ -78,7 +80,7 @@ class _PracticeWordState extends State<PracticeWord> {
                 onChanged: (v) {
                   if(v) {
                     timer = Timer.periodic(Duration(seconds: 3), _timerCallback);
-                    if(_curWord.audioUsMan == null || _curWord.audioUsMan.isEmpty) return;
+                    if(_curWord.audioUsMan.isEmpty) return;
                     _audioPlayer.setUrl(_curWord.audioUsMan);
                     _audioPlayer.start(0);
                   } else {
@@ -141,6 +143,21 @@ class _PracticeWordState extends State<PracticeWord> {
               SizedBox(height: 20,),
               _word(context),
               _sentences,
+              Form(
+                autovalidateMode: AutovalidateMode.always, //开启自动校验
+                child: Container(
+                  margin: EdgeInsets.only(left: 50, right: 50),
+                  child: TextFormField(
+                    maxLines: 1,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      labelText: '单词拼写',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (v) => v.trim() != _curWord.name ? 'Wrong' : null,
+                  )
+                )
+              ),
               auto ? null : _goto,
             ],
           ),
@@ -152,33 +169,45 @@ class _PracticeWordState extends State<PracticeWord> {
     ColumnSpace(
       divider: SizedBox(height: 10,),
       children: [
-        _curWord.offstage ?
-        IconButton(
-          icon: Icon(Icons.more_horiz),
-          onPressed: () => setState(() => _curWord.offstage = false)
-        ) : null,
-        Offstage(
-          offstage: _curWord.offstage,
-          child: InkWell(
-            child: Text(
-              _curWord.name,
-              style: TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.w700,
-                fontSize: 28,
+        RowSpace(
+          mainAxisSize: MainAxisSize.min,
+          divider: SizedBox(width: 8),
+          children: [
+            Offstage(
+              offstage: !_curWord.offstage,
+              child: IconButton(
+                icon: Icon(Icons.more_horiz),
+                onPressed: () => setState(() => _curWord.offstage = false)
               ),
             ),
-            onTap: () {
-              if(_curWord.audioUsMan.isEmpty) return;
-              _audioPlayer.setUrl(_curWord.audioUsMan);
-              _audioPlayer.start(0);
-            },
-            onDoubleTap: () async {
-              if(timer != null && timer.isActive) timer.cancel();
-              await Navigator.pushNamed(context, '/show_word', arguments: {'title': '', 'word': _curWord});
-              if(auto) timer = Timer.periodic(Duration(seconds: 3), _timerCallback);
-            },
-          )
+            Offstage(
+              offstage: _curWord.offstage,
+              child: InkWell(
+                child: Text(
+                  _curWord.name,
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 28,
+                  ),
+                ),
+                onTap: () => setState(() => _curWord.offstage = true),
+                onDoubleTap: () async {
+                  if(timer != null && timer.isActive) timer.cancel();
+                  await Navigator.pushNamed(context, '/show_word', arguments: {'title': '', 'word': _curWord});
+                  if(auto) timer = Timer.periodic(Duration(seconds: 3), _timerCallback);
+                },
+              )
+            ),
+            IconButton(
+              icon: Icon(Icons.volume_up),
+              onPressed: () {
+                if(_curWord.audioUsMan.isEmpty) return;
+                _audioPlayer.setUrl(Http.baseUrl + _curWord.audioUsMan);
+                _audioPlayer.start(0);
+              }
+            )
+          ]
         ),
         _curWord.voiceUs.isNotEmpty ?
         Text(

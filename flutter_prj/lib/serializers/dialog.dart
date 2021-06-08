@@ -18,6 +18,7 @@ class DialogSerializer {
   String title = '';
   List<String> tag = [];
   SingleFile vedio = SingleFile('vedio', FileType.video);
+  List<num> dialogSentences = [];
   List<SentenceSerializer> sentenceSet = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
@@ -69,6 +70,9 @@ class DialogSerializer {
                 ? tag
                 : json['tag'].map<String>((e) => e as String).toList();
     vedio.url = json['vedio'] == null ? vedio.url : json['vedio'] as String;
+    dialogSentences = json['dialogSentences'] == null
+                ? dialogSentences
+                : json['dialogSentences'].map<num>((e) => e as num).toList();
     sentenceSet = json['sentenceSet'] == null
                 ? sentenceSet
                 : json['sentenceSet'].map<SentenceSerializer>((e) => SentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
@@ -80,6 +84,7 @@ class DialogSerializer {
     'id': id,
     'title': title,
     'tag': tag == null ? null : tag.map((e) => e).toList(),
+    'dialogSentences': dialogSentences == null ? null : dialogSentences.map((e) => e).toList(),
   }..removeWhere((k, v) => v==null);
 
   Future<bool> uploadFile() async {
@@ -100,6 +105,7 @@ class DialogSerializer {
     title = instance.title;
     tag = List.from(instance.tag);
     vedio.from(instance.vedio);
+    dialogSentences = List.from(instance.dialogSentences);
     sentenceSet = List.from(instance.sentenceSet.map((e) => SentenceSerializer().from(e)).toList());
     _id = instance._id;
     return this;

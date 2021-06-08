@@ -116,12 +116,12 @@ class _EditDialogState extends State<EditDialog> {
                       )
                     ),
                     ListOutline(
-                    labelText: '对话例句',
-                    children: widget.dialog.sentenceSet.asMap().map((i, e) =>
-                      MapEntry(i, Tag(
+                    labelText: '例句',
+                    children: widget.dialog.sentenceSet.asMap().map((i, e) => MapEntry(i,
+                      Tag(
                         label: InkWell(
                           child: ConstrainedBox(
-                            child: Text('${e.en}', overflow: TextOverflow.ellipsis, style: TextStyle(color: i % 2 == 0 ? Colors.blueAccent : Colors.blueGrey)),
+                            child: Text('${e.id}: ${e.en}', overflow: TextOverflow.ellipsis, style: TextStyle(color: i % 2 == 0 ? Colors.blueAccent : Colors.blueGrey)),
                             constraints: BoxConstraints(maxWidth: 230.0),
                           ),
                           onTap: () async {
@@ -151,7 +151,52 @@ class _EditDialogState extends State<EditDialog> {
                                                              arguments: {'title':'添加例句'})
                                   ) as SentenceSerializer;
                           if(s != null) {
-                            widget.dialog.sentenceSet.add(s);
+                            var ret = await s.save();
+                            if(ret)
+                              widget.dialog.sentenceSet.add(s);
+                            setState(() {});
+                          }
+                        },
+                      ),
+                    ),
+                    ListOutline(
+                    labelText: '对话例句',
+                    children: widget.dialog.dialogSentences.asMap().map((i, e) {
+                      var sentence = widget.dialog.sentenceSet.singleWhere((s) => s.id == e);
+                      return MapEntry(i,
+                      Tag(
+                        label: InkWell(
+                          child: ConstrainedBox(
+                            child: Text('${sentence.en}', overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.blueAccent)),
+                            constraints: BoxConstraints(maxWidth: 230.0),
+                          ),
+                          onTap: () async {
+                            var s = (await Navigator.pushNamed(context,
+                                                              '/edit_sentence',
+                                                              arguments: {'title':'编辑释义的例句',
+                                                              'sentence': SentenceSerializer().from(sentence)})
+                                    ) as SentenceSerializer;
+                            if(s != null) {
+                              sentence.from(s);
+                              setState(() {});
+                            }
+                          },
+                        ),
+                        onDeleted: () {
+                          widget.dialog.dialogSentences.remove(e);
+                          setState(() {});
+                        }
+                      ));
+                      }).values.toList(),
+                      suffix: TextButton(
+                        child: Text('添加',),
+                        onPressed: () async {
+                          var s = (await Navigator.pushNamed(context,
+                                                             '/edit_sentence',
+                                                             arguments: {'title':'添加例句'})
+                                  ) as SentenceSerializer;
+                          if(s != null) {
+                            widget.dialog.dialogSentences.add(s.id);
                             setState(() {});
                           }
                         },

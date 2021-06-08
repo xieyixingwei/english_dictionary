@@ -187,9 +187,9 @@ class _EditSentenceState extends State<EditSentence> {
                               var sentence = SentenceSerializer()..id = e;
                               bool ret = await sentence.retrieve();
                               if(ret) {
-                                sentence = (await Navigator.pushNamed(
+                                  sentence = (await Navigator.pushNamed(
                                   context, '/edit_sentence',
-                                  arguments: {'title':'编辑同义句', 'word': SentenceSerializer().from(sentence)})
+                                  arguments: {'title':'编辑同义句', 'sentence': SentenceSerializer().from(sentence)})
                                 ) as SentenceSerializer;
                                 if(sentence != null) {
                                   await sentence.save();
@@ -223,7 +223,7 @@ class _EditSentenceState extends State<EditSentence> {
                               var sentence = SentenceSerializer()..id = e;
                               bool ret = await sentence.retrieve();
                               if(ret) {
-                                sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'编辑反义句', 'word': SentenceSerializer().from(sentence)})) as SentenceSerializer;
+                                sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'编辑反义句', 'sentence': SentenceSerializer().from(sentence)})) as SentenceSerializer;
                                 if(sentence != null) {
                                   await sentence.save();
                                 }

@@ -12,7 +12,7 @@ class WordPracticePage extends StatefulWidget {
 
 
 class _WordPracticePageState extends State<WordPracticePage> {
-  var _studyWordPagination = StudyWordPaginationSerializer();
+  List<StudyWordSerializer> _studyWords = [];
 
   @override
   void initState() {
@@ -21,10 +21,11 @@ class _WordPracticePageState extends State<WordPracticePage> {
   }
 
   void _init() async {
-    _studyWordPagination.filter..foreignUser = Global.localStore.user.id
+    var studyWord = StudyWordSerializer();
+    studyWord.filter..foreignUser = Global.localStore.user.id
                                ..familiarity__lte = 4
                                ..inplan = true;
-    await _studyWordPagination.retrieve();
+    _studyWords = await studyWord.list();
     setState(() {});
   }
 
@@ -44,7 +45,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
             alignment: WrapAlignment.center,
             runAlignment: WrapAlignment.center,
             children: Global.wordTagOptions.map((tag) {
-              var studyWords = _studyWordPagination.results.where((e) => e.word.tag.contains(tag)).toList();
+              var studyWords = _studyWords.where((e) => e.word.tag.contains(tag)).toList();
               studyWords.sort((a, b) => a.familiarity.compareTo(b.familiarity));
               return _card(context, tag, studyWords.length, () {
                 if(studyWords.isEmpty) return;
@@ -60,8 +61,8 @@ class _WordPracticePageState extends State<WordPracticePage> {
     Container(
       padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
       alignment: Alignment.center,
-      height: 120,
-      width: 120,
+      height: 160,
+      width: 160,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(8)),

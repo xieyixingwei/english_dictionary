@@ -44,8 +44,8 @@ class _SentencePracticePageState extends State<SentencePracticePage> {
     Container(
       padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
       alignment: Alignment.center,
-      height: 120,
-      width: 120,
+      height: 160,
+      width: 160,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(8)),
