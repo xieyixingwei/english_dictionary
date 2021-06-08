@@ -21,6 +21,7 @@ class _PracticeWordState extends State<PracticeWord> {
   num index = 0;
   bool auto = false;
   bool cycle = true;
+  var textCtrl = TextEditingController();
   WrappedPlayer _audioPlayer = WrappedPlayer();
   final _style = TextStyle(fontSize: 14, color: Colors.black45);
   Timer timer;
@@ -150,6 +151,7 @@ class _PracticeWordState extends State<PracticeWord> {
                     margin: EdgeInsets.only(left: 50, right: 50),
                     child: TextFormField(
                       maxLines: 1,
+                      controller: textCtrl,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         labelText: '单词拼写',
@@ -234,11 +236,13 @@ class _PracticeWordState extends State<PracticeWord> {
     );
 
   void _next() {
+    textCtrl.text = '';
     if(cycle && (index == widget.studyWords.length - 1)) index = 0;
     else if(index < (widget.studyWords.length - 1)) index += 1;
   }
 
   void _previous() {
+    textCtrl.text = '';
     if(cycle && index == 0) index = widget.studyWords.length - 1;
     else if(index > 0) index -= 1;
   }
