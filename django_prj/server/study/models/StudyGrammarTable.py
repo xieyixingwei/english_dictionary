@@ -17,3 +17,5 @@ class StudyGrammarTable(models.Model):
     inplan = models.BooleanField(default=False)
     isFavorite = models.BooleanField(default=False)
     repeats = models.IntegerField(default=0)
+    class Meta:
+        ordering = ['id']

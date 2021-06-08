@@ -15,9 +15,14 @@ class DistinguishSerializer(serializers.ModelSerializer):
     class Meta:
         model = DistinguishTable
         fields = '__all__'
+        # foreigns = ('sentencePatternForeign')
 
-    #def to_internal_value(self, data):
-    #    pass
+    def to_internal_value(self, data):
+        if isinstance(data, dict):
+            sentencePatternForeign = data.pop('sentencePatternForeign')
+            data['sentencePatternForeign'] = [n['id'] for n in sentencePatternForeign]
+        ret = super().to_internal_value(data)
+        return ret
 
     def to_representation(self, instance):
         response = super().to_representation(instance)

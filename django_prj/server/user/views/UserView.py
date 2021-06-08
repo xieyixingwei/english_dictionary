@@ -14,7 +14,7 @@ from study.views.StudyGrammarView import StudyGrammarSerializer
 
 class _UsersSerializer(serializers.ModelSerializer):
     studyPlan = StudyPlanSerializer(many=False, read_only=True)
-    studyWordSet = StudyWordSerializer(many=True, read_only=True)
+    # studyWordSet = StudyWordSerializer(many=True, read_only=True)
     studySentenceSet = StudySentenceSerializer(many=True, read_only=True)
     studyGrammarSet = StudyGrammarSerializer(many=True, read_only=True)
     class Meta:

@@ -16,5 +16,7 @@ class StudyWordTable(models.Model):
     learnRecord = JSONFieldUtf8(null=True, blank=True)                       # 学习时间历史记录 [09122030,09112030,09102030]
     inplan = models.BooleanField(default=False)                              # 是否在学习计划中
     isFavorite = models.BooleanField(default=False)                          # 是否被收藏
-    comments = models.CharField(max_length=256, null=True, blank=True)                              # 个人添加的comments markdown
+    comments = models.CharField(max_length=256, null=True, blank=True)       # 个人添加的comments markdown
     repeats = models.IntegerField(default=0)                                 # 被学了多少次
+    class Meta:
+        ordering = ['id']

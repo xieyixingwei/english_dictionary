@@ -9,6 +9,7 @@ class DialogTable(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=64) # 英文
     tag = JSONFieldUtf8(null=True)    # 标记 [日常用语,商务用语]
+    dialogSentences = JSONFieldUtf8(null=True)    # 对话例句的id [id, id]
     video = models.FileField(upload_to='dialog_video/', null=True, blank=True, verbose_name="视频")
     class Meta:
         ordering = ['id']  # 消除list警告UnorderedObjectListWarning: Pagination may yield inconsistent results with an unordered object_list

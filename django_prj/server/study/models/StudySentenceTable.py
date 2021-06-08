@@ -19,3 +19,5 @@ class StudySentenceTable(models.Model):
     comments = models.CharField(max_length=256, null=True, blank=True)  # markdown
     repeats = models.IntegerField(default=0)
     newWords = JSONFieldUtf8(null=True, blank=True)   # 生词 [w1,w2]
+    class Meta:
+        ordering = ['id']
