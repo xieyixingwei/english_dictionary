@@ -61,7 +61,6 @@ class SentenceSerializer {
   }
 
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
-    print('--- ${_id}');
     bool res = _id == null ?
       await create(data:data, queries:queries, cache:cache) :
       await update(data:data, queries:queries, cache:cache);

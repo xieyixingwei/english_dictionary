@@ -93,76 +93,78 @@ class _PracticeWordState extends State<PracticeWord> {
           ),
         ],
       ),
-      body: Center(
-        child: Container(
-          margin: EdgeInsets.fromLTRB(10, 50, 10, 30),
-          decoration: BoxDecoration(
-            //border: BoxBorde()
-          ),
-          child: ColumnSpace(
-            divider: SizedBox(height: 20,),
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  PopupMenuButton<String> (
-                    padding: EdgeInsets.all(5), // 菜单项的内边距
-                    offset: Offset(0, 0),       // 控制菜单弹出的位置()
-                    initialValue: _curStudyWord.familiarity.toString(),
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: '${_curStudyWord.familiarity}',
-                            style: TextStyle(color: Colors.blueAccent, fontSize: 17)
-                          ),
-                          TextSpan(
-                            text: ' 熟悉度',
-                            style: TextStyle(color: Colors.black45, fontSize: 14)
-                          ),
-                        ]
-                      )
-                    ),
-                    itemBuilder: (context) =>
-                      ['0', '1', '2', '3', '4', '5'].map((String e) =>
-                        PopupMenuItem<String>(
-                          value: e,
-                          textStyle: const TextStyle(fontWeight: FontWeight.w600), // 文本样式
-                          child: Text(e, style: const TextStyle(color: Colors.blue) ),    // 子控件
+      body: SingleChildScrollView(
+        child: Center(
+          child: Container(
+            margin: EdgeInsets.fromLTRB(10, 20, 10, 30),
+            decoration: BoxDecoration(
+              //border: BoxBorde()
+            ),
+            child: ColumnSpace(
+              divider: SizedBox(height: 15,),
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    PopupMenuButton<String> (
+                      padding: EdgeInsets.all(5), // 菜单项的内边距
+                      offset: Offset(0, 0),       // 控制菜单弹出的位置()
+                      initialValue: _curStudyWord.familiarity.toString(),
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: '${_curStudyWord.familiarity}',
+                              style: TextStyle(color: Colors.blueAccent, fontSize: 17)
+                            ),
+                            TextSpan(
+                              text: ' 熟悉度',
+                              style: TextStyle(color: Colors.black45, fontSize: 14)
+                            ),
+                          ]
                         )
-                      ).toList(),
-                    onSelected: (v) async {
-                      _curStudyWord.familiarity = num.parse(v);
-                      await _curStudyWord.save();
-                      setState(() {});
-                    }
-                  ),
-                  SizedBox(width: 100,),
-                ],
-              ),
-              SizedBox(height: 20,),
-              _word(context),
-              _sentences,
-              Form(
-                autovalidateMode: AutovalidateMode.always, //开启自动校验
-                child: Container(
-                  margin: EdgeInsets.only(left: 50, right: 50),
-                  child: TextFormField(
-                    maxLines: 1,
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
-                      labelText: '单词拼写',
-                      border: OutlineInputBorder(),
+                      ),
+                      itemBuilder: (context) =>
+                        ['0', '1', '2', '3', '4', '5'].map((String e) =>
+                          PopupMenuItem<String>(
+                            value: e,
+                            textStyle: const TextStyle(fontWeight: FontWeight.w600), // 文本样式
+                            child: Text(e, style: const TextStyle(color: Colors.blue) ),    // 子控件
+                          )
+                        ).toList(),
+                      onSelected: (v) async {
+                        _curStudyWord.familiarity = num.parse(v);
+                        await _curStudyWord.save();
+                        setState(() {});
+                      }
                     ),
-                    validator: (v) => v.trim() != _curWord.name ? 'Wrong' : null,
+                    SizedBox(width: 100,),
+                  ],
+                ),
+                SizedBox(height: 10,),
+                _word(context),
+                _sentences,
+                Form(
+                  autovalidateMode: AutovalidateMode.always, //开启自动校验
+                  child: Container(
+                    margin: EdgeInsets.only(left: 50, right: 50),
+                    child: TextFormField(
+                      maxLines: 1,
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        labelText: '单词拼写',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (v) => v.trim() != _curWord.name ? 'Wrong' : null,
+                    )
                   )
-                )
-              ),
-              auto ? null : _goto,
-            ],
-          ),
-        )
-      ),
+                ),
+                auto ? null : _goto,
+              ],
+            ),
+          )
+        ),
+      )
     );
 
   Widget _word(BuildContext context) =>
