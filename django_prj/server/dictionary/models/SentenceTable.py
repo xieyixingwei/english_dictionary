@@ -53,9 +53,11 @@ class SentenceTable(models.Model):
         oldHash = pickup_hash_from_filename(self.enVoice.name)
         if curHash == oldHash and os.path.exists(MEDIA_ROOT / self.enVoice.name):
             return
-
-        if self.enVoice.name != None and os.path.exists(MEDIA_ROOT / self.enVoice.name):
+        if self.enVoice.name != None \
+            and len(self.enVoice.name) > 0 \
+            and os.path.exists(MEDIA_ROOT / self.enVoice.name):
             os.remove(MEDIA_ROOT / self.enVoice.name)
+
         tempFile = MEDIA_ROOT / 'sentence_voice/temp.mp3'
         fname = '%d_en_%s.mp3' % (self.id, curHash)
         with open(tempFile, 'wb') as fp:

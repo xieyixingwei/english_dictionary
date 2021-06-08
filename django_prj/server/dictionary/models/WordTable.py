@@ -92,9 +92,3 @@ class WordTable(models.Model):
 # 4. 常用句型
 #     1. It is that ....
 #        It is that very much.
-
-
-
-
-
-
