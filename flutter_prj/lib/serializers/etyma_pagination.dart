@@ -17,7 +17,8 @@ class EtymaPaginationSerializer {
   EtymaSerializerFilter filter = EtymaSerializerFilter();
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
-    (queries != null && filter.queryset != null) ? queries.addAll(filter.queryset) : queries = filter.queryset;
+    if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/dictionary/etyma/', queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
@@ -56,10 +57,10 @@ class EtymaSerializerFilter {
   String name__icontains;
   num type;
 
-  Map<String, dynamic> get queryset => <String, dynamic>{
-    "name": name,
-    "name__icontains": name__icontains,
-    "type": type,
+  Map<String, dynamic> get queries => <String, dynamic>{
+    'name': name,
+    'name__icontains': name__icontains,
+    'type': type,
   }..removeWhere((String key, dynamic value) => value == null);
 
   void clear() {
@@ -68,3 +69,4 @@ class EtymaSerializerFilter {
     type = null;
   }
 }
+

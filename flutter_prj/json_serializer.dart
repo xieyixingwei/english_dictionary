@@ -80,7 +80,13 @@ class Member {
       foreign = ForeignType.OneToOne;
     }
 
-    if(key.contains('@nested_r')) {
+    if(key.contains('@nested_rw')) {
+      key = key.replaceAll('@nested_rw', '').trim();
+      nested = NestedType.WriteRead;
+    } else if(key.contains('@nested_wr')) {
+      key = key.replaceAll('@nested_wr', '').trim();
+      nested = NestedType.WriteRead;
+    } else if(key.contains('@nested_r')) {
       key = key.replaceAll('@nested_r', '').trim();
       nested = NestedType.OnlyRead;
     }
@@ -190,7 +196,7 @@ class Member {
   bool get isForeign => foreign != ForeignType.Non;
   bool get isForeignManyToMany => foreign == ForeignType.ManyToMany;
   String get unListType {
-    if(nested == NestedType.OnlyRead)
+    if(nested != NestedType.Non)
       return _unListType;
     if(isForeign)
       return typeSerializer.primaryMember.type;
@@ -351,7 +357,21 @@ class HttpMethods {
 
   List<String> get methods =>
     methodsConfig.map((e) {
-      String queryset = e['filter'] == true ? '(queries != null && filter.queryset != null) ? queries.addAll(filter.queryset) : queries = filter.queryset;\n    ' : '';
+      List<String> query = [];
+      String queryset = '';
+      if(fatherSerializer.queryset != null) {
+          query.add('queries.addAll(queryset.queries);');
+      }
+      if(fatherSerializer.filter != null) {
+          query.add('queries.addAll(filter.queries);');
+      }
+      if(query.isNotEmpty) {
+        query.insert(0, 'if(queries == null) queries = <String, dynamic>{};');
+      }
+      if(query.isNotEmpty) {
+        queryset = query.join('\n    ') + '\n    ';
+      }
+
       String methodName = e['name'];
 
       if(methodName == 'save') {
@@ -402,7 +422,7 @@ $saveForeign
       }else if(methodName == "list") {
         return
 """
-  static Future<List<$serializerType>> list({Map<String, dynamic> queries, bool cache=false}) async {
+  Future<List<$serializerType>> list({Map<String, dynamic> queries, bool cache=false}) async {
     ${queryset}var res = await Http().request(HttpType.GET, '$requestUrl', $queries, $cache);
     return res != null ? res.data.map<$serializerType>((e) => $serializerType().fromJson(e)).toList() : [];
   }
@@ -460,15 +480,21 @@ class Filter {
   }
 
   JsonSerializer get onSerializer => fatherSerializer.serializeTool.serializers.singleWhere((e) => e.jsonName == serializerJsonName, orElse:()=>null);
-  String type(String name) => onSerializer.members.firstWhere((e) => e.name == name).unListType;
+  String type(String name) {
+    var member = onSerializer.members.firstWhere((e) => e.name == name);
+    if(member.isSerializerType)
+      return member.typeSerializer.primaryMember.unListType;
+    else
+      return member.unListType;
+  }
   String get members => _filters.map((e) => '${type(e.keys.first)} ${e.values.first};').toList().join('\n  ');
-  String get queries => _filters.map((e) => '\"${e.values.first}\": ${e.values.first},').toList().join('\n    ');
+  String get _queries => _filters.map((e) => '\'${e.values.first}\': ${e.values.first},').toList().join('\n    ');
   String get clearMembers => _filters.map((e) => '${e.values.first} = null;').toList().join('\n    ');
   String get filterClassName => '${onSerializer.serializerTypeName}Filter';
 
-  String get queryset => 
-"""Map<String, dynamic> get queryset => <String, dynamic>{
-    $queries
+  String get queries => 
+"""Map<String, dynamic> get queries => <String, dynamic>{
+    $_queries
   }..removeWhere((String key, dynamic value) => value == null);""";
 
   String get clear => 
@@ -480,7 +506,44 @@ class Filter {
 """class $filterClassName {
   $members
 
-  $queryset
+  $queries
+
+  $clear
+}""";
+}
+
+class QuerySet {
+  final JsonSerializer fatherSerializer;
+  String serializerJsonName;
+  List<Member> _members = [];
+
+  QuerySet(this.serializerJsonName, this.fatherSerializer, Map<String, dynamic> obj) {
+    obj.forEach((String key, dynamic value) {
+      _members.add(Member(key, value, this.fatherSerializer, this.fatherSerializer.serializeTool));
+    });
+  }
+
+  JsonSerializer get onSerializer => fatherSerializer.serializeTool.serializers.singleWhere((e) => e.jsonName == serializerJsonName, orElse:()=>null);
+  String get querySetClassName => '${onSerializer.serializerTypeName}QuerySet';
+  String get members => _members.map((e) => '${e.type} ${e.name} = ${e.init};').toList().join('\n  ');
+  String get _queries => _members.map((e) => '\'${e.name}\': ${e.name},').toList().join('\n    ');
+  String get clearMembers => _members.map((e) => '${e.name} = null;').toList().join('\n    ');
+
+  String get queries => 
+"""Map<String, dynamic> get queries => <String, dynamic>{
+    $_queries
+  }..removeWhere((String key, dynamic value) => value == null);""";
+
+  String get clear => 
+"""void clear() {
+    $clearMembers
+  }""";
+
+  String get querySetClass =>
+"""class $querySetClassName {
+  $members
+
+  $queries
 
   $clear
 }""";
@@ -495,6 +558,7 @@ class JsonSerializer {
   JsonType jsonType = JsonType.Map;
   String jsonSrc;
   Filter filter;
+  QuerySet queryset;
 
   JsonSerializer(this.serializeTool, this.jsonName, this.jsonSrc) {
     var obj;
@@ -515,6 +579,11 @@ class JsonSerializer {
     if(obj['__filter__'] != null) {
       filter = Filter(jsonName, this, obj['__filter__']);
       obj.remove('__filter__');
+    }
+
+    if(obj['__queryset__'] != null) {
+      queryset = QuerySet(jsonName, this, obj['__queryset__']);
+      obj.remove('__queryset__');
     }
 
     Map<String, dynamic> http;
@@ -602,6 +671,8 @@ class JsonSerializer {
   String get filterClass => filter != null && members.where((e) => e.isSerializerType
                                                   && e.typeSerializer.filter != null
                                                   && e.typeSerializer.filter.filterClassName == filter.filterClassName).isEmpty ? filter.filterClass : '';
+  String get querySetMember => queryset != null ? '\n  ${queryset.querySetClassName} queryset = ${queryset.querySetClassName}();' : '';
+  String get querySetClass => queryset != null ? queryset.querySetClass : '';
 
   String get content =>
 """
@@ -614,7 +685,7 @@ $importSerializers$importHttpPackage
 class $serializerTypeName {
   $serializerTypeName();
 
-  $serializerMembers$filterMember
+  $serializerMembers$filterMember$querySetMember
 
 $httpMethods
 $fromJson
@@ -626,6 +697,7 @@ $from
 }
 
 $filterClass
+$querySetClass
 """;
 
   Future save(String distPath) async {

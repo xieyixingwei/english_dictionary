@@ -21,7 +21,7 @@ class GrammarTypeSerializer {
     return res != null;
   }
 
-  static Future<List<GrammarTypeSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
+  Future<List<GrammarTypeSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/api/dictionary/grammar_type/', queries:queries, cache:cache);
     return res != null ? res.data.map<GrammarTypeSerializer>((e) => GrammarTypeSerializer().fromJson(e)).toList() : [];
   }
@@ -54,5 +54,6 @@ class GrammarTypeSerializer {
     return this;
   }
 }
+
 
 

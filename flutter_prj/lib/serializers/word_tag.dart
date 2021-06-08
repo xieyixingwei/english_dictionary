@@ -21,7 +21,7 @@ class WordTagSerializer {
     return res != null;
   }
 
-  static Future<List<WordTagSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
+  Future<List<WordTagSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/api/dictionary/word_tag/', queries:queries, cache:cache);
     return res != null ? res.data.map<WordTagSerializer>((e) => WordTagSerializer().fromJson(e)).toList() : [];
   }
@@ -54,5 +54,6 @@ class WordTagSerializer {
     return this;
   }
 }
+
 
 

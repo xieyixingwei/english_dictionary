@@ -21,7 +21,7 @@ class DialogTagSerializer {
     return res != null;
   }
 
-  static Future<List<DialogTagSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
+  Future<List<DialogTagSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/api/dictionary/dialog_tag/', queries:queries, cache:cache);
     return res != null ? res.data.map<DialogTagSerializer>((e) => DialogTagSerializer().fromJson(e)).toList() : [];
   }
@@ -54,5 +54,6 @@ class DialogTagSerializer {
     return this;
   }
 }
+
 
 

@@ -152,24 +152,33 @@ class _PracticeWordState extends State<PracticeWord> {
     ColumnSpace(
       divider: SizedBox(height: 10,),
       children: [
-        InkWell(
-          child: Text(
-            _curWord.name,
-            style: TextStyle(
-              color: Colors.black87,
-              fontWeight: FontWeight.w700,
-              fontSize: 28,
+        _curWord.offstage ?
+        IconButton(
+          icon: Icon(Icons.more_horiz),
+          onPressed: () => setState(() => _curWord.offstage = false)
+        ) : null,
+        Offstage(
+          offstage: _curWord.offstage,
+          child: InkWell(
+            child: Text(
+              _curWord.name,
+              style: TextStyle(
+                color: Colors.black87,
+                fontWeight: FontWeight.w700,
+                fontSize: 28,
+              ),
             ),
-          ),
-          onTap: () async {
-            _audioPlayer.setUrl(_curWord.audioUsMan);
-            _audioPlayer.start(0);
-          },
-          onDoubleTap: () async {
-            if(timer != null && timer.isActive) timer.cancel();
-            await Navigator.pushNamed(context, '/show_word', arguments: {'title': '', 'word': _curWord});
-            if(auto) timer = Timer.periodic(Duration(seconds: 3), _timerCallback);
-          },
+            onTap: () {
+              if(_curWord.audioUsMan.isEmpty) return;
+              _audioPlayer.setUrl(_curWord.audioUsMan);
+              _audioPlayer.start(0);
+            },
+            onDoubleTap: () async {
+              if(timer != null && timer.isActive) timer.cancel();
+              await Navigator.pushNamed(context, '/show_word', arguments: {'title': '', 'word': _curWord});
+              if(auto) timer = Timer.periodic(Duration(seconds: 3), _timerCallback);
+            },
+          )
         ),
         _curWord.voiceUs.isNotEmpty ?
         Text(

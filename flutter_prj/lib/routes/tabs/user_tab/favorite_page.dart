@@ -9,15 +9,18 @@ class FavoritePage extends StatefulWidget {
 }
 
 class _FavoritePageState extends State<FavoritePage> {
+  var _studyWordPagination = StudyWordPaginationSerializer();
 
   @override
   void initState() {
     super.initState();
-    retrieve();
+    _init();
   }
 
-  void retrieve() async {
-    setState((){});
+  void _init() async {
+    _studyWordPagination.filter.foreignUser = Global.localStore.user.id;
+    await _studyWordPagination.retrieve();
+    setState(() {});
   }
 
   @override
@@ -35,7 +38,7 @@ class _FavoritePageState extends State<FavoritePage> {
           alignment: WrapAlignment.start,
           runAlignment: WrapAlignment.start,
           children: [
-            _card(context, '收藏的单词', Global.localStore.user.studyWordSet.length,
+            _card(context, '收藏的单词', _studyWordPagination.count,
               () => Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.word})),
             _card(context, '收藏的词义辨析', Global.localStore.user.studyPlan == null ? 0 : Global.localStore.user.studyPlan.distinguishes.length,
               () => Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.distinguish})),
@@ -96,7 +99,7 @@ class ListFavoritePage extends StatefulWidget {
 }
 
 class _ListFavoritePageState extends State<ListFavoritePage> {
-
+  var _studyWordPagination = StudyWordPaginationSerializer();
   String _title;
 
   @override
@@ -115,7 +118,14 @@ class _ListFavoritePageState extends State<ListFavoritePage> {
         _title = '收藏的固定表达';
         break;
     }
+    _init();
     super.initState();
+  }
+
+  void _init() async {
+    _studyWordPagination.filter.foreignUser = Global.localStore.user.id;
+    await _studyWordPagination.retrieve();
+    setState(() {});
   }
 
   @override
@@ -137,7 +147,7 @@ class _ListFavoritePageState extends State<ListFavoritePage> {
   List<Widget> _children() {
     switch(widget.type) {
       case FavoriteType.word:
-        return Global.localStore.user.studyWordSet.map((e) =>
+        return _studyWordPagination.results.map((e) =>
           ListTile(
             dense: true,
             contentPadding: EdgeInsets.zero,
@@ -172,8 +182,7 @@ class _ListFavoritePageState extends State<ListFavoritePage> {
                   onPressed: () async {
                     var ret = await e.delete();
                     if(ret) {
-                      Global.localStore.user.studyWordSet.remove(e);
-                      Global.saveLocalStore();
+                      _studyWordPagination.results.remove(e);
                       setState(() {});
                     }
                   },

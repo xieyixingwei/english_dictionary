@@ -3,34 +3,36 @@
 // JsonSerializer
 // **************************************************************************
 
-import 'sentence_pattern.dart';
+import 'study_word.dart';
 import 'package:flutter_prj/common/http.dart';
 
 
-class SentencePatternPaginationSerializer {
-  SentencePatternPaginationSerializer();
+class StudyWordPaginationSerializer {
+  StudyWordPaginationSerializer();
 
   num count = 0;
   String next = '';
   String previous = '';
-  List<SentencePatternSerializer> results = [];
-  SentencePatternSerializerFilter filter = SentencePatternSerializerFilter();
+  List<StudyWordSerializer> results = [];
+  StudyWordSerializerFilter filter = StudyWordSerializerFilter();
+  StudyWordPaginationSerializerQuerySet queryset = StudyWordPaginationSerializerQuerySet();
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(queryset.queries);
     queries.addAll(filter.queries);
-    var res = await Http().request(HttpType.GET, '/api/dictionary/sentence_pattern/', queries:queries, cache:cache);
+    var res = await Http().request(HttpType.GET, '/api/study/word/', queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
   }
 
-  SentencePatternPaginationSerializer fromJson(Map<String, dynamic> json) {
+  StudyWordPaginationSerializer fromJson(Map<String, dynamic> json) {
     count = json['count'] == null ? count : json['count'] as num;
     next = json['next'] == null ? next : json['next'] as String;
     previous = json['previous'] == null ? previous : json['previous'] as String;
     results = json['results'] == null
                 ? results
-                : json['results'].map<SentencePatternSerializer>((e) => SentencePatternSerializer().fromJson(e as Map<String, dynamic>)).toList();
+                : json['results'].map<StudyWordSerializer>((e) => StudyWordSerializer().fromJson(e as Map<String, dynamic>)).toList();
     return this;
   }
 
@@ -42,25 +44,28 @@ class SentencePatternPaginationSerializer {
   }..removeWhere((k, v) => v==null);
 
 
-  SentencePatternPaginationSerializer from(SentencePatternPaginationSerializer instance) {
+  StudyWordPaginationSerializer from(StudyWordPaginationSerializer instance) {
     if(instance == null) return this;
     count = instance.count;
     next = instance.next;
     previous = instance.previous;
-    results = List.from(instance.results.map((e) => SentencePatternSerializer().from(e)).toList());
+    results = List.from(instance.results.map((e) => StudyWordSerializer().from(e)).toList());
     return this;
   }
 }
 
-class SentencePatternSerializerFilter {
-  String content__icontains;
+
+class StudyWordPaginationSerializerQuerySet {
+  num pageSize = 10;
+  num pageIndex = 1;
 
   Map<String, dynamic> get queries => <String, dynamic>{
-    'content__icontains': content__icontains,
+    'pageSize': pageSize,
+    'pageIndex': pageIndex,
   }..removeWhere((String key, dynamic value) => value == null);
 
   void clear() {
-    content__icontains = null;
+    pageSize = null;
+    pageIndex = null;
   }
 }
-

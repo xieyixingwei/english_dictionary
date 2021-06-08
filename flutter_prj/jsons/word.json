@@ -2,10 +2,10 @@
     "name @pk": "",
     "voiceUs": "",
     "voiceUk": "",
-    "_audioUsMan": "String=null",
-    "_audioUsWoman": "String=null",
-    "_audioUkMan": "String=null",
-    "_audioUkWoman": "String=null",
+    "_audioUsMan": "",
+    "_audioUsWoman": "",
+    "_audioUkMan": "",
+    "_audioUkWoman": "",
     "morph": [""],
     "tag": [""],
     "etyma": [""],
@@ -19,6 +19,7 @@
     "_sentencePatternSet": ["$sentence_pattern"], // 常用句型
     "_grammarSet": ["$grammar"], //语法
     "_distinguishSet": ["$distinguish"], // 词义辨析
+    "__offstage": true,
     "__http__": {
         "url": "/api/dictionary/word/",
         "methods": [

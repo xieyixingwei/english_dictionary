@@ -15,7 +15,7 @@
     "status": "",
     "studyPlan": "$study_plan",
     "studyGrammarSet": ["$study_grammar"],
-    "studyWordSet": ["$study_word"],
+    //"__studyWordSet": ["$study_word"],
     "studySentenceSet": ["$study_sentence"],
     "__http__": {
         "url": "/api/user/",

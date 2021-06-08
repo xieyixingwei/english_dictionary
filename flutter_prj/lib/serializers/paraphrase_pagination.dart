@@ -17,7 +17,8 @@ class ParaphrasePaginationSerializer {
   ParaphraseSerializerFilter filter = ParaphraseSerializerFilter();
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
-    (queries != null && filter.queryset != null) ? queries.addAll(filter.queryset) : queries = filter.queryset;
+    if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/dictionary/paraphrase/', queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
@@ -54,11 +55,12 @@ class ParaphrasePaginationSerializer {
 class ParaphraseSerializerFilter {
   String interpret__icontains;
 
-  Map<String, dynamic> get queryset => <String, dynamic>{
-    "interpret__icontains": interpret__icontains,
+  Map<String, dynamic> get queries => <String, dynamic>{
+    'interpret__icontains': interpret__icontains,
   }..removeWhere((String key, dynamic value) => value == null);
 
   void clear() {
     interpret__icontains = null;
   }
 }
+

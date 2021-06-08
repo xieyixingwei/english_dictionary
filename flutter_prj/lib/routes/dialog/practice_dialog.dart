@@ -16,7 +16,8 @@ class PracticeDialog extends StatefulWidget {
 
 class _PracticeDialogState extends State<PracticeDialog> {
   num index = -1;
-  bool auto = false;
+  //bool auto = false;
+  bool mode = false;
   bool reverse = false;
   List<SentenceSerializer> sentences = [];
   WrappedPlayer _audioPlayer = WrappedPlayer();
@@ -54,7 +55,7 @@ class _PracticeDialogState extends State<PracticeDialog> {
               ),
             ],
           ),
-          Row(
+          /*Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text('自动', style: _style,),
@@ -72,21 +73,32 @@ class _PracticeDialogState extends State<PracticeDialog> {
                 },
               ),
             ],
-          ),
+          ),*/
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('模式', style: _style,),
+              SizedBox(width: 3,),
+              Switch(
+                value: mode,
+                onChanged: (v) => setState(() => mode = v),
+              ),
+            ],
+          )
         ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(6, 10, 6, 10),
-        child: Column(
+        child: ColumnSpace(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ColumnSpace(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: sentences.asMap().map((i, v) => 
+              children: mode ? sentences.asMap().map((i, v) => 
                 MapEntry(i, _sentence(i, v))
-              ).values.toList(),
+              ).values.toList() : widget.dialog.sentenceSet.map((e) => _sentenceB(e)).toList(),
             ),
-            _ok,
+            mode ? _ok : null,
           ]
         )
       )

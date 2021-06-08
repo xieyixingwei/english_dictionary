@@ -21,7 +21,7 @@ class _ListUsersState extends State<ListUsers> {
   }
 
   void _init() async {
-    var users = await UserSerializer.list();
+    var users = await UserSerializer().list();
     setState(() => _users = users);
   }
 

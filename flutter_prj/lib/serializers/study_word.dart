@@ -21,6 +21,7 @@ class StudyWordSerializer {
   bool isFavorite = false;
   String comments = '';
   num repeats = 0;
+  StudyWordSerializerFilter filter = StudyWordSerializerFilter();
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/study/word/', data:data ?? toJson(), queries:queries, cache:cache);
@@ -32,6 +33,8 @@ class StudyWordSerializer {
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
+    if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/study/word/$id/', queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
@@ -50,6 +53,13 @@ class StudyWordSerializer {
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.PUT, '/api/study/word/$id/', data:data ?? toJson(), queries:queries, cache:cache);
     return res != null;
+  }
+
+  Future<List<StudyWordSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
+    if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(filter.queries);
+    var res = await Http().request(HttpType.GET, '/api/study/word/', queries:queries, cache:cache);
+    return res != null ? res.data.map<StudyWordSerializer>((e) => StudyWordSerializer().fromJson(e)).toList() : [];
   }
 
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
@@ -111,4 +121,30 @@ class StudyWordSerializer {
   }
 }
 
+class StudyWordSerializerFilter {
+  num foreignUser;
+  String word;
+  String category;
+  num familiarity__lte;
+  num familiarity__gte;
+  bool inplan;
+
+  Map<String, dynamic> get queries => <String, dynamic>{
+    'foreignUser': foreignUser,
+    'word': word,
+    'category': category,
+    'familiarity__lte': familiarity__lte,
+    'familiarity__gte': familiarity__gte,
+    'inplan': inplan,
+  }..removeWhere((String key, dynamic value) => value == null);
+
+  void clear() {
+    foreignUser = null;
+    word = null;
+    category = null;
+    familiarity__lte = null;
+    familiarity__gte = null;
+    inplan = null;
+  }
+}
 

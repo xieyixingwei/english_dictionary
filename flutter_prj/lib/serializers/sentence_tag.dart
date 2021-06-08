@@ -21,7 +21,7 @@ class SentenceTagSerializer {
     return res != null;
   }
 
-  static Future<List<SentenceTagSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
+  Future<List<SentenceTagSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/api/dictionary/sentence_tag/', queries:queries, cache:cache);
     return res != null ? res.data.map<SentenceTagSerializer>((e) => SentenceTagSerializer().fromJson(e)).toList() : [];
   }
@@ -54,5 +54,6 @@ class SentenceTagSerializer {
     return this;
   }
 }
+
 
 

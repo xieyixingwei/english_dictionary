@@ -4,7 +4,7 @@
     "image": "$SingleFile image", 
     "vedio": "$SingleFile video",
     "wordsForeign @fk_mm": ["$word"], // 相关单词列表
-    "sentencePatternForeign @fk_mm @nested_r": ["$sentence_pattern"],
+    "sentencePatternForeign @fk_mm @nested_rw": ["$sentence_pattern"],
     "__http__": {
         "url": "/api/dictionary/distinguish/",
         "methods": [

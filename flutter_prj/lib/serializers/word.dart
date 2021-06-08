@@ -20,10 +20,10 @@ class WordSerializer {
   String name = '';
   String voiceUs = '';
   String voiceUk = '';
-  String audioUsMan;
-  String audioUsWoman;
-  String audioUkMan;
-  String audioUkWoman;
+  String audioUsMan = '';
+  String audioUsWoman = '';
+  String audioUkMan = '';
+  String audioUkWoman = '';
   List<String> morph = [];
   List<String> tag = [];
   List<String> etyma = [];
@@ -37,6 +37,7 @@ class WordSerializer {
   List<SentencePatternSerializer> sentencePatternSet = [];
   List<GrammarSerializer> grammarSet = [];
   List<DistinguishSerializer> distinguishSet = [];
+  bool offstage = true;
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/dictionary/word/', data:data ?? toJson(), queries:queries, cache:cache);
@@ -178,9 +179,11 @@ class WordSerializer {
     sentencePatternSet = List.from(instance.sentencePatternSet.map((e) => SentencePatternSerializer().from(e)).toList());
     grammarSet = List.from(instance.grammarSet.map((e) => GrammarSerializer().from(e)).toList());
     distinguishSet = List.from(instance.distinguishSet.map((e) => DistinguishSerializer().from(e)).toList());
+    offstage = instance.offstage;
     _name = instance._name;
     return this;
   }
 }
+
 
 

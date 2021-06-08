@@ -17,7 +17,8 @@ class WordPaginationSerializer {
   WordSerializerFilter filter = WordSerializerFilter();
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
-    (queries != null && filter.queryset != null) ? queries.addAll(filter.queryset) : queries = filter.queryset;
+    if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/dictionary/word/', queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
@@ -57,11 +58,11 @@ class WordSerializerFilter {
   String tag__icontains;
   String etyma__icontains;
 
-  Map<String, dynamic> get queryset => <String, dynamic>{
-    "name": name,
-    "name__icontains": name__icontains,
-    "tag__icontains": tag__icontains,
-    "etyma__icontains": etyma__icontains,
+  Map<String, dynamic> get queries => <String, dynamic>{
+    'name': name,
+    'name__icontains': name__icontains,
+    'tag__icontains': tag__icontains,
+    'etyma__icontains': etyma__icontains,
   }..removeWhere((String key, dynamic value) => value == null);
 
   void clear() {
@@ -71,3 +72,4 @@ class WordSerializerFilter {
     etyma__icontains = null;
   }
 }
+

@@ -41,19 +41,19 @@ class Global {
       ..maxCount = 100;
 
     Http.init();
-    List<WordTagSerializer> wTags = await WordTagSerializer.list();
+    List<WordTagSerializer> wTags = await WordTagSerializer().list();
     wordTagOptions = wTags.map((e) => e.name).toList();
-    List<SentenceTagSerializer> sTags = await SentenceTagSerializer.list();
+    List<SentenceTagSerializer> sTags = await SentenceTagSerializer().list();
     sentenceTagOptions = sTags.map((e) => e.name).toList();
-    List<GrammarTypeSerializer> gTypes = await GrammarTypeSerializer.list();
+    List<GrammarTypeSerializer> gTypes = await GrammarTypeSerializer().list();
     grammarTypeOptions = gTypes.map((e) => e.name).toList();
-    List<GrammarTagSerializer> gTags = await GrammarTagSerializer.list();
+    List<GrammarTagSerializer> gTags = await GrammarTagSerializer().list();
     grammarTagOptions = gTags.map((e) => e.name).toList();
     EtymaPaginationSerializer etymas = EtymaPaginationSerializer();
     await etymas.retrieve();
     etymaOptions = etymas.results.map((e) => e.name).toList();
 
-    var dTags = await DialogTagSerializer.list();
+    var dTags = await DialogTagSerializer().list();
     dialogTagOptions = dTags.map((e) => e.name).toList();
   
     isLogin = await localStore.user.retrieve();

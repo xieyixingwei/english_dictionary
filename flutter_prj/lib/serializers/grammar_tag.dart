@@ -21,7 +21,7 @@ class GrammarTagSerializer {
     return res != null;
   }
 
-  static Future<List<GrammarTagSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
+  Future<List<GrammarTagSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/api/dictionary/grammar_tag/', queries:queries, cache:cache);
     return res != null ? res.data.map<GrammarTagSerializer>((e) => GrammarTagSerializer().fromJson(e)).toList() : [];
   }
@@ -54,5 +54,6 @@ class GrammarTagSerializer {
     return this;
   }
 }
+
 
 

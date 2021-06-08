@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/serializers/index.dart';
 
 
 class WordPracticePage extends StatefulWidget {
@@ -11,6 +12,21 @@ class WordPracticePage extends StatefulWidget {
 
 
 class _WordPracticePageState extends State<WordPracticePage> {
+  var _studyWordPagination = StudyWordPaginationSerializer();
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  void _init() async {
+    _studyWordPagination.filter..foreignUser = Global.localStore.user.id
+                               ..familiarity__lte = 4
+                               ..inplan = true;
+    await _studyWordPagination.retrieve();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) =>
@@ -28,7 +44,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
             alignment: WrapAlignment.center,
             runAlignment: WrapAlignment.center,
             children: Global.wordTagOptions.map((tag) {
-              var studyWords = Global.localStore.user.studyWordSet.where((e) => e.inplan && e.familiarity < 5 && e.word.tag.contains(tag)).toList();
+              var studyWords = _studyWordPagination.results.where((e) => e.word.tag.contains(tag)).toList();
               studyWords.sort((a, b) => a.familiarity.compareTo(b.familiarity));
               return _card(context, tag, studyWords.length, () {
                 if(studyWords.isEmpty) return;

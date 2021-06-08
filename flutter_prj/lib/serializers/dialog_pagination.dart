@@ -17,7 +17,8 @@ class DialogPaginationSerializer {
   DialogSerializerFilter filter = DialogSerializerFilter();
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
-    (queries != null && filter.queryset != null) ? queries.addAll(filter.queryset) : queries = filter.queryset;
+    if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/dictionary/dialog/', queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
@@ -55,9 +56,9 @@ class DialogSerializerFilter {
   String tag__icontains;
   String title__icontains;
 
-  Map<String, dynamic> get queryset => <String, dynamic>{
-    "tag__icontains": tag__icontains,
-    "title__icontains": title__icontains,
+  Map<String, dynamic> get queries => <String, dynamic>{
+    'tag__icontains': tag__icontains,
+    'title__icontains': title__icontains,
   }..removeWhere((String key, dynamic value) => value == null);
 
   void clear() {
@@ -65,3 +66,4 @@ class DialogSerializerFilter {
     title__icontains = null;
   }
 }
+

@@ -14,12 +14,6 @@ List<Map<String, List<ParaphraseSerializer>>> sortParaphraseSet(List<ParaphraseS
   return ret;
 }
 
-StudyWordSerializer getStudyWord(String word) {
-  if(Global.localStore.user.studyWordSet.isEmpty)
-    return null;
-  return Global.localStore.user.studyWordSet.singleWhere((e) => e.word.name == word, orElse: () => null);
-}
-
 StudySentenceSerializer getStudySentence(num id) {
   if(Global.localStore.user.studySentenceSet.isEmpty)
     return null;
@@ -58,13 +52,17 @@ Future<String> popSelectWordCategoryDialog(BuildContext context) async {
                   icon: Icon(Icons.clear, color: Colors.black54, size: 18,),
                   tooltip: '删除',
                   splashRadius: 1.0,
-                  onPressed: () => setState(() {
-                    Global.localStore.user.studyWordSet.where((w) => w.category == e).forEach((w) => w.delete());
-                    Global.localStore.user.studyWordSet.removeWhere((w) => w.category == e);
-                    if(Global.localStore.user.studyPlan != null) Global.localStore.user.studyPlan.wordCategory.remove(e);
-                    if(Global.localStore.user.studyPlan != null) Global.localStore.user.studyPlan.save();
+                  onPressed: () async {
+                    Global.localStore.user.studyPlan.wordCategory.remove(e);
+                    Global.localStore.user.studyPlan.save();
                     Global.saveLocalStore();
-                  }),
+                    var studyWord = StudyWordSerializer();
+                    studyWord.filter.foreignUser = Global.localStore.user.id;
+                    studyWord.filter.category = e;
+                    var swes = await StudyWordSerializer().list();
+                    swes.forEach((w) => w.delete());
+                    setState(() {});
+                  },
                 ),
               ]
             ),

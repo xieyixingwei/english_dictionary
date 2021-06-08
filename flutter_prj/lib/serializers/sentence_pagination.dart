@@ -17,7 +17,8 @@ class SentencePaginationSerializer {
   SentenceSerializerFilter filter = SentenceSerializerFilter();
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
-    (queries != null && filter.queryset != null) ? queries.addAll(filter.queryset) : queries = filter.queryset;
+    if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/dictionary/sentence/', queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
@@ -59,13 +60,13 @@ class SentenceSerializerFilter {
   String tense;
   String pattern__icontains;
 
-  Map<String, dynamic> get queryset => <String, dynamic>{
-    "en__icontains": en__icontains,
-    "cn__icontains": cn__icontains,
-    "type": type,
-    "tag__icontains": tag__icontains,
-    "tense": tense,
-    "pattern__icontains": pattern__icontains,
+  Map<String, dynamic> get queries => <String, dynamic>{
+    'en__icontains': en__icontains,
+    'cn__icontains': cn__icontains,
+    'type': type,
+    'tag__icontains': tag__icontains,
+    'tense': tense,
+    'pattern__icontains': pattern__icontains,
   }..removeWhere((String key, dynamic value) => value == null);
 
   void clear() {
@@ -77,3 +78,4 @@ class SentenceSerializerFilter {
     pattern__icontains = null;
   }
 }
+

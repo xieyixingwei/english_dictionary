@@ -17,7 +17,8 @@ class DistinguishPaginationSerializer {
   DistinguishSerializerFilter filter = DistinguishSerializerFilter();
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
-    (queries != null && filter.queryset != null) ? queries.addAll(filter.queryset) : queries = filter.queryset;
+    if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/dictionary/distinguish/', queries:queries, cache:cache);
     if(res != null) fromJson(res.data);
     return res != null;
@@ -55,9 +56,9 @@ class DistinguishSerializerFilter {
   String wordsForeign__icontains;
   String content__icontains;
 
-  Map<String, dynamic> get queryset => <String, dynamic>{
-    "wordsForeign__icontains": wordsForeign__icontains,
-    "content__icontains": content__icontains,
+  Map<String, dynamic> get queries => <String, dynamic>{
+    'wordsForeign__icontains': wordsForeign__icontains,
+    'content__icontains': content__icontains,
   }..removeWhere((String key, dynamic value) => value == null);
 
   void clear() {
@@ -65,3 +66,4 @@ class DistinguishSerializerFilter {
     content__icontains = null;
   }
 }
+

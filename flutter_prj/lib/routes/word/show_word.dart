@@ -44,10 +44,23 @@ class ShowWord extends StatefulWidget {
 }
 
 class _ShowWordState extends State<ShowWord> {
-
+  var _studyWordPagination = StudyWordPaginationSerializer();
   final _labelStyle = TextStyle(fontSize: 14, color: Colors.black87, fontWeight: FontWeight.bold);
   //AudioPlayer _player = AudioPlayer();
   WrappedPlayer _audioPlayer = WrappedPlayer();
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  void _init() async {
+    _studyWordPagination.filter.foreignUser = Global.localStore.user.id;
+    _studyWordPagination.filter.word = widget.word.name;
+    await _studyWordPagination.retrieve();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) => _wordShow(context);
@@ -110,24 +123,22 @@ class _ShowWordState extends State<ShowWord> {
         ),
         IconButton(
           padding: EdgeInsets.zero,
-          icon: Icon(Icons.star, color: getStudyWord(widget.word.name) == null ? Colors.black54 : Colors.redAccent, size: 24),
+          icon: Icon(Icons.star, color: _studyWordPagination.results.isEmpty ? Colors.black54 : Colors.redAccent, size: 24),
           tooltip: '收藏',
           splashRadius: 5.0,
           onPressed: () async {
-            var sw = getStudyWord(widget.word.name);
-            if(sw == null) {
+            if(_studyWordPagination.results.isEmpty) {
               var category = await popSelectWordCategoryDialog(context);
               if(category == null) return;
               var newSw = StudyWordSerializer()..word = widget.word
                                                ..foreignUser = Global.localStore.user.id
                                                ..category = category;
-              Global.localStore.user.studyWordSet.add(newSw);
-              await newSw.save();
+              var ret = await newSw.save();
+              if(ret) _studyWordPagination.results.add(newSw);
             } else {
-              await sw.delete();
-              Global.localStore.user.studyWordSet.remove(sw);
+              var ret = await _studyWordPagination.results.first.delete();
+              if(ret) _studyWordPagination.results.removeAt(0);
             }
-            Global.saveLocalStore();
             setState(() {});
           },
         ),
