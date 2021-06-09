@@ -1,6 +1,6 @@
 from django.db import models
 from server.models  import JSONFieldUtf8
-from ..download_word_voice import DownloadWordVoice
+from ..download_word import DownloadWord
 from server import settings
 from django.core.files.base import ContentFile
 
@@ -29,16 +29,24 @@ class WordTable(models.Model):
         ordering = ['name']  # 消除list警告UnorderedObjectListWarning: Pagination may yield inconsistent results with an unordered object_list
 
     def save(self, *args, **kwargs):
-        self._fill_audio_()
+        self._fill_word()
         super().save(*args, **kwargs)
 
-    def _fill_audio_(self):
+    def _fill_word(self):
         """
-        自动填充发音字段
+        自动填充字段
         """
+        download = None
+        if self.voiceUs == None or self.voiceUs == '':
+            download = DownloadWord(settings.MEDIA_ROOT, str(self.name))
+            self.voiceUs = download.voice('美')
+            self.voiceUk = download.voice('英')
+
         if self.audioUsMan.name != None and self.audioUkWoman.name != '':
             return
-        for name, data in DownloadWordVoice(settings.MEDIA_ROOT).download(str(self.name)):
+        if download == None:
+            download = DownloadWord(settings.MEDIA_ROOT, str(self.name))
+        for name, data in DownloadWord(settings.MEDIA_ROOT, str(self.name)).sounds():
             fileContent = ContentFile(data)
             if 'us_man' in name and self.audioUsMan.name == None:
                 pathName = self.audioUsMan.field.upload_to+name
