@@ -34,7 +34,7 @@ class _ListDistinguishesState extends State<ListDistinguishes> {
         title: Text('编辑单词辨析'),
         centerTitle: true,
       ),
-      body: Container(
+      body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(6, 20, 6, 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,7 +96,7 @@ Widget _buildFilterOptions(BuildContext context) =>
     );
 
   Widget _buildListDistinguishs(BuildContext context) =>
-    SingleChildScrollView(
+    Container(
       padding: EdgeInsets.only(top: 20),
       child: Pagination(
         pages: (_distinguishes.count / _perPage).ceil(),

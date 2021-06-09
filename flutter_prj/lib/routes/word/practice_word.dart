@@ -18,6 +18,7 @@ class PracticeWord extends StatefulWidget {
 }
 
 class _PracticeWordState extends State<PracticeWord> {
+  final GlobalKey _formKey =  GlobalKey<FormState>();
   num index = 0;
   bool auto = false;
   bool cycle = true;
@@ -146,7 +147,8 @@ class _PracticeWordState extends State<PracticeWord> {
                 _word(context),
                 _sentences,
                 Form(
-                  autovalidateMode: AutovalidateMode.always, //开启自动校验
+                  key: _formKey,
+                  autovalidateMode: AutovalidateMode.disabled, //关闭开启自动校验
                   child: Container(
                     margin: EdgeInsets.only(left: 50, right: 50),
                     child: TextFormField(
@@ -156,6 +158,12 @@ class _PracticeWordState extends State<PracticeWord> {
                       decoration: InputDecoration(
                         labelText: '单词拼写',
                         border: OutlineInputBorder(),
+                        suffix: TextButton(
+                          child: Text('确定'),
+                          onPressed: () {
+                            (_formKey.currentState as FormState).validate();
+                          }
+                        )
                       ),
                       validator: (v) => v.trim() != _curWord.name ? 'Wrong' : null,
                     )
