@@ -13,14 +13,20 @@ from .ParaphraseView import ParaphraseSerializer
 from .SentencePatternView import SentencePatternSerializer
 
 
+
 class WordSerializer(serializers.ModelSerializer):
     paraphraseSet = ParaphraseSerializer(many=True, read_only=True)
     sentencePatternSet = SentencePatternSerializer(many=True, read_only=True)
     grammarSet = GrammarSerializer(many=True, read_only=True)
     distinguishSet = DistinguishSerializer(many=True, read_only=True)
+    studyWord = serializers.SerializerMethodField()
+
     class Meta:
         model = WordTable
         fields = '__all__'
+
+    def get_studyWord(self, obj):
+        return {'id': obj.studyWord.id, 'inplan': obj.studyWord.inplan}
 
 
 # 分页自定义
