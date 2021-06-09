@@ -186,7 +186,6 @@ class WordSerializer {
     sentencePatternSet = List.from(instance.sentencePatternSet.map((e) => SentencePatternSerializer().from(e)).toList());
     grammarSet = List.from(instance.grammarSet.map((e) => GrammarSerializer().from(e)).toList());
     distinguishSet = List.from(instance.distinguishSet.map((e) => DistinguishSerializer().from(e)).toList());
-    studyWordSet = List.from(instance.studyWordSet.map((e) => StudyWordSerializer().from(e)).toList());
     offstage = instance.offstage;
     _name = instance._name;
     return this;
