@@ -26,7 +26,10 @@ class WordSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_studyWordSet(self, obj):
-        request = self.context["request"]
+        if not 'request' in self.context.keys():
+            # 防止 StudyWordSerializer 和 WordSerializer 无限循环序列化
+            return []
+        request = self.context['request']
         token = request.query_params.get('token')
         if not token:
             token = request.headers.get('authorization') 
