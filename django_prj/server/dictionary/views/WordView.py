@@ -3,6 +3,7 @@ from rest_framework.pagination import PageNumberPagination
 from django_filters import filterset
 from django.db import models
 import django_filters
+from django.core.cache import cache
 
 from server import permissions
 from server.views import ModelViewSetPermissionSerializerMap
@@ -13,20 +14,30 @@ from .ParaphraseView import ParaphraseSerializer
 from .SentencePatternView import SentencePatternSerializer
 
 
-
 class WordSerializer(serializers.ModelSerializer):
     paraphraseSet = ParaphraseSerializer(many=True, read_only=True)
     sentencePatternSet = SentencePatternSerializer(many=True, read_only=True)
     grammarSet = GrammarSerializer(many=True, read_only=True)
     distinguishSet = DistinguishSerializer(many=True, read_only=True)
-    studyWord = serializers.SerializerMethodField()
+    studyWordSet = serializers.SerializerMethodField()
 
     class Meta:
         model = WordTable
         fields = '__all__'
 
-    def get_studyWord(self, obj):
-        return {'id': obj.studyWord.id, 'inplan': obj.studyWord.inplan}
+    def get_studyWordSet(self, obj):
+        request = self.context["request"]
+        token = request.query_params.get('token')
+        if not token:
+            token = request.headers.get('authorization') 
+        try:
+            userId = cache.get(token)
+            return [{'id': sw.id, 'foreignUser': sw.foreignUser.id, 'inplan': sw.inplan}
+                        for sw in obj.studyWordSet.all()
+                        if userId == sw.foreignUser.id]
+        except:
+            return []
+        
 
 
 # 分页自定义
