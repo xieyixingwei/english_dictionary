@@ -152,7 +152,11 @@ class _ListWordsState extends State<ListWords> {
                   splashRadius: 5.0,
                   onPressed: () async {
                     if(e.studyWordSet.isEmpty) {
-                      var category = await popSelectWordCategoryDialog(context);
+                      String category;
+                      if(Global.localStore.user.studyPlan.wordCategory.length == 1)
+                        category = Global.localStore.user.studyPlan.wordCategory.first;
+                      else
+                        category = await popSelectWordCategoryDialog(context);
                       if(category == null) return;
                       var newSw = StudyWordSerializer()..word = e
                                                       ..foreignUser = Global.localStore.user.id
