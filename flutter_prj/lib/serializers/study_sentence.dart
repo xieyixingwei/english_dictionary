@@ -60,7 +60,7 @@ class StudySentenceSerializer {
       await update(data:data, queries:queries, cache:cache);
 
     if(res) {
-      if(sentenceObj != null){ await sentenceObj.save();}
+      if(sentenceObj != null){await sentenceObj.save();}
     }
     
     return res;

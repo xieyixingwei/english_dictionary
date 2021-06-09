@@ -19,6 +19,7 @@
     "_sentencePatternSet": ["$sentence_pattern"], // 常用句型
     "_grammarSet": ["$grammar"], //语法
     "_distinguishSet": ["$distinguish"], // 词义辨析
+    "_studyWordSet": ["$study_word"],
     "__offstage": true,
     "__http__": {
         "url": "/api/dictionary/word/",

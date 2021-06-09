@@ -10,6 +10,7 @@ import 'paraphrase.dart';
 import 'sentence_pattern.dart';
 import 'grammar.dart';
 import 'distinguish.dart';
+import 'study_word.dart';
 import 'package:flutter_prj/common/http.dart';
 
 
@@ -37,6 +38,7 @@ class WordSerializer {
   List<SentencePatternSerializer> sentencePatternSet = [];
   List<GrammarSerializer> grammarSet = [];
   List<DistinguishSerializer> distinguishSet = [];
+  List<StudyWordSerializer> studyWordSet = [];
   bool offstage = true;
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
@@ -68,6 +70,7 @@ class WordSerializer {
     if(sentencePatternSet != null){sentencePatternSet.forEach((e){e.delete();});}
     if(grammarSet != null){grammarSet.forEach((e){e.delete();});}
     if(distinguishSet != null){distinguishSet.forEach((e){e.delete();});}
+    if(studyWordSet != null){studyWordSet.forEach((e){e.delete();});}
     */
     return res != null ? res.statusCode == 204 : false;
   }
@@ -82,6 +85,7 @@ class WordSerializer {
       await Future.forEach(sentencePatternSet, (e) async {e.wordForeign = name; await e.save();});
       await Future.forEach(grammarSet, (e) async {e.wordForeign = name; await e.save();});
       await Future.forEach(distinguishSet, (e) async { await e.save();});
+      await Future.forEach(studyWordSet, (e) async {e.word = name; await e.save();});
     }
     res = await uploadFile();
     return res;
@@ -126,6 +130,9 @@ class WordSerializer {
     distinguishSet = json['distinguishSet'] == null
                 ? distinguishSet
                 : json['distinguishSet'].map<DistinguishSerializer>((e) => DistinguishSerializer().fromJson(e as Map<String, dynamic>)).toList();
+    studyWordSet = json['studyWordSet'] == null
+                ? studyWordSet
+                : json['studyWordSet'].map<StudyWordSerializer>((e) => StudyWordSerializer().fromJson(e as Map<String, dynamic>)).toList();
     _name = name;
     return this;
   }
@@ -179,6 +186,7 @@ class WordSerializer {
     sentencePatternSet = List.from(instance.sentencePatternSet.map((e) => SentencePatternSerializer().from(e)).toList());
     grammarSet = List.from(instance.grammarSet.map((e) => GrammarSerializer().from(e)).toList());
     distinguishSet = List.from(instance.distinguishSet.map((e) => DistinguishSerializer().from(e)).toList());
+    studyWordSet = List.from(instance.studyWordSet.map((e) => StudyWordSerializer().from(e)).toList());
     offstage = instance.offstage;
     _name = instance._name;
     return this;

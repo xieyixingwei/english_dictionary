@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/common/common.dart';
 import 'package:flutter_prj/routes/word/show_word.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/pagination.dart';
@@ -141,21 +142,47 @@ class _ListWordsState extends State<ListWords> {
           wordItem(
             context: context,
             word: e,
-            trailing: EditDelete(
-              edit: () async {
-                var word = (await Navigator.pushNamed(
-                  context, '/edit_word',
-                  arguments: {'title':'编辑单词','word':WordSerializer().from(e)})
-                ) as WordSerializer;
-                if(word != null) await e.from(word).save();
-                setState(() {});
-              },
-              delete: () {
-                e.delete();
-                _words.results.remove(e);
-                setState(() {});
-              },
-            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: Icon(Icons.star, color: e.studyWordSet.isEmpty ? Colors.black54 : Colors.redAccent, size: 17),
+                  tooltip: '收藏',
+                  splashRadius: 5.0,
+                  onPressed: () async {
+                    if(e.studyWordSet.isEmpty) {
+                      var category = await popSelectWordCategoryDialog(context);
+                      if(category == null) return;
+                      var newSw = StudyWordSerializer()..word = e
+                                                      ..foreignUser = Global.localStore.user.id
+                                                      ..category = category;
+                      var ret = await newSw.save();
+                      if(ret) e.studyWordSet.add(newSw);
+                    } else {
+                      var ret = await e.studyWordSet.first.delete(pk:e.studyWordSet.first.id);
+                      if(ret) e.studyWordSet.removeAt(0);
+                    }
+                    setState(() {});
+                  },
+                ),
+                EditDelete(
+                  edit: () async {
+                    var word = (await Navigator.pushNamed(
+                      context, '/edit_word',
+                      arguments: {'title':'编辑单词','word':WordSerializer().from(e)})
+                    ) as WordSerializer;
+                    if(word != null) await e.from(word).save();
+                    setState(() {});
+                  },
+                  delete: () {
+                    e.delete();
+                    _words.results.remove(e);
+                    setState(() {});
+                  },
+                ),
+              ]
+            )
           )
         ).toList(),
       ),

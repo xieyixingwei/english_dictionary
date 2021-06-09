@@ -217,7 +217,7 @@ class Member {
     membersForeignToMeOfTypeSerializer = membersForeignToMeOfTypeSerializer.where((e) => e.foreign != ForeignType.ManyToMany).toList();
     List<String>eForeignNames = membersForeignToMeOfTypeSerializer.map((e) => e.name).toList();
     String eAssignForeign = eForeignNames.map((e) => 'e.$e = ${fatherSerializer.primaryMember.name};').toList().join(' ');
-    return isList ? 'await Future.forEach($name, (e) async {$eAssignForeign await e.save();});' : 'if($name != null){$eAssignForeign await $name.save();}';
+    return isList ? 'await Future.forEach($name, (e) async {$eAssignForeign await e.save();});' : 'if($name != null){await $name.save();}';
   }
 
   String get delete {
