@@ -73,14 +73,14 @@ flutter:
     - family: Arial
       fonts:
         - asset: assets/fonts/Arial/arial.ttf
-        - asset: assets/fonts/Arial/arialbd.ttf
-        - asset: assets/fonts/Arial/arialbi.ttf
-        - asset: assets/fonts/Arial/ariali.ttf
-        - asset: assets/fonts/Arial/ARIALN.TTF
-        - asset: assets/fonts/Arial/ARIALNB.TTF
-        - asset: assets/fonts/Arial/ARIALNBI.TTF
-        - asset: assets/fonts/Arial/ARIALNI.TTF
-        - asset: assets/fonts/Arial/ariblk.ttf
+      #  - asset: assets/fonts/Arial/arialbd.ttf
+      #  - asset: assets/fonts/Arial/arialbi.ttf
+      #  - asset: assets/fonts/Arial/ariali.ttf
+      #  - asset: assets/fonts/Arial/ARIALN.TTF
+      #  - asset: assets/fonts/Arial/ARIALNB.TTF
+      #  - asset: assets/fonts/Arial/ARIALNBI.TTF
+      #  - asset: assets/fonts/Arial/ARIALNI.TTF
+      #  - asset: assets/fonts/Arial/ariblk.ttf
           style: normal
   #   - family: Trajan Pro
   #     fonts:

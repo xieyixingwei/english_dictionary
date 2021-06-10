@@ -22,6 +22,7 @@ class _PracticeWordState extends State<PracticeWord> {
   num index = 0;
   bool auto = false;
   bool cycle = true;
+  bool autoPronun = false;
   var textCtrl = TextEditingController();
   WrappedPlayer _audioPlayer = WrappedPlayer();
   final _style = TextStyle(fontSize: 14, color: Colors.black45);
@@ -30,7 +31,7 @@ class _PracticeWordState extends State<PracticeWord> {
   void _timerCallback(Timer t) {
     _next();
 
-    if(_curWord.audioUsMan == null) return; _audioPlayer.setUrl(_curWord.audioUsMan); _audioPlayer.start(0);
+    _playCurWordAudio();
     if(cycle == false && (index == widget.studyWords.length - 1)) {timer.cancel(); auto = false;}
     setState((){});
   }
@@ -64,11 +65,17 @@ class _PracticeWordState extends State<PracticeWord> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('循环', style: _style,),
+              Text('自动发音', style: _style,),
               SizedBox(width: 3,),
               Switch(
-                value: cycle,
-                onChanged: (v) => setState(() => cycle = v),
+                value: autoPronun,
+                onChanged: (v) {
+                  autoPronun = v;
+                  setState(() {});
+                  if(autoPronun) {
+                    _playCurWordAudio();
+                  }
+                },
               ),
             ],
           ),
@@ -82,9 +89,7 @@ class _PracticeWordState extends State<PracticeWord> {
                 onChanged: (v) {
                   if(v) {
                     timer = Timer.periodic(Duration(seconds: 3), _timerCallback);
-                    if(_curWord.audioUsMan.isEmpty) return;
-                    _audioPlayer.setUrl(_curWord.audioUsMan);
-                    _audioPlayer.start(0);
+                    _playCurWordAudio();
                   } else {
                     timer.cancel();
                   }
@@ -206,6 +211,12 @@ class _PracticeWordState extends State<PracticeWord> {
                 onTap: () => setState(() => _curWord.offstage = true),
                 onDoubleTap: () async {
                   if(timer != null && timer.isActive) timer.cancel();
+                  if(_curWord.studyWordSet.isEmpty) {
+                    var sw = StudyWordSerializer()..id = _curStudyWord.id
+                                                  ..foreignUser = _curStudyWord.foreignUser
+                                                  ..inplan = _curStudyWord.inplan;
+                    _curWord.studyWordSet.add(sw);
+                  }
                   await Navigator.pushNamed(context, '/show_word', arguments: {'title': '', 'word': _curWord});
                   if(auto) timer = Timer.periodic(Duration(seconds: 3), _timerCallback);
                 },
@@ -213,11 +224,7 @@ class _PracticeWordState extends State<PracticeWord> {
             ),
             IconButton(
               icon: Icon(Icons.volume_up),
-              onPressed: () {
-                if(_curWord.audioUsMan.isEmpty) return;
-                _audioPlayer.setUrl(Http.baseUrl + _curWord.audioUsMan);
-                _audioPlayer.start(0);
-              }
+              onPressed: () => _playCurWordAudio(),
             )
           ]
         ),
@@ -317,13 +324,31 @@ class _PracticeWordState extends State<PracticeWord> {
         IconButton(
           icon: Icon(Icons.arrow_back_ios, size: 30, color: Colors.blueAccent,),
           splashRadius: 17,
-          onPressed: () => setState(() => _previous()),
+          onPressed: () {
+            _previous();
+            setState(() {});
+            if(autoPronun) {
+              _playCurWordAudio();
+            }
+          },
         ),
         IconButton(
           icon: Icon(Icons.arrow_forward_ios, size: 30, color: Colors.blueAccent),
           splashRadius: 17,
-          onPressed: () => setState(() => _next()),
+          onPressed: () {
+            _next();
+            setState(() {});
+            if(autoPronun) {
+              _playCurWordAudio();
+            }
+          },
         ),
       ],
     );
+  
+  void _playCurWordAudio() {
+    if(_curWord.audioUsMan.isEmpty) return;
+    _audioPlayer.setUrl(Http.baseUrl + _curWord.audioUsMan);
+    _audioPlayer.start(0);
+  }
 }
