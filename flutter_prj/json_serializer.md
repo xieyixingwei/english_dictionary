@@ -1,6 +1,6 @@
 # json_serializer guidance
 
-json_serializer.dart将json数据对象编译为dart数据对象，目的是用于将后端提供的数据序列化为前端Flutter的dart对象，提高前端Flutter代码的内聚性。
+`json_serializer.dart`的功能是将json数据对象编译为dart数据对象，目的是用于将后端提供的数据序列化为前端Flutter的dart对象，提高前端Flutter代码的内聚性。
 
 ## 1. 使用示例
 
