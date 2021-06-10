@@ -57,10 +57,11 @@ json对象中的普通数据成员将被编译为序列化类的普通数据成�
 
 支持如下类型的普通数据成员:
 
-普通数据成员的类型 | 示例 |  序列化类中的类型 | 设置为null  
-字符串型 | "name": "" | String name = "" | "name":"String=null"  
-整数型 | "age": 0 | num age = 0 | "age":"num=null"  
-double型 | "score": 0.0 | double score = 0.0 | "score":"double=null"  
-bool型 | "gender": false | bool gender = false | "gender":"bool=null"  
+普通数据成员的类型 | 示例 |  序列化类中的类型 | 设置为null
+:-- | :-- | :-- | :--
+字符串型 | "name": "" | String name = "" | "name":"String=null"
+整数型 | "age": 0 | num age = 0 | "age":"num=null"
+double型 | "score": 0.0 | double score = 0.0 | "score":"double=null"
+bool型 | "gender": false | bool gender = false | "gender":"bool=null"
 
 
