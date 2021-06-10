@@ -146,8 +146,22 @@ json对象中也可以定义json对象类型的成员，编译后将生成对应
   - `"teachers @fk_mm @nested": ["$teacher"]`，teachers 的类型为 `List<Teacher>`。
   - `"detail @fk_oo @nested": "$information"`，detail 的类型为 `Information`。
 
+## 2.6 序列化类方法
 
-## 2.6 为序列化类添加http方法
+将json对象序列化为dart类后，自动提供了以下三个方法：
+
+1. `TSerializer fromJson(Map<String, dynamic> json)`: 用于序列化服务器返回的json数据。
+2. `Map<String, dynamic> toJson()`: 反序列化，用于将序列化类的数据反序列化为服务器需要的json数据。
+3. `TSerializer from(TSerializer instance)`: 深拷贝赋值，用于同类型的不同序列化类实例之间的深拷贝赋值。
+
+默认所有的数据成员都会在以上三个函数中，为了提高灵活性，方便控制数据成员是否需要序列化、反序列化、深拷贝？
+
+例如为数据对象添加一些额外的数据成员，而这些成员又不需要与服务器进行交互，所以就不需要序列化和反序列化这种数据成员，即函数`fromJson()`和`toJson()`中不需要包含这种数据成员。
+
+1. 名字以一个下划线`_`开头的数据成员将不被反序列化，即`toJson()`中不包含该成员。
+2. 名字以两个下划线`__`开头的数据成员将不被反序列化和序列化，即`fromJson()`和`toJson()`中都不包含该成员。
+
+## 2.7 为序列化类添加http方法
 
 除了将服务器返回的json对象数据序列化为dart数据对象外，还提供了一个提高前端代码内聚性的特性：为序列化类添加http方法。
 
@@ -188,3 +202,38 @@ json对象中也可以定义json对象类型的成员，编译后将生成对应
 ```
 
 > 注意: 根据需求添加 http方法，移出不必要的方法。
+
+当然除了`create`、`update`、`retrieve`、`list`、`delete`、`save`标准命令的方法外，还可以添加自命名的其它方法，例如考虑到 `user.json`可以提供`register`和`login`两个方法：
+
+``` json
+// user.json
+{
+    "uname": "",
+    "passwd": "",
+    "__http__": {
+        "url": "/api/users/",
+        "methods": [
+            {
+                "name": "register",   // 方法名为 register，使用 POST 请求，如果有指定url，则使用 父url + 指定的url
+                "requst": "post",     // 指定使用 POST 请求
+                "url": "register/"
+            },
+            {
+                "name": "login", // 方法名为 login，使用 GET 请求，如果有指定url，则使用 父url + 指定的url
+                "requst": "get", // 指定使用 GET 请求
+                "url": "login/"
+            },
+            {
+                "name": "list",     // list 方法，默认使用 GET 请求，如果没有指定url，则使用 父url
+            },
+            {
+                "name": "delete",   // delete 方法，默认使用 DELETE 请求，如果有指定url，则使用 父url + 指定的url
+                "url": "$uname/"
+            }
+        ]
+    }
+}
+```
+
+> 注意：自命名方法需要使用 `requst` 指定请求类型，有 get, post, put, delete等。
+
