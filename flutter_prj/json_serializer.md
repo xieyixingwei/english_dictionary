@@ -99,7 +99,18 @@ json对象中也可以定义json对象类型的成员，编译后将生成对应
 }
 ```
 
-## 2.5 和数据库表的对应
+## 2.5 文件类型
+
+客户端需要上传文件（普通文件、图片、视频、音频），服务器端返回的json中就会包含文件的超链接（字符串型），可以如下指定文件类型的字段：
+
+``` json
+{
+    "image": "$SingleFile image", 
+    "vedio": "$SingleFile video"
+}
+```
+
+## 2.6 和数据库表的对应
 
 我们知道数据库表之间有三种关系：多对一（many to one）、多对多（many to many）、一对一（one to one）。
 
@@ -146,7 +157,7 @@ json对象中也可以定义json对象类型的成员，编译后将生成对应
   - `"teachers @fk_mm @nested": ["$teacher"]`，teachers 的类型为 `List<Teacher>`。
   - `"detail @fk_oo @nested": "$information"`，detail 的类型为 `Information`。
 
-## 2.6 序列化类方法
+## 2.7 序列化类方法
 
 将json对象序列化为dart类后，自动提供了以下三个方法：
 
@@ -161,7 +172,7 @@ json对象中也可以定义json对象类型的成员，编译后将生成对应
 1. 名字以一个下划线`_`开头的数据成员将不被反序列化，即`toJson()`中不包含该成员。
 2. 名字以两个下划线`__`开头的数据成员将不被反序列化和序列化，即`fromJson()`和`toJson()`中都不包含该成员。
 
-## 2.7 为序列化类添加http方法
+## 2.8 为序列化类添加http方法
 
 除了将服务器返回的json对象数据序列化为dart数据对象外，还提供了一个提高前端代码内聚性的特性：为序列化类添加http方法。
 
@@ -237,3 +248,21 @@ json对象中也可以定义json对象类型的成员，编译后将生成对应
 
 > 注意：自命名方法需要使用 `requst` 指定请求类型，有 get, post, put, delete等。
 
+## 2.9 过滤器
+
+为了支持对服务端数据的条件查询，可以使用`__filter__`字段指定过滤器，过滤器的字段名字必须能和父json对象的字段名字对应。
+过滤器字段的值是列表型，通过`"exact"`，`"icontains"`等来指定字段支持的过滤条件。
+
+``` json
+{
+    "name @pk": "",
+    "age": 0,
+    "gender": false,
+    "__filter__": {
+        "__serializer__": "$word",
+        "name": ["exact","icontains"], // 在序列化类中将生成 String name 和 String name_icontains 字段，其类型是父json对象的name字段的类型。
+        "age": ["lte", "gte"],         // 在序列化类中将生成 num age_lte 和 age_gte 字段
+        "gender": ["exact"]            // 在序列化类中将生成 gender 字段
+    }
+}
+```
