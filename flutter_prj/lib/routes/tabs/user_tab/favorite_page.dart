@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/word/favorite_words.dart';
 import 'package:flutter_prj/routes/word/list_favorite_words.dart';
 import 'package:flutter_prj/serializers/index.dart';
 
@@ -39,10 +40,13 @@ class _FavoritePageState extends State<FavoritePage> {
           alignment: WrapAlignment.start,
           runAlignment: WrapAlignment.start,
           children: [
-            _card(context, '收藏的单词', _studyWordPagination.count,
-              () => Navigator.push(context, MaterialPageRoute(
-                                              builder: (context) => ListFavoriteWordPage(),
-                                            ))
+            _card(context, '收藏的单词', _studyWordPagination.count, () =>
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FavoriteWordPage(),
+                )
+              )
             ),
             _card(context, '收藏的词义辨析', Global.localStore.user.studyPlan == null ? 0 : Global.localStore.user.studyPlan.distinguishes.length,
               () => Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.distinguish})),

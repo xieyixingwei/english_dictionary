@@ -5,7 +5,8 @@ import 'package:flutter_prj/widgets/pagination.dart';
 
 
 class ListFavoriteWordPage extends StatefulWidget {
-  ListFavoriteWordPage({Key key}) : super(key:key);
+  ListFavoriteWordPage({Key key, this.category}) : super(key:key);
+  final String category;
 
   @override
   _ListFavoriteWordPageState createState() => _ListFavoriteWordPageState();
@@ -22,6 +23,7 @@ class _ListFavoriteWordPageState extends State<ListFavoriteWordPage> {
 
   void _init() async {
     _studyWords.filter.foreignUser = Global.localStore.user.id;
+    _studyWords.filter.category__icontains = widget.category;
     _studyWords.queryset.pageSize = 10;
     _studyWords.queryset.pageIndex = 1;
     await _studyWords.retrieve();
@@ -32,7 +34,7 @@ class _ListFavoriteWordPageState extends State<ListFavoriteWordPage> {
   Widget build(BuildContext context) =>
     Scaffold(
       appBar: AppBar(
-        title: Text('收藏的单词'),
+        title: Text('收藏的(${widget.category})单词'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(

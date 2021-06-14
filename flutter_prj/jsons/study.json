@@ -126,7 +126,7 @@
         "__serializer__": "$study_word",
         "foreignUser": ["exact"],
         "word": ["exact"],
-        "category": ["exact"],
+        "category": ["icontains"],
         "familiarity": ["lte", "gte"],
         "inplan": ["exact"]
     },

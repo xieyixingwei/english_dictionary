@@ -126,7 +126,7 @@ class StudyWordSerializer {
 class StudyWordSerializerFilter {
   num foreignUser;
   String word;
-  String category;
+  String category__icontains;
   num familiarity__lte;
   num familiarity__gte;
   bool inplan;
@@ -134,7 +134,7 @@ class StudyWordSerializerFilter {
   Map<String, dynamic> get queries => <String, dynamic>{
     'foreignUser': foreignUser,
     'word': word,
-    'category': category,
+    'category__icontains': category__icontains,
     'familiarity__lte': familiarity__lte,
     'familiarity__gte': familiarity__gte,
     'inplan': inplan,
@@ -143,7 +143,7 @@ class StudyWordSerializerFilter {
   void clear() {
     foreignUser = null;
     word = null;
-    category = null;
+    category__icontains = null;
     familiarity__lte = null;
     familiarity__gte = null;
     inplan = null;
