@@ -115,7 +115,7 @@
     "id @pk": 0,
     "foreignUser @fk_oo": "$user",
     "word @fk_oo @nested_r": "$word",
-    "category": "",
+    "category": [""],
     "familiarity": 0,
     "learnRecord": [""],
     "inplan": false,

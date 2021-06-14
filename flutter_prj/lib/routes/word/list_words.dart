@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/routes/common/common.dart';
@@ -151,21 +153,28 @@ class _ListWordsState extends State<ListWords> {
                   tooltip: '收藏',
                   splashRadius: 5.0,
                   onPressed: () async {
-                    if(e.studyWordSet.isEmpty) {
-                      String category;
-                      if(Global.localStore.user.studyPlan.wordCategory.length == 1)
-                        category = Global.localStore.user.studyPlan.wordCategory.first;
-                      else
-                        category = await popSelectWordCategoryDialog(context);
-                      if(category == null) return;
-                      var newSw = StudyWordSerializer()..word = e
-                                                      ..foreignUser = Global.localStore.user.id
-                                                      ..category = category;
-                      var ret = await newSw.save();
-                      if(ret) e.studyWordSet.add(newSw);
+                    var categories = e.studyWordSet.isEmpty ? <String>[] : e.studyWordSet.first.category;
+                    String category = await popSelectWordCategoryDialog(context, categories);
+                    if(category == null) return;
+                    if(categories.contains(category)) {
+                      e.studyWordSet.first.category.remove(category);
+                      if(e.studyWordSet.first.category.isEmpty) {
+                        await e.studyWordSet.first.delete();
+                        e.studyWordSet.clear();
+                      } else {
+                        await e.studyWordSet.first.save();
+                      }
                     } else {
-                      var ret = await e.studyWordSet.first.delete(pk:e.studyWordSet.first.id);
-                      if(ret) e.studyWordSet.removeAt(0);
+                      if(e.studyWordSet.isEmpty) {
+                        var newSw = StudyWordSerializer()..word = e
+                                                         ..foreignUser = Global.localStore.user.id
+                                                         ..category.add(category);
+                        var ret = await newSw.save();
+                        if(ret) e.studyWordSet.add(newSw);
+                      } else {
+                        e.studyWordSet.first.category.add(category);
+                        await e.studyWordSet.first.save();
+                      }
                     }
                     setState(() {});
                   },

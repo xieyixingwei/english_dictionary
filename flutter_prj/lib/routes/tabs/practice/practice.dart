@@ -31,11 +31,16 @@ class _TabPractice extends State<TabPractice> {
             alignment: WrapAlignment.spaceAround,
             runAlignment: WrapAlignment.spaceAround,
             children: [
-              _card(context, '单词', () {
-                if(Global.wordTagOptions.isEmpty) return;
+              _card(context, '单词', () async {
+                if(Global.localStore.user.studyPlan.wordCategory.isEmpty) return;
+                var studyWord = StudyWordSerializer();
+                studyWord.filter..foreignUser = Global.localStore.user.id
+                                          ..familiarity__lte = 4
+                                          ..inplan = true;
+                var studyWords = await studyWord.list();
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => WordPracticePage(),
+                    builder: (context) => WordPracticePage(studyWords: studyWords),
                   )
                 );
               }),

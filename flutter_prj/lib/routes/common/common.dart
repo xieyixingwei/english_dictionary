@@ -31,7 +31,7 @@ bool isFavoriteDistinguish(num id) {
 }
 
 
-Future<String> popSelectWordCategoryDialog(BuildContext context) async {
+Future<String> popSelectWordCategoryDialog(BuildContext context, List<String> categories) async {
   var ctrl = TextEditingController();
   var res = await showDialog(
     context: context,
@@ -45,7 +45,7 @@ Future<String> popSelectWordCategoryDialog(BuildContext context) async {
                 SizedBox(width: 20,),
                 Expanded(
                   child: InkWell(
-                  child: Text(e),
+                  child: Text('${categories.contains(e) ? "* " : "  "}$e'),
                   onTap: () => Navigator.pop(context, e),
                 )),
                 IconButton(
@@ -95,8 +95,8 @@ Future<String> popSelectWordCategoryDialog(BuildContext context) async {
                     onPressed: () {
                       if(ctrl.text.trim().isNotEmpty)
                         setState(() {
-                          if(Global.localStore.user.studyPlan != null) Global.localStore.user.studyPlan.wordCategory.add(ctrl.text.trim());
-                          if(Global.localStore.user.studyPlan != null) Global.localStore.user.studyPlan.save();
+                          Global.localStore.user.studyPlan.wordCategory.add(ctrl.text.trim());
+                          Global.localStore.user.studyPlan.save();
                           Global.saveLocalStore();
                         });
                       ctrl.text = '';

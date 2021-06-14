@@ -118,17 +118,28 @@ class _ShowWordState extends State<ShowWord> {
           tooltip: '收藏',
           splashRadius: 5.0,
           onPressed: () async {
-            if(widget.word.studyWordSet.isEmpty) {
-              var category = await popSelectWordCategoryDialog(context);
-              if(category == null) return;
-              var newSw = StudyWordSerializer()..word = widget.word
-                                               ..foreignUser = Global.localStore.user.id
-                                               ..category = category;
-              var ret = await newSw.save();
-              if(ret) widget.word.studyWordSet.add(newSw);
+            var categories = widget.word.studyWordSet.isEmpty ? <String>[] : widget.word.studyWordSet.first.category;
+            String category = await popSelectWordCategoryDialog(context, categories);
+            if(category == null) return;
+            if(categories.contains(category)) {
+              widget.word.studyWordSet.first.category.remove(category);
+              if(widget.word.studyWordSet.first.category.isEmpty) {
+                await widget.word.studyWordSet.first.delete();
+                widget.word.studyWordSet.clear();
+              } else {
+                await widget.word.studyWordSet.first.save();
+              }
             } else {
-              var ret = await widget.word.studyWordSet.first.delete(pk:widget.word.studyWordSet.first.id);
-              if(ret) widget.word.studyWordSet.removeAt(0);
+              if(widget.word.studyWordSet.isEmpty) {
+                var newSw = StudyWordSerializer()..word = widget.word
+                                                  ..foreignUser = Global.localStore.user.id
+                                                  ..category.add(category);
+                var ret = await newSw.save();
+                if(ret) widget.word.studyWordSet.add(newSw);
+              } else {
+                widget.word.studyWordSet.first.category.add(category);
+                await widget.word.studyWordSet.first.save();
+              }
             }
             setState(() {});
           },
@@ -450,11 +461,12 @@ class _ShowWordState extends State<ShowWord> {
 
 
 Widget wordItem({BuildContext context, WordSerializer word, Widget trailing}) {
+  String categories = word.studyWordSet.isNotEmpty ? word.studyWordSet.first.category.join('/') : '';
   Widget title = Text.rich(
     TextSpan(
         children: [
           TextSpan(text: '${word.name}', style: TextStyle(fontSize: 14, color: Colors.black87)),
-          TextSpan(text: '    ${word.tag.join('/')}', style: TextStyle(fontSize: 10, color: Colors.black45)),
+          TextSpan(text: '  $categories', style: TextStyle(fontSize: 10, color: Colors.black45)),
         ]
       )
   );

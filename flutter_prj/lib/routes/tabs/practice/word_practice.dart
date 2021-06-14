@@ -4,7 +4,8 @@ import 'package:flutter_prj/serializers/index.dart';
 
 
 class WordPracticePage extends StatefulWidget {
-  WordPracticePage({Key key}) : super(key: key);
+  WordPracticePage({Key key, this.studyWords}) : super(key: key);
+  final List<StudyWordSerializer> studyWords;
 
   @override
   _WordPracticePageState createState() => _WordPracticePageState();
@@ -12,22 +13,6 @@ class WordPracticePage extends StatefulWidget {
 
 
 class _WordPracticePageState extends State<WordPracticePage> {
-  List<StudyWordSerializer> _studyWords = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _init();
-  }
-
-  void _init() async {
-    var studyWord = StudyWordSerializer();
-    studyWord.filter..foreignUser = Global.localStore.user.id
-                               ..familiarity__lte = 4
-                               ..inplan = true;
-    _studyWords = await studyWord.list();
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) =>
@@ -44,10 +29,10 @@ class _WordPracticePageState extends State<WordPracticePage> {
             runSpacing: 10,
             alignment: WrapAlignment.center,
             runAlignment: WrapAlignment.center,
-            children: Global.wordTagOptions.map((tag) {
-              var studyWords = _studyWords.where((e) => e.word.tag.contains(tag)).toList();
+            children: Global.localStore.user.studyPlan.wordCategory.map((category) {
+              var studyWords = widget.studyWords.where((e) => e.category.contains(category)).toList();
               studyWords.sort((a, b) => a.familiarity.compareTo(b.familiarity));
-              return _card(context, tag, studyWords.length, () {
+              return _card(context, category, studyWords.length, () {
                 if(studyWords.isEmpty) return;
                 Navigator.pushNamed(context, '/practice_word', arguments: {'title': null, 'studyWords': studyWords});
               });
