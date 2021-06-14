@@ -44,7 +44,7 @@ class _StudyWordFilter(filterset.FilterSet):
         fields = {
             'foreignUser': ['exact'],
             'word': ['exact'],
-            'category': ['exact'],
+            'category': ['icontains'],
             'familiarity': ['lte', 'gte'],
             'inplan': ['exact']
         }
