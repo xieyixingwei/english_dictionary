@@ -89,7 +89,7 @@ class _ListFavoriteWordPageState extends State<ListFavoriteWordPage> {
             setState(() {});
           },
         ),
-        title: Text('${sw.familiarity} 熟悉度', style: TextStyle(color: Colors.black54, fontSize: 12)),
+        title: Text('${sw.familiarity} 熟悉度  ${sw.category.join("/")}', style: TextStyle(color: Colors.black54, fontSize: 12)),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

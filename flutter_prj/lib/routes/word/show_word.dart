@@ -466,6 +466,7 @@ Widget wordItem({BuildContext context, WordSerializer word, Widget trailing}) {
     TextSpan(
         children: [
           TextSpan(text: '${word.name}', style: TextStyle(fontSize: 14, color: Colors.black87)),
+          TextSpan(text: '  ${word.tag.join("/")}', style: TextStyle(fontSize: 10, color: Colors.black45)),
           TextSpan(text: '  $categories', style: TextStyle(fontSize: 10, color: Colors.black45)),
         ]
       )
