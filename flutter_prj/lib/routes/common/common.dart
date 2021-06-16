@@ -39,32 +39,35 @@ Future<String> popSelectWordCategoryDialog(BuildContext context, List<String> ca
       StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
           List<Widget> options = Global.localStore.user.studyPlan.wordCategory.map<Widget>((e) =>
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                SizedBox(width: 20,),
-                Expanded(
-                  child: InkWell(
-                  child: Text('${categories.contains(e) ? "* " : "  "}$e'),
-                  onTap: () => Navigator.pop(context, e),
-                )),
-                InkWell(
-                  child: Icon(Icons.clear, color: Colors.black54, size: 18,),
-                  onDoubleTap: () async {
-                    Global.localStore.user.studyPlan.wordCategory.remove(e);
-                    Global.localStore.user.studyPlan.save();
-                    Global.saveLocalStore();
-                    var studyWord = StudyWordSerializer();
-                    studyWord.filter.foreignUser = Global.localStore.user.id;
-                    studyWord.filter.category__icontains = e;
-                    var swes = await studyWord.list();
-                    swes.forEach((w) => w.delete());
-                    setState(() {});
-                  },
-                ),
-                SizedBox(width: 20,),
-              ]
-            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  SizedBox(width: 20,),
+                  Expanded(
+                    child: InkWell(
+                    child: Text('${categories.contains(e) ? "* " : "  "}$e'),
+                    onTap: () => Navigator.pop(context, e),
+                  )),
+                  InkWell(
+                    child: Icon(Icons.clear, color: Colors.black54, size: 18,),
+                    onDoubleTap: () async {
+                      Global.localStore.user.studyPlan.wordCategory.remove(e);
+                      Global.localStore.user.studyPlan.save();
+                      Global.saveLocalStore();
+                      var studyWord = StudyWordSerializer();
+                      studyWord.filter.foreignUser = Global.localStore.user.id;
+                      studyWord.filter.category__icontains = e;
+                      var swes = await studyWord.list();
+                      swes.forEach((w) => w.delete());
+                      setState(() {});
+                    },
+                  ),
+                  SizedBox(width: 20,),
+                ]
+              ),
+            )
           ).toList();
           return SimpleDialog(
             title: Row(
