@@ -20,11 +20,12 @@ class GrammarPaginationSerializer {
     if(queries == null) queries = <String, dynamic>{};
     queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/dictionary/grammar/', queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    fromJson(res?.data);
     return res != null;
   }
 
-  GrammarPaginationSerializer fromJson(Map<String, dynamic> json) {
+  GrammarPaginationSerializer fromJson(Map<String, dynamic> json, {bool slave = true}) {
+    if(json == null) return this;
     count = json['count'] == null ? count : json['count'] as num;
     next = json['next'] == null ? next : json['next'] as String;
     previous = json['previous'] == null ? previous : json['previous'] as String;

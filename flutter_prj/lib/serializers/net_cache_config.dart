@@ -12,7 +12,8 @@ class NetCacheConfigSerializer {
   num maxCount = 100;
 
 
-  NetCacheConfigSerializer fromJson(Map<String, dynamic> json) {
+  NetCacheConfigSerializer fromJson(Map<String, dynamic> json, {bool slave = true}) {
+    if(json == null) return this;
     enable = json['enable'] == null ? enable : json['enable'] as bool;
     maxAge = json['maxAge'] == null ? maxAge : json['maxAge'] as num;
     maxCount = json['maxCount'] == null ? maxCount : json['maxCount'] as num;

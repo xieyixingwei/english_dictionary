@@ -26,16 +26,13 @@ class StudySentenceSerializer {
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/study/sentence/', data:data ?? toJson(), queries:queries, cache:cache);
-    if(res != null) {
-      var jsonObj = {'id': res.data['id'] ?? id};
-      fromJson(jsonObj); // Only update primary member after create
-    }
+    fromJson(res?.data, slave:false); // Don't update slave forign members in create to avoid erasing newly added associated data
     return res != null;
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/api/study/sentence/$id/', queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    fromJson(res?.data);
     return res != null;
   }
 
@@ -51,6 +48,7 @@ class StudySentenceSerializer {
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.PUT, '/api/study/sentence/$id/', data:data ?? toJson(), queries:queries, cache:cache);
+    fromJson(res?.data, slave:false); // Don't update slave forign members in update to avoid erasing newly added associated data
     return res != null;
   }
 
@@ -66,7 +64,8 @@ class StudySentenceSerializer {
     return res;
   }
 
-  StudySentenceSerializer fromJson(Map<String, dynamic> json) {
+  StudySentenceSerializer fromJson(Map<String, dynamic> json, {bool slave = true}) {
+    if(json == null) return this;
     id = json['id'] == null ? id : json['id'] as num;
     foreignUser = json['foreignUser'] == null ? foreignUser : json['foreignUser'] as num;
     sentence = json['sentence'] == null ? sentence : json['sentence'] as num;

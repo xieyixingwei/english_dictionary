@@ -48,22 +48,21 @@ Future<String> popSelectWordCategoryDialog(BuildContext context, List<String> ca
                   child: Text('${categories.contains(e) ? "* " : "  "}$e'),
                   onTap: () => Navigator.pop(context, e),
                 )),
-                IconButton(
-                  icon: Icon(Icons.clear, color: Colors.black54, size: 18,),
-                  tooltip: '删除',
-                  splashRadius: 1.0,
-                  onPressed: () async {
+                InkWell(
+                  child: Icon(Icons.clear, color: Colors.black54, size: 18,),
+                  onDoubleTap: () async {
                     Global.localStore.user.studyPlan.wordCategory.remove(e);
                     Global.localStore.user.studyPlan.save();
                     Global.saveLocalStore();
                     var studyWord = StudyWordSerializer();
                     studyWord.filter.foreignUser = Global.localStore.user.id;
                     studyWord.filter.category__icontains = e;
-                    var swes = await StudyWordSerializer().list();
+                    var swes = await studyWord.list();
                     swes.forEach((w) => w.delete());
                     setState(() {});
                   },
                 ),
+                SizedBox(width: 20,),
               ]
             ),
           ).toList();

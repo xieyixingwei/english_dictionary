@@ -20,11 +20,12 @@ class ParaphrasePaginationSerializer {
     if(queries == null) queries = <String, dynamic>{};
     queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/dictionary/paraphrase/', queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    fromJson(res?.data);
     return res != null;
   }
 
-  ParaphrasePaginationSerializer fromJson(Map<String, dynamic> json) {
+  ParaphrasePaginationSerializer fromJson(Map<String, dynamic> json, {bool slave = true}) {
+    if(json == null) return this;
     count = json['count'] == null ? count : json['count'] as num;
     next = json['next'] == null ? next : json['next'] as String;
     previous = json['previous'] == null ? previous : json['previous'] as String;

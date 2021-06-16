@@ -14,7 +14,8 @@ class LocalStoreSerializer {
   NetCacheConfigSerializer netCacheConfig = NetCacheConfigSerializer();
 
 
-  LocalStoreSerializer fromJson(Map<String, dynamic> json) {
+  LocalStoreSerializer fromJson(Map<String, dynamic> json, {bool slave = true}) {
+    if(json == null) return this;
     user = json['user'] == null
                 ? user
                 : UserSerializer().fromJson(json['user'] as Map<String, dynamic>);

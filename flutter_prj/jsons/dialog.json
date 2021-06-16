@@ -4,7 +4,7 @@
     "tag": [""],
     "vedio": "$SingleFile video",
     "dialogSentences": [0],
-    "_sentenceSet": ["$sentence"],
+    "_sentenceSet @fk_slave": ["$sentence"],
     "__http__": {
         "url": "/api/dictionary/dialog/",
         "methods": [

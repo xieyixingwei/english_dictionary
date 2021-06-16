@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/routes/common/common.dart';
@@ -166,7 +164,7 @@ class _ListWordsState extends State<ListWords> {
                       }
                     } else {
                       if(e.studyWordSet.isEmpty) {
-                        var newSw = StudyWordSerializer()..word = e
+                        var newSw = StudyWordSerializer()..word = WordSerializer().from(e) // 不能直接赋值，要用from()深拷贝赋值，不然会进入死循环。
                                                          ..foreignUser = Global.localStore.user.id
                                                          ..category.add(category);
                         var ret = await newSw.save();

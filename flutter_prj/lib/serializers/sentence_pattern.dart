@@ -18,21 +18,19 @@ class SentencePatternSerializer {
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/dictionary/sentence_pattern/', data:data ?? toJson(), queries:queries, cache:cache);
-    if(res != null) {
-      var jsonObj = {'id': res.data['id'] ?? id};
-      fromJson(jsonObj); // Only update primary member after create
-    }
+    fromJson(res?.data, slave:false); // Don't update slave forign members in create to avoid erasing newly added associated data
     return res != null;
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.PUT, '/api/dictionary/sentence_pattern/$id/', data:data ?? toJson(), queries:queries, cache:cache);
+    fromJson(res?.data, slave:false); // Don't update slave forign members in update to avoid erasing newly added associated data
     return res != null;
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/api/dictionary/sentence_pattern/$id/', queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    fromJson(res?.data);
     return res != null;
   }
 
@@ -58,14 +56,16 @@ class SentencePatternSerializer {
     return res;
   }
 
-  SentencePatternSerializer fromJson(Map<String, dynamic> json) {
+  SentencePatternSerializer fromJson(Map<String, dynamic> json, {bool slave = true}) {
+    if(json == null) return this;
     id = json['id'] == null ? id : json['id'] as num;
     content = json['content'] == null ? content : json['content'] as String;
     wordForeign = json['wordForeign'] == null ? wordForeign : json['wordForeign'] as String;
+    _id = id;
+    if(!slave) return this;
     paraphraseSet = json['paraphraseSet'] == null
                 ? paraphraseSet
                 : json['paraphraseSet'].map<ParaphraseSerializer>((e) => ParaphraseSerializer().fromJson(e as Map<String, dynamic>)).toList();
-    _id = id;
     return this;
   }
 

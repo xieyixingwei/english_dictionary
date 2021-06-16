@@ -20,9 +20,8 @@ enum ForeignType {
 
 enum NestedType {
   Non,
-  OnlyRead,
-  OnlyWrite,
-  WriteRead
+  WriteRead,
+  OnlyRead
 }
 
 String _jsonType(JsonType type) =>
@@ -56,6 +55,7 @@ class Member {
   bool isFileType =false;
   bool unSave = false;
   NestedType nested = NestedType.Non;
+  bool slaveForeign = false;
 
   Member(String key, dynamic value, this.fatherSerializer, this.serializeTool, {JsonType jsonType=JsonType.Map}) {
     this.jsonType = jsonType;
@@ -72,23 +72,24 @@ class Member {
     if(key.contains('@fk_mm')) {
       key = key.replaceAll('@fk_mm', '').trim();
       foreign = ForeignType.ManyToMany;
+      isList = true;
     } else if(key.contains('@fk_mo')) {
       key = key.replaceAll('@fk_mo', '').trim();
       foreign = ForeignType.ManyToOne;
     } else if(key.contains('@fk_oo')) {
       key = key.replaceAll('@fk_oo', '').trim();
       foreign = ForeignType.OneToOne;
+    } else if(key.contains('@fk_slave')) {
+      key = key.replaceAll('@fk_slave', '').trim();
+      slaveForeign = true;
     }
 
-    if(key.contains('@nested_rw')) {
-      key = key.replaceAll('@nested_rw', '').trim();
-      nested = NestedType.WriteRead;
-    } else if(key.contains('@nested_wr')) {
-      key = key.replaceAll('@nested_wr', '').trim();
-      nested = NestedType.WriteRead;
-    } else if(key.contains('@nested_r')) {
+    if(key.contains('@nested_r')) {
       key = key.replaceAll('@nested_r', '').trim();
       nested = NestedType.OnlyRead;
+    } else if(key.contains('@nested')) {
+      key = key.replaceAll('@nested', '').trim();
+      nested = NestedType.WriteRead;
     }
 
     unToJson = key.trim().startsWith('_');   // the member is not in toJson
@@ -397,17 +398,13 @@ $saveForeign
       String data = 'data:data ?? toJson()';
       String queries = 'queries:queries';
       String cache = 'cache:cache';
-      String primaryMemberName = fatherSerializer.primaryMember?.name;
 
       if(requestType == "post") {
         return
 """
   Future<bool> $methodName({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '$requestUrl', $data, $queries, $cache);
-    if(res != null) {
-      var jsonObj = {'$primaryMemberName': res.data['$primaryMemberName'] ?? $primaryMemberName};
-      fromJson(jsonObj); // Only update primary member after create
-    }
+    fromJson(res?.data, slave:false); // Don't update slave forign members in create to avoid erasing newly added associated data
     return res != null;
   }
 """;
@@ -417,6 +414,7 @@ $saveForeign
 """
   Future<bool> $methodName({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.PUT, '$requestUrl', $data, $queries, $cache);
+    fromJson(res?.data, slave:false); // Don't update slave forign members in update to avoid erasing newly added associated data
     return res != null;
   }
 """;
@@ -434,7 +432,7 @@ $saveForeign
 """
   Future<bool> $methodName({Map<String, dynamic> queries, bool cache=false}) async {
     ${queryset}var res = await Http().request(HttpType.GET, '$requestUrl', $queries, $cache);
-    if(res != null) fromJson(res.data);
+    fromJson(res?.data);
     return res != null;
   }
 """;
@@ -617,10 +615,22 @@ class JsonSerializer {
   String get membersDelete => members.map((e) => e.delete).toList().where((e) => e != null).join('\n    ');
   Member get primaryMember => members.firstWhere((e) => e.isPrimaryKey, orElse: () => null);
 
-  String get fromJsonMembers => (members.map((e) => e.fromJson).toList()
-                                 + [primaryMember?.hidePrimaryMemberFromJson]).where((e) => e != null).join(';\n    ');
+  List<Member> get ordinaryMembers => members.where((m) => m.slaveForeign == false).toList();
+  List<Member> get foreignSlaveMembers => members.where((m) => m.slaveForeign).toList();
+
+  String get fromJsonMembers {
+    var fromJsons = ordinaryMembers.map((e) => e.fromJson).toList();
+    fromJsons.add(primaryMember?.hidePrimaryMemberFromJson);
+    if(foreignSlaveMembers.isNotEmpty) {
+      fromJsons.add('if(!slave) return this');
+      fromJsons.addAll(foreignSlaveMembers.map((e) => e.fromJson).toList());
+    }
+    return fromJsons.where((e) => e != null).join(';\n    ');
+  }
+
   String get fromJson =>
-"""  $serializerTypeName fromJson(${_jsonType(jsonType)} json) {
+"""  $serializerTypeName fromJson(${_jsonType(jsonType)} json, {bool slave = true}) {
+    if(json == null) return this;
     $fromJsonMembers;
     return this;
   }""";

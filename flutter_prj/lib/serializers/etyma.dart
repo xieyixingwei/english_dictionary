@@ -21,21 +21,19 @@ class EtymaSerializer {
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/dictionary/etyma/', data:data ?? toJson(), queries:queries, cache:cache);
-    if(res != null) {
-      var jsonObj = {'name': res.data['name'] ?? name};
-      fromJson(jsonObj); // Only update primary member after create
-    }
+    fromJson(res?.data, slave:false); // Don't update slave forign members in create to avoid erasing newly added associated data
     return res != null;
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.PUT, '/api/dictionary/etyma/$name/', data:data ?? toJson(), queries:queries, cache:cache);
+    fromJson(res?.data, slave:false); // Don't update slave forign members in update to avoid erasing newly added associated data
     return res != null;
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/api/dictionary/etyma/$name/', queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    fromJson(res?.data);
     return res != null;
   }
 
@@ -58,7 +56,8 @@ class EtymaSerializer {
     return res;
   }
 
-  EtymaSerializer fromJson(Map<String, dynamic> json) {
+  EtymaSerializer fromJson(Map<String, dynamic> json, {bool slave = true}) {
+    if(json == null) return this;
     name = json['name'] == null ? name : json['name'] as String;
     interpretation = json['interpretation'] == null ? interpretation : json['interpretation'] as String;
     type = json['type'] == null ? type : json['type'] as num;

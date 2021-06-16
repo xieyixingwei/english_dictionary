@@ -12,7 +12,7 @@
     "antonym": [0], //models.JSONField(null=True) # 反义句 [Sentence.id,Sentence.id,...]
     "paraphraseForeign @fk_mo": "$paraphrase",
     "dialogForeign @fk_mo": "$dialog",
-    "_grammarSet": ["$grammar"], //models.JSONField() # 语法 [id1,id2,id3]
+    "_grammarSet @fk_slave": ["$grammar"], //models.JSONField() # 语法 [id1,id2,id3]
     "__offstage": true,
     "___synonymObjes": ["$sentence"],
     "__http__": {

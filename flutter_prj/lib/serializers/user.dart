@@ -38,7 +38,7 @@ class UserSerializer {
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/api/user/$uname/', queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    fromJson(res?.data);
     return res != null;
   }
 
@@ -56,19 +56,18 @@ class UserSerializer {
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.PUT, '/api/user/$uname/', data:data ?? toJson(), queries:queries, cache:cache);
+    fromJson(res?.data, slave:false); // Don't update slave forign members in update to avoid erasing newly added associated data
     return res != null;
   }
 
   Future<bool> register({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/user/register/', data:data ?? toJson(), queries:queries, cache:cache);
-    if(res != null) {
-      var jsonObj = {'id': res.data['id'] ?? id};
-      fromJson(jsonObj); // Only update primary member after create
-    }
+    fromJson(res?.data, slave:false); // Don't update slave forign members in create to avoid erasing newly added associated data
     return res != null;
   }
 
-  UserSerializer fromJson(Map<String, dynamic> json) {
+  UserSerializer fromJson(Map<String, dynamic> json, {bool slave = true}) {
+    if(json == null) return this;
     id = json['id'] == null ? id : json['id'] as num;
     uname = json['uname'] == null ? uname : json['uname'] as String;
     passwd = json['passwd'] == null ? passwd : json['passwd'] as String;
@@ -86,13 +85,14 @@ class UserSerializer {
     studyPlan = json['studyPlan'] == null
                 ? studyPlan
                 : StudyPlanSerializer().fromJson(json['studyPlan'] as Map<String, dynamic>);
-    studyGrammarSet = json['studyGrammarSet'] == null
-                ? studyGrammarSet
-                : json['studyGrammarSet'].map<StudyGrammarSerializer>((e) => StudyGrammarSerializer().fromJson(e as Map<String, dynamic>)).toList();
     studySentenceSet = json['studySentenceSet'] == null
                 ? studySentenceSet
                 : json['studySentenceSet'].map<StudySentenceSerializer>((e) => StudySentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
     _id = id;
+    if(!slave) return this;
+    studyGrammarSet = json['studyGrammarSet'] == null
+                ? studyGrammarSet
+                : json['studyGrammarSet'].map<StudyGrammarSerializer>((e) => StudyGrammarSerializer().fromJson(e as Map<String, dynamic>)).toList();
     return this;
   }
 

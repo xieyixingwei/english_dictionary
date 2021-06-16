@@ -23,21 +23,19 @@ class DistinguishSerializer {
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/dictionary/distinguish/', data:data ?? toJson(), queries:queries, cache:cache);
-    if(res != null) {
-      var jsonObj = {'id': res.data['id'] ?? id};
-      fromJson(jsonObj); // Only update primary member after create
-    }
+    fromJson(res?.data, slave:false); // Don't update slave forign members in create to avoid erasing newly added associated data
     return res != null;
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.PUT, '/api/dictionary/distinguish/$id/', data:data ?? toJson(), queries:queries, cache:cache);
+    fromJson(res?.data, slave:false); // Don't update slave forign members in update to avoid erasing newly added associated data
     return res != null;
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/api/dictionary/distinguish/$id/', queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    fromJson(res?.data);
     return res != null;
   }
 
@@ -60,7 +58,8 @@ class DistinguishSerializer {
     return res;
   }
 
-  DistinguishSerializer fromJson(Map<String, dynamic> json) {
+  DistinguishSerializer fromJson(Map<String, dynamic> json, {bool slave = true}) {
+    if(json == null) return this;
     id = json['id'] == null ? id : json['id'] as num;
     content = json['content'] == null ? content : json['content'] as String;
     image.url = json['image'] == null ? image.url : json['image'] as String;
@@ -79,7 +78,7 @@ class DistinguishSerializer {
     'id': id,
     'content': content,
     'wordsForeign': wordsForeign == null ? null : wordsForeign.map((e) => e).toList(),
-    'sentencePatternForeign': sentencePatternForeign == null ? null : sentencePatternForeign.map((e) => e.toJson()).toList(),
+    'sentencePatternForeign': sentencePatternForeign == null ? null : sentencePatternForeign.map((e) => e.id).toList(),
   }..removeWhere((k, v) => v==null);
 
   Future<bool> uploadFile() async {

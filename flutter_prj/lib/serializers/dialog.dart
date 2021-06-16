@@ -23,21 +23,19 @@ class DialogSerializer {
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/dictionary/dialog/', data:data ?? toJson(), queries:queries, cache:cache);
-    if(res != null) {
-      var jsonObj = {'id': res.data['id'] ?? id};
-      fromJson(jsonObj); // Only update primary member after create
-    }
+    fromJson(res?.data, slave:false); // Don't update slave forign members in create to avoid erasing newly added associated data
     return res != null;
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.PUT, '/api/dictionary/dialog/$id/', data:data ?? toJson(), queries:queries, cache:cache);
+    fromJson(res?.data, slave:false); // Don't update slave forign members in update to avoid erasing newly added associated data
     return res != null;
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/api/dictionary/dialog/$id/', queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    fromJson(res?.data);
     return res != null;
   }
 
@@ -63,7 +61,8 @@ class DialogSerializer {
     return res;
   }
 
-  DialogSerializer fromJson(Map<String, dynamic> json) {
+  DialogSerializer fromJson(Map<String, dynamic> json, {bool slave = true}) {
+    if(json == null) return this;
     id = json['id'] == null ? id : json['id'] as num;
     title = json['title'] == null ? title : json['title'] as String;
     tag = json['tag'] == null
@@ -73,10 +72,11 @@ class DialogSerializer {
     dialogSentences = json['dialogSentences'] == null
                 ? dialogSentences
                 : json['dialogSentences'].map<num>((e) => e as num).toList();
+    _id = id;
+    if(!slave) return this;
     sentenceSet = json['sentenceSet'] == null
                 ? sentenceSet
                 : json['sentenceSet'].map<SentenceSerializer>((e) => SentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
-    _id = id;
     return this;
   }
 

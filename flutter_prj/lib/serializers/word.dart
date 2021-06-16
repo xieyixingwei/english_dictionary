@@ -43,21 +43,19 @@ class WordSerializer {
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/dictionary/word/', data:data ?? toJson(), queries:queries, cache:cache);
-    if(res != null) {
-      var jsonObj = {'name': res.data['name'] ?? name};
-      fromJson(jsonObj); // Only update primary member after create
-    }
+    fromJson(res?.data, slave:false); // Don't update slave forign members in create to avoid erasing newly added associated data
     return res != null;
   }
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.PUT, '/api/dictionary/word/$name/', data:data ?? toJson(), queries:queries, cache:cache);
+    fromJson(res?.data, slave:false); // Don't update slave forign members in update to avoid erasing newly added associated data
     return res != null;
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/api/dictionary/word/$name/', queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    fromJson(res?.data);
     return res != null;
   }
 
@@ -91,7 +89,8 @@ class WordSerializer {
     return res;
   }
 
-  WordSerializer fromJson(Map<String, dynamic> json) {
+  WordSerializer fromJson(Map<String, dynamic> json, {bool slave = true}) {
+    if(json == null) return this;
     name = json['name'] == null ? name : json['name'] as String;
     voiceUs = json['voiceUs'] == null ? voiceUs : json['voiceUs'] as String;
     voiceUk = json['voiceUk'] == null ? voiceUk : json['voiceUk'] as String;
@@ -118,6 +117,8 @@ class WordSerializer {
                 : json['antonym'].map<String>((e) => e as String).toList();
     image.url = json['image'] == null ? image.url : json['image'] as String;
     vedio.url = json['vedio'] == null ? vedio.url : json['vedio'] as String;
+    _name = name;
+    if(!slave) return this;
     paraphraseSet = json['paraphraseSet'] == null
                 ? paraphraseSet
                 : json['paraphraseSet'].map<ParaphraseSerializer>((e) => ParaphraseSerializer().fromJson(e as Map<String, dynamic>)).toList();
@@ -133,7 +134,6 @@ class WordSerializer {
     studyWordSet = json['studyWordSet'] == null
                 ? studyWordSet
                 : json['studyWordSet'].map<StudyWordSerializer>((e) => StudyWordSerializer().fromJson(e as Map<String, dynamic>)).toList();
-    _name = name;
     return this;
   }
 
@@ -186,6 +186,7 @@ class WordSerializer {
     sentencePatternSet = List.from(instance.sentencePatternSet.map((e) => SentencePatternSerializer().from(e)).toList());
     grammarSet = List.from(instance.grammarSet.map((e) => GrammarSerializer().from(e)).toList());
     distinguishSet = List.from(instance.distinguishSet.map((e) => DistinguishSerializer().from(e)).toList());
+    studyWordSet = List.from(instance.studyWordSet.map((e) => StudyWordSerializer().from(e)).toList());
     offstage = instance.offstage;
     _name = instance._name;
     return this;

@@ -14,10 +14,7 @@ class SentenceTagSerializer {
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/dictionary/sentence_tag/', data:data ?? toJson(), queries:queries, cache:cache);
-    if(res != null) {
-      var jsonObj = {'name': res.data['name'] ?? name};
-      fromJson(jsonObj); // Only update primary member after create
-    }
+    fromJson(res?.data, slave:false); // Don't update slave forign members in create to avoid erasing newly added associated data
     return res != null;
   }
 
@@ -36,7 +33,8 @@ class SentenceTagSerializer {
     return res != null ? res.statusCode == 204 : false;
   }
 
-  SentenceTagSerializer fromJson(Map<String, dynamic> json) {
+  SentenceTagSerializer fromJson(Map<String, dynamic> json, {bool slave = true}) {
+    if(json == null) return this;
     name = json['name'] == null ? name : json['name'] as String;
     _name = name;
     return this;

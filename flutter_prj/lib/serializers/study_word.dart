@@ -25,10 +25,7 @@ class StudyWordSerializer {
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/study/word/', data:data ?? toJson(), queries:queries, cache:cache);
-    if(res != null) {
-      var jsonObj = {'id': res.data['id'] ?? id};
-      fromJson(jsonObj); // Only update primary member after create
-    }
+    fromJson(res?.data, slave:false); // Don't update slave forign members in create to avoid erasing newly added associated data
     return res != null;
   }
 
@@ -36,7 +33,7 @@ class StudyWordSerializer {
     if(queries == null) queries = <String, dynamic>{};
     queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/study/word/$id/', queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    fromJson(res?.data);
     return res != null;
   }
 
@@ -52,12 +49,14 @@ class StudyWordSerializer {
 
   Future<bool> update({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.PUT, '/api/study/word/$id/', data:data ?? toJson(), queries:queries, cache:cache);
+    fromJson(res?.data, slave:false); // Don't update slave forign members in update to avoid erasing newly added associated data
     return res != null;
   }
 
   Future<List<StudyWordSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
     if(queries == null) queries = <String, dynamic>{};
     queries.addAll(filter.queries);
+    print(queries);
     var res = await Http().request(HttpType.GET, '/api/study/word/', queries:queries, cache:cache);
     return res != null ? res.data.map<StudyWordSerializer>((e) => StudyWordSerializer().fromJson(e)).toList() : [];
   }
@@ -71,7 +70,8 @@ class StudyWordSerializer {
     return res;
   }
 
-  StudyWordSerializer fromJson(Map<String, dynamic> json) {
+  StudyWordSerializer fromJson(Map<String, dynamic> json, {bool slave = true}) {
+    if(json == null) return this;
     id = json['id'] == null ? id : json['id'] as num;
     foreignUser = json['foreignUser'] == null ? foreignUser : json['foreignUser'] as num;
     word = json['word'] == null

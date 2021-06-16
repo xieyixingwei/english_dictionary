@@ -15,11 +15,12 @@ class LoginSerializer {
 
   Future<bool> login({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/api/user/login/', queries:queries, cache:cache);
-    if(res != null) fromJson(res.data);
+    fromJson(res?.data);
     return res != null;
   }
 
-  LoginSerializer fromJson(Map<String, dynamic> json) {
+  LoginSerializer fromJson(Map<String, dynamic> json, {bool slave = true}) {
+    if(json == null) return this;
     msg = json['msg'] == null ? msg : json['msg'] as String;
     status = json['status'] == null ? status : json['status'] as num;
     token = json['token'] == null ? token : json['token'] as String;

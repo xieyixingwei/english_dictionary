@@ -15,11 +15,11 @@
     "antonym @fk_mm": ["$word"],// 反义词 [word1,word2,...]
     "image": "$SingleFile image", 
     "vedio": "$SingleFile video",
-    "_paraphraseSet": ["$paraphrase"], // 释义
-    "_sentencePatternSet": ["$sentence_pattern"], // 常用句型
-    "_grammarSet": ["$grammar"], //语法
-    "_distinguishSet": ["$distinguish"], // 词义辨析
-    "_studyWordSet": ["$study_word"],
+    "_paraphraseSet @fk_slave": ["$paraphrase"], // 释义
+    "_sentencePatternSet @fk_slave": ["$sentence_pattern"], // 常用句型
+    "_grammarSet @fk_slave": ["$grammar"], //语法
+    "_distinguishSet @fk_slave": ["$distinguish"], // 词义辨析
+    "_studyWordSet @fk_slave": ["$study_word"],
     "__offstage": true,
     "__http__": {
         "url": "/api/dictionary/word/",
@@ -76,7 +76,7 @@
     "id @pk": "num=null",
     "content": "",
     "wordForeign @fk_mo": "$word",
-    "_paraphraseSet": ["$paraphrase"],
+    "_paraphraseSet @fk_slave": ["$paraphrase"],
     "__http__": {
         "url": "/api/dictionary/sentence_pattern/",
         "methods": [
@@ -130,7 +130,7 @@
     "partOfSpeech": "",
     "wordForeign @fk_mo": "$word",
     "sentencePatternForeign @fk_mo": "$sentence_pattern",
-    "_sentenceSet": ["$sentence"],
+    "_sentenceSet @fk_slave": ["$sentence"],
     "__http__": {
         "url": "/api/dictionary/paraphrase/",
         "methods": [
