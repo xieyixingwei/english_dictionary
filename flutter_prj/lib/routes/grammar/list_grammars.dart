@@ -39,8 +39,8 @@ class _ListGrammersState extends State<ListGrammers> {
         title: Text('编辑语法'),
         centerTitle: true,
       ),
-      body: Container(
-        margin: EdgeInsets.fromLTRB(6, 20, 6, 20),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.fromLTRB(6, 20, 6, 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -123,7 +123,7 @@ class _ListGrammersState extends State<ListGrammers> {
   }
 
   Widget _buildListGrammars(BuildContext context) =>
-    SingleChildScrollView(
+    Container(
       padding: EdgeInsets.only(top: 20),
       child: Pagination(
         pages: (_grammars.count / _perPage).ceil(),
