@@ -103,22 +103,31 @@ Widget sentenceShow(BuildContext context, SentenceSerializer sentence, Function 
             splashColor: Colors.transparent,
             hoverColor: Colors.transparent,
             highlightColor: Colors.transparent,
-            child: Icon(Icons.star, color: getStudySentence(sentence.id) == null ? Colors.black54 : Colors.redAccent, size: 14),
+            child: Icon(Icons.star, color: sentence.studySentenceSet.isEmpty == null ? Colors.black54 : Colors.redAccent, size: 14),
             onTap: () async {
-              var ss = getStudySentence(sentence.id);
-              if(ss == null) {
-                var category = await popSelectSentenceCategoryDialog(context);
-                if(category == null) return;
-                var newSs = StudySentenceSerializer()..sentence = sentence.id
-                                                ..foreignUser = Global.localStore.user.id
-                                                ..category = category;
-                Global.localStore.user.studySentenceSet.add(newSs);
-                await newSs.save();
+              var categories = sentence.studySentenceSet.isEmpty ? <String>[] : sentence.studySentenceSet.first.categories;
+              String category = await popSelectSentenceCategoryDialog(context, categories);
+              if(category == null) return;
+              if(categories.contains(category)) {
+                sentence.studySentenceSet.first.categories.remove(category);
+                if(sentence.studySentenceSet.first.categories.isEmpty) {
+                  await sentence.studySentenceSet.first.delete();
+                  sentence.studySentenceSet.clear();
+                } else {
+                  await sentence.studySentenceSet.first.save();
+                }
               } else {
-                await ss.delete();
-                Global.localStore.user.studySentenceSet.remove(ss);
+                if(sentence.studySentenceSet.isEmpty) {
+                  var newSs = StudySentenceSerializer()..sentence = SentenceSerializer().from(sentence)
+                                                    ..foreignUser = Global.localStore.user.id
+                                                    ..categories.add(category);
+                  var ret = await newSs.save();
+                  if(ret) sentence.studySentenceSet.add(newSs);
+                } else {
+                  sentence.studySentenceSet.first.categories.add(category);
+                  await sentence.studySentenceSet.first.save();
+                }
               }
-              Global.saveLocalStore();
               if(update != null) update();
             },
           ) : null,

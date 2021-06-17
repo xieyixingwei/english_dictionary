@@ -215,7 +215,7 @@ class Member {
     if(unSave) return null;
 
     membersForeignToMeOfTypeSerializer = typeSerializer.members.where((e) => e.isForeign ? e.serializerJsonName == fatherSerializer.jsonName : false).toList();
-    membersForeignToMeOfTypeSerializer = membersForeignToMeOfTypeSerializer.where((e) => e.foreign != ForeignType.ManyToMany).toList();
+    membersForeignToMeOfTypeSerializer = membersForeignToMeOfTypeSerializer.where((e) => e.foreign != ForeignType.ManyToMany && e.nested == NestedType.Non).toList();
     List<String>eForeignNames = membersForeignToMeOfTypeSerializer.map((e) => e.name).toList();
     String eAssignForeign = eForeignNames.map((e) => 'e.$e = ${fatherSerializer.primaryMember.name};').toList().join(' ');
     return isList ? 'await Future.forEach($name, (e) async {$eAssignForeign await e.save();});' : 'if($name != null){await $name.save();}';

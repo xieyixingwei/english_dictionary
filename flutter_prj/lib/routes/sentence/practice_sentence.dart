@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'package:audioplayers/audioplayers_web.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_prj/common/http.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
 
 
 class PracticeSentence extends StatefulWidget {
-  PracticeSentence({Key key, this.title, this.sentences}) : super(key: key);
+  PracticeSentence({Key key, this.title, this.studySentences}) : super(key: key);
 
   final Widget title;
-  final List<SentenceSerializer> sentences;
+  final List<StudySentenceSerializer> studySentences;
 
   @override
   _PracticeSentenceState createState() => _PracticeSentenceState();
@@ -45,7 +46,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
         backgroundColor: Color.fromRGBO(250, 250, 250, 1),
         titleSpacing: 3,
         title: Text(
-          '${index+1}/${widget.sentences.length}',
+          '${index+1}/${widget.studySentences.length}',
           style: TextStyle(
             fontSize: 14,
             color: Colors.black45
@@ -101,25 +102,27 @@ class _PracticeSentenceState extends State<PracticeSentence> {
           ),
         ],
       ),
-      body: Center(
-        child: Container(
-          margin: EdgeInsets.fromLTRB(10, 100, 10, 30),
-          decoration: BoxDecoration(
-            //border: BoxBorde()
-          ),
-          child: ColumnSpace(
-            divider: SizedBox(height: 20,),
-            children: [
-              Container(
-                height: 200,
-                child: _sentence,
-              ),
-              //_detail(context),
-              auto ? null : _goto,
-            ],
-          ),
-        )
-      ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Container(
+            margin: EdgeInsets.fromLTRB(10, 100, 10, 30),
+            decoration: BoxDecoration(
+              //border: BoxBorde()
+            ),
+            child: ColumnSpace(
+              divider: SizedBox(height: 20,),
+              children: [
+                Container(
+                  height: 200,
+                  child: _sentence,
+                ),
+                //_detail(context),
+                auto ? null : _goto,
+              ],
+            ),
+          )
+        ),
+      )
     );
 
   Widget get _sentence =>
@@ -136,9 +139,8 @@ class _PracticeSentenceState extends State<PracticeSentence> {
             ),
           ),
           onTap: () {
-            if(order == false || _curSentence.enVoice.isEmpty) return;
-            _audioPlayer.setUrl(_curSentence.enVoice);
-            _audioPlayer.start(0);
+            if(order == false) return;
+            _playCurSentenceEnAudio();
           },
         ),
         Offstage(
@@ -153,15 +155,15 @@ class _PracticeSentenceState extends State<PracticeSentence> {
     );
 
   void _next() {
-    if(cycle && (index == widget.sentences.length - 1)) index = 0;
-    else if(index < (widget.sentences.length - 1)) index += 1;
+    if(cycle && (index == widget.studySentences.length - 1)) index = 0;
+    else if(index < (widget.studySentences.length - 1)) index += 1;
   }
 
   void _previous() {
-    if(cycle && index == 0) index = widget.sentences.length - 1;
+    if(cycle && index == 0) index = widget.studySentences.length - 1;
     else if(index > 0) index -= 1;
   }
-  SentenceSerializer get _curSentence => widget.sentences[index];
+  SentenceSerializer get _curSentence => widget.studySentences[index].sentence;
 
   Widget _detail() =>
     Offstage(
@@ -176,9 +178,8 @@ class _PracticeSentenceState extends State<PracticeSentence> {
           ],
         ),
         onTap: () {
-          if(order == true || _curSentence.enVoice.isEmpty) return;
-          _audioPlayer.setUrl(order ? _curSentence.cnVoice : _curSentence.enVoice);
-          _audioPlayer.start(0); 
+          if(order == true) return;
+          _playCurSentenceEnAudio(); 
         }
       )
     );
@@ -199,4 +200,10 @@ class _PracticeSentenceState extends State<PracticeSentence> {
         ),
       ],
     );
+
+  void _playCurSentenceEnAudio() {
+    if(_curSentence.enVoice.isEmpty) return;
+    _audioPlayer.setUrl(Http.baseUrl + _curSentence.enVoice);
+    _audioPlayer.start(0);
+  }
 }

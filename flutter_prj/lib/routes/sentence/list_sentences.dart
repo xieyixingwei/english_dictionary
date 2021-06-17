@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/common/common.dart';
 import 'package:flutter_prj/routes/sentence/show_sentences.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/edit_delete.dart';
@@ -33,49 +34,6 @@ class _ListSentencesState extends State<ListSentences> {
     await _sentences.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
     setState((){});
   }
-
-  Widget _buildListSentences(BuildContext context) =>
-    Container(
-      margin: EdgeInsets.only(top: 10),
-      child: Pagination(
-        pages: (_sentences.count / _perPage).ceil(),
-        curPage: _pageIndex,
-        goto: (num index) async {
-          _pageIndex = index;
-          bool ret = await _sentences.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
-          if(ret) setState((){});
-        },
-        perPage: _perPage,
-        perPageSet: [10, 20, 30, 50],
-        perPageChange: (v) async {
-          _pageIndex = 1;
-          _perPage = v;
-          bool ret = await _sentences.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
-          if(ret) setState((){});
-        },
-        rows: _sentences.results.map<Widget>((e) => 
-          sentenceItem(
-            context: context,
-            sentence: e,
-            trailing: EditDelete(
-              edit: () async {
-                var sentence = (await Navigator.pushNamed(
-                  context, '/edit_sentence',
-                  arguments: {'title':'编辑句子','sentence':SentenceSerializer().from(e)})
-                ) as SentenceSerializer;
-                if(sentence != null) await e.from(sentence).save();
-                setState(() {});
-              },
-              delete: () {
-                e.delete();
-                _sentences.results.remove(e);
-                setState(() {});
-              },
-            ),
-          )
-        ).toList(),
-      ),
-    );
 
   @override
   Widget build(BuildContext context) {
@@ -191,6 +149,85 @@ class _ListSentencesState extends State<ListSentences> {
           ),
         _buildFilterOptions(context),
         ],
+      ),
+    );
+  
+  Widget _buildListSentences(BuildContext context) =>
+    Container(
+      margin: EdgeInsets.only(top: 10),
+      child: Pagination(
+        pages: (_sentences.count / _perPage).ceil(),
+        curPage: _pageIndex,
+        goto: (num index) async {
+          _pageIndex = index;
+          bool ret = await _sentences.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+          if(ret) setState((){});
+        },
+        perPage: _perPage,
+        perPageSet: [10, 20, 30, 50],
+        perPageChange: (v) async {
+          _pageIndex = 1;
+          _perPage = v;
+          bool ret = await _sentences.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+          if(ret) setState((){});
+        },
+        rows: _sentences.results.map<Widget>((e) => 
+          sentenceItem(
+            context: context,
+            sentence: e,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: Icon(Icons.star, color: e.studySentenceSet.isEmpty ? Colors.black54 : Colors.redAccent, size: 17),
+                  tooltip: '收藏',
+                  splashRadius: 5.0,
+                  onPressed: () async {
+                    var categories = e.studySentenceSet.isEmpty ? <String>[] : e.studySentenceSet.first.categories;
+                    String category = await popSelectSentenceCategoryDialog(context, categories);
+                    if(category == null) return;
+                    if(categories.contains(category)) {
+                      e.studySentenceSet.first.categories.remove(category);
+                      if(e.studySentenceSet.first.categories.isEmpty) {
+                        await e.studySentenceSet.first.delete();
+                        e.studySentenceSet.clear();
+                      } else {
+                        await e.studySentenceSet.first.save();
+                      }
+                    } else {
+                      if(e.studySentenceSet.isEmpty) {
+                        var newSs = StudySentenceSerializer()..sentence = SentenceSerializer().from(e) // 不能直接赋值，要用from()深拷贝赋值，不然会进入死循环。
+                                                         ..foreignUser = Global.localStore.user.id
+                                                         ..categories.add(category);
+                        var ret = await newSs.save();
+                        if(ret) e.studySentenceSet.add(newSs);
+                      } else {
+                        e.studySentenceSet.first.categories.add(category);
+                        await e.studySentenceSet.first.save();
+                      }
+                    }
+                    setState(() {});
+                  },
+                ),
+              EditDelete(
+              edit: () async {
+                var sentence = (await Navigator.pushNamed(
+                  context, '/edit_sentence',
+                  arguments: {'title':'编辑句子','sentence':SentenceSerializer().from(e)})
+                ) as SentenceSerializer;
+                if(sentence != null) await e.from(sentence).save();
+                setState(() {});
+              },
+              delete: () {
+                e.delete();
+                _sentences.results.remove(e);
+                setState(() {});
+              },
+            ),
+              ])
+          )
+        ).toList(),
       ),
     );
 }

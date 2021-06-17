@@ -4,6 +4,7 @@
 // **************************************************************************
 
 import 'grammar.dart';
+import 'study_sentence.dart';
 import 'sentence.dart';
 import 'package:flutter_prj/common/http.dart';
 
@@ -26,6 +27,7 @@ class SentenceSerializer {
   num paraphraseForeign;
   num dialogForeign;
   List<GrammarSerializer> grammarSet = [];
+  List<StudySentenceSerializer> studySentenceSet = [];
   bool offstage = true;
   List<SentenceSerializer> synonymObjes = [];
 
@@ -53,6 +55,7 @@ class SentenceSerializer {
     var res = await Http().request(HttpType.DELETE, '/api/dictionary/sentence/$id/');
     /*
     if(grammarSet != null){grammarSet.forEach((e){e.delete();});}
+    if(studySentenceSet != null){studySentenceSet.forEach((e){e.delete();});}
     if(synonymObjes != null){synonymObjes.forEach((e){e.delete();});}
     */
     return res != null ? res.statusCode == 204 : false;
@@ -65,6 +68,7 @@ class SentenceSerializer {
 
     if(res) {
       await Future.forEach(grammarSet, (e) async {e.sentenceForeign = id; await e.save();});
+      await Future.forEach(studySentenceSet, (e) async { await e.save();});
     }
     
     return res;
@@ -98,6 +102,9 @@ class SentenceSerializer {
     grammarSet = json['grammarSet'] == null
                 ? grammarSet
                 : json['grammarSet'].map<GrammarSerializer>((e) => GrammarSerializer().fromJson(e as Map<String, dynamic>)).toList();
+    studySentenceSet = json['studySentenceSet'] == null
+                ? studySentenceSet
+                : json['studySentenceSet'].map<StudySentenceSerializer>((e) => StudySentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
     return this;
   }
 
@@ -132,6 +139,7 @@ class SentenceSerializer {
     paraphraseForeign = instance.paraphraseForeign;
     dialogForeign = instance.dialogForeign;
     grammarSet = List.from(instance.grammarSet.map((e) => GrammarSerializer().from(e)).toList());
+    studySentenceSet = List.from(instance.studySentenceSet.map((e) => StudySentenceSerializer().from(e)).toList());
     offstage = instance.offstage;
     synonymObjes = List.from(instance.synonymObjes.map((e) => SentenceSerializer().from(e)).toList());
     _id = instance._id;

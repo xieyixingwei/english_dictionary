@@ -83,7 +83,7 @@ class WordSerializer {
       await Future.forEach(sentencePatternSet, (e) async {e.wordForeign = name; await e.save();});
       await Future.forEach(grammarSet, (e) async {e.wordForeign = name; await e.save();});
       await Future.forEach(distinguishSet, (e) async { await e.save();});
-      await Future.forEach(studyWordSet, (e) async {e.word = name; await e.save();});
+      await Future.forEach(studyWordSet, (e) async { await e.save();});
     }
     res = await uploadFile();
     return res;

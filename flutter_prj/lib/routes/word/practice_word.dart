@@ -345,7 +345,7 @@ class _PracticeWordState extends State<PracticeWord> {
         ),
       ],
     );
-  
+
   void _playCurWordAudio() {
     if(_curWord.audioUsMan.isEmpty) return;
     _audioPlayer.setUrl(Http.baseUrl + _curWord.audioUsMan);

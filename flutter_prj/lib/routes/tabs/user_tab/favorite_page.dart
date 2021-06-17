@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/sentence/favorite_sentences.dart';
 import 'package:flutter_prj/routes/word/favorite_words.dart';
-import 'package:flutter_prj/routes/word/list_favorite_words.dart';
 import 'package:flutter_prj/serializers/index.dart';
 
 
@@ -12,6 +12,7 @@ class FavoritePage extends StatefulWidget {
 
 class _FavoritePageState extends State<FavoritePage> {
   var _studyWordPagination = StudyWordPaginationSerializer();
+  var _studySentencePagination = StudySentencePaginationSerializer();
 
   @override
   void initState() {
@@ -21,7 +22,9 @@ class _FavoritePageState extends State<FavoritePage> {
 
   void _init() async {
     _studyWordPagination.filter.foreignUser = Global.localStore.user.id;
+    _studySentencePagination.filter.foreignUser = Global.localStore.user.id;
     await _studyWordPagination.retrieve();
+    await _studySentencePagination.retrieve();
     setState(() {});
   }
 
@@ -50,15 +53,13 @@ class _FavoritePageState extends State<FavoritePage> {
             ),
             _card(context, '收藏的词义辨析', Global.localStore.user.studyPlan == null ? 0 : Global.localStore.user.studyPlan.distinguishes.length,
               () => Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.distinguish})),
-            _card(context, '收藏的句子', Global.localStore.user.studySentenceSet.length,
-              () async {
-                await Future.forEach<StudySentenceSerializer>(Global.localStore.user.studySentenceSet, (e) async {
-                  if(e.sentenceObj != null) return;
-                  e.sentenceObj = SentenceSerializer()..id = e.sentence;
-                  await e.sentenceObj.retrieve();
-                });
-                Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.sentence});
-              }
+            _card(context, '收藏的句子', _studySentencePagination.count, () =>
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FavoriteSentencePage(),
+                )
+              )
             ),
             _card(context, '收藏的固定表达', Global.localStore.user.studyGrammarSet.length,
               ()=>Navigator.pushNamed(context, '/list_favorite_page', arguments: {'type': FavoriteType.sentencePattern})),
@@ -167,42 +168,6 @@ class _ListFavoritePageState extends State<ListFavoritePage> {
                       await Global.localStore.user.studyPlan.save();
                       Global.saveLocalStore();
                       setState(() {});
-                  },
-                ),
-              ],
-            )
-          )
-        ).toList();
-      case FavoriteType.sentence:
-        return Global.localStore.user.studySentenceSet.map((e) =>
-         ListTile(
-            dense: true,
-            contentPadding: EdgeInsets.zero,
-            leading: Text(e.id.toString()),
-            title: Text(e.sentenceObj.en),
-            subtitle: Text(e.sentenceObj.cn),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextButton(
-                  child: Text(e.inplan ? '取消学习' : '加入学习', style: TextStyle(color: e.inplan ? Colors.black54 : Colors.blueAccent),),
-                  onPressed: () async {
-                    e.inplan = !e.inplan;
-                    await e.save();
-                    Global.saveLocalStore();
-                    setState(() {});
-                  }
-                ),
-                SizedBox(width: 10,),
-                TextButton(
-                  child: Text('取消收藏'),
-                  onPressed: () async {
-                    var ret = await e.delete();
-                    if(ret) {
-                      Global.localStore.user.studySentenceSet.remove(e);
-                      Global.saveLocalStore();
-                      setState(() {});
-                    }
                   },
                 ),
               ],

@@ -75,8 +75,8 @@
     "__name__": "study_sentence",
     "id @pk": 0,
     "foreignUser @fk_oo": "$user",
-    "sentence @fk_oo": "$sentence",
-    "category": "",
+    "sentence @fk_mo @nested_r": "$sentence",
+    "categories": [""],
     "familiarity": 0,
     "learnRecord": [""],
     "inplan": false,
@@ -84,7 +84,14 @@
     "comments": "",
     "repeats": 0,
     "newWords": [""],
-    "__sentenceObj": "$sentence=null",
+    "__filter__": {
+        "__serializer__": "$study_sentence",
+        "foreignUser": ["exact"],
+        "sentence": ["exact"],
+        "categories": ["icontains"],
+        "familiarity": ["lte", "gte"],
+        "inplan": ["exact"]
+    },
     "__http__": {
         "url": "/api/study/sentence/",
         "methods": [
@@ -104,7 +111,39 @@
                 "url": "$id/"
             },
             {
+                "name": "list"
+            },
+            {
                 "name": "save"
+            }
+        ]
+    }
+}
+
+{ // 分页查询 单词学习表
+    "__name__": "study_sentence_pagination",
+    "count": 0,
+    "next": "",
+    "previous": "",
+    "results": ["$study_sentence"],
+    "__queryset__": {
+        "__pageSize": 10,
+        "__pageIndex": 1
+    },
+    "__filter__": {
+        "__serializer__": "$study_sentence",
+        "foreignUser": ["exact"],
+        "sentence": ["exact"],
+        "category": ["exact"],
+        "familiarity": ["lte", "gte"],
+        "inplan": ["exact"]
+    },
+    "__http__": {
+        "url": "/api/study/sentence/",
+        "methods": [
+            {
+                "name": "retrieve",
+                "filter": true
             }
         ]
     }
@@ -114,7 +153,7 @@
     "__name__": "study_word",
     "id @pk": 0,
     "foreignUser @fk_oo": "$user",
-    "word @fk_oo @nested_r": "$word",
+    "word @fk_mo @nested_r": "$word",
     "category": [""],
     "familiarity": 0,
     "learnRecord": [""],

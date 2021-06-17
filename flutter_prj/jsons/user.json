@@ -16,7 +16,7 @@
     "studyPlan": "$study_plan",
     "studyGrammarSet @fk_slave": ["$study_grammar"],
     //"__studyWordSet": ["$study_word"],
-    "studySentenceSet": ["$study_sentence"],
+    //"studySentenceSet": ["$study_sentence"],
     "__http__": {
         "url": "/api/user/",
         "methods": [

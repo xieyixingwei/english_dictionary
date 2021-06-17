@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/serializers/index.dart';
 
 
 class SentencePracticePage extends StatefulWidget {
-  SentencePracticePage({Key key}) : super(key: key);
+  SentencePracticePage({Key key, this.studySentences}) : super(key: key);
+  final List<StudySentenceSerializer> studySentences;
 
   @override
   _SentencePracticePageState createState() => _SentencePracticePageState();
@@ -27,12 +29,12 @@ class _SentencePracticePageState extends State<SentencePracticePage> {
             runSpacing: 10,
             alignment: WrapAlignment.start,
             runAlignment: WrapAlignment.start,
-            children: Global.sentenceTagOptions.map((tag) {
-              var studySentences = Global.localStore.user.studySentenceSet.where((e) => e.inplan && e.familiarity < 5 && e.sentenceObj.tag.contains(tag)).toList();
+            children: Global.localStore.user.studyPlan.sentenceCategory.map((category) {
+              var studySentences = widget.studySentences.where((e) => e.categories.contains(category)).toList();
               studySentences.sort((a, b) => a.familiarity.compareTo(b.familiarity));
-              return _card(context, tag, studySentences.length, () {
+              return _card(context, category, studySentences.length, () {
                 if(studySentences.isEmpty) return;
-                Navigator.pushNamed(context, '/practice_sentence', arguments: {'title': null, 'sentences': studySentences});
+                Navigator.pushNamed(context, '/practice_sentence', arguments: {'title': null, 'studySentences': studySentences});
               });
             }).toList(),
           ),

@@ -56,7 +56,6 @@ class StudyWordSerializer {
   Future<List<StudyWordSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
     if(queries == null) queries = <String, dynamic>{};
     queries.addAll(filter.queries);
-    print(queries);
     var res = await Http().request(HttpType.GET, '/api/study/word/', queries:queries, cache:cache);
     return res != null ? res.data.map<StudyWordSerializer>((e) => StudyWordSerializer().fromJson(e)).toList() : [];
   }

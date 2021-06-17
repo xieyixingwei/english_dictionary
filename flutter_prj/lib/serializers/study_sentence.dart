@@ -13,8 +13,8 @@ class StudySentenceSerializer {
   num _id;
   num id = 0;
   num foreignUser;
-  num sentence;
-  String category = '';
+  SentenceSerializer sentence;
+  List<String> categories = [];
   num familiarity = 0;
   List<String> learnRecord = [];
   bool inplan = false;
@@ -22,7 +22,7 @@ class StudySentenceSerializer {
   String comments = '';
   num repeats = 0;
   List<String> newWords = [];
-  SentenceSerializer sentenceObj;
+  StudySentenceSerializerFilter filter = StudySentenceSerializerFilter();
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/study/sentence/', data:data ?? toJson(), queries:queries, cache:cache);
@@ -31,6 +31,8 @@ class StudySentenceSerializer {
   }
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
+    if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/study/sentence/$id/', queries:queries, cache:cache);
     fromJson(res?.data);
     return res != null;
@@ -41,7 +43,7 @@ class StudySentenceSerializer {
     if(pk != null) id = pk;
     var res = await Http().request(HttpType.DELETE, '/api/study/sentence/$id/');
     /*
-    if(sentenceObj != null){sentenceObj.delete();}
+    
     */
     return res != null ? res.statusCode == 204 : false;
   }
@@ -52,14 +54,18 @@ class StudySentenceSerializer {
     return res != null;
   }
 
+  Future<List<StudySentenceSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
+    if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(filter.queries);
+    var res = await Http().request(HttpType.GET, '/api/study/sentence/', queries:queries, cache:cache);
+    return res != null ? res.data.map<StudySentenceSerializer>((e) => StudySentenceSerializer().fromJson(e)).toList() : [];
+  }
+
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     bool res = _id == null ?
       await create(data:data, queries:queries, cache:cache) :
       await update(data:data, queries:queries, cache:cache);
 
-    if(res) {
-      if(sentenceObj != null){await sentenceObj.save();}
-    }
     
     return res;
   }
@@ -68,8 +74,12 @@ class StudySentenceSerializer {
     if(json == null) return this;
     id = json['id'] == null ? id : json['id'] as num;
     foreignUser = json['foreignUser'] == null ? foreignUser : json['foreignUser'] as num;
-    sentence = json['sentence'] == null ? sentence : json['sentence'] as num;
-    category = json['category'] == null ? category : json['category'] as String;
+    sentence = json['sentence'] == null
+                ? sentence
+                : SentenceSerializer().fromJson(json['sentence'] as Map<String, dynamic>);
+    categories = json['categories'] == null
+                ? categories
+                : json['categories'].map<String>((e) => e as String).toList();
     familiarity = json['familiarity'] == null ? familiarity : json['familiarity'] as num;
     learnRecord = json['learnRecord'] == null
                 ? learnRecord
@@ -88,8 +98,8 @@ class StudySentenceSerializer {
   Map<String, dynamic> toJson() => <String, dynamic>{
     'id': id,
     'foreignUser': foreignUser,
-    'sentence': sentence,
-    'category': category,
+    'sentence': sentence == null ? null : sentence.id,
+    'categories': categories == null ? null : categories.map((e) => e).toList(),
     'familiarity': familiarity,
     'learnRecord': learnRecord == null ? null : learnRecord.map((e) => e).toList(),
     'inplan': inplan,
@@ -104,8 +114,8 @@ class StudySentenceSerializer {
     if(instance == null) return this;
     id = instance.id;
     foreignUser = instance.foreignUser;
-    sentence = instance.sentence;
-    category = instance.category;
+    sentence = SentenceSerializer().from(instance.sentence);
+    categories = List.from(instance.categories);
     familiarity = instance.familiarity;
     learnRecord = List.from(instance.learnRecord);
     inplan = instance.inplan;
@@ -113,11 +123,35 @@ class StudySentenceSerializer {
     comments = instance.comments;
     repeats = instance.repeats;
     newWords = List.from(instance.newWords);
-    sentenceObj = SentenceSerializer().from(instance.sentenceObj);
     _id = instance._id;
     return this;
   }
 }
 
+class StudySentenceSerializerFilter {
+  num foreignUser;
+  num sentence;
+  String categories__icontains;
+  num familiarity__lte;
+  num familiarity__gte;
+  bool inplan;
 
+  Map<String, dynamic> get queries => <String, dynamic>{
+    'foreignUser': foreignUser,
+    'sentence': sentence,
+    'categories__icontains': categories__icontains,
+    'familiarity__lte': familiarity__lte,
+    'familiarity__gte': familiarity__gte,
+    'inplan': inplan,
+  }..removeWhere((String key, dynamic value) => value == null);
+
+  void clear() {
+    foreignUser = null;
+    sentence = null;
+    categories__icontains = null;
+    familiarity__lte = null;
+    familiarity__gte = null;
+    inplan = null;
+  }
+}
 

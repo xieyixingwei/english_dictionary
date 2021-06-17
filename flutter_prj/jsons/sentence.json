@@ -13,6 +13,7 @@
     "paraphraseForeign @fk_mo": "$paraphrase",
     "dialogForeign @fk_mo": "$dialog",
     "_grammarSet @fk_slave": ["$grammar"], //models.JSONField() # 语法 [id1,id2,id3]
+    "_studySentenceSet @fk_slave": ["$study_sentence"],
     "__offstage": true,
     "___synonymObjes": ["$sentence"],
     "__http__": {

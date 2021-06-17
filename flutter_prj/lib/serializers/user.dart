@@ -5,7 +5,6 @@
 
 import 'study_plan.dart';
 import 'study_grammar.dart';
-import 'study_sentence.dart';
 import 'package:flutter_prj/common/http.dart';
 
 
@@ -29,7 +28,6 @@ class UserSerializer {
   String status = '';
   StudyPlanSerializer studyPlan = StudyPlanSerializer();
   List<StudyGrammarSerializer> studyGrammarSet = [];
-  List<StudySentenceSerializer> studySentenceSet = [];
 
   Future<List<UserSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.GET, '/api/user/', queries:queries, cache:cache);
@@ -49,7 +47,6 @@ class UserSerializer {
     /*
     if(studyPlan != null){studyPlan.delete();}
     if(studyGrammarSet != null){studyGrammarSet.forEach((e){e.delete();});}
-    if(studySentenceSet != null){studySentenceSet.forEach((e){e.delete();});}
     */
     return res != null ? res.statusCode == 204 : false;
   }
@@ -85,9 +82,6 @@ class UserSerializer {
     studyPlan = json['studyPlan'] == null
                 ? studyPlan
                 : StudyPlanSerializer().fromJson(json['studyPlan'] as Map<String, dynamic>);
-    studySentenceSet = json['studySentenceSet'] == null
-                ? studySentenceSet
-                : json['studySentenceSet'].map<StudySentenceSerializer>((e) => StudySentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
     _id = id;
     if(!slave) return this;
     studyGrammarSet = json['studyGrammarSet'] == null
@@ -113,7 +107,6 @@ class UserSerializer {
     'status': status,
     'studyPlan': studyPlan == null ? null : studyPlan.toJson(),
     'studyGrammarSet': studyGrammarSet == null ? null : studyGrammarSet.map((e) => e.toJson()).toList(),
-    'studySentenceSet': studySentenceSet == null ? null : studySentenceSet.map((e) => e.toJson()).toList(),
   }..removeWhere((k, v) => v==null);
 
 
@@ -135,7 +128,6 @@ class UserSerializer {
     status = instance.status;
     studyPlan = StudyPlanSerializer().from(instance.studyPlan);
     studyGrammarSet = List.from(instance.studyGrammarSet.map((e) => StudyGrammarSerializer().from(e)).toList());
-    studySentenceSet = List.from(instance.studySentenceSet.map((e) => StudySentenceSerializer().from(e)).toList());
     _id = instance._id;
     return this;
   }

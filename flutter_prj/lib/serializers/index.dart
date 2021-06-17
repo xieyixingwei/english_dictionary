@@ -15,6 +15,7 @@ export 'sentence_tag.dart';
 export 'study_plan.dart';
 export 'study_grammar.dart';
 export 'study_sentence.dart';
+export 'study_sentence_pagination.dart';
 export 'study_word.dart';
 export 'study_word_pagination.dart';
 export 'user.dart';

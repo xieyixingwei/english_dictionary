@@ -45,15 +45,15 @@ class _TabPractice extends State<TabPractice> {
                 );
               }),
               _card(context, '句子', () async {
-                await Future.forEach<StudySentenceSerializer>(Global.localStore.user.studySentenceSet, (e) async {
-                  if(e.sentenceObj != null) return;
-                  e.sentenceObj = SentenceSerializer()..id = e.sentence;
-                  await e.sentenceObj.retrieve();
-                });
-                if(Global.sentenceTagOptions.isEmpty) return;
+                if(Global.localStore.user.studyPlan.sentenceCategory.isEmpty) return;
+                var studySentence = StudySentenceSerializer();
+                studySentence.filter..foreignUser = Global.localStore.user.id
+                                          ..familiarity__lte = 4
+                                          ..inplan = true;
+                var studySentences = await studySentence.list();
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => SentencePracticePage(),
+                    builder: (context) => SentencePracticePage(studySentences: studySentences),
                   )
                 );
               }),

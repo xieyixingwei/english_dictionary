@@ -93,7 +93,7 @@ final _routes = {
   '/show_distinguish': (context, {arguments}) => ShowDistinguishPage(title: arguments['title'], distinguish: arguments['distinguish'],),
 
   '/practice_word': (context, {arguments}) => PracticeWord(title: arguments['title'], studyWords: arguments['studyWords'],),
-  '/practice_sentence': (context, {arguments}) => PracticeSentence(title: arguments['title'], sentences: arguments['sentences'],),
+  '/practice_sentence': (context, {arguments}) => PracticeSentence(title: arguments['title'], studySentences: arguments['studySentences'],),
 
   '/list_dialog': (context) => ListDialog(),
   '/edit_dialog': (context, {arguments}) => EditDialog(title: arguments['title'], dialog: arguments['dialog'],),

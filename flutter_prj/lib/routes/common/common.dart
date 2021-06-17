@@ -14,12 +14,6 @@ List<Map<String, List<ParaphraseSerializer>>> sortParaphraseSet(List<ParaphraseS
   return ret;
 }
 
-StudySentenceSerializer getStudySentence(num id) {
-  if(Global.localStore.user.studySentenceSet.isEmpty)
-    return null;
-  return Global.localStore.user.studySentenceSet.singleWhere((e) => e.sentence==id, orElse: () => null);
-}
-
 StudyGrammarSerializer getStudyGrammar(num id) {
   if(Global.localStore.user.studyGrammarSet.isEmpty)
     return null;
@@ -116,7 +110,7 @@ Future<String> popSelectWordCategoryDialog(BuildContext context, List<String> ca
   return res;
 }
 
-Future<String> popSelectSentenceCategoryDialog(BuildContext context) async {
+Future<String> popSelectSentenceCategoryDialog(BuildContext context, List<String> categories) async {
   var ctrl = TextEditingController();
   var res = await showDialog(
     context: context,
@@ -124,29 +118,35 @@ Future<String> popSelectSentenceCategoryDialog(BuildContext context) async {
       StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
           List<Widget> options = Global.localStore.user.studyPlan.sentenceCategory.map<Widget>((e) =>
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                SizedBox(width: 20,),
-                Expanded(
-                  child: InkWell(
-                  child: Text(e),
-                  onTap: () => Navigator.pop(context, e),
-                )),
-                IconButton(
-                  icon: Icon(Icons.clear, color: Colors.black54, size: 18,),
-                  tooltip: '删除',
-                  splashRadius: 1.0,
-                  onPressed: () => setState(() {
-                    Global.localStore.user.studySentenceSet.where((w) => w.category == e).forEach((w) => w.delete());
-                    Global.localStore.user.studySentenceSet.removeWhere((w) => w.category == e);
-                    Global.localStore.user.studyPlan.sentenceCategory.remove(e);
-                    Global.localStore.user.studyPlan.save();
-                    Global.saveLocalStore();
-                  }),
-                ),
-              ]
-            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  SizedBox(width: 20,),
+                  Expanded(
+                    child: InkWell(
+                    child: Text('${categories.contains(e) ? "* " : "  "}$e'),
+                    onTap: () => Navigator.pop(context, e),
+                  )),
+                  InkWell(
+                    child: Icon(Icons.clear, color: Colors.black54, size: 18,),
+                    onDoubleTap: () async {
+                      Global.localStore.user.studyPlan.sentenceCategory.remove(e);
+                      Global.localStore.user.studyPlan.save();
+                      Global.saveLocalStore();
+                      var studySentence = StudySentenceSerializer();
+                      studySentence.filter.foreignUser = Global.localStore.user.id;
+                      studySentence.filter.categories__icontains = e;
+                      var swes = await studySentence.list();
+                      swes.forEach((w) => w.delete());
+                      setState(() => {});
+                    }
+                  ),
+                  SizedBox(width: 20,),
+                ]
+              ),
+            )
           ).toList();
           return SimpleDialog(
             title: Row(
