@@ -40,7 +40,6 @@ class WordSerializer(serializers.ModelSerializer):
                         if userId == sw.foreignUser.id]
         except:
             return []
-        
 
 
 # 分页自定义

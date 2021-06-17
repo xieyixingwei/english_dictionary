@@ -1,8 +1,11 @@
 from django.db import models
+import os
+
 from server.models  import JSONFieldUtf8
 from ..download_word import DownloadWord
 from server import settings
 from django.core.files.base import ContentFile
+from server.settings import MEDIA_ROOT
 
 
 class WordTable(models.Model):
@@ -42,25 +45,28 @@ class WordTable(models.Model):
             self.voiceUs = download.voice('美')
             self.voiceUk = download.voice('英')
 
-        if self.audioUsMan.name != None and self.audioUkWoman.name != '':
+        if self.audioUsMan.name != None\
+            and self.audioUsMan.name != ''\
+            and os.path.exists(MEDIA_ROOT / self.audioUsMan.name):
             return
+
         if download == None:
             download = DownloadWord(settings.MEDIA_ROOT, str(self.name))
         for name, data in DownloadWord(settings.MEDIA_ROOT, str(self.name)).sounds():
             fileContent = ContentFile(data)
-            if 'us_man' in name and self.audioUsMan.name == None:
+            if 'us_man' in name:
                 pathName = self.audioUsMan.field.upload_to+name
                 self.audioUsMan.name = pathName
                 self.audioUsMan.storage.save(pathName, fileContent)
-            elif 'us_woman' in name and self.audioUsWoman.name == None:
+            elif 'us_woman' in name:
                 pathName = self.audioUsWoman.field.upload_to+name
                 self.audioUsWoman.name = pathName
                 self.audioUsWoman.storage.save(pathName, fileContent)
-            elif 'uk_man' in name and self.audioUkMan.name == None:
+            elif 'uk_man' in name:
                 pathName = self.audioUkMan.field.upload_to+name
                 self.audioUkMan.name = pathName
                 self.audioUkMan.storage.save(pathName, fileContent)
-            elif 'uk_woman' in name and self.audioUkWoman.name == None:
+            elif 'uk_woman' in name:
                 pathName = self.audioUkWoman.field.upload_to+name
                 self.audioUkWoman.name = pathName
                 self.audioUkWoman.storage.save(pathName, fileContent)

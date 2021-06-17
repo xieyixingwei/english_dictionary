@@ -4,6 +4,7 @@ from rest_framework.pagination import PageNumberPagination
 from django_filters import filterset
 from django.db import models
 import django_filters
+from django.core.cache import cache
 
 
 from .GrammarView import GrammarSerializer
@@ -15,9 +16,27 @@ from server.views import ModelViewSetPermissionSerializerMap
 
 class SentenceSerializer(serializers.ModelSerializer):
     grammarSet = GrammarSerializer(many=True, read_only=True)
+    studySentenceSet = serializers.SerializerMethodField()
+
     class Meta:
         model = SentenceTable
         fields = '__all__'
+
+    def get_studySentenceSet(self, obj):
+        if not 'request' in self.context.keys():
+            # 防止 StudySentenceSerializer 和 SentenceSerializer 无限循环序列化
+            return []
+        request = self.context['request']
+        token = request.query_params.get('token')
+        if not token:
+            token = request.headers.get('authorization') 
+        try:
+            userId = cache.get(token)
+            return [{'id': ss.id, 'foreignUser': ss.foreignUser.id, 'inplan': ss.inplan, 'categories': ss.categories}
+                        for ss in obj.studySentenceSet.all()
+                        if userId == ss.foreignUser.id]
+        except:
+            return []
 
 
 # 分页自定义

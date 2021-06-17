@@ -10,8 +10,8 @@ class StudySentenceTable(models.Model):
     """
     id = models.AutoField(primary_key=True)
     foreignUser = models.ForeignKey(to=UserTable, related_name='studySentenceSet', on_delete=models.CASCADE)
-    sentence = models.OneToOneField(to=SentenceTable, null=True, on_delete=models.CASCADE)
-    category = models.CharField(max_length=30, null=True, blank=True)     # 所属的单词本
+    sentence = models.ForeignKey(to=SentenceTable, related_name='studySentenceSet', null=True, on_delete=models.CASCADE)
+    categories = JSONFieldUtf8(null=True, blank=True) #models.CharField(max_length=30, null=True, blank=True)     # 所属的单词本
     familiarity = models.IntegerField(default=0) # 0 ~ 5
     learnRecord = JSONFieldUtf8(null=True, blank=True) # [09122030,09112030,09102030]
     inplan = models.BooleanField(default=False)
