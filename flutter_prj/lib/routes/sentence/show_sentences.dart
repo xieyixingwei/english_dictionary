@@ -103,7 +103,7 @@ Widget sentenceShow(BuildContext context, SentenceSerializer sentence, Function 
             splashColor: Colors.transparent,
             hoverColor: Colors.transparent,
             highlightColor: Colors.transparent,
-            child: Icon(Icons.star, color: sentence.studySentenceSet.isEmpty == null ? Colors.black54 : Colors.redAccent, size: 14),
+            child: Icon(Icons.star, color: sentence.studySentenceSet.isEmpty ? Colors.black54 : Colors.redAccent, size: 14),
             onTap: () async {
               var categories = sentence.studySentenceSet.isEmpty ? <String>[] : sentence.studySentenceSet.first.categories;
               String category = await popSelectSentenceCategoryDialog(context, categories);

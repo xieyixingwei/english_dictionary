@@ -31,9 +31,9 @@ class _SentencePracticePageState extends State<SentencePracticePage> {
             runAlignment: WrapAlignment.start,
             children: Global.localStore.user.studyPlan.sentenceCategory.map((category) {
               var studySentences = widget.studySentences.where((e) => e.categories.contains(category)).toList();
-              studySentences.sort((a, b) => a.familiarity.compareTo(b.familiarity));
               return _card(context, category, studySentences.length, () {
                 if(studySentences.isEmpty) return;
+                studySentences.sort((a, b) => a.familiarity.compareTo(b.familiarity));
                 Navigator.pushNamed(context, '/practice_sentence', arguments: {'title': null, 'studySentences': studySentences});
               });
             }).toList(),

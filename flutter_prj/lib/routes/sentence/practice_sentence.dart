@@ -112,6 +112,44 @@ class _PracticeSentenceState extends State<PracticeSentence> {
             child: ColumnSpace(
               divider: SizedBox(height: 20,),
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    PopupMenuButton<String> (
+                      padding: EdgeInsets.all(5), // 菜单项的内边距
+                      offset: Offset(0, 0),       // 控制菜单弹出的位置()
+                      initialValue: _curStudySentence.familiarity.toString(),
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: '${_curStudySentence.familiarity}',
+                              style: TextStyle(color: Colors.blueAccent, fontSize: 17)
+                            ),
+                            TextSpan(
+                              text: ' 熟悉度',
+                              style: TextStyle(color: Colors.black45, fontSize: 14)
+                            ),
+                          ]
+                        )
+                      ),
+                      itemBuilder: (context) =>
+                        ['0', '1', '2', '3', '4', '5'].map((String e) =>
+                          PopupMenuItem<String>(
+                            value: e,
+                            textStyle: const TextStyle(fontWeight: FontWeight.w600), // 文本样式
+                            child: Text(e, style: const TextStyle(color: Colors.blue) ),    // 子控件
+                          )
+                        ).toList(),
+                      onSelected: (v) async {
+                        _curStudySentence.familiarity = num.parse(v);
+                        await _curStudySentence.save();
+                        setState(() {});
+                      }
+                    ),
+                    SizedBox(width: 100,),
+                  ],
+                ),
                 Container(
                   height: 200,
                   child: _sentence,
@@ -164,6 +202,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
     else if(index > 0) index -= 1;
   }
   SentenceSerializer get _curSentence => widget.studySentences[index].sentence;
+  StudySentenceSerializer get _curStudySentence => widget.studySentences[index];
 
   Widget _detail() =>
     Offstage(
