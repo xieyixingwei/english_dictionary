@@ -35,7 +35,7 @@ class WordSerializer(serializers.ModelSerializer):
             token = request.headers.get('authorization') 
         try:
             userId = cache.get(token)
-            return [{'id': sw.id, 'foreignUser': sw.foreignUser.id, 'inplan': sw.inplan, 'category': sw.category}
+            return [{'id': sw.id, 'foreignUser': sw.foreignUser.id, 'inplan': sw.inplan, 'categories': sw.categories}
                         for sw in obj.studyWordSet.all()
                         if userId == sw.foreignUser.id]
         except:
