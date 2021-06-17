@@ -52,7 +52,7 @@ Future<String> popSelectWordCategoryDialog(BuildContext context, List<String> ca
                       Global.saveLocalStore();
                       var studyWord = StudyWordSerializer();
                       studyWord.filter.foreignUser = Global.localStore.user.id;
-                      studyWord.filter.category__icontains = e;
+                      studyWord.filter.categories__icontains = e;
                       var swes = await studyWord.list();
                       swes.forEach((w) => w.delete());
                       setState(() {});

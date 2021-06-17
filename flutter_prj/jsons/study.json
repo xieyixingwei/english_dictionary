@@ -154,7 +154,7 @@
     "id @pk": 0,
     "foreignUser @fk_oo": "$user",
     "word @fk_mo @nested_r": "$word",
-    "category": [""],
+    "categories": [""],
     "familiarity": 0,
     "learnRecord": [""],
     "inplan": false,
@@ -165,7 +165,7 @@
         "__serializer__": "$study_word",
         "foreignUser": ["exact"],
         "word": ["exact"],
-        "category": ["icontains"],
+        "categories": ["icontains"],
         "familiarity": ["lte", "gte"],
         "inplan": ["exact"]
     },

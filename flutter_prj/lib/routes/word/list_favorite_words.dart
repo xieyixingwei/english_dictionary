@@ -23,7 +23,7 @@ class _ListFavoriteWordPageState extends State<ListFavoriteWordPage> {
 
   void _init() async {
     _studyWords.filter.foreignUser = Global.localStore.user.id;
-    _studyWords.filter.category__icontains = widget.category;
+    _studyWords.filter.categories__icontains = widget.category;
     _studyWords.queryset.pageSize = 10;
     _studyWords.queryset.pageIndex = 1;
     await _studyWords.retrieve();
@@ -89,7 +89,7 @@ class _ListFavoriteWordPageState extends State<ListFavoriteWordPage> {
             setState(() {});
           },
         ),
-        title: Text('${sw.familiarity} 熟悉度  ${sw.category.join("/")}', style: TextStyle(color: Colors.black54, fontSize: 12)),
+        title: Text('${sw.familiarity} 熟悉度  ${sw.categories.join("/")}', style: TextStyle(color: Colors.black54, fontSize: 12)),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

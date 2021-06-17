@@ -143,12 +143,14 @@ Widget sentenceShow(BuildContext context, SentenceSerializer sentence, Function 
 
 
 Widget sentenceItem({BuildContext context, SentenceSerializer sentence, Widget trailing}) {
+  String categories = sentence.studySentenceSet.isNotEmpty ? sentence.studySentenceSet.first.categories.join('/') : '';
   Widget subtitle = Text.rich(
     TextSpan(
         children: [
           TextSpan(text: '${sentence.cn}', style: TextStyle(fontSize: 12, color: Colors.black45)),
           TextSpan(text: '    ${sentence.tag?.join('/')}', style: TextStyle(fontSize: 10, color: Colors.black45)),
           TextSpan(text: '    ${sentence.tense ?? ""}', style: TextStyle(fontSize: 10, color: Colors.black45)),
+          TextSpan(text: '   $categories', style: TextStyle(fontSize: 10, color: Colors.black45)),
         ]
       )
   );

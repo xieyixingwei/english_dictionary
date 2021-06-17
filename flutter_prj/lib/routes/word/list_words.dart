@@ -151,12 +151,12 @@ class _ListWordsState extends State<ListWords> {
                   tooltip: '收藏',
                   splashRadius: 5.0,
                   onPressed: () async {
-                    var categories = e.studyWordSet.isEmpty ? <String>[] : e.studyWordSet.first.category;
+                    var categories = e.studyWordSet.isEmpty ? <String>[] : e.studyWordSet.first.categories;
                     String category = await popSelectWordCategoryDialog(context, categories);
                     if(category == null) return;
                     if(categories.contains(category)) {
-                      e.studyWordSet.first.category.remove(category);
-                      if(e.studyWordSet.first.category.isEmpty) {
+                      e.studyWordSet.first.categories.remove(category);
+                      if(e.studyWordSet.first.categories.isEmpty) {
                         await e.studyWordSet.first.delete();
                         e.studyWordSet.clear();
                       } else {
@@ -166,11 +166,11 @@ class _ListWordsState extends State<ListWords> {
                       if(e.studyWordSet.isEmpty) {
                         var newSw = StudyWordSerializer()..word = WordSerializer().from(e) // 不能直接赋值，要用from()深拷贝赋值，不然会进入死循环。
                                                          ..foreignUser = Global.localStore.user.id
-                                                         ..category.add(category);
+                                                         ..categories.add(category);
                         var ret = await newSw.save();
                         if(ret) e.studyWordSet.add(newSw);
                       } else {
-                        e.studyWordSet.first.category.add(category);
+                        e.studyWordSet.first.categories.add(category);
                         await e.studyWordSet.first.save();
                       }
                     }

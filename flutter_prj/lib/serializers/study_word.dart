@@ -14,7 +14,7 @@ class StudyWordSerializer {
   num id = 0;
   num foreignUser;
   WordSerializer word;
-  List<String> category = [];
+  List<String> categories = [];
   num familiarity = 0;
   List<String> learnRecord = [];
   bool inplan = false;
@@ -76,9 +76,9 @@ class StudyWordSerializer {
     word = json['word'] == null
                 ? word
                 : WordSerializer().fromJson(json['word'] as Map<String, dynamic>);
-    category = json['category'] == null
-                ? category
-                : json['category'].map<String>((e) => e as String).toList();
+    categories = json['categories'] == null
+                ? categories
+                : json['categories'].map<String>((e) => e as String).toList();
     familiarity = json['familiarity'] == null ? familiarity : json['familiarity'] as num;
     learnRecord = json['learnRecord'] == null
                 ? learnRecord
@@ -95,7 +95,7 @@ class StudyWordSerializer {
     'id': id,
     'foreignUser': foreignUser,
     'word': word == null ? null : word.name,
-    'category': category == null ? null : category.map((e) => e).toList(),
+    'categories': categories == null ? null : categories.map((e) => e).toList(),
     'familiarity': familiarity,
     'learnRecord': learnRecord == null ? null : learnRecord.map((e) => e).toList(),
     'inplan': inplan,
@@ -110,7 +110,7 @@ class StudyWordSerializer {
     id = instance.id;
     foreignUser = instance.foreignUser;
     word = WordSerializer().from(instance.word);
-    category = List.from(instance.category);
+    categories = List.from(instance.categories);
     familiarity = instance.familiarity;
     learnRecord = List.from(instance.learnRecord);
     inplan = instance.inplan;
@@ -125,7 +125,7 @@ class StudyWordSerializer {
 class StudyWordSerializerFilter {
   num foreignUser;
   String word;
-  String category__icontains;
+  String categories__icontains;
   num familiarity__lte;
   num familiarity__gte;
   bool inplan;
@@ -133,7 +133,7 @@ class StudyWordSerializerFilter {
   Map<String, dynamic> get queries => <String, dynamic>{
     'foreignUser': foreignUser,
     'word': word,
-    'category__icontains': category__icontains,
+    'categories__icontains': categories__icontains,
     'familiarity__lte': familiarity__lte,
     'familiarity__gte': familiarity__gte,
     'inplan': inplan,
@@ -142,7 +142,7 @@ class StudyWordSerializerFilter {
   void clear() {
     foreignUser = null;
     word = null;
-    category__icontains = null;
+    categories__icontains = null;
     familiarity__lte = null;
     familiarity__gte = null;
     inplan = null;

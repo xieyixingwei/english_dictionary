@@ -30,7 +30,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
             alignment: WrapAlignment.center,
             runAlignment: WrapAlignment.center,
             children: Global.localStore.user.studyPlan.wordCategory.map((category) {
-              var studyWords = widget.studyWords.where((e) => e.category.contains(category)).toList();
+              var studyWords = widget.studyWords.where((e) => e.categories.contains(category)).toList();
               studyWords.sort((a, b) => a.familiarity.compareTo(b.familiarity));
               return _card(context, category, studyWords.length, () {
                 if(studyWords.isEmpty) return;
