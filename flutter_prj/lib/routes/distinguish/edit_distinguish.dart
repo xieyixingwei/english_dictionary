@@ -120,7 +120,7 @@ class _EditDistinguishState extends State<EditDistinguish> {
                       ),
                     ),
                     ListOutline(
-                      labelText: '辨析句子',
+                      labelText: '辨析短语',
                       children: widget._distinguish.sentencePatternForeign.map((e) =>
                         Tag(
                           label: InkWell(

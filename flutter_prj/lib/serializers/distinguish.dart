@@ -78,7 +78,7 @@ class DistinguishSerializer {
     'id': id,
     'content': content,
     'wordsForeign': wordsForeign == null ? null : wordsForeign.map((e) => e).toList(),
-    'sentencePatternForeign': sentencePatternForeign == null ? null : sentencePatternForeign.map((e) => e.id).toList(),
+    'sentencePatternForeign': sentencePatternForeign == null ? null : sentencePatternForeign.map((e) => e.toJson()).toList(),
   }..removeWhere((k, v) => v==null);
 
   Future<bool> uploadFile() async {
