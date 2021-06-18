@@ -15,10 +15,10 @@ class _EtymaSerializer(serializers.ModelSerializer):
 
 # 分页自定义
 class _EtymaPagination(PageNumberPagination):
-    page_size = 4 # 表示每页的默认显示数量
     page_size_query_param = 'page_size' # 表示url中每页数量参数
     page_query_param = 'page_index' # 表示url中的页码参数
-    max_page_size = 100
+    # page_size = 4 # 表示每页的默认显示数量
+    # max_page_size = 100
 
 
 class _EtymaFilter(filterset.FilterSet):

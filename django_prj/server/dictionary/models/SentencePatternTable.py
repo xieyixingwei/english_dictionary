@@ -8,7 +8,7 @@ class SentencePatternTable(models.Model):
     """
     id = models.AutoField(primary_key=True)
     content = models.CharField(max_length=64)  # 内容
-    wordForeign = models.ForeignKey(to=WordTable, related_name='sentencePatternSet', null=True, on_delete=models.CASCADE)
+    wordForeign = models.ForeignKey(to=WordTable, related_name='sentencePatternSet', null=True, on_delete=models.SET_NULL)
 
     class Meta:
         ordering = ['id']

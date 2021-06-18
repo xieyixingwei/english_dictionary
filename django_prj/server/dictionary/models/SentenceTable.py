@@ -26,7 +26,7 @@ class SentenceTable(models.Model):
     pattern = JSONFieldUtf8(null=True)    # 句型 [复合句,问候语,从句,陈述句]
     synonym = models.ManyToManyField(to='self', blank=True) # 同义句 [Sentence.id,Sentence.id,...]
     antonym = models.ManyToManyField(to='self', blank=True) # 反义句 [Sentence.id,Sentence.id,...]
-    paraphraseForeign = models.ForeignKey(to=ParaphraseTable, related_name='sentenceSet', null=True, on_delete=models.CASCADE)
+    paraphraseForeign = models.ForeignKey(to=ParaphraseTable, related_name='sentenceSet', null=True, on_delete=models.SET_NULL)
     dialogForeign = models.ForeignKey(to=DialogTable, related_name='sentenceSet', null=True, on_delete=models.SET_NULL)
     class Meta:
         ordering = ['id']  # 消除list警告UnorderedObjectListWarning: Pagination may yield inconsistent results with an unordered object_list
