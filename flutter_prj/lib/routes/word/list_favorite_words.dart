@@ -74,46 +74,45 @@ class _ListFavoriteWordPageState extends State<ListFavoriteWordPage> {
     );
 
   Widget _studyWordItem(BuildContext context, StudyWordSerializer sw) =>
-      ListTile(
-        dense: true,
-        contentPadding: EdgeInsets.zero,
-        leading: InkWell(
-          child: Text(sw.word.name, style: TextStyle(color: Colors.black87, fontSize: 17)),
-          onTap: () async {
-            var w = (await Navigator.pushNamed(context, '/edit_word',
-                                                arguments: {
-                                                  'title': '编辑单词',
-                                                  'word': WordSerializer().from(sw.word)})
-                        ) as WordSerializer;
-            if(w != null) await sw.word.from(w).save();
-            setState(() {});
-          },
-        ),
-        title: Text('${sw.familiarity} 熟悉度  ${sw.categories.join("/")}', style: TextStyle(color: Colors.black54, fontSize: 12)),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextButton(
-              child: Text(sw.inplan ? '取消学习' : '加入学习', style: TextStyle(color: sw.inplan ? Colors.black54 : Colors.blue),),
-              onPressed: () async {
-                sw.inplan = !sw.inplan;
-                await sw.save();
-                Global.saveLocalStore();
+    ListTile(
+      dense: true,
+      contentPadding: EdgeInsets.zero,
+      leading: InkWell(
+        child: Text(sw.word.name, style: TextStyle(color: Colors.black87, fontSize: 17)),
+        onTap: () async {
+          var w = (await Navigator.pushNamed(context, '/edit_word',
+                                              arguments: {
+                                                'title': '编辑单词',
+                                                'word': WordSerializer().from(sw.word)})
+                      ) as WordSerializer;
+          if(w != null) await sw.word.from(w).save();
+          setState(() {});
+        },
+      ),
+      title: Text('${sw.familiarity} 熟悉度  ${sw.categories.join("/")}', style: TextStyle(color: Colors.black54, fontSize: 12)),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextButton(
+            child: Text(sw.inplan ? '取消学习' : '加入学习', style: TextStyle(color: sw.inplan ? Colors.black54 : Colors.blue),),
+            onPressed: () async {
+              sw.inplan = !sw.inplan;
+              await sw.save();
+              setState(() {});
+            }
+          ),
+          SizedBox(width: 10,),
+          TextButton(
+            child: Text('取消收藏'),
+            onPressed: () async {
+              var ret = await sw.delete();
+              if(ret) {
+                _studyWords.results.remove(sw);
                 setState(() {});
               }
-            ),
-            SizedBox(width: 10,),
-            TextButton(
-              child: Text('取消收藏'),
-              onPressed: () async {
-                var ret = await sw.delete();
-                if(ret) {
-                  _studyWords.results.remove(sw);
-                  setState(() {});
-                }
-              },
-            ),
-          ],
-        )
-      );
+            },
+          ),
+        ],
+      )
+    );
 }

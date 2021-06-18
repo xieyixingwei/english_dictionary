@@ -131,7 +131,7 @@ class _HomeState extends State<Home> {
         child: Text(e.content, style: _style1,),
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => ShowSentencePatternPage(title: '常用句型', sentencePattern: e,),
+            builder: (context) => ShowSentencePatternPage(title: '固定表达', sentencePattern: e,),
           )
         ),
       )

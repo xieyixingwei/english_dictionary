@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
-import 'package:flutter_prj/routes/sentence/list_favorite_sentences.dart';
+import 'package:flutter_prj/routes/sentence_pattern/list_favorite_sentence_pattern.dart';
+import 'package:flutter_prj/routes/word/list_favorite_words.dart';
 import 'package:flutter_prj/serializers/index.dart';
 
 
-class FavoriteSentencePage extends StatefulWidget {
-  FavoriteSentencePage({Key key}) : super(key: key);
+class FavoriteSentencePatternPage extends StatefulWidget {
+  FavoriteSentencePatternPage({Key key}) : super(key: key);
 
   @override
-  _FavoriteSentencePageState createState() => _FavoriteSentencePageState();
+  _FavoriteSentencePatternPageState createState() => _FavoriteSentencePatternPageState();
 }
 
 
-class _FavoriteSentencePageState extends State<FavoriteSentencePage> {
-  final _studySentences = StudySentencePaginationSerializer();
+class _FavoriteSentencePatternPageState extends State<FavoriteSentencePatternPage> {
+  final _studySentencePatterns = StudySentencePatternPaginationSerializer();
   final _categoryCount = <String, num>{};
 
   @override
@@ -23,12 +24,11 @@ class _FavoriteSentencePageState extends State<FavoriteSentencePage> {
   }
 
   void _init() async {
-    await Future.forEach<String>(Global.localStore.user.studyPlan.sentenceCategories, (e) async {
-      _studySentences.filter.foreignUser = Global.localStore.user.id;
-      _studySentences.filter.categories__icontains = e;
-      var ret = await _studySentences.retrieve();
-      if(ret)
-        _categoryCount[e] = _studySentences.count;
+    await Future.forEach<String>(Global.localStore.user.studyPlan.sentencePatternCategories, (e) async {
+      _studySentencePatterns.filter.foreignUser = Global.localStore.user.id;
+      _studySentencePatterns.filter.categories__icontains = e;
+      var ret = await _studySentencePatterns.retrieve();
+      if(ret) _categoryCount[e] = _studySentencePatterns.count;
     });
     setState(() { });
   }
@@ -37,7 +37,7 @@ class _FavoriteSentencePageState extends State<FavoriteSentencePage> {
   Widget build(BuildContext context) =>
     Scaffold(
       appBar: AppBar(
-        title: Text('收藏的句子'),
+        title: Text('收藏的固定表达'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -55,7 +55,7 @@ class _FavoriteSentencePageState extends State<FavoriteSentencePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ListFavoriteSentencePage(category: category,)
+                      builder: (context) => ListFavoriteSentencePatternPage(category: category,)
                     )
                   );
                 }

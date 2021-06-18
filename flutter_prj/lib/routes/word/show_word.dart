@@ -358,7 +358,7 @@ class _ShowWordState extends State<ShowWord> {
 
   Widget _sentencePatternSetShow(BuildContext context) => widget.word.sentencePatternSet.isNotEmpty ?
     OnOffWidget(
-      label: Text('常用句型', style: _labelStyle),
+      label: Text('固定表达', style: _labelStyle),
       child: Container(
         padding: EdgeInsets.only(top:14),
         child: ColumnSpace(

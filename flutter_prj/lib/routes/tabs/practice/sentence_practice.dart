@@ -29,7 +29,7 @@ class _SentencePracticePageState extends State<SentencePracticePage> {
             runSpacing: 10,
             alignment: WrapAlignment.start,
             runAlignment: WrapAlignment.start,
-            children: Global.localStore.user.studyPlan.sentenceCategory.map((category) {
+            children: Global.localStore.user.studyPlan.sentenceCategories.map((category) {
               var studySentences = widget.studySentences.where((e) => e.categories.contains(category)).toList();
               return _card(context, category, studySentences.length, () {
                 if(studySentences.isEmpty) return;

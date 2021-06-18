@@ -88,7 +88,7 @@ class _EditEtymaState extends State<EditEtyma> {
                         child: TextFormField(
                           keyboardType: TextInputType.text, // 键盘回车键的样式
                           textInputAction: TextInputAction.next,
-                          controller: TextEditingController(text:widget._etyma.name ?? ''),
+                          controller: TextEditingController(text:widget._etyma.name),
                           maxLines: 1,
                           style: textStyle,
                           decoration: InputDecoration(
@@ -113,7 +113,7 @@ class _EditEtymaState extends State<EditEtyma> {
                       border: OutlineInputBorder(),
                     ),
                     onChanged: (value) => widget._etyma.interpretation = value.trim(),
-                    //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
+                    validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                   ),
                 ]
             ),

@@ -47,6 +47,11 @@ class EtymaSerializer {
     return res != null ? res.statusCode == 204 : false;
   }
 
+  Future<List<EtymaSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
+    var res = await Http().request(HttpType.GET, '/api/dictionary/etyma/', queries:queries, cache:cache);
+    return res != null ? res.data.map<EtymaSerializer>((e) => EtymaSerializer().fromJson(e)).toList() : [];
+  }
+
   Future<bool> save({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     bool res = _name == null ?
       await create(data:data, queries:queries, cache:cache) :

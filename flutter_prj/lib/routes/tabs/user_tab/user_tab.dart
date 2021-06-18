@@ -42,7 +42,7 @@ class UserTab extends StatelessWidget {
       'route': '/list_etymas',
     },
     {
-      'title': '编辑常用句型',
+      'title': '编辑固定表达',
       'icon': Icon(Icons.gesture),
       'route': '/list_sentence_patterns',
     },

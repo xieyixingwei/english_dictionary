@@ -64,8 +64,8 @@ Widget etymaItem({BuildContext context, EtymaSerializer etyma, Widget trailing})
   Widget title = Text.rich(
     TextSpan(
         children: [
-          TextSpan(text: '${etyma.name}', style: TextStyle(fontSize: 14, color: Colors.black87)),
-          TextSpan(text: '    ${EditEtyma.options[etyma.type]}', style: TextStyle(fontSize: 10, color: Colors.black45)),
+          TextSpan(text: '${etyma.name}', style: TextStyle(fontSize: 17, color: Colors.black87)),
+          TextSpan(text: '    ${EditEtyma.options[etyma.type]}', style: TextStyle(fontSize: 12, color: Colors.black45)),
         ]
       )
   );
@@ -76,6 +76,7 @@ Widget etymaItem({BuildContext context, EtymaSerializer etyma, Widget trailing})
     minLeadingWidth: 30,
     contentPadding: EdgeInsets.only(left: 14, right: 14, top: 0, bottom: 0),
     title: title,
+    subtitle: Text(etyma.interpretation, style: TextStyle(fontSize: 12, color: Colors.black54)),
     trailing: trailing,
   );
 }

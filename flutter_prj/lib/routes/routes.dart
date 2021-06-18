@@ -20,6 +20,7 @@ import 'package:flutter_prj/routes/sentence/practice_sentence.dart';
 import 'package:flutter_prj/routes/sentence/show_sentences.dart';
 import 'package:flutter_prj/routes/sentence_pattern/edit_sentence_pattern.dart';
 import 'package:flutter_prj/routes/sentence_pattern/list_sentence_patterns.dart';
+import 'package:flutter_prj/routes/sentence_pattern/show_sentence_pattern.dart';
 import 'package:flutter_prj/routes/user/edit_user.dart';
 import 'package:flutter_prj/routes/user/list_users.dart';
 import 'package:flutter_prj/routes/word/edit_word.dart';
@@ -78,6 +79,7 @@ final _routes = {
   '/edit_paraphrase': (context, {arguments}) => EditParaphrase(title:arguments['title'], paraphrase:arguments['paraphrase']),
   '/list_sentence_patterns': (context) => ListSentencePatterns(),
   '/edit_sentence_pattern': (context, {arguments}) => EditSentencePattern(title:arguments['title'], sentencePattern:arguments['sentence_pattern']),
+  '/show_sentence_pattern': (context, {arguments}) => ShowSentencePatternPage(title: arguments['title'], sentencePattern: arguments['sentencePattern'],),
   '/list_distinguishes': (context) => ListDistinguishes(),
   '/edit_distinguish': (context, {arguments}) => EditDistinguish(title:arguments['title'], distinguish:arguments['distinguish']),
 
@@ -87,7 +89,6 @@ final _routes = {
 
   '/study_settings': (context, {arguments}) => StudySettings(plan: arguments['plan']),
   '/favorite_page': (context) => FavoritePage(),
-  '/list_favorite_page': (context, {arguments}) => ListFavoritePage(type: arguments['type']),
 
   '/show_grammar': (context, {arguments}) => ShowGrammarPage(title: arguments['title'], grammar: arguments['grammar'],),
   '/show_distinguish': (context, {arguments}) => ShowDistinguishPage(title: arguments['title'], distinguish: arguments['distinguish'],),

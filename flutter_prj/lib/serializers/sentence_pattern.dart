@@ -4,6 +4,7 @@
 // **************************************************************************
 
 import 'paraphrase.dart';
+import 'study_sentence_pattern.dart';
 import 'package:flutter_prj/common/http.dart';
 
 
@@ -15,6 +16,8 @@ class SentencePatternSerializer {
   String content = '';
   String wordForeign;
   List<ParaphraseSerializer> paraphraseSet = [];
+  List<StudySentencePatternSerializer> studySentencePatternSet = [];
+  bool offstage = true;
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/dictionary/sentence_pattern/', data:data ?? toJson(), queries:queries, cache:cache);
@@ -40,6 +43,7 @@ class SentencePatternSerializer {
     var res = await Http().request(HttpType.DELETE, '/api/dictionary/sentence_pattern/$id/');
     /*
     if(paraphraseSet != null){paraphraseSet.forEach((e){e.delete();});}
+    if(studySentencePatternSet != null){studySentencePatternSet.forEach((e){e.delete();});}
     */
     return res != null ? res.statusCode == 204 : false;
   }
@@ -51,6 +55,7 @@ class SentencePatternSerializer {
 
     if(res) {
       await Future.forEach(paraphraseSet, (e) async {e.sentencePatternForeign = id; await e.save();});
+      await Future.forEach(studySentencePatternSet, (e) async { await e.save();});
     }
     
     return res;
@@ -66,6 +71,9 @@ class SentencePatternSerializer {
     paraphraseSet = json['paraphraseSet'] == null
                 ? paraphraseSet
                 : json['paraphraseSet'].map<ParaphraseSerializer>((e) => ParaphraseSerializer().fromJson(e as Map<String, dynamic>)).toList();
+    studySentencePatternSet = json['studySentencePatternSet'] == null
+                ? studySentencePatternSet
+                : json['studySentencePatternSet'].map<StudySentencePatternSerializer>((e) => StudySentencePatternSerializer().fromJson(e as Map<String, dynamic>)).toList();
     return this;
   }
 
@@ -82,6 +90,8 @@ class SentencePatternSerializer {
     content = instance.content;
     wordForeign = instance.wordForeign;
     paraphraseSet = List.from(instance.paraphraseSet.map((e) => ParaphraseSerializer().from(e)).toList());
+    studySentencePatternSet = List.from(instance.studySentencePatternSet.map((e) => StudySentencePatternSerializer().from(e)).toList());
+    offstage = instance.offstage;
     _id = instance._id;
     return this;
   }

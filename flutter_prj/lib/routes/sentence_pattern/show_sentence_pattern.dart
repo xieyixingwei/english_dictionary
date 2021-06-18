@@ -35,6 +35,7 @@ Widget sentencePattrenItem({BuildContext context, SentencePatternSerializer sp, 
     leading: Text('${sp.id}', style: TextStyle(fontSize: 14, color: Colors.black54),),
     title: Text(sp.content, style: TextStyle(fontSize: 14, color: Colors.black87)),
     trailing: trailing,
+    onTap: () => Navigator.pushNamed(context, '/show_sentence_pattern', arguments: {'title': '', 'sentencePattern': sp}),
   );
 }
 

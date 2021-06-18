@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/tabs/practice/sentence_pattern_practice.dart';
 import 'package:flutter_prj/routes/tabs/practice/sentence_practice.dart';
 import 'package:flutter_prj/routes/tabs/practice/word_practice.dart';
 import 'package:flutter_prj/serializers/index.dart';
@@ -32,7 +33,7 @@ class _TabPractice extends State<TabPractice> {
             runAlignment: WrapAlignment.spaceAround,
             children: [
               _card(context, '单词', () async {
-                if(Global.localStore.user.studyPlan.wordCategory.isEmpty) return;
+                if(Global.localStore.user.studyPlan.wordCategories.isEmpty) return;
                 var studyWord = StudyWordSerializer();
                 studyWord.filter..foreignUser = Global.localStore.user.id
                                           ..familiarity__lte = 4
@@ -45,7 +46,7 @@ class _TabPractice extends State<TabPractice> {
                 );
               }),
               _card(context, '句子', () async {
-                if(Global.localStore.user.studyPlan.sentenceCategory.isEmpty) return;
+                if(Global.localStore.user.studyPlan.sentenceCategories.isEmpty) return;
                 var studySentence = StudySentenceSerializer();
                 studySentence.filter..foreignUser = Global.localStore.user.id
                                           ..familiarity__lte = 4
@@ -57,7 +58,19 @@ class _TabPractice extends State<TabPractice> {
                   )
                 );
               }),
-              _card(context, '固定表达', (){}),
+              _card(context, '固定表达', () async {
+                if(Global.localStore.user.studyPlan.sentencePatternCategories.isEmpty) return;
+                var studySentencePattern = StudySentencePatternSerializer();
+                studySentencePattern.filter..foreignUser = Global.localStore.user.id
+                                          ..familiarity__lte = 4
+                                          ..inplan = true;
+                var studySentencePatterns = await studySentencePattern.list();
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SentencePatternPracticePage(studySentencePatterns: studySentencePatterns),
+                  )
+                );
+              }),
               _card(context, '词义辨析', (){}),
             ],
           ),

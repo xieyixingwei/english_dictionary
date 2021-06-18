@@ -74,47 +74,46 @@ class _ListFavoriteSentencePageState extends State<ListFavoriteSentencePage> {
     );
 
   Widget _studySentenceItem(BuildContext context, StudySentenceSerializer ss) =>
-      ListTile(
-        dense: true,
-        contentPadding: EdgeInsets.zero,
-        leading: Text('${ss.sentence.id}', style: TextStyle(color: Colors.black54, fontSize: 17)),
-        title: InkWell(
-          child: Text(ss.sentence.en, style: TextStyle(color: Colors.black87, fontSize: 17)),
-          onTap: () async {
-            var s = (await Navigator.pushNamed(context, '/edit_sentence',
-                                                arguments: {
-                                                  'title': '编辑例句',
-                                                  'sentence': SentenceSerializer().from(ss.sentence)})
-                        ) as SentenceSerializer;
-            if(s != null) await ss.sentence.from(s).save();
-            setState(() {});
-          },
-        ),
-        subtitle: Text('${ss.familiarity} 熟悉度  ${ss.categories.join("/")}', style: TextStyle(color: Colors.black54, fontSize: 12)),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextButton(
-              child: Text(ss.inplan ? '取消学习' : '加入学习', style: TextStyle(color: ss.inplan ? Colors.black54 : Colors.blue),),
-              onPressed: () async {
-                ss.inplan = !ss.inplan;
-                await ss.save();
-                Global.saveLocalStore();
+    ListTile(
+      dense: true,
+      contentPadding: EdgeInsets.zero,
+      leading: Text('${ss.sentence.id}', style: TextStyle(color: Colors.black54, fontSize: 17)),
+      title: InkWell(
+        child: Text(ss.sentence.en, style: TextStyle(color: Colors.black87, fontSize: 17)),
+        onTap: () async {
+          var s = (await Navigator.pushNamed(context, '/edit_sentence',
+                                              arguments: {
+                                                'title': '编辑例句',
+                                                'sentence': SentenceSerializer().from(ss.sentence)})
+                      ) as SentenceSerializer;
+          if(s != null) await ss.sentence.from(s).save();
+          setState(() {});
+        },
+      ),
+      subtitle: Text('${ss.familiarity} 熟悉度  ${ss.categories.join("/")}', style: TextStyle(color: Colors.black54, fontSize: 12)),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextButton(
+            child: Text(ss.inplan ? '取消学习' : '加入学习', style: TextStyle(color: ss.inplan ? Colors.black54 : Colors.blue),),
+            onPressed: () async {
+              ss.inplan = !ss.inplan;
+              await ss.save();
+              setState(() {});
+            }
+          ),
+          SizedBox(width: 10,),
+          TextButton(
+            child: Text('取消收藏'),
+            onPressed: () async {
+              var ret = await ss.delete();
+              if(ret) {
+                _studySentences.results.remove(ss);
                 setState(() {});
               }
-            ),
-            SizedBox(width: 10,),
-            TextButton(
-              child: Text('取消收藏'),
-              onPressed: () async {
-                var ret = await ss.delete();
-                if(ret) {
-                  _studySentences.results.remove(ss);
-                  setState(() {});
-                }
-              },
-            ),
-          ],
-        )
-      );
+            },
+          ),
+        ],
+      )
+    );
 }

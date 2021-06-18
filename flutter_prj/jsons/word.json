@@ -16,7 +16,7 @@
     "image": "$SingleFile image", 
     "vedio": "$SingleFile video",
     "_paraphraseSet @fk_slave": ["$paraphrase"], // 释义
-    "_sentencePatternSet @fk_slave": ["$sentence_pattern"], // 常用句型
+    "_sentencePatternSet @fk_slave": ["$sentence_pattern"], // 固定表达
     "_grammarSet @fk_slave": ["$grammar"], //语法
     "_distinguishSet @fk_slave": ["$distinguish"], // 词义辨析
     "_studyWordSet @fk_slave": ["$study_word"],
@@ -71,12 +71,14 @@
 }
 
 
-{ // 常用句型
+{ // 固定表达
     "__name__": "sentence_pattern",
     "id @pk": "num=null",
     "content": "",
     "wordForeign @fk_mo": "$word",
     "_paraphraseSet @fk_slave": ["$paraphrase"],
+    "_studySentencePatternSet @fk_slave": ["$study_sentence_pattern"],
+    "__offstage": true,
     "__http__": {
         "url": "/api/dictionary/sentence_pattern/",
         "methods": [
@@ -102,7 +104,7 @@
     }
 }
 
-{ // 分页查询 常用句型
+{ // 分页查询 固定表达
     "__name__": "sentence_pattern_pagination",
     "count": 0,
     "next": "",
@@ -222,6 +224,9 @@
             {
                 "name": "delete",
                 "url": "$name/"
+            },
+            {
+                "name": "list"
             },
             {
                 "name": "save"

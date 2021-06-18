@@ -32,7 +32,7 @@ Future<String> popSelectWordCategoryDialog(BuildContext context, List<String> ca
     builder: (context) =>
       StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
-          List<Widget> options = Global.localStore.user.studyPlan.wordCategory.map<Widget>((e) =>
+          List<Widget> options = Global.localStore.user.studyPlan.wordCategories.map<Widget>((e) =>
             Container(
               margin: EdgeInsets.only(bottom: 8),
               child: Row(
@@ -47,7 +47,7 @@ Future<String> popSelectWordCategoryDialog(BuildContext context, List<String> ca
                   InkWell(
                     child: Icon(Icons.clear, color: Colors.black54, size: 18,),
                     onDoubleTap: () async {
-                      Global.localStore.user.studyPlan.wordCategory.remove(e);
+                      Global.localStore.user.studyPlan.wordCategories.remove(e);
                       Global.localStore.user.studyPlan.save();
                       Global.saveLocalStore();
                       var studyWord = StudyWordSerializer();
@@ -67,7 +67,7 @@ Future<String> popSelectWordCategoryDialog(BuildContext context, List<String> ca
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('选择单词本'),
+                Text('选择单词收藏夹'),
                 TextButton(
                   child: Text('返回'),
                   onPressed: () => Navigator.pop(context),
@@ -91,7 +91,7 @@ Future<String> popSelectWordCategoryDialog(BuildContext context, List<String> ca
                     onPressed: () {
                       if(ctrl.text.trim().isNotEmpty)
                         setState(() {
-                          Global.localStore.user.studyPlan.wordCategory.add(ctrl.text.trim());
+                          Global.localStore.user.studyPlan.wordCategories.add(ctrl.text.trim());
                           Global.localStore.user.studyPlan.save();
                           Global.saveLocalStore();
                         });
@@ -117,7 +117,7 @@ Future<String> popSelectSentenceCategoryDialog(BuildContext context, List<String
     builder: (context) =>
       StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
-          List<Widget> options = Global.localStore.user.studyPlan.sentenceCategory.map<Widget>((e) =>
+          List<Widget> options = Global.localStore.user.studyPlan.sentenceCategories.map<Widget>((e) =>
             Container(
               margin: EdgeInsets.only(bottom: 8),
               child: Row(
@@ -132,7 +132,7 @@ Future<String> popSelectSentenceCategoryDialog(BuildContext context, List<String
                   InkWell(
                     child: Icon(Icons.clear, color: Colors.black54, size: 18,),
                     onDoubleTap: () async {
-                      Global.localStore.user.studyPlan.sentenceCategory.remove(e);
+                      Global.localStore.user.studyPlan.sentenceCategories.remove(e);
                       Global.localStore.user.studyPlan.save();
                       Global.saveLocalStore();
                       var studySentence = StudySentenceSerializer();
@@ -152,7 +152,7 @@ Future<String> popSelectSentenceCategoryDialog(BuildContext context, List<String
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('选择句子本'),
+                Text('选择句子收藏夹'),
                 TextButton(
                   child: Text('返回'),
                   onPressed: () => Navigator.pop(context),
@@ -176,7 +176,92 @@ Future<String> popSelectSentenceCategoryDialog(BuildContext context, List<String
                     onPressed: () {
                       if(ctrl.text.trim().isNotEmpty)
                         setState(() {
-                          Global.localStore.user.studyPlan.sentenceCategory.add(ctrl.text.trim());
+                          Global.localStore.user.studyPlan.sentenceCategories.add(ctrl.text.trim());
+                          Global.localStore.user.studyPlan.save();
+                          Global.saveLocalStore();
+                        });
+                      ctrl.text = '';
+                    },
+                  ),
+                  SizedBox(width: 20,),
+                ]
+              )
+            ],
+          );
+        },
+    ),
+  );
+  return res;
+}
+
+
+Future<String> popSelectSentencePatternCategoryDialog(BuildContext context, List<String> categories) async {
+  var ctrl = TextEditingController();
+  var res = await showDialog(
+    context: context,
+    builder: (context) =>
+      StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          List<Widget> options = Global.localStore.user.studyPlan.sentencePatternCategories.map<Widget>((e) =>
+            Container(
+              margin: EdgeInsets.only(bottom: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  SizedBox(width: 20,),
+                  Expanded(
+                    child: InkWell(
+                    child: Text('${categories.contains(e) ? "* " : "  "}$e'),
+                    onTap: () => Navigator.pop(context, e),
+                  )),
+                  InkWell(
+                    child: Icon(Icons.clear, color: Colors.black54, size: 18,),
+                    onDoubleTap: () async {
+                      Global.localStore.user.studyPlan.sentencePatternCategories.remove(e);
+                      Global.localStore.user.studyPlan.save();
+                      Global.saveLocalStore();
+                      var studySentencePattern = StudySentencePatternSerializer();
+                      studySentencePattern.filter.foreignUser = Global.localStore.user.id;
+                      studySentencePattern.filter.categories__icontains = e;
+                      var ssps = await studySentencePattern.list();
+                      ssps.forEach((e) => e.delete());
+                      setState(() => {});
+                    }
+                  ),
+                  SizedBox(width: 20,),
+                ]
+              ),
+            )
+          ).toList();
+          return SimpleDialog(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('选择固定搭配收藏夹'),
+                TextButton(
+                  child: Text('返回'),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ]
+            ),
+            children: options + [
+              Row(
+                children: [
+                  SizedBox(width: 20,),
+                  Expanded(
+                    child: TextField(
+                      controller: ctrl,
+                      decoration: InputDecoration(
+                        isDense: true,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    child: Text('添加'),
+                    onPressed: () {
+                      if(ctrl.text.trim().isNotEmpty)
+                        setState(() {
+                          Global.localStore.user.studyPlan.sentencePatternCategories.add(ctrl.text.trim());
                           Global.localStore.user.studyPlan.save();
                           Global.saveLocalStore();
                         });
@@ -202,7 +287,7 @@ Future<String> popSelectGrammarCategoryDialog(BuildContext context) async {
     builder: (context) =>
       StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
-          List<Widget> options = Global.localStore.user.studyPlan.grammarCategory.map<Widget>((e) =>
+          List<Widget> options = Global.localStore.user.studyPlan.grammarCategories.map<Widget>((e) =>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -219,7 +304,7 @@ Future<String> popSelectGrammarCategoryDialog(BuildContext context) async {
                   onPressed: () => setState(() {
                     Global.localStore.user.studyGrammarSet.where((w) => w.category == e).forEach((w) => w.delete());
                     Global.localStore.user.studyGrammarSet.removeWhere((w) => w.category == e);
-                    Global.localStore.user.studyPlan.grammarCategory.remove(e);
+                    Global.localStore.user.studyPlan.grammarCategories.remove(e);
                     Global.localStore.user.studyPlan.save();
                     Global.saveLocalStore();
                   }),
@@ -231,7 +316,7 @@ Future<String> popSelectGrammarCategoryDialog(BuildContext context) async {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('选择语法本'),
+                Text('选择语法收藏夹'),
                 TextButton(
                   child: Text('返回'),
                   onPressed: () => Navigator.pop(context),
@@ -255,7 +340,7 @@ Future<String> popSelectGrammarCategoryDialog(BuildContext context) async {
                     onPressed: () {
                       if(ctrl.text.trim().isNotEmpty)
                         setState(() {
-                          Global.localStore.user.studyPlan.grammarCategory.add(ctrl.text.trim());
+                          Global.localStore.user.studyPlan.grammarCategories.add(ctrl.text.trim());
                           Global.localStore.user.studyPlan.save();
                           Global.saveLocalStore();
                         });

@@ -89,7 +89,7 @@ class _EditSentencePatternState extends State<EditSentencePattern> {
                     maxLines: 1,
                     style: textStyle,
                     decoration: InputDecoration(
-                      labelText: "常用句型",
+                      labelText: "固定表达",
                       border: OutlineInputBorder(),
                     ),
                     onChanged: (v) => widget._sentencePattern.content = v.trim(),
@@ -104,7 +104,7 @@ class _EditSentencePatternState extends State<EditSentencePattern> {
                           onTap: () async {
                             var p = (await Navigator.pushNamed(context,
                                                                         '/edit_paraphrase',
-                                                                        arguments: {'title': '编辑常用句型的释义',
+                                                                        arguments: {'title': '编辑固定表达的释义',
                                                                         'paraphrase': ParaphraseSerializer().from(e)})
                                               ) as ParaphraseSerializer;
                             if(p != null) {
@@ -124,7 +124,7 @@ class _EditSentencePatternState extends State<EditSentencePattern> {
                       onPressed: () async {
                         var p = (await Navigator.pushNamed(context,
                                                           '/edit_paraphrase',
-                                                          arguments: {'title':'给常用句型添加释义'})
+                                                          arguments: {'title':'给固定表达添加释义'})
                                 ) as ParaphraseSerializer;
                         if(p != null) {
                           widget._sentencePattern.paraphraseSet.add(p);

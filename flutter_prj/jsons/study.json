@@ -5,10 +5,11 @@
     "onceWords": 0,
     "onceSentences": 0,
     "onceGrammers": 0,
-    "wordCategory": [""],
-    "sentenceCategory": [""],
-    "grammarCategory": [""],
-    "distinguishCategory": [""],
+    "wordCategories": [""],
+    "sentenceCategories": [""],
+    "sentencePatternCategories": [""],
+    "grammarCategories": [""],
+    "distinguishCategories": [""],
     "distinguishes": [0],
     "__http__": {
         "url": "/api/study/plan/",
@@ -217,6 +218,83 @@
     },
     "__http__": {
         "url": "/api/study/word/",
+        "methods": [
+            {
+                "name": "retrieve",
+                "filter": true
+            }
+        ]
+    }
+}
+
+{
+    "__name__": "study_sentence_pattern",
+    "id @pk": 0,
+    "foreignUser @fk_oo": "$user",
+    "sentencePattern @fk_mo @nested_r": "$sentence_pattern",
+    "categories": [""],
+    "familiarity": 0,
+    "learnRecord": [""],
+    "inplan": false,
+    "isFavorite": false,
+    "comments": "",
+    "repeats": 0,
+    "__filter__": {
+        "__serializer__": "$study_sentence_pattern",
+        "foreignUser": ["exact"],
+        "sentencePattern": ["exact"],
+        "categories": ["icontains"],
+        "familiarity": ["lte", "gte"],
+        "inplan": ["exact"]
+    },
+    "__http__": {
+        "url": "/api/study/sentence_pattern/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "retrieve",
+                "url": "$id/"
+            },
+            {
+                "name": "delete",
+                "url": "$id/"
+            },
+            {
+                "name": "update",
+                "url": "$id/"
+            },
+            {
+                "name": "list"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
+}
+
+{ // 分页查询 固定表达学习表
+    "__name__": "study_sentence_pattern_pagination",
+    "count": 0,
+    "next": "",
+    "previous": "",
+    "results": ["$study_sentence_pattern"],
+    "__queryset__": {
+        "__pageSize": 10,
+        "__pageIndex": 1
+    },
+    "__filter__": {
+        "__serializer__": "$study_sentence_pattern",
+        "foreignUser": ["exact"],
+        "word": ["exact"],
+        "categories": ["exact"],
+        "familiarity": ["lte", "gte"],
+        "inplan": ["exact"]
+    },
+    "__http__": {
+        "url": "/api/study/sentence_pattern/",
         "methods": [
             {
                 "name": "retrieve",

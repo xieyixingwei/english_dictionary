@@ -15,10 +15,11 @@ class StudyPlanSerializer {
   num onceWords = 0;
   num onceSentences = 0;
   num onceGrammers = 0;
-  List<String> wordCategory = [];
-  List<String> sentenceCategory = [];
-  List<String> grammarCategory = [];
-  List<String> distinguishCategory = [];
+  List<String> wordCategories = [];
+  List<String> sentenceCategories = [];
+  List<String> sentencePatternCategories = [];
+  List<String> grammarCategories = [];
+  List<String> distinguishCategories = [];
   List<num> distinguishes = [];
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
@@ -65,18 +66,21 @@ class StudyPlanSerializer {
     onceWords = json['onceWords'] == null ? onceWords : json['onceWords'] as num;
     onceSentences = json['onceSentences'] == null ? onceSentences : json['onceSentences'] as num;
     onceGrammers = json['onceGrammers'] == null ? onceGrammers : json['onceGrammers'] as num;
-    wordCategory = json['wordCategory'] == null
-                ? wordCategory
-                : json['wordCategory'].map<String>((e) => e as String).toList();
-    sentenceCategory = json['sentenceCategory'] == null
-                ? sentenceCategory
-                : json['sentenceCategory'].map<String>((e) => e as String).toList();
-    grammarCategory = json['grammarCategory'] == null
-                ? grammarCategory
-                : json['grammarCategory'].map<String>((e) => e as String).toList();
-    distinguishCategory = json['distinguishCategory'] == null
-                ? distinguishCategory
-                : json['distinguishCategory'].map<String>((e) => e as String).toList();
+    wordCategories = json['wordCategories'] == null
+                ? wordCategories
+                : json['wordCategories'].map<String>((e) => e as String).toList();
+    sentenceCategories = json['sentenceCategories'] == null
+                ? sentenceCategories
+                : json['sentenceCategories'].map<String>((e) => e as String).toList();
+    sentencePatternCategories = json['sentencePatternCategories'] == null
+                ? sentencePatternCategories
+                : json['sentencePatternCategories'].map<String>((e) => e as String).toList();
+    grammarCategories = json['grammarCategories'] == null
+                ? grammarCategories
+                : json['grammarCategories'].map<String>((e) => e as String).toList();
+    distinguishCategories = json['distinguishCategories'] == null
+                ? distinguishCategories
+                : json['distinguishCategories'].map<String>((e) => e as String).toList();
     distinguishes = json['distinguishes'] == null
                 ? distinguishes
                 : json['distinguishes'].map<num>((e) => e as num).toList();
@@ -90,10 +94,11 @@ class StudyPlanSerializer {
     'onceWords': onceWords,
     'onceSentences': onceSentences,
     'onceGrammers': onceGrammers,
-    'wordCategory': wordCategory == null ? null : wordCategory.map((e) => e).toList(),
-    'sentenceCategory': sentenceCategory == null ? null : sentenceCategory.map((e) => e).toList(),
-    'grammarCategory': grammarCategory == null ? null : grammarCategory.map((e) => e).toList(),
-    'distinguishCategory': distinguishCategory == null ? null : distinguishCategory.map((e) => e).toList(),
+    'wordCategories': wordCategories == null ? null : wordCategories.map((e) => e).toList(),
+    'sentenceCategories': sentenceCategories == null ? null : sentenceCategories.map((e) => e).toList(),
+    'sentencePatternCategories': sentencePatternCategories == null ? null : sentencePatternCategories.map((e) => e).toList(),
+    'grammarCategories': grammarCategories == null ? null : grammarCategories.map((e) => e).toList(),
+    'distinguishCategories': distinguishCategories == null ? null : distinguishCategories.map((e) => e).toList(),
     'distinguishes': distinguishes == null ? null : distinguishes.map((e) => e).toList(),
   }..removeWhere((k, v) => v==null);
 
@@ -105,10 +110,11 @@ class StudyPlanSerializer {
     onceWords = instance.onceWords;
     onceSentences = instance.onceSentences;
     onceGrammers = instance.onceGrammers;
-    wordCategory = List.from(instance.wordCategory);
-    sentenceCategory = List.from(instance.sentenceCategory);
-    grammarCategory = List.from(instance.grammarCategory);
-    distinguishCategory = List.from(instance.distinguishCategory);
+    wordCategories = List.from(instance.wordCategories);
+    sentenceCategories = List.from(instance.sentenceCategories);
+    sentencePatternCategories = List.from(instance.sentencePatternCategories);
+    grammarCategories = List.from(instance.grammarCategories);
+    distinguishCategories = List.from(instance.distinguishCategories);
     distinguishes = List.from(instance.distinguishes);
     _id = instance._id;
     return this;

@@ -23,7 +23,7 @@ class _FavoriteWordPageState extends State<FavoriteWordPage> {
   }
 
   void _init() async {
-    await Future.forEach<String>(Global.localStore.user.studyPlan.wordCategory, (e) async {
+    await Future.forEach<String>(Global.localStore.user.studyPlan.wordCategories, (e) async {
       _studyWords.filter.foreignUser = Global.localStore.user.id;
       _studyWords.filter.categories__icontains = e;
       var ret = await _studyWords.retrieve();

@@ -119,9 +119,9 @@ class _EditWordState extends State<EditWord> {
                               }
                             },
                           ),
-                          onDeleted: () {
-                            e.delete();
-                            widget.word.paraphraseSet.remove(e);
+                          onDeleted: () async {
+                            var ret = await e.delete();
+                            if(ret) widget.word.paraphraseSet.remove(e);
                             setState(() {});
                           }
                         )
@@ -162,11 +162,7 @@ class _EditWordState extends State<EditWord> {
                               options: Global.etymaOptions,
                               close: (v) => setState(() => widget.word.etyma.add(v)),
                             ),
-                          ),
-                          TextButton(
-                            child: Text('编辑'),
-                            onPressed: () => Navigator.pushNamed(context, '/edit_etymas'),
-                          ),
+                          )
                         ]
                       )
                     ),
@@ -207,7 +203,7 @@ class _EditWordState extends State<EditWord> {
                       //validator: (v) => v.trim().isNotEmpty ? null : "不能为空",
                     ),
                     ListOutline(
-                      labelText: '常用句型',
+                      labelText: '固定表达',
                       children: widget.word.sentencePatternSet.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
@@ -215,7 +211,7 @@ class _EditWordState extends State<EditWord> {
                             onTap: () async {
                                 var s = (await Navigator.pushNamed(context,
                                                                   '/edit_sentence_pattern',
-                                                                  arguments: {'title':'编辑${widget.word.name}的常用句型',
+                                                                  arguments: {'title':'编辑${widget.word.name}的固定表达',
                                                                               'sentence_pattern': SentencePatternSerializer().from(e)})
                                         ) as SentencePatternSerializer;
                                 if(s != null) {
@@ -224,9 +220,10 @@ class _EditWordState extends State<EditWord> {
                                 }
                             },
                           ),
-                          onDeleted: () {
-                            e.delete();
-                            widget.word.sentencePatternSet.remove(e);
+                          onDeleted: () async {
+                            e.wordForeign = null;
+                            var ret = await e.save();
+                            if(ret) widget.word.sentencePatternSet.remove(e);
                             setState(() {});
                           }
                         )
@@ -236,7 +233,7 @@ class _EditWordState extends State<EditWord> {
                         onPressed: () async {
                           var s = (await Navigator.pushNamed(context,
                                                              '/edit_sentence_pattern',
-                                                             arguments: {'title': '给${widget.word.name}添加常用句型'})
+                                                             arguments: {'title': '给${widget.word.name}添加固定表达'})
                                   ) as SentencePatternSerializer;
                           if(s != null) {
                             widget.word.sentencePatternSet.add(s);
@@ -263,9 +260,10 @@ class _EditWordState extends State<EditWord> {
                               }
                             },
                           ),
-                          onDeleted: () {
-                            e.delete();
-                            widget.word.grammarSet.remove(e);
+                          onDeleted: () async {
+                            e.wordForeign = null;
+                            var ret = await e.save();
+                            if(ret) widget.word.grammarSet.remove(e);
                             setState(() {});
                           },
                         )
@@ -302,9 +300,10 @@ class _EditWordState extends State<EditWord> {
                               }
                             },
                           ),
-                          onDeleted: () {
-                            e.delete();
-                            widget.word.distinguishSet.remove(e);
+                          onDeleted: () async {
+                            e.wordsForeign = null;
+                            var ret = await e.save();
+                            if(ret) widget.word.distinguishSet.remove(e);
                             setState(() {});
                           }
                         )).toList(),
@@ -361,10 +360,9 @@ class _EditWordState extends State<EditWord> {
                         onPressed: () async {
                           var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'添加近义词'})) as WordSerializer;
                           if(word != null) {
-                            bool ret = await word.save();
-                            if(ret) {
-                              setState(() => widget.word.synonym.add(word.name));
-                            }
+                            var ret = await word.save();
+                            if(ret) widget.word.synonym.add(word.name);
+                            setState(() {});
                           }
                         },
                       ),
@@ -396,9 +394,8 @@ class _EditWordState extends State<EditWord> {
                           var word = (await Navigator.pushNamed(context, '/edit_word', arguments: {'title':'添加反义词'})) as WordSerializer;
                           if(word != null) {
                             bool ret = await word.save();
-                            if(ret) {
-                              setState(() => widget.word.antonym.add(word.name));
-                            }
+                            if(ret) widget.word.antonym.add(word.name);
+                            setState(() {});
                           }
                         },
                       ),

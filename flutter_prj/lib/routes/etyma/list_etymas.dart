@@ -92,7 +92,7 @@ class _ListEtymasState extends State<ListEtymas> {
           TextField(
             maxLines: 1,
             style: TextStyle(fontSize: 14,),
-            onChanged: (val) => (v) => _etymas.filter.name__icontains = v.trim().isNotEmpty ? v.trim() : null,
+            onChanged: (v) => _etymas.filter.name__icontains = v.trim().isNotEmpty ? v.trim() : null,
             decoration: InputDecoration(
               hintText: '词根词缀',
               border: OutlineInputBorder(),

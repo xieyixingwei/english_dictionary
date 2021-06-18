@@ -210,22 +210,23 @@ class _ListSentencesState extends State<ListSentences> {
                     setState(() {});
                   },
                 ),
-              EditDelete(
-              edit: () async {
-                var sentence = (await Navigator.pushNamed(
-                  context, '/edit_sentence',
-                  arguments: {'title':'编辑句子','sentence':SentenceSerializer().from(e)})
-                ) as SentenceSerializer;
-                if(sentence != null) await e.from(sentence).save();
-                setState(() {});
-              },
-              delete: () {
-                e.delete();
-                _sentences.results.remove(e);
-                setState(() {});
-              },
-            ),
-              ])
+                EditDelete(
+                  edit: () async {
+                    var sentence = (await Navigator.pushNamed(
+                      context, '/edit_sentence',
+                      arguments: {'title':'编辑句子','sentence':SentenceSerializer().from(e)})
+                    ) as SentenceSerializer;
+                    if(sentence != null) await e.from(sentence).save();
+                    setState(() {});
+                  },
+                  delete: () {
+                    e.delete();
+                    _sentences.results.remove(e);
+                    setState(() {});
+                  },
+                ),
+              ]
+            )
           )
         ).toList(),
       ),

@@ -128,7 +128,7 @@ class _EditDistinguishState extends State<EditDistinguish> {
                             onTap: () async {
                               var sp = (await Navigator.pushNamed(context,
                                                    '/edit_sentence_pattern',
-                                                    arguments: {'title':'编辑常用句型',
+                                                    arguments: {'title':'编辑固定表达',
                                                     'sentence_pattern': SentencePatternSerializer().from(e)})
                                         ) as SentencePatternSerializer;
                               if(sp != null) {
@@ -148,7 +148,7 @@ class _EditDistinguishState extends State<EditDistinguish> {
                         onPressed: () async {
                           var sp = (await Navigator.pushNamed(context,
                                                               '/edit_sentence_pattern',
-                                                              arguments:{'title':'添加常用句型'})
+                                                              arguments:{'title':'添加固定表达'})
                                    ) as SentencePatternSerializer;
                           if(sp != null) {
                             await sp.save();

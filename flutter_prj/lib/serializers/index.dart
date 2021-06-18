@@ -18,6 +18,8 @@ export 'study_sentence.dart';
 export 'study_sentence_pagination.dart';
 export 'study_word.dart';
 export 'study_word_pagination.dart';
+export 'study_sentence_pattern.dart';
+export 'study_sentence_pattern_pagination.dart';
 export 'user.dart';
 export 'login.dart';
 export 'word.dart';
