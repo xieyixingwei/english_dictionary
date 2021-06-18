@@ -1,6 +1,62 @@
 # json_serializer guidance
 
-`json_serializer.dart`的功能是将json数据对象编译为dart数据对象，目的是将后端提供的数据序列化为前端Flutter的dart对象，提高前端Flutter代码的内聚性。
+`json_serializer.dart`的功能是将json数据对象编译为dart数据对象，目的是将后端提供的**json数据**序列化为前端Flutter的**dart对象**，从而提高前端Flutter代码的内聚性，使数据和显示分离。
+
+例如：
+
+有json对象
+
+``` json
+{ // 老师
+    "__name__": "teacher",
+    "name": "张老师",
+    "age": 29,
+    "gender": false,
+    "subjects": ["体育", "语文"]
+}
+```
+
+将被编译成：
+
+``` dart
+class TeacherSerializer {
+  TeacherSerializer();
+
+  String name = '张老师';
+  num age = 29;
+  bool gender = false;
+  List<String> subjects = [];
+
+
+  TeacherSerializer fromJson(Map<String, dynamic> json, {bool slave = true}) {
+    if(json == null) return this;
+    name = json['name'] == null ? name : json['name'] as String;
+    age = json['age'] == null ? age : json['age'] as num;
+    gender = json['gender'] == null ? gender : json['gender'] as bool;
+    subjects = json['subjects'] == null
+                ? subjects
+                : json['subjects'].map<String>((e) => e as String).toList();
+    return this;
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'name': name,
+    'age': age,
+    'gender': gender,
+    'subjects': subjects == null ? null : subjects.map((e) => e).toList(),
+  }..removeWhere((k, v) => v==null);
+
+
+  TeacherSerializer from(TeacherSerializer instance) {
+    if(instance == null) return this;
+    name = instance.name;
+    age = instance.age;
+    gender = instance.gender;
+    subjects = List.from(instance.subjects);
+    return this;
+  }
+}
+```
 
 ## 1. 使用示例
 
@@ -120,6 +176,9 @@ json对象中也可以定义json对象类型的成员，编译后将生成对应
 2. 外键(多对一): `@fk_mo`，标识该成员是多对一外键，例如：`"mainTeacher @fk_mo": "$teacher"`，其对应的类型为`teacher`的主键类型。
 3. 外键(多对多): `@fk_mm`，标识该成员是多对多外键，例如：`"teachers @fk_mm": ["$teacher"]`，其对应的类型为`teacher`的主键类型列表。
 4. 外键(一对一): `@fk_oo`，标识该成员是一对一外键，例如：`"detail @fk_oo": "$information"`，其对应的类型为`information`的主键类型。
+5. 在主表中声明从表成员: `@fk_slave`，标识该成员是从表，例如：`"studentSet @fk_slave": ["$student"]`，其对应的类型为`List<Student>`。
+
+`@fk_slave`将控制成员在函数`fromJson()`中是否被更新，因为当设置嵌套数据的时候，save主表后，从表还没有被save，此时fromJson()可能把已设置的而未保存的从表值洗掉.
 
 举例说明:
 
@@ -150,12 +209,14 @@ json对象中也可以定义json对象类型的成员，编译后将生成对应
 }
 ```
 
-有时服务器返回的数据库表中的外键是对应的数据表，而不是数据表的主键，这时就需要在数据表关系装饰器的基础上使用`@nested`装饰器。
+有时服务器返回的数据库表中的外键是对应的从数据表，而不是从数据表的主键，这时就需要在数据表关系装饰器的基础上使用`@nested`和`@nested_r`装饰器。
 
-- `@nested`标识成员是嵌套数据结构的外键，例如：
+- `@nested`标识成员是嵌套数据结构的**可读写**的外键，例如：
   - `"mainTeacher @fk_mo @nested": "$teacher"`，mainTeacher 的类型为 `Teacher`。
   - `"teachers @fk_mm @nested": ["$teacher"]`，teachers 的类型为 `List<Teacher>`。
   - `"detail @fk_oo @nested": "$information"`，detail 的类型为 `Information`。
+
+- `@nested_r`标识成员是嵌套数据结构的**只读**外键，`@nested_r`和`@nested`的唯一区别是：在函数`toJson()`中，`@nested_r`成员反序列化的是成员的主键，而`@nested`成员反序列化的是整个数据。
 
 ## 2.7 序列化类方法
 
@@ -175,6 +236,8 @@ json对象中也可以定义json对象类型的成员，编译后将生成对应
 > 注意：建议不要直接使用等号`=`赋值，而要使用函数`from()`深拷贝赋值，例如，当序列化类之间有循环引用的时候，`=`赋值会导致再使用`from()`进入死循环。
 
 ## 2.8 为序列化类添加http方法
+
+> 特别注意：后端接口设计应该遵循RestAPI规则，例如：在`post`和`put`请求成功后应该返回新的资源。
 
 除了将服务器返回的json对象数据序列化为dart数据对象外，还提供了一个提高前端代码内聚性的特性：为序列化类添加http方法。
 
@@ -250,21 +313,40 @@ json对象中也可以定义json对象类型的成员，编译后将生成对应
 
 > 注意：自命名方法需要使用 `requst` 指定请求类型，有 get, post, put, delete等。
 
+
+使用`__http__`的前提是需要提供一个封装好了的Http类，对其唯一的要求是提供一个异步方法：
+`Future<Response> request(HttpType type, String path, {dynamic data, Map<String, dynamic> queries, bool cache=true, Options options}) async`
+
+可以在全局配置文件`_config.json`中设置，例如：`"http_package": "package:flutter_prj/common/http.dart"`，也可以单独在每个`__http__`对象中指定`"http_package"`。
+
 ## 2.9 过滤器
 
-为了支持对服务端数据的条件查询，可以使用`__filter__`字段指定过滤器，过滤器的字段名字必须能和父json对象的字段名字对应。
+为了支持对服务端数据的条件查询，可以使用`__filter__`字段指定过滤器。
+
+过滤器的字段名字必须能和父json对象的字段名字对应。并且必须提供一个`get`类型的http方法，并指定`"filter": true`，那么该get方法将使用过滤字段。
+
 过滤器字段的值是列表型，通过`"exact"`，`"icontains"`等来指定字段支持的过滤条件。
 
 ``` json
 {
+    "__name__": "teacher",
     "name @pk": "",
     "age": 0,
     "gender": false,
     "__filter__": {
-        "__serializer__": "$word",
+        "__serializer__": "$word",     // __serializer__ 来指定过滤器对应的json对象
         "name": ["exact","icontains"], // 在序列化类中将生成 String name 和 String name_icontains 字段，其类型是父json对象的name字段的类型。
         "age": ["lte", "gte"],         // 在序列化类中将生成 num age_lte 和 age_gte 字段
         "gender": ["exact"]            // 在序列化类中将生成 gender 字段
+    },
+    "__http__": {
+        "url": "/api/dictionary/distinguish/",
+        "methods": [
+            {
+                "name": "retrieve",
+                "filter": true
+            }
+        ]
     }
 }
 ```
