@@ -3,6 +3,7 @@ from rest_framework.pagination import PageNumberPagination
 from django_filters import filterset
 from django.db import models
 import django_filters
+from django.core.cache import cache
 
 from server import permissions
 from server.views import ModelViewSetPermissionSerializerMap
@@ -12,9 +13,27 @@ from dictionary.models.SentencePatternTable import SentencePatternTable
 
 class SentencePatternSerializer(serializers.ModelSerializer):
     paraphraseSet = ParaphraseSerializer(many=True, read_only=True)
+    studySentencePatternSet = serializers.SerializerMethodField()
+
     class Meta:
         model = SentencePatternTable
         fields = '__all__'
+    
+    def get_studySentencePatternSet(self, obj):
+        if not 'request' in self.context.keys():
+            # 防止 StudySentencePatternSerializer 和 SentencePatternSerializer 无限循环序列化
+            return []
+        request = self.context['request']
+        token = request.query_params.get('token')
+        if not token:
+            token = request.headers.get('authorization') 
+        try:
+            userId = cache.get(token)
+            return [{'id': ssp.id, 'foreignUser': ssp.foreignUser.id, 'inplan': ssp.inplan, 'categories': ssp.categories}
+                        for ssp in obj.studySentencePatternSet.all()
+                        if userId == ssp.foreignUser.id]
+        except:
+            return []
 
 
 # 分页自定义
@@ -43,7 +62,7 @@ class _SentencePatternFilter(filterset.FilterSet):
 
 class SentencePatternView(ModelViewSetPermissionSerializerMap):
     """
-    常用句型 视图
+    固定表达 视图
     """
     queryset = SentencePatternTable.objects.all()
     serializer_class = SentencePatternSerializer

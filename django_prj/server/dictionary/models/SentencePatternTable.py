@@ -4,7 +4,7 @@ from dictionary.models.WordTable import WordTable
 
 class SentencePatternTable(models.Model):
     """
-    常用句型表
+    固定表达表
     """
     id = models.AutoField(primary_key=True)
     content = models.CharField(max_length=64)  # 内容

@@ -12,7 +12,8 @@ class StudyPlanTable(models.Model):
     onceWords = models.IntegerField(null=True, blank=True)
     onceSentences = models.IntegerField(null=True, blank=True)
     onceGrammers = models.IntegerField(null=True, blank=True)
-    wordCategory = JSONFieldUtf8(null=True, blank=True) # 单词本名字 [a,b]
-    sentenceCategory = JSONFieldUtf8(null=True, blank=True) # 句子本名字 [a,b]
-    grammarCategory = JSONFieldUtf8(null=True, blank=True) # 语法本名字 [a,b]
+    wordCategories = JSONFieldUtf8(null=True, blank=True) # 单词本名字 [a,b]
+    sentenceCategories = JSONFieldUtf8(null=True, blank=True) # 句子本名字 [a,b]
+    grammarCategories = JSONFieldUtf8(null=True, blank=True) # 语法本名字 [a,b]
     distinguishes = JSONFieldUtf8(null=True, blank=True) # 收藏的词义辨析
+    sentencePatternCategories = JSONFieldUtf8(null=True, blank=True)
