@@ -12,12 +12,12 @@ from server import permissions
 from dictionary.models.SentenceTable import SentenceTable
 from .GrammarView import GrammarSerializer
 from server.views import ModelViewSetPermissionSerializerMap
+from study.views.StudySentenceView import StudySentenceSerializer
 
 
 class SentenceSerializer(serializers.ModelSerializer):
     grammarSet = GrammarSerializer(many=True, read_only=True)
     #studySentenceSet = serializers.SerializerMethodField()
-    from study.views.StudySentenceView import StudySentenceSerializer
     studySentenceSet = StudySentenceSerializer(many=True, read_only=True)
 
     class Meta:

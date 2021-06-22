@@ -8,7 +8,7 @@ from django_filters import filterset
 from server import permissions
 from server.views import ModelViewSetPermissionSerializerMap
 from study.models import StudyWordTable
-from dictionary.views.WordView import WordSerializer
+
 
 
 class StudyWordSerializer(serializers.ModelSerializer):
@@ -18,9 +18,18 @@ class StudyWordSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['word'] = WordSerializer(instance.word).data
+        response['word'] = self._word(instance.word)
         return response
 
+    def _word(self, word):
+        if word == None:
+            return None
+        from dictionary.views.WordView import WordSerializer
+        if 'request' in self.context.keys() and 'study/word' in self.context['request'].path:
+            # 防止 StudySentenceSerializer 和 SentenceSerializer 无限循环序列化
+            return WordSerializer(word).data
+        else:
+            return None
 
 # 分页自定义
 class _StudyWordPagination(PageNumberPagination):

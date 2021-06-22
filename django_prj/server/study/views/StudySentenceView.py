@@ -25,11 +25,15 @@ class StudySentenceSerializer(serializers.ModelSerializer):
 
     def _newWords(self, objs):
         from dictionary.views.WordView import WordSerializer
-        return [WordSerializer(WordTable.objects.get(pk=pk)).data for pk in objs]
+        if 'request' in self.context.keys() and 'study/sentence' in self.context['request'].path:
+            return [WordSerializer(WordTable.objects.get(pk=pk)).data for pk in objs]
+        return []
 
     def _newSentencePatterns(self, objs):
         from dictionary.views.SentencePatternView import SentencePatternSerializer
-        return [SentencePatternSerializer(SentencePatternTable.objects.get(pk=pk)).data for pk in objs]
+        if 'request' in self.context.keys() and 'study/sentence' in self.context['request'].path:
+            return [SentencePatternSerializer(SentencePatternTable.objects.get(pk=pk)).data for pk in objs]
+        return
 
     def _sentence(self, sentence):
         if sentence == None:

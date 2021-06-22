@@ -12,6 +12,7 @@ from .GrammarView import GrammarSerializer
 from .DistinguishView import DistinguishSerializer
 from .ParaphraseView import ParaphraseSerializer
 from .SentencePatternView import SentencePatternSerializer
+from study.views.StudyWordView import StudyWordSerializer
 
 
 class WordSerializer(serializers.ModelSerializer):
@@ -19,14 +20,20 @@ class WordSerializer(serializers.ModelSerializer):
     sentencePatternSet = SentencePatternSerializer(many=True, read_only=True)
     grammarSet = GrammarSerializer(many=True, read_only=True)
     distinguishSet = DistinguishSerializer(many=True, read_only=True)
-    studyWordSet = serializers.SerializerMethodField()
+    #studyWordSet = serializers.SerializerMethodField()
+    studyWordSet = StudyWordSerializer(many=True, read_only=True)
 
     class Meta:
         model = WordTable
         fields = '__all__'
 
-    def get_studyWordSet(self, obj):
-        if not 'request' in self.context.keys():
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['studyWordSet'] = self._studyWordSet(response.pop('studyWordSet'))
+        return response
+
+    def _studyWordSet(self, objs):
+        if not 'request' in self.context.keys() or not 'dictionary/word' in self.context['request'].path:
             # 防止 StudyWordSerializer 和 WordSerializer 无限循环序列化
             return []
         request = self.context['request']
@@ -35,9 +42,7 @@ class WordSerializer(serializers.ModelSerializer):
             token = request.headers.get('authorization') 
         try:
             userId = cache.get(token)
-            return [{'id': sw.id, 'foreignUser': sw.foreignUser.id, 'inplan': sw.inplan, 'categories': sw.categories}
-                        for sw in obj.studyWordSet.all()
-                        if userId == sw.foreignUser.id]
+            return [sw for sw in objs if userId == sw['foreignUser']]
         except:
             return []
 
