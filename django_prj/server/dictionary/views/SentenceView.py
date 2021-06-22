@@ -16,12 +16,47 @@ from server.views import ModelViewSetPermissionSerializerMap
 
 class SentenceSerializer(serializers.ModelSerializer):
     grammarSet = GrammarSerializer(many=True, read_only=True)
-    studySentenceSet = serializers.SerializerMethodField()
+    #studySentenceSet = serializers.SerializerMethodField()
+    from study.views.StudySentenceView import StudySentenceSerializer
+    studySentenceSet = StudySentenceSerializer(many=True, read_only=True)
 
     class Meta:
         model = SentenceTable
         fields = '__all__'
 
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['studySentenceSet'] = self._studySentenceSet(response.pop('studySentenceSet'))
+        response['synonym'] = self._synonym(response.pop('synonym'))
+        response['antonym'] = self._antonym(response.pop('antonym'))
+        return response
+
+    def _synonym(self, objs):
+        if not 'request' in self.context.keys() or not 'dictionary/sentence' in self.context['request'].path:
+            # 防止 SentenceSerializer 无限循环序列化
+            return []
+        return [SentenceSerializer(SentenceTable.objects.get(pk=pk)).data for pk in objs]
+
+    def _antonym(self, objs):
+        if not 'request' in self.context.keys() or not 'dictionary/sentence' in self.context['request'].path:
+            # 防止 SentenceSerializer 无限循环序列化
+            return []
+        return [SentenceSerializer(SentenceTable.objects.get(pk=pk)).data for pk in objs]
+
+    def _studySentenceSet(self, objs):
+        if not 'request' in self.context.keys() or not 'dictionary/sentence' in self.context['request'].path:
+            # 防止 StudySentenceSerializer 和 SentenceSerializer 无限循环序列化
+            return []
+        request = self.context['request']
+        token = request.query_params.get('token')
+        if not token:
+            token = request.headers.get('authorization') 
+        try:
+            userId = cache.get(token)
+            return [ss for ss in objs if userId == ss['foreignUser']]
+        except:
+            return []
+'''
     def get_studySentenceSet(self, obj):
         if not 'request' in self.context.keys():
             # 防止 StudySentenceSerializer 和 SentenceSerializer 无限循环序列化
@@ -37,6 +72,8 @@ class SentenceSerializer(serializers.ModelSerializer):
                         if userId == ss.foreignUser.id]
         except:
             return []
+'''
+
 
 
 # 分页自定义

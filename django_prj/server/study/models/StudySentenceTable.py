@@ -1,6 +1,8 @@
 from django.db import models
+from dictionary.models.WordTable import WordTable
 from user.models import UserTable
 from dictionary.models.SentenceTable import SentenceTable
+from dictionary.models.SentencePatternTable import SentencePatternTable
 from server.models  import JSONFieldUtf8
 
 
@@ -18,6 +20,8 @@ class StudySentenceTable(models.Model):
     isFavorite = models.BooleanField(default=False)
     comments = models.CharField(max_length=256, null=True, blank=True)  # markdown
     repeats = models.IntegerField(default=0)
-    newWords = JSONFieldUtf8(null=True, blank=True)   # 生词 [w1,w2]
+    newWords = models.ManyToManyField(to=WordTable, blank=True) #JSONFieldUtf8(null=True, blank=True)   # 生词 [w1,w2]
+    newSentencePatterns = models.ManyToManyField(to=SentencePatternTable, blank=True) # 陌生的固定表达
+
     class Meta:
         ordering = ['id']

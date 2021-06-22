@@ -7,7 +7,8 @@ from server import permissions
 from server.views import ModelViewSetPermissionSerializerMap
 from rest_framework.pagination import PageNumberPagination
 from study.models import StudySentenceTable
-from dictionary.views.SentenceView import SentenceSerializer
+from dictionary.models.WordTable import WordTable
+from dictionary.models.SentencePatternTable import SentencePatternTable
 
 
 class StudySentenceSerializer(serializers.ModelSerializer):
@@ -17,9 +18,28 @@ class StudySentenceSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['sentence'] = SentenceSerializer(instance.sentence).data
+        response['sentence'] = self._sentence(instance.sentence)
+        response['newWords'] = self._newWords(response.pop('newWords'))
+        response['newSentencePatterns'] = self._newSentencePatterns(response.pop('newSentencePatterns'))
         return response
 
+    def _newWords(self, objs):
+        from dictionary.views.WordView import WordSerializer
+        return [WordSerializer(WordTable.objects.get(pk=pk)).data for pk in objs]
+
+    def _newSentencePatterns(self, objs):
+        from dictionary.views.SentencePatternView import SentencePatternSerializer
+        return [SentencePatternSerializer(SentencePatternTable.objects.get(pk=pk)).data for pk in objs]
+
+    def _sentence(self, sentence):
+        if sentence == None:
+            return None
+        from dictionary.views.SentenceView import SentenceSerializer
+        if 'request' in self.context.keys() and 'study/sentence' in self.context['request'].path:
+            # 防止 StudySentenceSerializer 和 SentenceSerializer 无限循环序列化
+            return SentenceSerializer(sentence).data
+        else:
+            return None
 
 # 分页自定义
 class _StudySentencePagination(PageNumberPagination):
