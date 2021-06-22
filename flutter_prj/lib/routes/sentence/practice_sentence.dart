@@ -179,7 +179,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
 
   String _paraphrases2Str(List<ParaphraseSerializer> paraphrases) {
     var ps = sortParaphraseSet(paraphrases);
-    return ps.map((p) => p.keys.first + '  ' + p.values.first.map((ps) => ps.interpret).join('；')).join('；');
+    return ps.map((p) => p.keys.first + '  ' + p.values.first.map((ps) => ps.interpret).join('；')).join('\n');
   }
 
   Widget _attached(BuildContext context) {
