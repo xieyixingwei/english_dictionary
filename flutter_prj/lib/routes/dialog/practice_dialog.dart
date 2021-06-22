@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers_web.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_prj/common/http.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
 
@@ -132,11 +133,7 @@ class _PracticeDialogState extends State<PracticeDialog> {
               fontSize: 17,
             ),
           ),
-          onTap: () {
-            if(s.enVoice.isEmpty) return;
-            _audioPlayer.setUrl(s.enVoice);
-            _audioPlayer.start(0);
-          },
+          onTap: () => _playSentenceEn(s),
         ),
         Text(
           s.cn,
@@ -169,17 +166,7 @@ class _PracticeDialogState extends State<PracticeDialog> {
                 fontSize: 14,
               ),
             ),
-            onTap: () async {
-              s.offstage = !s.offstage;
-              if(s.synonym.isNotEmpty && s.synonymObjes.isEmpty) {
-                await Future.forEach<num>(s.synonym, (id) async {
-                  var ss = SentenceSerializer()..id = id;
-                  var ret = await ss.retrieve();
-                  if(ret) s.synonymObjes.add(ss);
-                });
-              }
-              setState(() {});
-            },
+            onTap: () => setState(() => s.offstage = !s.offstage),
           ),
           Offstage(
             offstage: s.offstage,
@@ -194,13 +181,9 @@ class _PracticeDialogState extends State<PracticeDialog> {
                       fontSize: 17,
                     ),
                   ),
-                  onTap: () {
-                    if(s.enVoice.isEmpty) return;
-                    _audioPlayer.setUrl(s.enVoice);
-                    _audioPlayer.start(0);
-                  },
+                  onTap: () => _playSentenceEn(s),
                 ),
-              ] + s.synonymObjes.map((se) =>
+              ] + s.synonym.map((se) =>
                 InkWell(
                   child: Text(
                     se.en,
@@ -209,11 +192,7 @@ class _PracticeDialogState extends State<PracticeDialog> {
                       fontSize: 17,
                     ),
                   ),
-                  onTap: () {
-                    if(se.enVoice.isEmpty) return;
-                    _audioPlayer.setUrl(se.enVoice);
-                    _audioPlayer.start(0);
-                  },
+                  onTap: () => _playSentenceEn(se),
                 )
               ).toList()
             ),
@@ -241,17 +220,7 @@ class _PracticeDialogState extends State<PracticeDialog> {
                 fontSize: 14,
               ),
             ),
-            onTap: () async {
-              s.offstage = !s.offstage;
-              if(s.synonym.isNotEmpty && s.synonymObjes.isEmpty) {
-                await Future.forEach<num>(s.synonym, (id) async {
-                  var ss = SentenceSerializer()..id = id;
-                  var ret = await ss.retrieve();
-                  if(ret) s.synonymObjes.add(ss);
-                });
-              }
-              setState(() {});
-            },
+            onTap: () => setState(() => s.offstage = !s.offstage),
           ),
           Offstage(
             offstage: s.offstage,
@@ -266,13 +235,9 @@ class _PracticeDialogState extends State<PracticeDialog> {
                       fontSize: 17,
                     ),
                   ),
-                  onTap: () {
-                    if(s.enVoice.isEmpty) return;
-                    _audioPlayer.setUrl(s.enVoice);
-                    _audioPlayer.start(0);
-                  },
+                  onTap: () => _playSentenceEn(s),
                 ),
-              ] + s.synonymObjes.map((se) =>
+              ] + s.synonym.map((se) =>
                 InkWell(
                   child: Text(
                     se.en,
@@ -281,11 +246,7 @@ class _PracticeDialogState extends State<PracticeDialog> {
                       fontSize: 17,
                     ),
                   ),
-                  onTap: () {
-                    if(se.enVoice.isEmpty) return;
-                    _audioPlayer.setUrl(se.enVoice);
-                    _audioPlayer.start(0);
-                  },
+                  onTap: () => _playSentenceEn(se),
                 )
               ).toList()
             ),
@@ -326,4 +287,11 @@ class _PracticeDialogState extends State<PracticeDialog> {
         ),
       ],
     );
+  
+  _playSentenceEn(SentenceSerializer s) {
+    if(s.enVoice.isEmpty) return;
+    var url = s.enVoice.startsWith('http') ? s.enVoice : Http.baseUrl + s.enVoice;
+    _audioPlayer.setUrl(url);
+    _audioPlayer.start(0);
+  }
 }

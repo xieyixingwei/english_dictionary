@@ -8,14 +8,14 @@
     "tag": [""], // models.JSONField(null=True)    # 标记 [日常用语,商务用语]
     "tense": "", //  models.JSONField(null=True)   # 时态 [一般过去式,被动语态]
     "pattern": [""], // models.JSONField(null=True)    # 句型 [复合句,问候语,从句,陈述句]
-    "synonym": [0], //models.JSONField(null=True) # 同义句 [Sentence.id,Sentence.id,...]
-    "antonym": [0], //models.JSONField(null=True) # 反义句 [Sentence.id,Sentence.id,...]
+    "synonym @fk_mm @nested_r": ["$sentence"], //models.JSONField(null=True) # 同义句 [Sentence.id,Sentence.id,...]
+    "antonym @fk_mm @nested_r": ["$sentence"], //models.JSONField(null=True) # 反义句 [Sentence.id,Sentence.id,...]
     "paraphraseForeign @fk_mo": "$paraphrase",
     "dialogForeign @fk_mo": "$dialog",
     "_grammarSet @fk_slave": ["$grammar"], //models.JSONField() # 语法 [id1,id2,id3]
     "_studySentenceSet @fk_slave": ["$study_sentence"],
     "__offstage": true,
-    "___synonymObjes": ["$sentence"],
+    "__updateSynonum": false,
     "__http__": {
         "url": "/api/dictionary/sentence/",
         "methods": [

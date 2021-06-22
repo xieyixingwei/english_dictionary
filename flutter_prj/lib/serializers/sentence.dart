@@ -3,9 +3,9 @@
 // JsonSerializer
 // **************************************************************************
 
+import 'sentence.dart';
 import 'grammar.dart';
 import 'study_sentence.dart';
-import 'sentence.dart';
 import 'package:flutter_prj/common/http.dart';
 
 
@@ -22,14 +22,14 @@ class SentenceSerializer {
   List<String> tag = [];
   String tense = '';
   List<String> pattern = [];
-  List<num> synonym = [];
-  List<num> antonym = [];
+  List<SentenceSerializer> synonym = [];
+  List<SentenceSerializer> antonym = [];
   num paraphraseForeign;
   num dialogForeign;
   List<GrammarSerializer> grammarSet = [];
   List<StudySentenceSerializer> studySentenceSet = [];
   bool offstage = true;
-  List<SentenceSerializer> synonymObjes = [];
+  bool updateSynonum = false;
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/dictionary/sentence/', data:data ?? toJson(), queries:queries, cache:cache);
@@ -56,7 +56,6 @@ class SentenceSerializer {
     /*
     if(grammarSet != null){grammarSet.forEach((e){e.delete();});}
     if(studySentenceSet != null){studySentenceSet.forEach((e){e.delete();});}
-    if(synonymObjes != null){synonymObjes.forEach((e){e.delete();});}
     */
     return res != null ? res.statusCode == 204 : false;
   }
@@ -91,10 +90,10 @@ class SentenceSerializer {
                 : json['pattern'].map<String>((e) => e as String).toList();
     synonym = json['synonym'] == null
                 ? synonym
-                : json['synonym'].map<num>((e) => e as num).toList();
+                : json['synonym'].map<SentenceSerializer>((e) => SentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
     antonym = json['antonym'] == null
                 ? antonym
-                : json['antonym'].map<num>((e) => e as num).toList();
+                : json['antonym'].map<SentenceSerializer>((e) => SentenceSerializer().fromJson(e as Map<String, dynamic>)).toList();
     paraphraseForeign = json['paraphraseForeign'] == null ? paraphraseForeign : json['paraphraseForeign'] as num;
     dialogForeign = json['dialogForeign'] == null ? dialogForeign : json['dialogForeign'] as num;
     _id = id;
@@ -116,8 +115,8 @@ class SentenceSerializer {
     'tag': tag == null ? null : tag.map((e) => e).toList(),
     'tense': tense,
     'pattern': pattern == null ? null : pattern.map((e) => e).toList(),
-    'synonym': synonym == null ? null : synonym.map((e) => e).toList(),
-    'antonym': antonym == null ? null : antonym.map((e) => e).toList(),
+    'synonym': synonym == null ? null : synonym.map((e) => e.id).toList(),
+    'antonym': antonym == null ? null : antonym.map((e) => e.id).toList(),
     'paraphraseForeign': paraphraseForeign,
     'dialogForeign': dialogForeign,
   }..removeWhere((k, v) => v==null);
@@ -134,14 +133,14 @@ class SentenceSerializer {
     tag = List.from(instance.tag);
     tense = instance.tense;
     pattern = List.from(instance.pattern);
-    synonym = List.from(instance.synonym);
-    antonym = List.from(instance.antonym);
+    synonym = List.from(instance.synonym.map((e) => SentenceSerializer().from(e)).toList());
+    antonym = List.from(instance.antonym.map((e) => SentenceSerializer().from(e)).toList());
     paraphraseForeign = instance.paraphraseForeign;
     dialogForeign = instance.dialogForeign;
     grammarSet = List.from(instance.grammarSet.map((e) => GrammarSerializer().from(e)).toList());
     studySentenceSet = List.from(instance.studySentenceSet.map((e) => StudySentenceSerializer().from(e)).toList());
     offstage = instance.offstage;
-    synonymObjes = List.from(instance.synonymObjes.map((e) => SentenceSerializer().from(e)).toList());
+    updateSynonum = instance.updateSynonum;
     _id = instance._id;
     return this;
   }

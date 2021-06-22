@@ -162,6 +162,7 @@ class _PracticeWordState extends State<PracticeWord> {
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         labelText: '单词拼写',
+                        isDense: true,
                         border: OutlineInputBorder(),
                         suffix: TextButton(
                           child: Text('确定'),

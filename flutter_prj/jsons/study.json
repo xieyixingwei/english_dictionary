@@ -84,7 +84,9 @@
     "isFavorite": false,
     "comments": "",
     "repeats": 0,
-    "newWords": [""],
+    "newWords @fk_mm @nested_r": ["$word"],
+    "newSentencePatterns @fk_mm @nested_r": ["$sentence_pattern"],
+    "__hideNewWords": true,
     "__filter__": {
         "__serializer__": "$study_sentence",
         "foreignUser": ["exact"],

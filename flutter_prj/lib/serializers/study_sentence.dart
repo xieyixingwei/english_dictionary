@@ -4,6 +4,8 @@
 // **************************************************************************
 
 import 'sentence.dart';
+import 'word.dart';
+import 'sentence_pattern.dart';
 import 'package:flutter_prj/common/http.dart';
 
 
@@ -21,7 +23,9 @@ class StudySentenceSerializer {
   bool isFavorite = false;
   String comments = '';
   num repeats = 0;
-  List<String> newWords = [];
+  List<WordSerializer> newWords = [];
+  List<SentencePatternSerializer> newSentencePatterns = [];
+  bool hideNewWords = true;
   StudySentenceSerializerFilter filter = StudySentenceSerializerFilter();
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
@@ -90,7 +94,10 @@ class StudySentenceSerializer {
     repeats = json['repeats'] == null ? repeats : json['repeats'] as num;
     newWords = json['newWords'] == null
                 ? newWords
-                : json['newWords'].map<String>((e) => e as String).toList();
+                : json['newWords'].map<WordSerializer>((e) => WordSerializer().fromJson(e as Map<String, dynamic>)).toList();
+    newSentencePatterns = json['newSentencePatterns'] == null
+                ? newSentencePatterns
+                : json['newSentencePatterns'].map<SentencePatternSerializer>((e) => SentencePatternSerializer().fromJson(e as Map<String, dynamic>)).toList();
     _id = id;
     return this;
   }
@@ -106,7 +113,8 @@ class StudySentenceSerializer {
     'isFavorite': isFavorite,
     'comments': comments,
     'repeats': repeats,
-    'newWords': newWords == null ? null : newWords.map((e) => e).toList(),
+    'newWords': newWords == null ? null : newWords.map((e) => e.name).toList(),
+    'newSentencePatterns': newSentencePatterns == null ? null : newSentencePatterns.map((e) => e.id).toList(),
   }..removeWhere((k, v) => v==null);
 
 
@@ -122,7 +130,9 @@ class StudySentenceSerializer {
     isFavorite = instance.isFavorite;
     comments = instance.comments;
     repeats = instance.repeats;
-    newWords = List.from(instance.newWords);
+    newWords = List.from(instance.newWords.map((e) => WordSerializer().from(e)).toList());
+    newSentencePatterns = List.from(instance.newSentencePatterns.map((e) => SentencePatternSerializer().from(e)).toList());
+    hideNewWords = instance.hideNewWords;
     _id = instance._id;
     return this;
   }

@@ -1,9 +1,13 @@
-import 'dart:async';
 import 'package:audioplayers/audioplayers_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/http.dart';
+import 'package:flutter_prj/routes/common/common.dart';
+import 'package:flutter_prj/routes/common/familiarity.dart';
+import 'package:flutter_prj/routes/common/practice_actions.dart';
+import 'package:flutter_prj/routes/sentence/edit_study_sentence.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
+import 'package:flutter_prj/widgets/row_space.dart';
 
 
 class PracticeSentence extends StatefulWidget {
@@ -18,25 +22,41 @@ class PracticeSentence extends StatefulWidget {
 
 class _PracticeSentenceState extends State<PracticeSentence> {
   num index = 0;
-  bool auto = false;
-  bool cycle = true;
-  bool order = false;
   bool _hide = true;
+  num tabIndex = 0;
   WrappedPlayer _audioPlayer = WrappedPlayer();
-  final _style = TextStyle(fontSize: 14, color: Colors.black45);
-  final _style2 = TextStyle(color: Colors.black54, fontWeight: FontWeight.normal, fontSize: 17);
-  //Timer timer;
+  final _textCtrl = TextEditingController();
 
-  void _timerCallback(Timer t) {
-    _next();
+  final _actions = [
+      {
+        'label': '英汉',
+        'value': false
+      },
+      {
+        'label': '循环',
+        'value': true,
+      },
+      {
+        'label': '自动',
+        'value': false,
+      },
+    ];
 
-    setState((){});
-  }
+  _actionValue(String label) => _actions.singleWhere((e) => e['label'] == label)['value'];
 
   @override
-  void dispose() {
-    //if(timer != null && timer.isActive) timer.cancel();
-    super.dispose();
+  void initState() {
+    _init();
+    super.initState();
+  }
+
+  _init() async {
+    await Future.forEach<StudySentenceSerializer>(widget.studySentences, (e) async {
+      if(e.sentence.updateSynonum == false) {
+        var ret = await e.sentence.retrieve();
+        if(ret) e.sentence.updateSynonum = true;
+      }
+    });
   }
 
   @override
@@ -46,11 +66,8 @@ class _PracticeSentenceState extends State<PracticeSentence> {
         backgroundColor: Color.fromRGBO(250, 250, 250, 1),
         titleSpacing: 3,
         title: Text(
-          '${index+1}/${widget.studySentences.length}',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.black45
-          ),
+          '${index + 1}/${widget.studySentences.length}',
+          style: TextStyle(fontSize: 14, color: Colors.black45),
         ),
         leading: IconButton(
           splashRadius: 1,
@@ -58,129 +75,53 @@ class _PracticeSentenceState extends State<PracticeSentence> {
           onPressed: ()=> Navigator.pop(context),
         ),
         centerTitle: false,
-        actions: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('英汉', style: _style,),
-              SizedBox(width: 3,),
-              Switch(
-                value: order,
-                onChanged: (v) => setState(() => order = v),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('循环', style: _style,),
-              SizedBox(width: 3,),
-              Switch(
-                value: cycle,
-                onChanged: (v) => setState(() => cycle = v),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('自动', style: _style,),
-              SizedBox(width: 3,),
-              Switch(
-                value: auto,
-                onChanged: (v) {
-                  if(v) {
-                    //timer = Timer.periodic(Duration(seconds: 3), _timerCallback);
-                    //if(_curWord.audioUsMan == null) return; _audioPlayer.setUrl(_curWord.audioUsMan); _audioPlayer.start(0);
-                  } else {
-                    //timer.cancel();
-                  }
-                  setState(() {auto = v;});
-                },
-              ),
-            ],
-          ),
-        ],
+        actions: practiceActionsWidget(_actions, () => setState(() {})),
       ),
       body: SingleChildScrollView(
-        child: Center(
-          child: Container(
-            margin: EdgeInsets.fromLTRB(10, 100, 10, 30),
-            decoration: BoxDecoration(
-              //border: BoxBorde()
-            ),
-            child: ColumnSpace(
-              divider: SizedBox(height: 20,),
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    PopupMenuButton<String> (
-                      padding: EdgeInsets.all(5), // 菜单项的内边距
-                      offset: Offset(0, 0),       // 控制菜单弹出的位置()
-                      initialValue: _curStudySentence.familiarity.toString(),
-                      child: Text.rich(
-                        TextSpan(
-                          children: [
-                            TextSpan(
-                              text: '${_curStudySentence.familiarity}',
-                              style: TextStyle(color: Colors.blueAccent, fontSize: 17)
-                            ),
-                            TextSpan(
-                              text: ' 熟悉度',
-                              style: TextStyle(color: Colors.black45, fontSize: 14)
-                            ),
-                          ]
-                        )
-                      ),
-                      itemBuilder: (context) =>
-                        ['0', '1', '2', '3', '4', '5'].map((String e) =>
-                          PopupMenuItem<String>(
-                            value: e,
-                            textStyle: const TextStyle(fontWeight: FontWeight.w600), // 文本样式
-                            child: Text(e, style: const TextStyle(color: Colors.blue) ),    // 子控件
-                          )
-                        ).toList(),
-                      onSelected: (v) async {
-                        _curStudySentence.familiarity = num.parse(v);
-                        await _curStudySentence.save();
-                        setState(() {});
-                      }
-                    ),
-                    SizedBox(width: 100,),
-                  ],
-                ),
-                Container(
-                  height: 200,
-                  child: _sentence,
-                ),
-                //_detail(context),
-                auto ? null : _goto,
-              ],
-            ),
-          )
-        ),
-      )
+        child: Container(
+          margin: EdgeInsets.fromLTRB(6, 30, 6, 30),
+          child: ColumnSpace(
+            divider: SizedBox(height: 14,),
+            children: [
+              _sentence,
+              _attached(context),
+              _bottom(context),
+              _actionValue('自动') ? null : _goto,
+            ],
+          ),
+        )
+      ),
     );
+
+  _next() {
+    if(index < (widget.studySentences.length - 1)) index += 1;
+    else if(_actionValue('循环')) index = 0;
+    _textCtrl.text = '';
+    tabIndex = 0;
+  }
+
+  _previous() {
+    if(index > 0) index -= 1;
+    else if(_actionValue('循环')) index = widget.studySentences.length - 1;
+    _textCtrl.text = '';
+    tabIndex = 0;
+  }
+
+  SentenceSerializer get _curSentence => widget.studySentences[index].sentence;
+  StudySentenceSerializer get _curStudySentence => widget.studySentences[index];
+
+  _playCurSentenceEn(SentenceSerializer s) {
+    if(s.enVoice.isEmpty) return;
+    var url = s.enVoice.startsWith('http') ? s.enVoice : Http.baseUrl + s.enVoice;
+    _audioPlayer.setUrl(url);
+    _audioPlayer.start(0);
+  }
 
   Widget get _sentence =>
     ColumnSpace(
       divider: SizedBox(height: 10,),
       children: [
-        InkWell(
-          child: Text(
-            order ? _curSentence.en : _curSentence.cn,
-            style: TextStyle(
-              color: Colors.black87,
-              fontWeight: FontWeight.w700,
-              fontSize: 17,
-            ),
-          ),
-          onTap: () {
-            if(order == false) return;
-            _playCurSentenceEnAudio();
-          },
-        ),
+        _sentenceA(_curSentence, _actionValue('英汉')),
         Offstage(
           offstage: !_hide,
           child: IconButton(
@@ -188,39 +129,166 @@ class _PracticeSentenceState extends State<PracticeSentence> {
             onPressed: () => setState(() => _hide = false),
           )
         ),
-        _detail(),
+        Offstage(
+          offstage: _hide,
+          child: ColumnSpace(
+            children: <Widget>[
+              _sentenceB(_curSentence, _actionValue('英汉')),
+            ] + _curSentence.synonym.map<Widget>((e) =>
+              _synonymSentence(e)
+            ).toList()
+          ),
+        ),
       ],
     );
 
-  void _next() {
-    if(cycle && (index == widget.studySentences.length - 1)) index = 0;
-    else if(index < (widget.studySentences.length - 1)) index += 1;
+  Widget _sentenceA(SentenceSerializer s, bool en2cn) =>
+    InkWell(
+      child: Text(
+        en2cn ? s.en : s.cn,
+        style: const TextStyle(fontSize: 17, color: Colors.black54, fontWeight: FontWeight.w700),
+      ),
+      onTap: () {
+        if(en2cn == false) return;
+        _playCurSentenceEn(s);
+      }
+    );
+
+  Widget _sentenceB(SentenceSerializer s, bool en2cn) =>
+    InkWell(
+      child: Text(
+        en2cn ? s.cn : s.en,
+        style: const TextStyle(fontSize: 17, color: Colors.black54, fontWeight: FontWeight.normal),
+      ),
+      onTap: () {
+        if(en2cn) return;
+        _playCurSentenceEn(s);
+      }
+    );
+
+  Widget _synonymSentence(SentenceSerializer s) =>
+    InkWell(
+      child: Text(
+        s.en,
+        style: const TextStyle(fontSize: 17, color: Colors.black54, fontWeight: FontWeight.normal),
+      ),
+      onTap: () {
+        _playCurSentenceEn(s);
+      }
+    );
+
+  String _paraphrases2Str(List<ParaphraseSerializer> paraphrases) {
+    var ps = sortParaphraseSet(paraphrases);
+    return ps.map((p) => p.keys.first + '  ' + p.values.first.map((ps) => ps.interpret).join('；')).join('；');
   }
 
-  void _previous() {
-    if(cycle && index == 0) index = widget.studySentences.length - 1;
-    else if(index > 0) index -= 1;
-  }
-  SentenceSerializer get _curSentence => widget.studySentences[index].sentence;
-  StudySentenceSerializer get _curStudySentence => widget.studySentences[index];
+  Widget _attached(BuildContext context) {
+    var labels = <String>[];
+    var contents = <Widget>[];
+    _curStudySentence.newWords.forEach((e) {
+      labels.add(e.name);
+      contents.add(
+        Text(
+          _paraphrases2Str(e.paraphraseSet),
+          style: const TextStyle(fontSize: 17, color: Colors.black54)
+        )
+      );
+    });
+    _curStudySentence.newSentencePatterns.forEach((e) {
+      labels.add(e.content);
+      contents.add(
+        Text(
+          _paraphrases2Str(e.paraphraseSet),
+          style: const TextStyle(fontSize: 17, color: Colors.black54)
+        )
+      );
+    });
 
-  Widget _detail() =>
-    Offstage(
-      offstage: _hide,
-      child: InkWell(
-        child: Column(
-          children: [
-            Text(
-              order ? _curSentence.cn : _curSentence.en,
-              style: _style2,
-            ),
-          ],
-        ),
-        onTap: () {
-          if(order == true) return;
-          _playCurSentenceEnAudio(); 
-        }
+    return Offstage(
+      offstage: _curStudySentence.hideNewWords,
+      child: ColumnSpace(
+        divider: SizedBox(height: 10,),
+        children: [
+        _tabs(labels, contents, (String label) async {
+          var w = _curStudySentence.newWords.singleWhere((e) => e.name == label, orElse: () => null);
+          if(w != null) {
+            await Navigator.pushNamed(context, '/show_word', arguments: {'title': '', 'word': w});
+            return;
+          }
+          var sp = _curStudySentence.newSentencePatterns.singleWhere((e) => e.content == label, orElse: () => null);
+          if(sp != null) {
+            await Navigator.pushNamed(context, '/show_sentence_pattern', arguments: {'title': '', 'sentencePattern': sp});
+            return;
+          }
+        }),
+        Container(
+          width: 200,
+          child: TextFormField(
+            maxLines: 1,
+            controller: _textCtrl,
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(
+              isDense: true,
+              labelText: '单词拼写',
+              border: OutlineInputBorder(),
+            )
+          )
+        )],
       )
+    );
+  }
+
+  Widget _tabs(List<String> labels, List<Widget> contents, Function(String) onDoubleTap) =>
+    ColumnSpace(
+      divider: SizedBox(height: 10,),
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: labels.asMap().map((i, e) =>
+            MapEntry(i,
+              InkWell(
+                child: Text(e, style: TextStyle(fontSize: 17, color: tabIndex == i ? Colors.blueAccent : Colors.blueGrey)),
+                onTap: () => setState(() => tabIndex = i),
+                onDoubleTap: () => onDoubleTap(e),
+              )
+            )
+          ).values.toList(),
+        ),
+        contents.isNotEmpty ? contents[tabIndex] : null
+      ],
+    );
+
+  Widget _bottom(BuildContext context) =>
+    RowSpace(
+      mainAxisSize: MainAxisSize.min,
+      divider: SizedBox(width: 14,),
+      children: [
+        TextButton(
+          child: Text('编辑生词'),
+          onPressed: () async {
+            var ss = await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => EditStudySentencePage(title: '编辑生词', studySentence: _curStudySentence,),
+                            )
+                          );
+            if(ss != null) await _curStudySentence.from(ss).save();
+            setState(() {});
+          },
+        ),
+        TextButton(
+          child: Text(_curStudySentence.hideNewWords ? '显示生词' : '隐藏生词'),
+          onPressed: () => setState(() => _curStudySentence.hideNewWords = !_curStudySentence.hideNewWords),
+        ),
+        familiarityWidget(
+          context,
+          _curStudySentence.familiarity,
+          (v) async {
+            _curStudySentence.familiarity = v;
+            await _curStudySentence.save();
+            setState(() {});
+          }
+        )
+      ],
     );
 
   Widget get _goto =>
@@ -229,20 +297,12 @@ class _PracticeSentenceState extends State<PracticeSentence> {
       children: <Widget>[
         IconButton(
           icon: Icon(Icons.arrow_back_ios, size: 30, color: Colors.blueAccent,),
-          splashRadius: 17,
           onPressed: () => setState(() {_hide = true; _previous();}),
         ),
         IconButton(
           icon: Icon(Icons.arrow_forward_ios, size: 30, color: Colors.blueAccent),
-          splashRadius: 17,
           onPressed: () => setState(() {_hide = true; _next();}),
         ),
       ],
     );
-
-  void _playCurSentenceEnAudio() {
-    if(_curSentence.enVoice.isEmpty) return;
-    _audioPlayer.setUrl(Http.baseUrl + _curSentence.enVoice);
-    _audioPlayer.start(0);
-  }
 }

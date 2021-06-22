@@ -177,24 +177,20 @@ class _EditSentenceState extends State<EditSentence> {
                         ),
                       ),
                     ),
-                    WrapOutline(
+                    ListOutline(
                       labelText: '同义句',
                       children: widget._sentence.synonym.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text('$e', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
+                            child: Text('${e.en}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                             onTap: () async {
-                              var sentence = SentenceSerializer()..id = e;
-                              bool ret = await sentence.retrieve();
-                              if(ret) {
-                                  sentence = (await Navigator.pushNamed(
-                                  context, '/edit_sentence',
-                                  arguments: {'title':'编辑同义句', 'sentence': SentenceSerializer().from(sentence)})
-                                ) as SentenceSerializer;
-                                if(sentence != null) {
-                                  await sentence.save();
-                                }
-                              }
+                              var s = (await Navigator.pushNamed(context,
+                                                                '/edit_sentence',
+                                                                arguments: {
+                                                                  'title': '编辑同义句',
+                                                                  'sentence': SentenceSerializer().from(e)})
+                                      ) as SentenceSerializer;
+                              if(s != null) await e.from(s).save();
                               setState((){});
                             },
                           ),
@@ -203,31 +199,32 @@ class _EditSentenceState extends State<EditSentence> {
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          var sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'添加同义句'})) as SentenceSerializer;
-                          if(sentence != null) {
-                            bool ret = await sentence.save();
-                            if(ret) {
-                              setState(() => widget._sentence.synonym.add(sentence.id));
-                            }
+                          var s = (await Navigator.pushNamed(context,
+                                                            '/edit_sentence',
+                                                            arguments: {'title': '添加同义句'})
+                                          ) as SentenceSerializer;
+                          if(s != null) {
+                            var ret = await s.save();
+                            if(ret) widget._sentence.synonym.add(s);
+                            setState(() {});
                           }
                         },
                       ),
                     ),
-                    WrapOutline(
+                    ListOutline(
                       labelText: '反义句',
                       children: widget._sentence.antonym.map<Widget>((e) =>
                         Tag(
                           label: InkWell(
-                            child: Text('$e', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
+                            child: Text('${e.en}', style: TextStyle(fontSize: 14, color: Colors.blueAccent)),
                             onTap: () async {
-                              var sentence = SentenceSerializer()..id = e;
-                              bool ret = await sentence.retrieve();
-                              if(ret) {
-                                sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'编辑反义句', 'sentence': SentenceSerializer().from(sentence)})) as SentenceSerializer;
-                                if(sentence != null) {
-                                  await sentence.save();
-                                }
-                              }
+                                var s = (await Navigator.pushNamed(context,
+                                                                  '/edit_sentence',
+                                                                  arguments: {
+                                                                    'title': '编辑反义句',
+                                                                    'sentence': SentenceSerializer().from(e)})
+                                        ) as SentenceSerializer;
+                              if(s != null) await e.from(s).save();
                               setState((){});
                             },
                           ),
@@ -236,12 +233,14 @@ class _EditSentenceState extends State<EditSentence> {
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          var sentence = (await Navigator.pushNamed(context, '/edit_sentence', arguments: {'title':'添加反义句'})) as SentenceSerializer;
-                          if(sentence != null) {
-                            bool ret = await sentence.save();
-                            if(ret) {
-                              setState(() => widget._sentence.antonym.add(sentence.id));
-                            }
+                          var s = (await Navigator.pushNamed(context,
+                                                                    '/edit_sentence',
+                                                                    arguments: {'title': '添加反义句'})
+                                          ) as SentenceSerializer;
+                          if(s != null) {
+                            bool ret = await s.save();
+                            if(ret) widget._sentence.antonym.add(s);
+                            setState(() {});
                           }
                         },
                       ),
@@ -255,8 +254,9 @@ class _EditSentenceState extends State<EditSentence> {
                             onTap: () async {
                               var g = (await Navigator.pushNamed(context,
                                                                  '/edit_grammar',
-                                                                 arguments: {'title':'编辑句子的语法',
-                                                                             'grammar': GrammarSerializer().from(e)})
+                                                                 arguments: {
+                                                                  'title':'编辑句子的语法',
+                                                                  'grammar': GrammarSerializer().from(e)})
                                       ) as GrammarSerializer;
                               if(g != null) {
                                 e.from(g);
@@ -274,7 +274,10 @@ class _EditSentenceState extends State<EditSentence> {
                       suffix: TextButton(
                         child: Text('添加',),
                         onPressed: () async {
-                          var g = (await Navigator.pushNamed(context, '/edit_grammar', arguments: {'title': '给句子添加语法'})) as GrammarSerializer;
+                          var g = (await Navigator.pushNamed(context,
+                                                            '/edit_grammar',
+                                                            arguments: {'title': '给句子添加语法'})
+                                  ) as GrammarSerializer;
                           if(g != null) {
                             widget._sentence.grammarSet.add(g);
                             setState(() {});
