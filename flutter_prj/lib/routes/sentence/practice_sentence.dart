@@ -119,7 +119,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
 
   void _playCurWordAudio(WordSerializer w) {
     if(w.audioUsMan.isEmpty) return;
-    var url = w.audioUsMan.startsWith('http') ? w.audioUsMan :Http.baseUrl + w.audioUsMan;
+    var url = w.audioUsMan.startsWith('http') ? w.audioUsMan : Http.baseUrl + w.audioUsMan;
     _audioPlayer.setUrl(url);
     _audioPlayer.start(0);
   }
@@ -217,7 +217,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
         divider: SizedBox(height: 10,),
         children: [
         _tabs(labels, contents,
-          (String label, num index) async {
+          (String label, num index) {
             if(tabIndex == index) {
               var w = _curStudySentence.newWords.singleWhere((e) => e.name == label, orElse: () => null);
               if(w != null) _playCurWordAudio(w);
