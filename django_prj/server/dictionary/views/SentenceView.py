@@ -44,9 +44,8 @@ class SentenceSerializer(serializers.ModelSerializer):
         return [SentenceSerializer(SentenceTable.objects.get(pk=pk)).data for pk in objs]
 
     def _studySentenceSet(self, objs):
-        if not 'request' in self.context.keys() or not 'dictionary/sentence' in self.context['request'].path:
-            # 防止 StudySentenceSerializer 和 SentenceSerializer 无限循环序列化
-            return []
+        if not 'request' in self.context.keys():
+            return objs
         request = self.context['request']
         token = request.query_params.get('token')
         if not token:
@@ -56,6 +55,18 @@ class SentenceSerializer(serializers.ModelSerializer):
             return [ss for ss in objs if userId == ss['foreignUser']]
         except:
             return []
+
+    def __nested(self):
+        if not 'sentence' in self.context.keys():
+            return None
+        return self.context['sentence']
+
+    def __context(self):
+        nested = 0
+        if 'sentence' in self.context.keys():
+            nested = self.context['sentence'] + 1
+        return {'request': self.context['request'], 'sentence': nested}
+
 '''
     def get_studySentenceSet(self, obj):
         if not 'request' in self.context.keys():

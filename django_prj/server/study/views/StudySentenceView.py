@@ -36,14 +36,25 @@ class StudySentenceSerializer(serializers.ModelSerializer):
         return
 
     def _sentence(self, sentence):
-        if sentence == None:
+        if self.__nested() == 0 or sentence == None:
             return None
         from dictionary.views.SentenceView import SentenceSerializer
         if 'request' in self.context.keys() and 'study/sentence' in self.context['request'].path:
             # 防止 StudySentenceSerializer 和 SentenceSerializer 无限循环序列化
-            return SentenceSerializer(sentence).data
+            return SentenceSerializer(sentence, context=self.__context()).data
         else:
             return None
+
+    def __nested(self):
+        if not 'studysentence' in self.context.keys():
+            return None
+        return self.context['studysentence']
+
+    def __context(self):
+        nested = 0
+        if 'studysentence' in self.context.keys():
+            nested = self.context['studysentence'] + 1
+        return {'request': self.context['request'], 'studysentence': nested}
 
 # 分页自定义
 class _StudySentencePagination(PageNumberPagination):
