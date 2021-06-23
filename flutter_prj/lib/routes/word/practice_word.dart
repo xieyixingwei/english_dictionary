@@ -166,9 +166,7 @@ class _PracticeWordState extends State<PracticeWord> {
                         border: OutlineInputBorder(),
                         suffix: TextButton(
                           child: Text('确定'),
-                          onPressed: () {
-                            (_formKey.currentState as FormState).validate();
-                          }
+                          onPressed: () => (_formKey.currentState as FormState).validate(),
                         )
                       ),
                       validator: (v) => v.trim() != _curWord.name ? 'Wrong' : null,
