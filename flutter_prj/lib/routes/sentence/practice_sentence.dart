@@ -117,6 +117,13 @@ class _PracticeSentenceState extends State<PracticeSentence> {
     _audioPlayer.start(0);
   }
 
+  void _playCurWordAudio(WordSerializer w) {
+    if(w.audioUsMan.isEmpty) return;
+    var url = w.audioUsMan.startsWith('http') ? w.audioUsMan :Http.baseUrl + w.audioUsMan;
+    _audioPlayer.setUrl(url);
+    _audioPlayer.start(0);
+  }
+
   Widget get _sentence =>
     ColumnSpace(
       divider: SizedBox(height: 10,),
@@ -209,18 +216,29 @@ class _PracticeSentenceState extends State<PracticeSentence> {
       child: ColumnSpace(
         divider: SizedBox(height: 10,),
         children: [
-        _tabs(labels, contents, (String label) async {
-          var w = _curStudySentence.newWords.singleWhere((e) => e.name == label, orElse: () => null);
-          if(w != null) {
-            await Navigator.pushNamed(context, '/show_word', arguments: {'title': '', 'word': w});
-            return;
+        _tabs(labels, contents,
+          (String label, num index) async {
+            if(tabIndex == index) {
+              var w = _curStudySentence.newWords.singleWhere((e) => e.name == label, orElse: () => null);
+              if(w != null) _playCurWordAudio(w);
+            } else {
+              tabIndex = index;
+              setState(() {});
+            }
+          },
+          (String label) async {
+            var w = _curStudySentence.newWords.singleWhere((e) => e.name == label, orElse: () => null);
+            if(w != null) {
+              await Navigator.pushNamed(context, '/show_word', arguments: {'title': '', 'word': w});
+              return;
+            }
+            var sp = _curStudySentence.newSentencePatterns.singleWhere((e) => e.content == label, orElse: () => null);
+            if(sp != null) {
+              await Navigator.pushNamed(context, '/show_sentence_pattern', arguments: {'title': '', 'sentencePattern': sp});
+              return;
+            }
           }
-          var sp = _curStudySentence.newSentencePatterns.singleWhere((e) => e.content == label, orElse: () => null);
-          if(sp != null) {
-            await Navigator.pushNamed(context, '/show_sentence_pattern', arguments: {'title': '', 'sentencePattern': sp});
-            return;
-          }
-        }),
+        ),
         Container(
           width: 200,
           child: TextFormField(
@@ -238,21 +256,28 @@ class _PracticeSentenceState extends State<PracticeSentence> {
     );
   }
 
-  Widget _tabs(List<String> labels, List<Widget> contents, Function(String) onDoubleTap) =>
+  Widget _tabs(List<String> labels, List<Widget> contents, Function(String, num) onTap, Function(String) onDoubleTap) =>
     ColumnSpace(
       divider: SizedBox(height: 10,),
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: labels.asMap().map((i, e) =>
-            MapEntry(i,
-              InkWell(
-                child: Text(e, style: TextStyle(fontSize: 17, color: tabIndex == i ? Colors.blueAccent : Colors.blueGrey)),
-                onTap: () => setState(() => tabIndex = i),
-                onDoubleTap: () => onDoubleTap(e),
+        Container(
+          height: 20,
+          child: ListView(
+            //mainAxisAlignment: MainAxisAlignment.spaceAround,
+            scrollDirection: Axis.horizontal,
+            children: labels.asMap().map((i, e) =>
+              MapEntry(i,
+                Container(
+                  margin: EdgeInsets.only(left: 6, right: 6),
+                  child: InkWell(
+                    child: Text(e, style: TextStyle(fontSize: 17, color: tabIndex == i ? Colors.blueAccent : Colors.blueGrey)),
+                    onTap: () => onTap(e, i),
+                    onDoubleTap: () => onDoubleTap(e),
+                  )
+                )
               )
-            )
-          ).values.toList(),
+            ).values.toList(),
+          ),
         ),
         contents.isNotEmpty ? contents[tabIndex] : null
       ],
