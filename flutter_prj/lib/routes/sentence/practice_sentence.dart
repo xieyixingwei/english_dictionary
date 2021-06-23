@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/http.dart';
+import 'package:flutter_prj/markdown/style.dart';
 import 'package:flutter_prj/routes/common/common.dart';
 import 'package:flutter_prj/routes/common/familiarity.dart';
 import 'package:flutter_prj/routes/common/practice_actions.dart';
@@ -240,7 +241,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
           }
         ),
         Container(
-          width: 200,
+          width: 240,
           child: TextFormField(
             maxLines: 1,
             controller: _textCtrl,
@@ -248,6 +249,10 @@ class _PracticeSentenceState extends State<PracticeSentence> {
             decoration: InputDecoration(
               isDense: true,
               labelText: '单词拼写',
+              suffix: IconButton(
+                icon: Icon(Icons.clear, color: Colors.black54,),
+                onPressed: () => _textCtrl.text = ''
+              ),
               border: OutlineInputBorder(),
             )
           )
