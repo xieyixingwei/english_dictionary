@@ -199,6 +199,7 @@ class _ListSentencesState extends State<ListSentences> {
                       if(e.studySentenceSet.isEmpty) {
                         var newSs = StudySentenceSerializer()..sentence = SentenceSerializer().from(e) // 不能直接赋值，要用from()深拷贝赋值，不然会进入死循环。
                                                          ..foreignUser = Global.localStore.user.id
+                                                         ..inplan = true
                                                          ..categories.add(category);
                         var ret = await newSs.save();
                         if(ret) e.studySentenceSet.add(newSs);

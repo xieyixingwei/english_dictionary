@@ -166,6 +166,7 @@ class _ListWordsState extends State<ListWords> {
                       if(e.studyWordSet.isEmpty) {
                         var newSw = StudyWordSerializer()..word = WordSerializer().from(e) // 不能直接赋值，要用from()深拷贝赋值，不然会进入死循环。
                                                          ..foreignUser = Global.localStore.user.id
+                                                         ..inplan = true
                                                          ..categories.add(category);
                         var ret = await newSw.save();
                         if(ret) e.studyWordSet.add(newSw);

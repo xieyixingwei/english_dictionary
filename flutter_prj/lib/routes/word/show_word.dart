@@ -133,6 +133,7 @@ class _ShowWordState extends State<ShowWord> {
               if(widget.word.studyWordSet.isEmpty) {
                 var newSw = StudyWordSerializer()..word = widget.word
                                                   ..foreignUser = Global.localStore.user.id
+                                                  ..inplan = true
                                                   ..categories.add(category);
                 var ret = await newSw.save();
                 if(ret) widget.word.studyWordSet.add(newSw);

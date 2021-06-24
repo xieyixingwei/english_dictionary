@@ -120,6 +120,7 @@ Widget sentenceShow(BuildContext context, SentenceSerializer sentence, Function 
                 if(sentence.studySentenceSet.isEmpty) {
                   var newSs = StudySentenceSerializer()..sentence = SentenceSerializer().from(sentence)
                                                     ..foreignUser = Global.localStore.user.id
+                                                    ..inplan = true
                                                     ..categories.add(category);
                   var ret = await newSs.save();
                   if(ret) sentence.studySentenceSet.add(newSs);

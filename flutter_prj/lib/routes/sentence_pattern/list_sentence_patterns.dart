@@ -146,6 +146,7 @@ class _ListSentencePatternsState extends State<ListSentencePatterns> {
                       if(e.studySentencePatternSet.isEmpty) {
                         var newSsp = StudySentencePatternSerializer()..sentencePattern = SentencePatternSerializer().from(e) // 不能直接赋值，要用from()深拷贝赋值，不然会进入死循环。
                                                          ..foreignUser = Global.localStore.user.id
+                                                         ..inplan = true
                                                          ..categories.add(category);
                         var ret = await newSsp.save();
                         if(ret) e.studySentencePatternSet.add(newSsp);
