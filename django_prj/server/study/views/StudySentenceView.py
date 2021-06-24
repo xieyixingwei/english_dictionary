@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django_filters import filterset
 from django.db import models
 import django_filters
+from rest_framework import filters
 
 from server import permissions
 from server.views import ModelViewSetPermissionSerializerMap
@@ -92,3 +93,5 @@ class StudySentenceView(ModelViewSetPermissionSerializerMap):
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = _StudySentencePagination
     filter_class = _StudySentenceFilter
+    filter_backends = (filters.OrderingFilter,)
+    ordering_fields = ('id', 'familiarity', )
