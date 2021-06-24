@@ -1,7 +1,6 @@
 import 'package:audioplayers/audioplayers_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/http.dart';
-import 'package:flutter_prj/markdown/style.dart';
 import 'package:flutter_prj/routes/common/common.dart';
 import 'package:flutter_prj/routes/common/familiarity.dart';
 import 'package:flutter_prj/routes/common/practice_actions.dart';
@@ -37,10 +36,10 @@ class _PracticeSentenceState extends State<PracticeSentence> {
         'label': '循环',
         'value': true,
       },
-      {
+      /*{
         'label': '自动',
         'value': false,
-      },
+      },*/
     ];
 
   _actionValue(String label) => _actions.singleWhere((e) => e['label'] == label)['value'];
@@ -87,7 +86,8 @@ class _PracticeSentenceState extends State<PracticeSentence> {
               _sentence,
               _attached(context),
               _bottom(context),
-              _actionValue('自动') ? null : _goto,
+              //_actionValue('自动') ? null : _goto,
+              _goto,
             ],
           ),
         )
@@ -159,7 +159,18 @@ class _PracticeSentenceState extends State<PracticeSentence> {
       onTap: () {
         if(en2cn == false) return;
         _playCurSentenceEn(s);
-      }
+      },
+      onDoubleTap: () async {
+        if(en2cn == false) return;
+        var sentence = (await Navigator.pushNamed(context,
+                                                              '/edit_sentence',
+                                                              arguments: {
+                                                                'title': '编辑句子',
+                                                                'sentence': SentenceSerializer().from(s)})
+                              ) as SentenceSerializer;
+        if(sentence != null) await s.from(sentence).save();
+        setState(() {});
+      },
     );
 
   Widget _sentenceB(SentenceSerializer s, bool en2cn) =>
@@ -171,7 +182,18 @@ class _PracticeSentenceState extends State<PracticeSentence> {
       onTap: () {
         if(en2cn) return;
         _playCurSentenceEn(s);
-      }
+      },
+      onDoubleTap: () async {
+        if(en2cn) return;
+        var sentence = (await Navigator.pushNamed(context,
+                                                  '/edit_sentence',
+                                                  arguments: {
+                                                    'title': '编辑句子',
+                                                    'sentence': SentenceSerializer().from(s)})
+                        ) as SentenceSerializer;
+        if(sentence != null) await s.from(sentence).save();
+        setState(() {});
+      },
     );
 
   Widget _synonymSentence(SentenceSerializer s) =>
@@ -182,7 +204,17 @@ class _PracticeSentenceState extends State<PracticeSentence> {
       ),
       onTap: () {
         _playCurSentenceEn(s);
-      }
+      },
+      onDoubleTap: () async {
+        var sentence = (await Navigator.pushNamed(context,
+                                                  '/edit_sentence',
+                                                  arguments: {
+                                                    'title': '编辑句子',
+                                                    'sentence': SentenceSerializer().from(s)})
+                        ) as SentenceSerializer;
+        if(sentence != null) await s.from(sentence).save();
+        setState(() {});
+      },
     );
 
   String _paraphrases2Str(List<ParaphraseSerializer> paraphrases) {
@@ -227,7 +259,14 @@ class _PracticeSentenceState extends State<PracticeSentence> {
               setState(() {});
             }
           },
-          (String label) async {
+          (String label, num index) async {
+            if(tabIndex != index) {
+              tabIndex = index;
+              setState(() {});
+              var w = _curStudySentence.newWords.singleWhere((e) => e.name == label, orElse: () => null);
+              if(w != null) _playCurWordAudio(w);
+              return;
+            }
             var w = _curStudySentence.newWords.singleWhere((e) => e.name == label, orElse: () => null);
             if(w != null) {
               await Navigator.pushNamed(context, '/show_word', arguments: {'title': '', 'word': w});
@@ -261,7 +300,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
     );
   }
 
-  Widget _tabs(List<String> labels, List<Widget> contents, Function(String, num) onTap, Function(String) onDoubleTap) =>
+  Widget _tabs(List<String> labels, List<Widget> contents, Function(String, num) onTap, Function(String, num) onDoubleTap) =>
     ColumnSpace(
       divider: SizedBox(height: 10,),
       children: [
@@ -277,7 +316,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
                   child: InkWell(
                     child: Text(e, style: TextStyle(fontSize: 17, color: tabIndex == i ? Colors.blueAccent : Colors.blueGrey)),
                     onTap: () => onTap(e, i),
-                    onDoubleTap: () => onDoubleTap(e),
+                    onDoubleTap: () => onDoubleTap(e, i),
                   )
                 )
               )

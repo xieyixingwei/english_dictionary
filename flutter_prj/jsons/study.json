@@ -87,6 +87,11 @@
     "newWords @fk_mm @nested_r": ["$word"],
     "newSentencePatterns @fk_mm @nested_r": ["$sentence_pattern"],
     "__hideNewWords": true,
+    "__queryset__": {
+        "pageSize": 10,
+        "pageIndex": 1,
+        "ordering": "String=null"
+    },
     "__filter__": {
         "__serializer__": "$study_sentence",
         "foreignUser": ["exact"],
@@ -130,8 +135,9 @@
     "previous": "",
     "results": ["$study_sentence"],
     "__queryset__": {
-        "__pageSize": 10,
-        "__pageIndex": 1
+        "pageSize": 10,
+        "pageIndex": 1,
+        "ordering": "String=null"
     },
     "__filter__": {
         "__serializer__": "$study_sentence",

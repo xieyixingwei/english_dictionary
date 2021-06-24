@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/common/practice_item_card.dart';
+import 'package:flutter_prj/routes/sentence/sentence_practice.dart';
 import 'package:flutter_prj/routes/tabs/practice/sentence_pattern_practice.dart';
-import 'package:flutter_prj/routes/tabs/practice/sentence_practice.dart';
 import 'package:flutter_prj/routes/tabs/practice/word_practice.dart';
 import 'package:flutter_prj/serializers/index.dart';
 
@@ -32,7 +33,7 @@ class _TabPractice extends State<TabPractice> {
             alignment: WrapAlignment.spaceAround,
             runAlignment: WrapAlignment.spaceAround,
             children: [
-              _card(context, '单词', () async {
+              practiceItemCard(context, '单词', null, () async {
                 if(Global.localStore.user.studyPlan.wordCategories.isEmpty) return;
                 var studyWord = StudyWordSerializer();
                 studyWord.filter..foreignUser = Global.localStore.user.id
@@ -45,20 +46,25 @@ class _TabPractice extends State<TabPractice> {
                   )
                 );
               }),
-              _card(context, '句子', () async {
+              practiceItemCard(context, '句子', null, () async {
                 if(Global.localStore.user.studyPlan.sentenceCategories.isEmpty) return;
-                var studySentence = StudySentenceSerializer();
-                studySentence.filter..foreignUser = Global.localStore.user.id
+                var studySentencePag = StudySentencePaginationSerializer();
+                studySentencePag.filter..foreignUser = Global.localStore.user.id
                                           ..familiarity__lte = 4
                                           ..inplan = true;
-                var studySentences = await studySentence.list();
+                var categories = Map<String, num>();
+                await Future.forEach(Global.localStore.user.studyPlan.sentenceCategories, (c) async {
+                  studySentencePag.filter.categories__icontains = c;
+                  var ret = await studySentencePag.retrieve();
+                  if(ret) categories[c] = studySentencePag.count;
+                });
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => SentencePracticePage(studySentences: studySentences),
+                    builder: (context) => SentencePracticePage(categories: categories),
                   )
                 );
               }),
-              _card(context, '固定表达', () async {
+              practiceItemCard(context, '固定表达', null, () async {
                 if(Global.localStore.user.studyPlan.sentencePatternCategories.isEmpty) return;
                 var studySentencePattern = StudySentencePatternSerializer();
                 studySentencePattern.filter..foreignUser = Global.localStore.user.id
@@ -71,30 +77,10 @@ class _TabPractice extends State<TabPractice> {
                   )
                 );
               }),
-              _card(context, '词义辨析', (){}),
+              practiceItemCard(context, '词义辨析', null, (){}),
             ],
           ),
         ),
-      ),
-    );
-
-  Widget _card(BuildContext context, String title, Function onPressed) =>
-    Container(
-      padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
-      alignment: Alignment.center,
-      height: 160,
-      width: 160,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        /*boxShadow: [
-          BoxShadow(color: Colors.black26, offset: Offset(5.0, 5.0), blurRadius: 5.0, spreadRadius: 1.0),
-          BoxShadow(color: Colors.black26, offset: Offset(1.0, 1.0)), BoxShadow(color: Colors.black26)
-        ],*/
-      ),
-      child: InkWell(
-        child: Text(title, style: TextStyle(fontSize: 17),),
-        onTap: onPressed,
       ),
     );
 }

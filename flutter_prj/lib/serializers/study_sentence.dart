@@ -27,6 +27,7 @@ class StudySentenceSerializer {
   List<SentencePatternSerializer> newSentencePatterns = [];
   bool hideNewWords = true;
   StudySentenceSerializerFilter filter = StudySentenceSerializerFilter();
+  StudySentenceSerializerQuerySet queryset = StudySentenceSerializerQuerySet();
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/study/sentence/', data:data ?? toJson(), queries:queries, cache:cache);
@@ -36,6 +37,7 @@ class StudySentenceSerializer {
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(queryset.queries);
     queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/study/sentence/$id/', queries:queries, cache:cache);
     fromJson(res?.data);
@@ -60,6 +62,7 @@ class StudySentenceSerializer {
 
   Future<List<StudySentenceSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
     if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(queryset.queries);
     queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/study/sentence/', queries:queries, cache:cache);
     return res != null ? res.data.map<StudySentenceSerializer>((e) => StudySentenceSerializer().fromJson(e)).toList() : [];
@@ -164,4 +167,20 @@ class StudySentenceSerializerFilter {
     inplan = null;
   }
 }
+class StudySentenceSerializerQuerySet {
+  num pageSize = 10;
+  num pageIndex = 1;
+  String ordering = null;
 
+  Map<String, dynamic> get queries => <String, dynamic>{
+    'pageSize': pageSize,
+    'pageIndex': pageIndex,
+    'ordering': ordering,
+  }..removeWhere((String key, dynamic value) => value == null);
+
+  void clear() {
+    pageSize = null;
+    pageIndex = null;
+    ordering = null;
+  }
+}

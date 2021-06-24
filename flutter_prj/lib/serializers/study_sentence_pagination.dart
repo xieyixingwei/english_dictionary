@@ -59,14 +59,17 @@ class StudySentencePaginationSerializer {
 class StudySentencePaginationSerializerQuerySet {
   num pageSize = 10;
   num pageIndex = 1;
+  String ordering = null;
 
   Map<String, dynamic> get queries => <String, dynamic>{
     'pageSize': pageSize,
     'pageIndex': pageIndex,
+    'ordering': ordering,
   }..removeWhere((String key, dynamic value) => value == null);
 
   void clear() {
     pageSize = null;
     pageIndex = null;
+    ordering = null;
   }
 }
