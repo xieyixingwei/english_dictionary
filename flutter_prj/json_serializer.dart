@@ -512,14 +512,16 @@ class Filter {
     $clearMembers
   }""";
 
-  String get filterClass =>
-"""class $filterClassName {
+  String get filterClass => _filters.isEmpty ? '' :
+"""
+class $filterClassName {
   $members
 
   $queries
 
   $clear
-}""";
+}
+""";
 }
 
 class QuerySet {
@@ -716,9 +718,14 @@ class JsonSerializer {
   }
 
   String get httpMethods => httpMethodsObj != null ? httpMethodsObj.methods.join('\n') : '';
-  String get filterClass => filter != null && members.where((e) => e.isSerializerType
-                                                  && e.typeSerializer.filter != null
-                                                  && e.typeSerializer.filter.filterClassName == filter.filterClassName).isEmpty ? filter.filterClass : '';
+  String get filterClass {
+    if(filter == null) return '';
+    var filterMember = members.where((e) => e.isSerializerType && e.typeSerializer.filter != null
+                                            && e.typeSerializer.filter.filterClassName == filter.filterClassName);
+    if(filterMember.isNotEmpty) return '';
+    return filter.filterClass;
+  }
+
   String get content =>
 """
 // **************************************************************************
@@ -741,8 +748,7 @@ $uploadFile
 $from
 }
 
-$filterClass
-""";
+$filterClass""";
 
   Future save(String distPath) async {
     if(members.where((e) => e.isFileType).isNotEmpty) await SingleFileType().save(distPath);

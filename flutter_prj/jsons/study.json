@@ -141,12 +141,7 @@
         "__name__": "global"
     },
     "__filter__": {
-        "__serializer__": "$study_sentence",
-        "foreignUser": ["exact"],
-        "sentence": ["exact"],
-        "category": ["exact"],
-        "familiarity": ["lte", "gte"],
-        "inplan": ["exact"]
+        "__serializer__": "$study_sentence"
     },
     "__http__": {
         "url": "/api/study/sentence/",
@@ -222,12 +217,7 @@
         "__name__": "global"
     },
     "__filter__": {
-        "__serializer__": "$study_word",
-        "foreignUser": ["exact"],
-        "word": ["exact"],
-        "category": ["exact"],
-        "familiarity": ["lte", "gte"],
-        "inplan": ["exact"]
+        "__serializer__": "$study_word"
     },
     "__http__": {
         "url": "/api/study/word/",
@@ -298,12 +288,7 @@
         "__name__": "global"
     },
     "__filter__": {
-        "__serializer__": "$study_sentence_pattern",
-        "foreignUser": ["exact"],
-        "word": ["exact"],
-        "categories": ["exact"],
-        "familiarity": ["lte", "gte"],
-        "inplan": ["exact"]
+        "__serializer__": "$study_sentence_pattern"
     },
     "__http__": {
         "url": "/api/study/sentence_pattern/",
