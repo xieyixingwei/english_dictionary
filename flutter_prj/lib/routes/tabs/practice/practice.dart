@@ -45,10 +45,18 @@ class _TabPractice extends State<TabPractice> {
                   var ret = await studyWordPagen.retrieve();
                   if(ret) categories[c] = studyWordPagen.count;
                 });
+
                 var reviewCount = await reviewWordCount();
+
+                studyWordPagen = StudyWordPaginationSerializer();
+                studyWordPagen.filter..foreignUser = Global.localStore.user.id
+                                    ..learnRecord__icontains = DateTime.now().toString().substring(0, 10)
+                                    ..inplan = true;
+                await studyWordPagen.retrieve();
+
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => WordPracticePage(categories: categories, reviewCount: reviewCount),
+                    builder: (context) => WordPracticePage(categories: categories, studiedCount: studyWordPagen.count, reviewCount: reviewCount),
                   )
                 );
               }),
@@ -65,9 +73,16 @@ class _TabPractice extends State<TabPractice> {
                   if(ret) categories[c] = studySentencePagen.count;
                 });
                 var reviewCount = await reviewSentenceCount();
+
+                studySentencePagen = StudySentencePaginationSerializer();
+                studySentencePagen.filter..foreignUser = Global.localStore.user.id
+                                          ..learnRecord__icontains = DateTime.now().toString().substring(0, 10)
+                                          ..inplan = true;
+                await studySentencePagen.retrieve();
+
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => SentencePracticePage(categories: categories, reviewCount: reviewCount),
+                    builder: (context) => SentencePracticePage(categories: categories, studiedCount: studySentencePagen.count, reviewCount: reviewCount),
                   )
                 );
               }),

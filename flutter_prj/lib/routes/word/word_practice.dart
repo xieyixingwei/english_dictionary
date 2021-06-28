@@ -6,9 +6,10 @@ import 'package:flutter_prj/serializers/index.dart';
 
 
 class WordPracticePage extends StatefulWidget {
-  WordPracticePage({Key key, this.categories, this.reviewCount}) : super(key: key);
+  WordPracticePage({Key key, this.categories, this.studiedCount, this.reviewCount}) : super(key: key);
 
   final Map<String, num> categories;
+  final num studiedCount;
   final num reviewCount;
 
   @override
@@ -36,7 +37,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
             children: <Widget>[todayStudy(context), review(context)] + widget.categories.map((k, v) =>
               MapEntry(
                 k,
-                practiceItemCard(context, k, v, () async {
+                practiceItemCard(context, k, v.toString(), () async {
                   var studyWord = StudyWordSerializer();
                   studyWord.filter..foreignUser = Global.localStore.user.id
                                       ..familiarity__lte = 4
@@ -55,7 +56,7 @@ class _WordPracticePageState extends State<WordPracticePage> {
     );
 
   Widget review(BuildContext context) =>
-    practiceItemCard(context, '复习', widget.reviewCount, () async {
+    practiceItemCard(context, '复习', widget.reviewCount.toString(), () async {
       var studyWords = <StudyWordSerializer>[];
       var studyWord = StudyWordSerializer();
       studyWord.filter..foreignUser = Global.localStore.user.id
@@ -74,8 +75,9 @@ class _WordPracticePageState extends State<WordPracticePage> {
       Navigator.pushNamed(context, '/practice_word', arguments: {'title': null, 'studyWords': studyWords});
   });
 
-  Widget todayStudy(BuildContext context) =>
-    practiceItemCard(context, '今天任务', Global.localStore.user.studyPlan.onceWords, () async {
+  Widget todayStudy(BuildContext context) {
+    var count = '${widget.studiedCount}/${Global.localStore.user.studyPlan.onceWords}';
+    return practiceItemCard(context, '今天任务', count, () async {
       var studyWordPagen = StudyWordPaginationSerializer();
       studyWordPagen.filter..foreignUser = Global.localStore.user.id
                           ..familiarity__lte = 0
@@ -85,9 +87,10 @@ class _WordPracticePageState extends State<WordPracticePage> {
       studyWordPagen.queryset.ordering = "familiarity";
       var ret = await studyWordPagen.retrieve();
 
-      if(ret && studyWordPagen.results.isEmpty) return;
+      if(!ret && studyWordPagen.results.isEmpty) return;
       Navigator.pushNamed(context, '/practice_word', arguments: {'title': null, 'studyWords': studyWordPagen.results});
-  });
+    });
+  }
 }
 
 Future<num> reviewWordCount() async {

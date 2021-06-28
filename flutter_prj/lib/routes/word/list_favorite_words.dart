@@ -78,7 +78,7 @@ class _ListFavoriteWordPageState extends State<ListFavoriteWordPage> {
       dense: true,
       contentPadding: EdgeInsets.zero,
       leading: InkWell(
-        child: Text(sw.word.name, style: TextStyle(color: Colors.black87, fontSize: 17)),
+        child: Text('${sw.id}  ${sw.word.name}', style: TextStyle(color: Colors.black87, fontSize: 17)),
         onTap: () async {
           var w = (await Navigator.pushNamed(context, '/edit_word',
                                               arguments: {

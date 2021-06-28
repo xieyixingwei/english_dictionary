@@ -6,8 +6,9 @@ import 'package:flutter_prj/serializers/index.dart';
 
 
 class SentencePracticePage extends StatefulWidget {
-  SentencePracticePage({Key key, this.categories, this.reviewCount}) : super(key: key);
+  SentencePracticePage({Key key, this.categories, this.studiedCount, this.reviewCount}) : super(key: key);
   final Map<String, num> categories;
+  final num studiedCount;
   final num reviewCount;
 
   @override
@@ -36,7 +37,7 @@ class _SentencePracticePageState extends State<SentencePracticePage> {
             children: <Widget>[todayStudy(context), review(context)] + widget.categories.map((k, v) =>
               MapEntry(
                 k,
-                practiceItemCard(context, k, v, () async {
+                practiceItemCard(context, k, v.toString(), () async {
                   var studySentence = StudySentenceSerializer();
                   studySentence.filter..foreignUser = Global.localStore.user.id
                                       ..familiarity__lte = 4
@@ -55,7 +56,7 @@ class _SentencePracticePageState extends State<SentencePracticePage> {
     );
 
   Widget review(BuildContext context) =>
-    practiceItemCard(context, '复习', widget.reviewCount, () async {
+    practiceItemCard(context, '复习', widget.reviewCount.toString(), () async {
       var studySentences = <StudySentenceSerializer>[];
       var studySentence = StudySentenceSerializer();
       studySentence.filter..foreignUser = Global.localStore.user.id
@@ -74,8 +75,9 @@ class _SentencePracticePageState extends State<SentencePracticePage> {
       Navigator.of(context).pushNamed('/practice_sentence', arguments: {'title': null, 'studySentences': studySentences});
   });
 
-  Widget todayStudy(BuildContext context) =>
-    practiceItemCard(context, '今天任务', Global.localStore.user.studyPlan.onceSentences, () async {
+  Widget todayStudy(BuildContext context) {
+    var count = '${widget.studiedCount}/${Global.localStore.user.studyPlan.onceSentences}';
+    return practiceItemCard(context, '今天任务', count, () async {
       var studySentencePagen = StudySentencePaginationSerializer();
       studySentencePagen.filter..foreignUser = Global.localStore.user.id
                           ..familiarity__lte = 0
@@ -87,7 +89,8 @@ class _SentencePracticePageState extends State<SentencePracticePage> {
 
       if(ret && studySentencePagen.results.isEmpty) return;
       Navigator.of(context).pushNamed('/practice_sentence', arguments: {'title': null, 'studySentences': studySentencePagen.results});
-  });
+    });
+  }
 }
 
 Future<num> reviewSentenceCount() async {

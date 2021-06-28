@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
 
-Widget practiceItemCard(BuildContext context, String title, num count, Function onPressed) =>
+Widget practiceItemCard(BuildContext context, String title, String count, Function onPressed) =>
   Container(
     padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
     alignment: Alignment.center,
@@ -20,7 +20,7 @@ Widget practiceItemCard(BuildContext context, String title, num count, Function 
         child: ColumnSpace(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            count == null ? null : Text(count.toString(), style: TextStyle(fontSize: 17),),
+            count == null ? null : Text(count, style: TextStyle(fontSize: 17),),
             Text(title, style: TextStyle(fontSize: 17),),
           ]
         ),
