@@ -60,8 +60,8 @@ class StudySentenceSerializer(serializers.ModelSerializer):
 
 # 分页自定义
 class _StudySentencePagination(PageNumberPagination):
-    page_size_query_param = 'pageSize' # 表示url中每页数量参数
-    page_query_param = 'pageIndex' # 表示url中的页码参数
+    page_size_query_param = 'page_size' # 表示url中每页数量参数
+    page_query_param = 'page_index' # 表示url中的页码参数
     #page_size = 4 # 表示每页的默认显示数量
     #max_page_size = 5
 
