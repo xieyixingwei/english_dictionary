@@ -6,7 +6,6 @@
 import 'sentence_pattern.dart';
 import 'package:flutter_prj/common/http.dart';
 
-
 class StudySentencePatternSerializer {
   StudySentencePatternSerializer();
 
@@ -21,7 +20,7 @@ class StudySentencePatternSerializer {
   bool isFavorite = false;
   String comments = '';
   num repeats = 0;
-  StudySentencePatternSerializerFilter filter = StudySentencePatternSerializerFilter();
+  StudySentencePatternFilter filter = StudySentencePatternFilter();
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/study/sentence_pattern/', data:data ?? toJson(), queries:queries, cache:cache);
@@ -65,7 +64,6 @@ class StudySentencePatternSerializer {
       await create(data:data, queries:queries, cache:cache) :
       await update(data:data, queries:queries, cache:cache);
 
-    
     return res;
   }
 
@@ -122,7 +120,7 @@ class StudySentencePatternSerializer {
   }
 }
 
-class StudySentencePatternSerializerFilter {
+class StudySentencePatternFilter {
   num foreignUser;
   num sentencePattern;
   String categories__icontains;
@@ -148,4 +146,3 @@ class StudySentencePatternSerializerFilter {
     inplan = null;
   }
 }
-

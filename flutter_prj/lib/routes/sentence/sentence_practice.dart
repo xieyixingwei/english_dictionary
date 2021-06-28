@@ -40,8 +40,8 @@ class _SentencePracticePageState extends State<SentencePracticePage> {
                                       ..categories__icontains = k
                                       ..inplan = true;
                   studySentence.queryset.ordering = "familiarity";
-                  studySentence.queryset.pageSize = null;
-                  studySentence.queryset.pageIndex = null;
+                  studySentence.queryset.page_size = null;
+                  studySentence.queryset.page_index = null;
                   var studySentences = await studySentence.list();
                   if(studySentences.isEmpty) return;
                   Navigator.of(context).pushNamed('/practice_sentence', arguments: {'title': null, 'studySentences': studySentences});

@@ -13,7 +13,6 @@ import 'distinguish.dart';
 import 'study_word.dart';
 import 'package:flutter_prj/common/http.dart';
 
-
 class WordSerializer {
   WordSerializer();
 
@@ -77,13 +76,11 @@ class WordSerializer {
     bool res = _name == null ?
       await create(data:data, queries:queries, cache:cache) :
       await update(data:data, queries:queries, cache:cache);
-
     if(res) {
       await Future.forEach(paraphraseSet, (e) async {e.wordForeign = name; await e.save();});
       await Future.forEach(sentencePatternSet, (e) async {e.wordForeign = name; await e.save();});
       await Future.forEach(grammarSet, (e) async {e.wordForeign = name; await e.save();});
       await Future.forEach(distinguishSet, (e) async { await e.save();});
-      await Future.forEach(studyWordSet, (e) async { await e.save();});
     }
     res = await uploadFile();
     return res;
@@ -192,6 +189,5 @@ class WordSerializer {
     return this;
   }
 }
-
 
 

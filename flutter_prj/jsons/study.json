@@ -88,8 +88,9 @@
     "newSentencePatterns @fk_mm @nested_r": ["$sentence_pattern"],
     "__hideNewWords": true,
     "__queryset__": {
-        "pageSize": 10,
-        "pageIndex": 1,
+        "__name__": "global",
+        "page_size": 10,
+        "page_index": 1,
         "ordering": "String=null"
     },
     "__filter__": {
@@ -135,9 +136,7 @@
     "previous": "",
     "results": ["$study_sentence"],
     "__queryset__": {
-        "pageSize": 10,
-        "pageIndex": 1,
-        "ordering": "String=null"
+        "__name__": "global"
     },
     "__filter__": {
         "__serializer__": "$study_sentence",
@@ -213,8 +212,7 @@
     "previous": "",
     "results": ["$study_word"],
     "__queryset__": {
-        "__pageSize": 10,
-        "__pageIndex": 1
+        "__name__": "global"
     },
     "__filter__": {
         "__serializer__": "$study_word",
@@ -290,8 +288,7 @@
     "previous": "",
     "results": ["$study_sentence_pattern"],
     "__queryset__": {
-        "__pageSize": 10,
-        "__pageIndex": 1
+        "__name__": "global"
     },
     "__filter__": {
         "__serializer__": "$study_sentence_pattern",

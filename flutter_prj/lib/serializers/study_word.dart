@@ -6,7 +6,6 @@
 import 'word.dart';
 import 'package:flutter_prj/common/http.dart';
 
-
 class StudyWordSerializer {
   StudyWordSerializer();
 
@@ -21,7 +20,7 @@ class StudyWordSerializer {
   bool isFavorite = false;
   String comments = '';
   num repeats = 0;
-  StudyWordSerializerFilter filter = StudyWordSerializerFilter();
+  StudyWordFilter filter = StudyWordFilter();
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/study/word/', data:data ?? toJson(), queries:queries, cache:cache);
@@ -65,7 +64,6 @@ class StudyWordSerializer {
       await create(data:data, queries:queries, cache:cache) :
       await update(data:data, queries:queries, cache:cache);
 
-    
     return res;
   }
 
@@ -122,7 +120,7 @@ class StudyWordSerializer {
   }
 }
 
-class StudyWordSerializerFilter {
+class StudyWordFilter {
   num foreignUser;
   String word;
   String categories__icontains;
@@ -148,4 +146,3 @@ class StudyWordSerializerFilter {
     inplan = null;
   }
 }
-

@@ -7,7 +7,6 @@ import 'study_plan.dart';
 import 'study_grammar.dart';
 import 'package:flutter_prj/common/http.dart';
 
-
 class UserSerializer {
   UserSerializer();
 
@@ -132,6 +131,5 @@ class UserSerializer {
     return this;
   }
 }
-
 
 

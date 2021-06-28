@@ -5,7 +5,7 @@
 
 import 'dialog.dart';
 import 'package:flutter_prj/common/http.dart';
-
+import 'global_queryset.dart';
 
 class DialogPaginationSerializer {
   DialogPaginationSerializer();
@@ -14,10 +14,12 @@ class DialogPaginationSerializer {
   String next = '';
   String previous = '';
   List<DialogSerializer> results = [];
-  DialogSerializerFilter filter = DialogSerializerFilter();
+  DialogFilter filter = DialogFilter();
+  GlobalQuerySet queryset = GlobalQuerySet();
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(queryset.queries);
     queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/dictionary/dialog/', queries:queries, cache:cache);
     fromJson(res?.data);
@@ -53,7 +55,7 @@ class DialogPaginationSerializer {
   }
 }
 
-class DialogSerializerFilter {
+class DialogFilter {
   String tag__icontains;
   String title__icontains;
 
@@ -67,4 +69,3 @@ class DialogSerializerFilter {
     title__icontains = null;
   }
 }
-

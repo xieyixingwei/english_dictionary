@@ -9,7 +9,6 @@ import 'package:dio/dio.dart';
 import 'sentence.dart';
 import 'package:flutter_prj/common/http.dart';
 
-
 class DialogSerializer {
   DialogSerializer();
 
@@ -53,7 +52,6 @@ class DialogSerializer {
     bool res = _id == null ?
       await create(data:data, queries:queries, cache:cache) :
       await update(data:data, queries:queries, cache:cache);
-
     if(res) {
       await Future.forEach(sentenceSet, (e) async {e.dialogForeign = id; await e.save();});
     }
@@ -111,6 +109,5 @@ class DialogSerializer {
     return this;
   }
 }
-
 
 

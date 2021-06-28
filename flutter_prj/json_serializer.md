@@ -177,6 +177,7 @@ json对象中也可以定义json对象类型的成员，编译后将生成对应
 3. 外键(多对多): `@fk_mm`，标识该成员是多对多外键，例如：`"teachers @fk_mm": ["$teacher"]`，其对应的类型为`teacher`的主键类型列表。
 4. 外键(一对一): `@fk_oo`，标识该成员是一对一外键，例如：`"detail @fk_oo": "$information"`，其对应的类型为`information`的主键类型。
 5. 在主表中声明从表成员: `@fk_slave`，标识该成员是从表，例如：`"studentSet @fk_slave": ["$student"]`，其对应的类型为`List<Student>`。
+6. 使从表成员同步保存: `@save`，例如：`"studentSet @fk_slave @save": ["$student"]`，在主表的`save()`中会同步保存从表studentSet。
 
 `@fk_slave`将控制成员在函数`fromJson()`中是否被更新，因为当设置嵌套数据的时候，save主表后，从表还没有被save，此时fromJson()可能把已设置的而未保存的从表值洗掉.
 

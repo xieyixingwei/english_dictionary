@@ -5,7 +5,6 @@
 
 import 'package:flutter_prj/common/http.dart';
 
-
 class LoginSerializer {
   LoginSerializer();
 
@@ -42,6 +41,5 @@ class LoginSerializer {
     return this;
   }
 }
-
 
 

@@ -14,10 +14,8 @@ class ListSentencePatterns extends StatefulWidget {
 }
 
 class _ListSentencePatternsState extends State<ListSentencePatterns> {
-  SentencePatternPaginationSerializer _sentencePatterns = SentencePatternPaginationSerializer();
+  SentencePatternPaginationSerializer _sentencePatternPagen = SentencePatternPaginationSerializer();
   final textStyle = const TextStyle(fontSize: 12,);
-  num _perPage = 10;
-  num _pageIndex = 1;
 
   @override
   void initState() {
@@ -26,8 +24,8 @@ class _ListSentencePatternsState extends State<ListSentencePatterns> {
   }
 
   _init() async {
-    await _sentencePatterns.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
-    setState((){});
+    await _sentencePatternPagen.retrieve();
+    setState(() {});
   }
 
   @override
@@ -61,7 +59,7 @@ class _ListSentencePatternsState extends State<ListSentencePatterns> {
           onPressed: () async {
             var sp = (await Navigator.pushNamed(context, '/edit_sentence_pattern', arguments:{'title':'添加固定表达'})) as SentencePatternSerializer;
             if(sp != null) {
-              _sentencePatterns.results.add(sp);
+              _sentencePatternPagen.results.add(sp);
               await sp.save();
             }
             setState((){});
@@ -79,7 +77,7 @@ class _ListSentencePatternsState extends State<ListSentencePatterns> {
           TextField(
             maxLines: 1,
             style: TextStyle(fontSize: 14,),
-            onChanged: (v) => _sentencePatterns.filter.content__icontains = v.trim().isEmpty ? null : v.trim(),
+            onChanged: (v) => _sentencePatternPagen.filter.content__icontains = v.trim().isEmpty ? null : v.trim(),
             decoration: InputDecoration(
               hintText: '关键字',
               border: OutlineInputBorder(),
@@ -88,7 +86,7 @@ class _ListSentencePatternsState extends State<ListSentencePatterns> {
                 tooltip: '搜索',
                 icon: Icon(Icons.search),
                 onPressed: () async {
-                  await _sentencePatterns.retrieve(queries:{"page_size": 10, "page_index":1});
+                  await _sentencePatternPagen.retrieve();
                   setState((){});
                 },
               ),
@@ -103,22 +101,22 @@ class _ListSentencePatternsState extends State<ListSentencePatterns> {
     Container(
       padding: EdgeInsets.only(top: 10),
       child: Pagination(
-        pages: (_sentencePatterns.count / _perPage).ceil(),
-        curPage: _pageIndex,
+        pages: (_sentencePatternPagen.count / _sentencePatternPagen.queryset.page_size).ceil(),
+        curPage: _sentencePatternPagen.queryset.page_index,
         goto: (num index) async {
-          _pageIndex = index;
-          bool ret = await _sentencePatterns.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+          _sentencePatternPagen.queryset.page_index = index;
+          bool ret = await _sentencePatternPagen.retrieve();
           if(ret) setState((){});
         },
-        perPage: _perPage,
+        perPage: _sentencePatternPagen.queryset.page_size,
         perPageSet: [10, 20, 30, 50],
         perPageChange: (v) async {
-          _pageIndex = 1;
-          _perPage = v;
-          bool ret = await _sentencePatterns.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+          _sentencePatternPagen.queryset.page_index = 1;
+          _sentencePatternPagen.queryset.page_size = v;
+          bool ret = await _sentencePatternPagen.retrieve();
           if(ret) setState((){});
         },
-        rows: _sentencePatterns.results.map<Widget>((e) => 
+        rows: _sentencePatternPagen.results.map<Widget>((e) => 
           sentencePattrenItem(
             context: context,
             sp: e,
@@ -172,7 +170,7 @@ class _ListSentencePatternsState extends State<ListSentencePatterns> {
                   },
                   delete: () {
                     e.delete();
-                    _sentencePatterns.results.remove(e);
+                    _sentencePatternPagen.results.remove(e);
                     setState(() {});
                   },
                 ),

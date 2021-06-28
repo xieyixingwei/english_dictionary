@@ -14,10 +14,9 @@ class ListDialog extends StatefulWidget {
 
 class _ListDialogState extends State<ListDialog> {
   static final List<String> _tagOptions = ['Tag'] + Global.dialogTagOptions;
-  DialogPaginationSerializer _dialogPag = DialogPaginationSerializer();
+  DialogPaginationSerializer _dialogPagen = DialogPaginationSerializer();
   String _tagSelect = 'Tag';
-  num _perPage = 10;
-  num _pageIndex = 1;
+
 
   @override
   void initState() { 
@@ -26,7 +25,7 @@ class _ListDialogState extends State<ListDialog> {
   }
 
   _init() async {
-    await _dialogPag.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+    await _dialogPagen.retrieve();
     setState((){});
   }
 
@@ -62,7 +61,7 @@ Widget _buildFilterOptions(BuildContext context) =>
           value: _tagSelect,
           items: _tagOptions.map((e)=>DropdownMenuItem(child: Text(e, style: TextStyle(fontSize: 12,),), value: e,)).toList(),
           onChanged: (v) {
-            _dialogPag.filter.tag__icontains = v != _tagOptions.first ? v : null;
+            _dialogPagen.filter.tag__icontains = v != _tagOptions.first ? v : null;
             setState(() => _tagSelect = v);
           },
           underline: Divider(height:1, thickness: 1),
@@ -77,7 +76,7 @@ Widget _buildFilterOptions(BuildContext context) =>
                     ) as DialogSerializer;
             if(d != null) {
               var ret = await d.save();
-              if(ret) _dialogPag.results.add(d);
+              if(ret) _dialogPagen.results.add(d);
               setState(() {});
             }
           }
@@ -91,7 +90,7 @@ Widget _buildFilterOptions(BuildContext context) =>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextField(
-            onChanged: (val) => _dialogPag.filter.title__icontains = val.trim().isEmpty ? null : val.trim(),
+            onChanged: (val) => _dialogPagen.filter.title__icontains = val.trim().isEmpty ? null : val.trim(),
             decoration: InputDecoration(
               labelText: 'title关键字',
               border: OutlineInputBorder(),
@@ -100,7 +99,7 @@ Widget _buildFilterOptions(BuildContext context) =>
                 tooltip: '搜索',
                 icon: Icon(Icons.search),
                 onPressed: () async {
-                  bool ret = await _dialogPag.retrieve(queries: {'page_size':_perPage, 'page_index':_pageIndex});
+                  bool ret = await _dialogPagen.retrieve();
                   if(ret) setState((){});
                 },
               ),
@@ -115,22 +114,22 @@ Widget _buildFilterOptions(BuildContext context) =>
     SingleChildScrollView(
       padding: EdgeInsets.only(top: 20),
       child: Pagination(
-        pages: (_dialogPag.count / _perPage).ceil(),
-        curPage: _pageIndex,
+        pages: (_dialogPagen.count / _dialogPagen.queryset.page_size).ceil(),
+        curPage: _dialogPagen.queryset.page_index,
         goto: (num index) async {
-          _pageIndex = index;
-          bool ret = await _dialogPag.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+          _dialogPagen.queryset.page_index = index;
+          bool ret = await _dialogPagen.retrieve();
           if(ret) setState((){});
         },
-        perPage: _perPage,
+        perPage: _dialogPagen.queryset.page_size,
         perPageSet: [10, 20, 30, 50],
         perPageChange: (v) async {
-          _pageIndex = 1;
-          _perPage = v;
-          bool ret = await _dialogPag.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+          _dialogPagen.queryset.page_index = 1;
+          _dialogPagen.queryset.page_size = v;
+          bool ret = await _dialogPagen.retrieve();
           if(ret) setState((){});
         },
-        rows: _dialogPag.results.map<Widget>((e) => 
+        rows: _dialogPagen.results.map<Widget>((e) => 
           dialogItem(
             context: context,
             dialog: e,
@@ -146,7 +145,7 @@ Widget _buildFilterOptions(BuildContext context) =>
               },
               delete: () {
                 e.delete();
-                _dialogPag.results.remove(e);
+                _dialogPagen.results.remove(e);
                 setState(() {});
               },
             ),

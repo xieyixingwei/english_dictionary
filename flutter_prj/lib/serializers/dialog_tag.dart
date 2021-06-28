@@ -5,7 +5,6 @@
 
 import 'package:flutter_prj/common/http.dart';
 
-
 class DialogTagSerializer {
   DialogTagSerializer();
 
@@ -52,6 +51,5 @@ class DialogTagSerializer {
     return this;
   }
 }
-
 
 

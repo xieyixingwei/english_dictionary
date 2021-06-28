@@ -5,7 +5,6 @@
 
 import 'package:flutter_prj/common/http.dart';
 
-
 class StudyGrammarSerializer {
   StudyGrammarSerializer();
 
@@ -53,7 +52,6 @@ class StudyGrammarSerializer {
       await create(data:data, queries:queries, cache:cache) :
       await update(data:data, queries:queries, cache:cache);
 
-    
     return res;
   }
 
@@ -102,6 +100,5 @@ class StudyGrammarSerializer {
     return this;
   }
 }
-
 
 

@@ -5,7 +5,7 @@
 
 import 'grammar.dart';
 import 'package:flutter_prj/common/http.dart';
-
+import 'global_queryset.dart';
 
 class GrammarPaginationSerializer {
   GrammarPaginationSerializer();
@@ -14,10 +14,12 @@ class GrammarPaginationSerializer {
   String next = '';
   String previous = '';
   List<GrammarSerializer> results = [];
-  GrammarSerializerFilter filter = GrammarSerializerFilter();
+  GrammarFilter filter = GrammarFilter();
+  GlobalQuerySet queryset = GlobalQuerySet();
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(queryset.queries);
     queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/dictionary/grammar/', queries:queries, cache:cache);
     fromJson(res?.data);
@@ -53,7 +55,7 @@ class GrammarPaginationSerializer {
   }
 }
 
-class GrammarSerializerFilter {
+class GrammarFilter {
   String type__icontains;
   String tag__icontains;
   String content__icontains;
@@ -70,4 +72,3 @@ class GrammarSerializerFilter {
     content__icontains = null;
   }
 }
-

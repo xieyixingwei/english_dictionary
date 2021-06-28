@@ -9,7 +9,6 @@ import 'package:dio/dio.dart';
 import 'sentence_pattern.dart';
 import 'package:flutter_prj/common/http.dart';
 
-
 class DistinguishSerializer {
   DistinguishSerializer();
 
@@ -53,7 +52,6 @@ class DistinguishSerializer {
     bool res = _id == null ?
       await create(data:data, queries:queries, cache:cache) :
       await update(data:data, queries:queries, cache:cache);
-
     res = await uploadFile();
     return res;
   }
@@ -107,6 +105,5 @@ class DistinguishSerializer {
     return this;
   }
 }
-
 
 

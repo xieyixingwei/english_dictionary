@@ -8,7 +8,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_prj/common/http.dart';
 
-
 class EtymaSerializer {
   EtymaSerializer();
 
@@ -56,7 +55,6 @@ class EtymaSerializer {
     bool res = _name == null ?
       await create(data:data, queries:queries, cache:cache) :
       await update(data:data, queries:queries, cache:cache);
-
     res = await uploadFile();
     return res;
   }
@@ -103,6 +101,5 @@ class EtymaSerializer {
     return this;
   }
 }
-
 
 

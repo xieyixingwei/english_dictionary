@@ -5,7 +5,6 @@
 
 import 'package:flutter_prj/common/http.dart';
 
-
 class StudyPlanSerializer {
   StudyPlanSerializer();
 
@@ -55,7 +54,6 @@ class StudyPlanSerializer {
       await create(data:data, queries:queries, cache:cache) :
       await update(data:data, queries:queries, cache:cache);
 
-    
     return res;
   }
 
@@ -120,6 +118,5 @@ class StudyPlanSerializer {
     return this;
   }
 }
-
 
 

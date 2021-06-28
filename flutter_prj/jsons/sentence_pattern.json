@@ -1,12 +1,12 @@
-{ // 词义辨析
+{ // 固定表达
     "id @pk": "num=null",
     "content": "",
-    "image": "$SingleFile image", 
-    "vedio": "$SingleFile video",
-    "wordsForeign @fk_mm": ["$word"], // 相关单词列表
-    "sentencePatternForeign @fk_mm @nested": ["$sentence_pattern"],
+    "wordForeign @fk_mo": "$word",
+    "_paraphraseSet @fk_slave  @save": ["$paraphrase"],
+    "_studySentencePatternSet @fk_slave": ["$study_sentence_pattern"],
+    "__offstage": true,
     "__http__": {
-        "url": "/api/dictionary/distinguish/",
+        "url": "/api/dictionary/sentence_pattern/",
         "methods": [
             {
                 "name": "create"
@@ -30,23 +30,21 @@
     }
 }
 
-
-{ // 词义辨析分页查询
-    "__name__": "distinguish_pagination",
+{ // 分页查询 固定表达
+    "__name__": "sentence_pattern_pagination",
     "count": 0,
     "next": "",
     "previous": "",
-    "results": ["$distinguish"],
+    "results": ["$sentence_pattern"],
     "__queryset__": {
         "__name__": "global"
     },
     "__filter__": {
-        "__serializer__": "$distinguish",
-        "wordsForeign": ["icontains"],
+        "__serializer__": "$sentence_pattern",
         "content": ["icontains"]
     },
     "__http__": {
-        "url": "/api/dictionary/distinguish/",
+        "url": "/api/dictionary/sentence_pattern/",
         "methods": [
             {
                 "name": "retrieve",

@@ -7,7 +7,6 @@ import 'paraphrase.dart';
 import 'study_sentence_pattern.dart';
 import 'package:flutter_prj/common/http.dart';
 
-
 class SentencePatternSerializer {
   SentencePatternSerializer();
 
@@ -52,12 +51,9 @@ class SentencePatternSerializer {
     bool res = _id == null ?
       await create(data:data, queries:queries, cache:cache) :
       await update(data:data, queries:queries, cache:cache);
-
     if(res) {
       await Future.forEach(paraphraseSet, (e) async {e.sentencePatternForeign = id; await e.save();});
-      await Future.forEach(studySentencePatternSet, (e) async { await e.save();});
     }
-    
     return res;
   }
 
@@ -96,6 +92,5 @@ class SentencePatternSerializer {
     return this;
   }
 }
-
 
 

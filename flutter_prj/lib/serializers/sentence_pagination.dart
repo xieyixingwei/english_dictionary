@@ -5,7 +5,7 @@
 
 import 'sentence.dart';
 import 'package:flutter_prj/common/http.dart';
-
+import 'global_queryset.dart';
 
 class SentencePaginationSerializer {
   SentencePaginationSerializer();
@@ -14,10 +14,12 @@ class SentencePaginationSerializer {
   String next = '';
   String previous = '';
   List<SentenceSerializer> results = [];
-  SentenceSerializerFilter filter = SentenceSerializerFilter();
+  SentenceFilter filter = SentenceFilter();
+  GlobalQuerySet queryset = GlobalQuerySet();
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(queryset.queries);
     queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/dictionary/sentence/', queries:queries, cache:cache);
     fromJson(res?.data);
@@ -53,7 +55,7 @@ class SentencePaginationSerializer {
   }
 }
 
-class SentenceSerializerFilter {
+class SentenceFilter {
   String en__icontains;
   String cn__icontains;
   num type;
@@ -79,4 +81,3 @@ class SentenceSerializerFilter {
     pattern__icontains = null;
   }
 }
-

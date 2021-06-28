@@ -13,13 +13,11 @@ class ListGrammers extends StatefulWidget {
 }
 
 class _ListGrammersState extends State<ListGrammers> {
-  GrammarPaginationSerializer _grammars = GrammarPaginationSerializer();
+  GrammarPaginationSerializer _grammarPagen = GrammarPaginationSerializer();
   static final List<String> typeOptions = ["类型"] + Global.grammarTypeOptions;
   static final List<String> tagOptions = ["Tag"] + Global.grammarTagOptions;
   List<String> ddBtnValues = [typeOptions.first, tagOptions.first];
   final textStyle = const TextStyle(fontSize: 12, color: Colors.black45);
-  num _perPage = 10;
-  num _pageIndex = 1;
 
   @override
   void initState() { 
@@ -28,7 +26,7 @@ class _ListGrammersState extends State<ListGrammers> {
   }
 
   _init() async {
-    await _grammars.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+    await _grammarPagen.retrieve();
     setState((){});
   }
 
@@ -65,7 +63,7 @@ class _ListGrammersState extends State<ListGrammers> {
           items: typeOptions.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle), value: e,)).toList(),
           onChanged: (v) {
             setState(() => ddBtnValues[0] = v);
-            _grammars.filter.type__icontains = v != typeOptions.first ? v : null;
+            _grammarPagen.filter.type__icontains = v != typeOptions.first ? v : null;
           },
           underline: Divider(height:1, thickness: 1),
         ),
@@ -75,7 +73,7 @@ class _ListGrammersState extends State<ListGrammers> {
           items: tagOptions.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle), value: e,)).toList(),
           onChanged: (v) {
             setState(() => ddBtnValues[1] = v);
-            _grammars.filter.tag__icontains = v != tagOptions.first ? v : null;
+            _grammarPagen.filter.tag__icontains = v != tagOptions.first ? v : null;
           },
           underline: Divider(height:1, thickness: 1),
         ),
@@ -84,8 +82,8 @@ class _ListGrammersState extends State<ListGrammers> {
           onPressed: () async {
             var g = (await Navigator.pushNamed(context, '/edit_grammar', arguments:{'title':'添加语法'})) as GrammarSerializer;
             if(g != null) {
-              var find = _grammars.results.where((e) => e.id == g.id);
-              if(find.isEmpty) _grammars.results.add(g);
+              var find = _grammarPagen.results.where((e) => e.id == g.id);
+              if(find.isEmpty) _grammarPagen.results.add(g);
               else find.first.from(g);
               await g.save();
             }
@@ -101,7 +99,7 @@ class _ListGrammersState extends State<ListGrammers> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextField(
-            onChanged: (val) => _grammars.filter.content__icontains = val.trim().length == 0 ? null : val.trim(),
+            onChanged: (val) => _grammarPagen.filter.content__icontains = val.trim().length == 0 ? null : val.trim(),
             decoration: InputDecoration(
               labelText: '关键字',
               border: OutlineInputBorder(),
@@ -110,7 +108,7 @@ class _ListGrammersState extends State<ListGrammers> {
                 tooltip: '搜索',
                 icon: Icon(Icons.search),
                 onPressed: () async {
-                  bool ret = await _grammars.retrieve(queries:{'page_size': _perPage, 'page_index':_pageIndex});
+                  bool ret = await _grammarPagen.retrieve();
                   if(ret) setState((){});
                 },
               ),
@@ -126,22 +124,22 @@ class _ListGrammersState extends State<ListGrammers> {
     Container(
       padding: EdgeInsets.only(top: 20),
       child: Pagination(
-        pages: (_grammars.count / _perPage).ceil(),
-        curPage: _pageIndex,
+        pages: (_grammarPagen.count / _grammarPagen.queryset.page_size).ceil(),
+        curPage: _grammarPagen.queryset.page_index,
         goto: (num index) async {
-          _pageIndex = index;
-          bool ret = await _grammars.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+          _grammarPagen.queryset.page_index = index;
+          bool ret = await _grammarPagen.retrieve();
           if(ret) setState((){});
         },
-        perPage: _perPage,
+        perPage: _grammarPagen.queryset.page_size,
         perPageSet: [10, 20, 30, 50],
         perPageChange: (v) async {
-          _pageIndex = 1;
-          _perPage = v;
-          bool ret = await _grammars.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+          _grammarPagen.queryset.page_index = 1;
+          _grammarPagen.queryset.page_size = v;
+          bool ret = await _grammarPagen.retrieve();
           if(ret) setState((){});
         },
-        rows: _grammars.results.map<Widget>((e) => 
+        rows: _grammarPagen.results.map<Widget>((e) => 
           grammarItem(
             context: context,
             grammar: e,
@@ -156,7 +154,7 @@ class _ListGrammersState extends State<ListGrammers> {
               },
               delete: () {
                 e.delete();
-                _grammars.results.remove(e);
+                _grammarPagen.results.remove(e);
                 setState(() {});
               },
             ),

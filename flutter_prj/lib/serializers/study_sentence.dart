@@ -7,7 +7,7 @@ import 'sentence.dart';
 import 'word.dart';
 import 'sentence_pattern.dart';
 import 'package:flutter_prj/common/http.dart';
-
+import 'global_queryset.dart';
 
 class StudySentenceSerializer {
   StudySentenceSerializer();
@@ -26,8 +26,8 @@ class StudySentenceSerializer {
   List<WordSerializer> newWords = [];
   List<SentencePatternSerializer> newSentencePatterns = [];
   bool hideNewWords = true;
-  StudySentenceSerializerFilter filter = StudySentenceSerializerFilter();
-  StudySentenceSerializerQuerySet queryset = StudySentenceSerializerQuerySet();
+  StudySentenceFilter filter = StudySentenceFilter();
+  GlobalQuerySet queryset = GlobalQuerySet();
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/study/sentence/', data:data ?? toJson(), queries:queries, cache:cache);
@@ -73,7 +73,6 @@ class StudySentenceSerializer {
       await create(data:data, queries:queries, cache:cache) :
       await update(data:data, queries:queries, cache:cache);
 
-    
     return res;
   }
 
@@ -141,7 +140,7 @@ class StudySentenceSerializer {
   }
 }
 
-class StudySentenceSerializerFilter {
+class StudySentenceFilter {
   num foreignUser;
   num sentence;
   String categories__icontains;
@@ -165,22 +164,5 @@ class StudySentenceSerializerFilter {
     familiarity__lte = null;
     familiarity__gte = null;
     inplan = null;
-  }
-}
-class StudySentenceSerializerQuerySet {
-  num pageSize = 10;
-  num pageIndex = 1;
-  String ordering = null;
-
-  Map<String, dynamic> get queries => <String, dynamic>{
-    'pageSize': pageSize,
-    'pageIndex': pageIndex,
-    'ordering': ordering,
-  }..removeWhere((String key, dynamic value) => value == null);
-
-  void clear() {
-    pageSize = null;
-    pageIndex = null;
-    ordering = null;
   }
 }

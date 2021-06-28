@@ -24,8 +24,8 @@ class _ListFavoriteWordPageState extends State<ListFavoriteWordPage> {
   void _init() async {
     _studyWords.filter.foreignUser = Global.localStore.user.id;
     _studyWords.filter.categories__icontains = widget.category;
-    _studyWords.queryset.pageSize = 10;
-    _studyWords.queryset.pageIndex = 1;
+    _studyWords.queryset.page_size = 10;
+    _studyWords.queryset.page_index = 1;
     await _studyWords.retrieve();
     setState(() {});
   }
@@ -52,18 +52,18 @@ class _ListFavoriteWordPageState extends State<ListFavoriteWordPage> {
     Container(
       padding: EdgeInsets.only(top: 10),
       child: Pagination(
-        pages: (_studyWords.count / _studyWords.queryset.pageSize).ceil(),
-        curPage: _studyWords.queryset.pageIndex,
+        pages: (_studyWords.count / _studyWords.queryset.page_size).ceil(),
+        curPage: _studyWords.queryset.page_index,
         goto: (num index) async {
-          _studyWords.queryset.pageIndex = index;
+          _studyWords.queryset.page_index = index;
           bool ret = await _studyWords.retrieve();
           if(ret) setState((){});
         },
-        perPage: _studyWords.queryset.pageSize,
+        perPage: _studyWords.queryset.page_size,
         perPageSet: [10, 20, 30, 50],
         perPageChange: (v) async {
-          _studyWords.queryset.pageIndex = 1;
-          _studyWords.queryset.pageSize = v;
+          _studyWords.queryset.page_index = 1;
+          _studyWords.queryset.page_size = v;
           bool ret = await _studyWords.retrieve();
           if(ret) setState((){});
         },

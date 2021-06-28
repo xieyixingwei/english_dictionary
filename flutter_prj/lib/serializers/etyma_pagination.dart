@@ -5,7 +5,7 @@
 
 import 'etyma.dart';
 import 'package:flutter_prj/common/http.dart';
-
+import 'global_queryset.dart';
 
 class EtymaPaginationSerializer {
   EtymaPaginationSerializer();
@@ -14,10 +14,12 @@ class EtymaPaginationSerializer {
   String next = '';
   String previous = '';
   List<EtymaSerializer> results = [];
-  EtymaSerializerFilter filter = EtymaSerializerFilter();
+  EtymaFilter filter = EtymaFilter();
+  GlobalQuerySet queryset = GlobalQuerySet();
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(queryset.queries);
     queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/dictionary/etyma/', queries:queries, cache:cache);
     fromJson(res?.data);
@@ -53,7 +55,7 @@ class EtymaPaginationSerializer {
   }
 }
 
-class EtymaSerializerFilter {
+class EtymaFilter {
   String name;
   String name__icontains;
   num type;
@@ -70,4 +72,3 @@ class EtymaSerializerFilter {
     type = null;
   }
 }
-

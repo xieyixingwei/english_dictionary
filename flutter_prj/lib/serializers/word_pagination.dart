@@ -5,7 +5,7 @@
 
 import 'word.dart';
 import 'package:flutter_prj/common/http.dart';
-
+import 'global_queryset.dart';
 
 class WordPaginationSerializer {
   WordPaginationSerializer();
@@ -14,10 +14,12 @@ class WordPaginationSerializer {
   String next = '';
   String previous = '';
   List<WordSerializer> results = [];
-  WordSerializerFilter filter = WordSerializerFilter();
+  WordFilter filter = WordFilter();
+  GlobalQuerySet queryset = GlobalQuerySet();
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(queryset.queries);
     queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/dictionary/word/', queries:queries, cache:cache);
     fromJson(res?.data);
@@ -53,7 +55,7 @@ class WordPaginationSerializer {
   }
 }
 
-class WordSerializerFilter {
+class WordFilter {
   String name;
   String name__icontains;
   String tag__icontains;
@@ -73,4 +75,3 @@ class WordSerializerFilter {
     etyma__icontains = null;
   }
 }
-

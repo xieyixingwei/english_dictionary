@@ -5,7 +5,7 @@
 
 import 'study_word.dart';
 import 'package:flutter_prj/common/http.dart';
-
+import 'global_queryset.dart';
 
 class StudyWordPaginationSerializer {
   StudyWordPaginationSerializer();
@@ -14,8 +14,8 @@ class StudyWordPaginationSerializer {
   String next = '';
   String previous = '';
   List<StudyWordSerializer> results = [];
-  StudyWordSerializerFilter filter = StudyWordSerializerFilter();
-  StudyWordPaginationSerializerQuerySet queryset = StudyWordPaginationSerializerQuerySet();
+  StudyWordFilter filter = StudyWordFilter();
+  GlobalQuerySet queryset = GlobalQuerySet();
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     if(queries == null) queries = <String, dynamic>{};
@@ -56,17 +56,3 @@ class StudyWordPaginationSerializer {
 }
 
 
-class StudyWordPaginationSerializerQuerySet {
-  num pageSize = 10;
-  num pageIndex = 1;
-
-  Map<String, dynamic> get queries => <String, dynamic>{
-    'pageSize': pageSize,
-    'pageIndex': pageIndex,
-  }..removeWhere((String key, dynamic value) => value == null);
-
-  void clear() {
-    pageSize = null;
-    pageIndex = null;
-  }
-}

@@ -14,7 +14,7 @@
     "telephone": "",
     "status": "",
     "studyPlan": "$study_plan",
-    "studyGrammarSet @fk_slave": ["$study_grammar"],
+    "studyGrammarSet @fk_slave @save": ["$study_grammar"],
     //"__studyWordSet": ["$study_word"],
     //"studySentenceSet": ["$study_sentence"],
     "__http__": {

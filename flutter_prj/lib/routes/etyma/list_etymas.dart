@@ -13,11 +13,9 @@ class ListEtymas extends StatefulWidget {
 }
 
 class _ListEtymasState extends State<ListEtymas> {
-  EtymaPaginationSerializer _etymas = EtymaPaginationSerializer();
+  EtymaPaginationSerializer _etymaPagen = EtymaPaginationSerializer();
   static final List<String> _typeOptions = ['类型'] + Global.etymaTypeOptions;
   List<String> _selected = [_typeOptions.first];
-  num _perPage = 10;
-  num _pageIndex = 1;
   final textStyle = const TextStyle(fontSize: 12,);
 
   @override
@@ -27,8 +25,8 @@ class _ListEtymasState extends State<ListEtymas> {
   }
 
   _init() async {
-    await _etymas.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
-    setState((){});
+    await _etymaPagen.retrieve();
+    setState(() {});
   }
 
   @override
@@ -64,7 +62,7 @@ class _ListEtymasState extends State<ListEtymas> {
           items: _typeOptions.map((e)=>DropdownMenuItem(child: Text(e, style: textStyle,), value: e,)).toList(),
           onChanged: (v) {
             setState(() => _selected[0] = v);
-            _etymas.filter.type = v != _typeOptions.first ? Global.etymaTypeOptions.indexOf(v) : null;
+            _etymaPagen.filter.type = v != _typeOptions.first ? Global.etymaTypeOptions.indexOf(v) : null;
           },
           underline: Container(width: 0, height:0,),
         ),
@@ -73,7 +71,7 @@ class _ListEtymasState extends State<ListEtymas> {
           onPressed: () async {
             var g = (await Navigator.pushNamed(context, '/edit_etyma', arguments:{'title':'添加词根词缀'})) as EtymaSerializer;
             if(g != null) {
-              _etymas.results.add(g);
+              _etymaPagen.results.add(g);
               Global.etymaOptions.add(g.name);
               await g.save();
             }
@@ -92,7 +90,7 @@ class _ListEtymasState extends State<ListEtymas> {
           TextField(
             maxLines: 1,
             style: TextStyle(fontSize: 14,),
-            onChanged: (v) => _etymas.filter.name__icontains = v.trim().isNotEmpty ? v.trim() : null,
+            onChanged: (v) => _etymaPagen.filter.name__icontains = v.trim().isNotEmpty ? v.trim() : null,
             decoration: InputDecoration(
               hintText: '词根词缀',
               border: OutlineInputBorder(),
@@ -101,7 +99,7 @@ class _ListEtymasState extends State<ListEtymas> {
                 tooltip: '搜索',
                 icon: Icon(Icons.search),
                 onPressed: () async {
-                  await _etymas.retrieve(queries:{"page_size": 10, "page_index":1});
+                  await _etymaPagen.retrieve();
                   setState((){});
                 },
               ),
@@ -116,22 +114,22 @@ class _ListEtymasState extends State<ListEtymas> {
     Container(
       padding: EdgeInsets.only(top: 10),
       child: Pagination(
-        pages: (_etymas.count / _perPage).ceil(),
-        curPage: _pageIndex,
+        pages: (_etymaPagen.count / _etymaPagen.queryset.page_size).ceil(),
+        curPage: _etymaPagen.queryset.page_index,
         goto: (num index) async {
-          _pageIndex = index;
-          bool ret = await _etymas.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+          _etymaPagen.queryset.page_index = index;
+          bool ret = await _etymaPagen.retrieve();
           if(ret) setState((){});
         },
-        perPage: _perPage,
+        perPage: _etymaPagen.queryset.page_size,
         perPageSet: [10, 20, 30, 50],
         perPageChange: (v) async {
-          _pageIndex = 1;
-          _perPage = v;
-          bool ret = await _etymas.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+          _etymaPagen.queryset.page_index = 1;
+          _etymaPagen.queryset.page_size = v;
+          bool ret = await _etymaPagen.retrieve();
           if(ret) setState((){});
         },
-        rows: _etymas.results.map<Widget>((e) => 
+        rows: _etymaPagen.results.map<Widget>((e) => 
           etymaItem(
             context: context,
             etyma: e,
@@ -146,7 +144,7 @@ class _ListEtymasState extends State<ListEtymas> {
               },
               delete: () {
                 e.delete();
-                _etymas.results.remove(e);
+                _etymaPagen.results.remove(e);
                 setState(() {});
               },
             ),

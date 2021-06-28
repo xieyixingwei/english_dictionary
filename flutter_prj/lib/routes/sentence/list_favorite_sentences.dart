@@ -24,8 +24,8 @@ class _ListFavoriteSentencePageState extends State<ListFavoriteSentencePage> {
   void _init() async {
     _studySentences.filter.foreignUser = Global.localStore.user.id;
     _studySentences.filter.categories__icontains = widget.category;
-    _studySentences.queryset.pageSize = 10;
-    _studySentences.queryset.pageIndex = 1;
+    _studySentences.queryset.page_size = 10;
+    _studySentences.queryset.page_index = 1;
     await _studySentences.retrieve();
     setState(() {});
   }
@@ -52,18 +52,18 @@ class _ListFavoriteSentencePageState extends State<ListFavoriteSentencePage> {
     Container(
       padding: EdgeInsets.only(top: 10),
       child: Pagination(
-        pages: (_studySentences.count / _studySentences.queryset.pageSize).ceil(),
-        curPage: _studySentences.queryset.pageIndex,
+        pages: (_studySentences.count / _studySentences.queryset.page_size).ceil(),
+        curPage: _studySentences.queryset.page_index,
         goto: (num index) async {
-          _studySentences.queryset.pageIndex = index;
+          _studySentences.queryset.page_index = index;
           bool ret = await _studySentences.retrieve();
           if(ret) setState((){});
         },
-        perPage: _studySentences.queryset.pageSize,
+        perPage: _studySentences.queryset.page_size,
         perPageSet: [10, 20, 30, 50],
         perPageChange: (v) async {
-          _studySentences.queryset.pageIndex = 1;
-          _studySentences.queryset.pageSize = v;
+          _studySentences.queryset.page_index = 1;
+          _studySentences.queryset.page_size = v;
           bool ret = await _studySentences.retrieve();
           if(ret) setState((){});
         },

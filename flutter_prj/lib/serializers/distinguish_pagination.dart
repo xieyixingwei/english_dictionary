@@ -5,7 +5,7 @@
 
 import 'distinguish.dart';
 import 'package:flutter_prj/common/http.dart';
-
+import 'global_queryset.dart';
 
 class DistinguishPaginationSerializer {
   DistinguishPaginationSerializer();
@@ -14,10 +14,12 @@ class DistinguishPaginationSerializer {
   String next = '';
   String previous = '';
   List<DistinguishSerializer> results = [];
-  DistinguishSerializerFilter filter = DistinguishSerializerFilter();
+  DistinguishFilter filter = DistinguishFilter();
+  GlobalQuerySet queryset = GlobalQuerySet();
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(queryset.queries);
     queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/dictionary/distinguish/', queries:queries, cache:cache);
     fromJson(res?.data);
@@ -53,7 +55,7 @@ class DistinguishPaginationSerializer {
   }
 }
 
-class DistinguishSerializerFilter {
+class DistinguishFilter {
   String wordsForeign__icontains;
   String content__icontains;
 
@@ -67,4 +69,3 @@ class DistinguishSerializerFilter {
     content__icontains = null;
   }
 }
-

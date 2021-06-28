@@ -4,7 +4,7 @@
     "tag": [""],
     "vedio": "$SingleFile video",
     "dialogSentences": [0],
-    "_sentenceSet @fk_slave": ["$sentence"],
+    "_sentenceSet @fk_slave  @save": ["$sentence"],
     "__http__": {
         "url": "/api/dictionary/dialog/",
         "methods": [
@@ -36,6 +36,9 @@
     "next": "",
     "previous": "",
     "results": ["$dialog"],
+    "__queryset__": {
+        "__name__": "global"
+    },
     "__filter__": {
         "__serializer__": "$dialog",
         "tag": ["icontains"],

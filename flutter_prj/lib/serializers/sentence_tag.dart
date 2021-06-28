@@ -5,7 +5,6 @@
 
 import 'package:flutter_prj/common/http.dart';
 
-
 class SentenceTagSerializer {
   SentenceTagSerializer();
 
@@ -52,6 +51,5 @@ class SentenceTagSerializer {
     return this;
   }
 }
-
 
 

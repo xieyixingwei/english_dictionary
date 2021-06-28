@@ -5,7 +5,6 @@
 
 import 'package:flutter_prj/common/http.dart';
 
-
 class WordTagSerializer {
   WordTagSerializer();
 
@@ -52,6 +51,5 @@ class WordTagSerializer {
     return this;
   }
 }
-
 
 

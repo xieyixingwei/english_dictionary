@@ -39,6 +39,9 @@
     "next": "",
     "previous": "",
     "results": ["$grammar"],
+    "__queryset__": {
+        "__name__": "global"
+    },
     "__filter__": {
         "__serializer__": "$grammar",
         "type": ["icontains"],

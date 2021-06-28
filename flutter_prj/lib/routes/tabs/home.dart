@@ -15,11 +15,11 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final _style1 = TextStyle(fontSize: 17, color: Colors.blueAccent);
   String _target = '';
-  final words = WordPaginationSerializer();
-  final distinguishes = DistinguishPaginationSerializer();
-  final sentencePatterns = SentencePatternPaginationSerializer();
-  final sentences = SentencePaginationSerializer();
-  final paraphrases = ParaphrasePaginationSerializer();
+  final wordPagen = WordPaginationSerializer();
+  final distinguishPagen = DistinguishPaginationSerializer();
+  final sentencePatternPagen = SentencePatternPaginationSerializer();
+  final sentencePagen = SentencePaginationSerializer();
+  final paraphrasePagen = ParaphrasePaginationSerializer();
 
   @override
   Widget build(BuildContext context) =>
@@ -65,35 +65,43 @@ class _HomeState extends State<Home> {
             if(_target.isEmpty) return;
             _clear();
             if(strType(_target) == StringType.english) {
-              words.filter.name__icontains = _target;
-              await words.retrieve(queries:{'page_size': 20, 'page_index': 1});
+              wordPagen.filter.name__icontains = _target;
+              wordPagen.queryset.page_size = 20;
+              await wordPagen.retrieve();
+
               //distinguishes.filter.wordsForeign__icontains = _target;
               //await distinguishes.retrieve(queries:{'page_size': 20, 'page_index': 1});
-              sentencePatterns.filter.content__icontains = _target;
-              await sentencePatterns.retrieve(queries:{'page_size': 20, 'page_index': 1});
-              sentences.filter.en__icontains = _target;
-              await sentences.retrieve(queries:{'page_size': 20, 'page_index': 1});
+
+              sentencePatternPagen.filter.content__icontains = _target;
+              sentencePatternPagen.queryset.page_size = 20;
+              await sentencePatternPagen.retrieve();
+
+              sentencePagen.filter.en__icontains = _target;
+              sentencePagen.queryset.page_size = 20;
+              await sentencePagen.retrieve();
             }
             else if(strType(_target) == StringType.chinese) {
-              paraphrases.filter.interpret__icontains = _target;
-              await paraphrases.retrieve(queries:{'page_size': 20, 'page_index': 1});
+              paraphrasePagen.filter.interpret__icontains = _target;
+              paraphrasePagen.queryset.page_size = 20;
+              await paraphrasePagen.retrieve();
 
-              await Future.forEach<ParaphraseSerializer>(paraphrases.results, (e) async {
+              await Future.forEach<ParaphraseSerializer>(paraphrasePagen.results, (e) async {
                 if(e.wordForeign != null && e.wordForeign.isNotEmpty
-                  && (null == words.results.firstWhere((r) => r.name == e.wordForeign, orElse: ()=>null))) {
+                  && (null == wordPagen.results.firstWhere((r) => r.name == e.wordForeign, orElse: ()=>null))) {
                   var w = WordSerializer()..name = e.wordForeign;
                   await w.retrieve();
-                  words.results.add(w);
+                  wordPagen.results.add(w);
                 }
                 if(e.sentencePatternForeign != null && e.sentencePatternForeign > 0) {
                   var sp = SentencePatternSerializer()..id = e.sentencePatternForeign;
                   await sp.retrieve();
-                  sentencePatterns.results.add(sp);
+                  sentencePatternPagen.results.add(sp);
                 }
               });
 
-              sentences.filter.cn__icontains = _target;
-              await sentences.retrieve(queries:{'page_size': 20, 'page_index': 1});
+              sentencePagen.filter.cn__icontains = _target;
+              sentencePagen.queryset.page_size = 20;
+              await sentencePagen.retrieve(queries:{'page_size': 20, 'page_index': 1});
             }
             setState(() {});
           },
@@ -102,15 +110,15 @@ class _HomeState extends State<Home> {
     );
 
   void _clear() {
-    words.results.clear();
-    distinguishes.results.clear();
-    sentencePatterns.results.clear();
-    sentences.results.clear();
-    paraphrases.results.clear();
+    wordPagen.results.clear();
+    distinguishPagen.results.clear();
+    sentencePatternPagen.results.clear();
+    sentencePagen.results.clear();
+    paraphrasePagen.results.clear();
   }
 
   List<Widget> get _wordResult =>
-    words.results.map<Widget>((e) =>
+    wordPagen.results.map<Widget>((e) =>
       InkWell(
         child: Text(e.name, style: _style1,),
         onTap: () => Navigator.pushNamed(context, '/show_word', arguments: {'title': '', 'word': e}),
@@ -118,7 +126,7 @@ class _HomeState extends State<Home> {
     ).toList();
 
   List<Widget> get _distinguishResult =>
-    distinguishes.results.map<Widget>((e) =>
+    distinguishPagen.results.map<Widget>((e) =>
       InkWell(
         child: Text('词义辨析: ${e.wordsForeign.join(", ")}', style: _style1,),
         onTap: () => Navigator.pushNamed(context, '/show_distinguish', arguments: {'title': '词义辨析', 'distinguish': e}),
@@ -126,7 +134,7 @@ class _HomeState extends State<Home> {
     ).toList();
   
   List<Widget> get _sentencePatternResult =>
-    sentencePatterns.results.map<Widget>((e) =>
+    sentencePatternPagen.results.map<Widget>((e) =>
       InkWell(
         child: Text(e.content, style: _style1,),
         onTap: () => Navigator.of(context).push(
@@ -139,12 +147,12 @@ class _HomeState extends State<Home> {
   
   List<Widget> get _sentenceResult {
     var excludeIds = [];
-    words.results.forEach((e) =>
+    wordPagen.results.forEach((e) =>
       e.paraphraseSet.forEach((p) {
         excludeIds.addAll(p.sentenceSet.map((s) => s.id).toList());
       })
     );
-    return sentences.results.where((e) => !excludeIds.contains(e.id)).map<Widget>((e) =>
+    return sentencePagen.results.where((e) => !excludeIds.contains(e.id)).map<Widget>((e) =>
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

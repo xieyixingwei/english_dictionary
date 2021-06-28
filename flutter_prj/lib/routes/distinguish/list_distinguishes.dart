@@ -12,9 +12,8 @@ class ListDistinguishes extends StatefulWidget {
 }
 
 class _ListDistinguishesState extends State<ListDistinguishes> {
-  DistinguishPaginationSerializer _distinguishes = DistinguishPaginationSerializer();
-  num _perPage = 10;
-  num _pageIndex = 1;
+  DistinguishPaginationSerializer _distinguishPagen = DistinguishPaginationSerializer();
+
 
   @override
   void initState() { 
@@ -23,7 +22,7 @@ class _ListDistinguishesState extends State<ListDistinguishes> {
   }
 
   _init() async {
-    await _distinguishes.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+    await _distinguishPagen.retrieve();
     setState((){});
   }
 
@@ -58,8 +57,8 @@ Widget _buildFilterOptions(BuildContext context) =>
           onPressed: () async {
             var g = (await Navigator.pushNamed(context, '/edit_distinguish', arguments:{'title':'添加词义辨析'})) as DistinguishSerializer;
             if(g != null) {
-              var find = _distinguishes.results.where((e) => e.id == g.id);
-              if(find.isEmpty) _distinguishes.results.add(g);
+              var find = _distinguishPagen.results.where((e) => e.id == g.id);
+              if(find.isEmpty) _distinguishPagen.results.add(g);
               else find.first.from(g);
               await g.save();
             }
@@ -75,7 +74,7 @@ Widget _buildFilterOptions(BuildContext context) =>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextField(
-            onChanged: (val) => _distinguishes.filter.content__icontains = val.trim().isEmpty ? null : val.trim(),
+            onChanged: (val) => _distinguishPagen.filter.content__icontains = val.trim().isEmpty ? null : val.trim(),
             decoration: InputDecoration(
               labelText: '词义关键字',
               border: OutlineInputBorder(),
@@ -84,7 +83,7 @@ Widget _buildFilterOptions(BuildContext context) =>
                 tooltip: '搜索',
                 icon: Icon(Icons.search),
                 onPressed: () async {
-                  bool ret = await _distinguishes.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+                  bool ret = await _distinguishPagen.retrieve();
                   if(ret) setState((){});
                 },
               ),
@@ -99,22 +98,22 @@ Widget _buildFilterOptions(BuildContext context) =>
     Container(
       padding: EdgeInsets.only(top: 20),
       child: Pagination(
-        pages: (_distinguishes.count / _perPage).ceil(),
-        curPage: _pageIndex,
+        pages: (_distinguishPagen.count / _distinguishPagen.queryset.page_size).ceil(),
+        curPage: _distinguishPagen.queryset.page_index,
         goto: (num index) async {
-          _pageIndex = index;
-          bool ret = await _distinguishes.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+          _distinguishPagen.queryset.page_index = index;
+          bool ret = await _distinguishPagen.retrieve();
           if(ret) setState((){});
         },
-        perPage: _perPage,
+        perPage: _distinguishPagen.queryset.page_size,
         perPageSet: [10, 20, 30, 50],
         perPageChange: (v) async {
-          _pageIndex = 1;
-          _perPage = v;
-          bool ret = await _distinguishes.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+          _distinguishPagen.queryset.page_index = 1;
+          _distinguishPagen.queryset.page_size = v;
+          bool ret = await _distinguishPagen.retrieve();
           if(ret) setState((){});
         },
-        rows: _distinguishes.results.map<Widget>((e) => 
+        rows: _distinguishPagen.results.map<Widget>((e) => 
           distinguishItem(
             context: context,
             distinguish: e,
@@ -129,7 +128,7 @@ Widget _buildFilterOptions(BuildContext context) =>
               },
               delete: () {
                 e.delete();
-                _distinguishes.results.remove(e);
+                _distinguishPagen.results.remove(e);
                 setState(() {});
               },
             ),

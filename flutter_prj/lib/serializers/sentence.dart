@@ -3,11 +3,9 @@
 // JsonSerializer
 // **************************************************************************
 
-import 'sentence.dart';
 import 'grammar.dart';
 import 'study_sentence.dart';
 import 'package:flutter_prj/common/http.dart';
-
 
 class SentenceSerializer {
   SentenceSerializer();
@@ -64,12 +62,9 @@ class SentenceSerializer {
     bool res = _id == null ?
       await create(data:data, queries:queries, cache:cache) :
       await update(data:data, queries:queries, cache:cache);
-
     if(res) {
       await Future.forEach(grammarSet, (e) async {e.sentenceForeign = id; await e.save();});
-      await Future.forEach(studySentenceSet, (e) async { await e.save();});
     }
-    
     return res;
   }
 
@@ -145,6 +140,5 @@ class SentenceSerializer {
     return this;
   }
 }
-
 
 

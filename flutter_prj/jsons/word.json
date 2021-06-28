@@ -15,10 +15,10 @@
     "antonym @fk_mm": ["$word"],// 反义词 [word1,word2,...]
     "image": "$SingleFile image", 
     "vedio": "$SingleFile video",
-    "_paraphraseSet @fk_slave": ["$paraphrase"], // 释义
-    "_sentencePatternSet @fk_slave": ["$sentence_pattern"], // 固定表达
-    "_grammarSet @fk_slave": ["$grammar"], //语法
-    "_distinguishSet @fk_slave": ["$distinguish"], // 词义辨析
+    "_paraphraseSet @fk_slave  @save": ["$paraphrase"], // 释义
+    "_sentencePatternSet @fk_slave  @save": ["$sentence_pattern"], // 固定表达
+    "_grammarSet @fk_slave  @save": ["$grammar"], //语法
+    "_distinguishSet @fk_slave @save": ["$distinguish"], // 词义辨析
     "_studyWordSet @fk_slave": ["$study_word"],
     "__offstage": true,
     "__http__": {
@@ -53,6 +53,9 @@
     "next": "",
     "previous": "",
     "results": ["$word"],
+    "__queryset__": {
+        "__name__": "global"
+    },
     "__filter__": {
         "__serializer__": "$word",
         "name": ["exact","icontains"],
@@ -61,115 +64,6 @@
     },
     "__http__": {
         "url": "/api/dictionary/word/",
-        "methods": [
-            {
-                "name": "retrieve",
-                "filter": true
-            }
-        ]
-    }
-}
-
-
-{ // 固定表达
-    "__name__": "sentence_pattern",
-    "id @pk": "num=null",
-    "content": "",
-    "wordForeign @fk_mo": "$word",
-    "_paraphraseSet @fk_slave": ["$paraphrase"],
-    "_studySentencePatternSet @fk_slave": ["$study_sentence_pattern"],
-    "__offstage": true,
-    "__http__": {
-        "url": "/api/dictionary/sentence_pattern/",
-        "methods": [
-            {
-                "name": "create"
-            },
-            {
-                "name": "update",
-                "url": "$id/"
-            },
-            {
-                "name": "retrieve",
-                "url": "$id/"
-            },
-            {
-                "name": "delete",
-                "url": "$id/"
-            },
-            {
-                "name": "save"
-            }
-        ]
-    }
-}
-
-{ // 分页查询 固定表达
-    "__name__": "sentence_pattern_pagination",
-    "count": 0,
-    "next": "",
-    "previous": "",
-    "results": ["$sentence_pattern"],
-    "__filter__": {
-        "__serializer__": "$sentence_pattern",
-        "content": ["icontains"]
-    },
-    "__http__": {
-        "url": "/api/dictionary/sentence_pattern/",
-        "methods": [
-            {
-                "name": "retrieve",
-                "filter": true
-            }
-        ]
-    }
-}
-
-{ // 释义
-    "__name__": "paraphrase",
-    "id @pk": "num=null",
-    "interpret": "",
-    "partOfSpeech": "",
-    "wordForeign @fk_mo": "$word",
-    "sentencePatternForeign @fk_mo": "$sentence_pattern",
-    "_sentenceSet @fk_slave": ["$sentence"],
-    "__http__": {
-        "url": "/api/dictionary/paraphrase/",
-        "methods": [
-            {
-                "name": "create"
-            },
-            {
-                "name": "update",
-                "url": "$id/"
-            },
-            {
-                "name": "retrieve",
-                "url": "$id/"
-            },
-            {
-                "name": "delete",
-                "url": "$id/"
-            },
-            {
-                "name": "save"
-            }
-        ]
-    }
-}
-
-{ // 分页查询 单词
-    "__name__": "paraphrase_pagination",
-    "count": 0,
-    "next": "",
-    "previous": "",
-    "results": ["$paraphrase"],
-    "__filter__": {
-        "__serializer__": "$paraphrase",
-        "interpret": ["icontains"]
-    },
-    "__http__": {
-        "url": "/api/dictionary/paraphrase/",
         "methods": [
             {
                 "name": "retrieve",
@@ -194,64 +88,6 @@
             {
                 "name": "delete",
                 "url": "$name/"
-            }
-        ]
-    }
-}
-
-
-{  // 词根词缀表
-    "__name__": "etyma",
-    "name @pk": "",
-    "interpretation": "",
-    "type": 0,
-    "image": "$SingleFile image", 
-    "vedio": "$SingleFile video",
-    "__http__": {
-        "url": "/api/dictionary/etyma/",
-        "methods": [
-            {
-                "name": "create"
-            },
-            {
-                "name": "update",
-                "url": "$name/"
-            },
-            {
-                "name": "retrieve",
-                "url": "$name/"
-            },
-            {
-                "name": "delete",
-                "url": "$name/"
-            },
-            {
-                "name": "list"
-            },
-            {
-                "name": "save"
-            }
-        ]
-    }
-}
-
-{ // 分页查询 词根词缀
-    "__name__": "etyma_pagination",
-    "count": 0,
-    "next": "",
-    "previous": "",
-    "results": ["$etyma"],
-    "__filter__": {
-        "__serializer__": "$etyma",
-        "name": ["exact","icontains"],
-        "type": ["exact"]
-    },
-    "__http__": {
-        "url": "/api/dictionary/etyma/",
-        "methods": [
-            {
-                "name": "retrieve",
-                "filter": true
             }
         ]
     }

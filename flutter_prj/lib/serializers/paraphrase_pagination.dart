@@ -5,7 +5,7 @@
 
 import 'paraphrase.dart';
 import 'package:flutter_prj/common/http.dart';
-
+import 'global_queryset.dart';
 
 class ParaphrasePaginationSerializer {
   ParaphrasePaginationSerializer();
@@ -14,10 +14,12 @@ class ParaphrasePaginationSerializer {
   String next = '';
   String previous = '';
   List<ParaphraseSerializer> results = [];
-  ParaphraseSerializerFilter filter = ParaphraseSerializerFilter();
+  ParaphraseFilter filter = ParaphraseFilter();
+  GlobalQuerySet queryset = GlobalQuerySet();
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(queryset.queries);
     queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/dictionary/paraphrase/', queries:queries, cache:cache);
     fromJson(res?.data);
@@ -53,7 +55,7 @@ class ParaphrasePaginationSerializer {
   }
 }
 
-class ParaphraseSerializerFilter {
+class ParaphraseFilter {
   String interpret__icontains;
 
   Map<String, dynamic> get queries => <String, dynamic>{
@@ -64,4 +66,3 @@ class ParaphraseSerializerFilter {
     interpret__icontains = null;
   }
 }
-

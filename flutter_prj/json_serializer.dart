@@ -27,13 +27,15 @@ enum NestedType {
 String _jsonType(JsonType type) =>
   type == JsonType.Map ? 'Map<String, dynamic>' : 'List';
 
-String _serializerType(String name) {
+String _reName(String name) {
   name = name.trim();
   name = name.indexOf('_') > 0
         ? name.split('_').map<String>((String e) => _capitalize(e)).toList().join('')
         : _capitalize(name);
-  return '${name}Serializer';
+  return name;
 }
+
+String _serializerType(String name) => '${_reName(name)}Serializer';
 
 bool _isSerializerType(String type) => type.contains('Serializer');
 
@@ -53,9 +55,9 @@ class Member {
   bool unFromJson = false;
   bool unToJson = false;
   bool isFileType =false;
-  bool unSave = false;
   NestedType nested = NestedType.Non;
   bool slaveForeign = false;
+  bool saveSync = false;
 
   Member(String key, dynamic value, this.fatherSerializer, this.serializeTool, {JsonType jsonType=JsonType.Map}) {
     this.jsonType = jsonType;
@@ -92,9 +94,13 @@ class Member {
       nested = NestedType.WriteRead;
     }
 
+    if(key.contains('@save')) {
+      key = key.replaceAll('@save', '').trim();
+      saveSync = true;
+    }
+
     unToJson = key.trim().startsWith('_');   // the member is not in toJson
     unFromJson = key.trim().startsWith('__'); // the member is not in fromJson
-    unSave = key.trim().startsWith('___'); // don't save in father serializer
     name = _trim(key);
   }
 
@@ -178,7 +184,7 @@ class Member {
   String get importSerializer {
     List<String> import = [];
     if(isForeign && nested == NestedType.Non) return '';
-    if(serializerJsonName != null) import.add('import \'$serializerJsonName.dart\';');
+    if(serializerJsonName != null && fatherSerializer.serializerTypeName != _unListType) import.add('import \'$serializerJsonName.dart\';');
     if(isFileType) import.add(SingleFileType.import);
     return import.join('\n');
   }
@@ -212,7 +218,7 @@ class Member {
     if(isForeign) return null;
     if(typeSerializer.httpMethodsObj == null) return null;
     if(!typeSerializer.httpMethodsObj.hasSave) return null;
-    if(unSave) return null;
+    if(!saveSync) return null;
 
     membersForeignToMeOfTypeSerializer = typeSerializer.members.where((e) => e.isForeign ? e.serializerJsonName == fatherSerializer.jsonName : false).toList();
     membersForeignToMeOfTypeSerializer = membersForeignToMeOfTypeSerializer.where((e) => e.foreign != ForeignType.ManyToMany && e.nested == NestedType.Non).toList();
@@ -346,15 +352,22 @@ class HttpMethods {
 
   String get baseUrl => httpConfig['url'];
   String get httpPackage => httpConfig['http_package'];
-  String get importHttpPackage => httpPackage != null ? '\nimport \'$httpPackage\';\n' : '';
+  String get importHttpPackage => httpPackage != null ? 'import \'$httpPackage\';' : null;
   String get serializerType => fatherSerializer.serializerTypeName;
   bool get hasSave => methodsConfig.indexWhere((e) => e['name'] == 'save') != -1;
   bool get hasUpdate => methodsConfig.indexWhere((e) => e['name'] == 'update') != -1;
   bool get hasDelete => methodsConfig.indexWhere((e) => e['name'] == 'delete') != -1;
-  String get uploadFile => fatherSerializer.hasFileType ? 'res = await uploadFile();' : '';
-
+  String get uploadFile => fatherSerializer.hasFileType ? 'res = await uploadFile();' : null;
+  String get saveSync => fatherSerializer.membersSave.isNotEmpty ? 'if(res) {\n      ${fatherSerializer.membersSave}\n    }' : null;
   HttpMethods(this.fatherSerializer, this.httpConfig) {
     methodsConfig = httpConfig['methods'];
+  }
+
+  String get attach {
+    var array = <String>[saveSync, uploadFile].where((e) => e != null).toList();
+    if(array.isEmpty) return '';
+
+    return '    ' + array.join('\n    ');
   }
 
   List<String> get methods =>
@@ -377,7 +390,6 @@ class HttpMethods {
       String methodName = e['name'];
 
       if(methodName == 'save') {
-        String saveForeign = fatherSerializer.membersSave.isNotEmpty ? '\n    if(res) {\n      ${fatherSerializer.membersSave}\n    }' : '';
         String update = hasUpdate ? 'await update(data:data, queries:queries, cache:cache)' : '';
         String create = 'await create(data:data, queries:queries, cache:cache)';
         return
@@ -386,8 +398,7 @@ class HttpMethods {
     bool res = ${fatherSerializer.primaryMember.hidePrimaryMemberName} == null ?
       $create :
       $update;
-$saveForeign
-    $uploadFile
+$attach
     return res;
   }
 """;
@@ -489,7 +500,7 @@ class Filter {
   String get members => _filters.map((e) => '${type(e.keys.first)} ${e.values.first};').toList().join('\n  ');
   String get _queries => _filters.map((e) => '\'${e.values.first}\': ${e.values.first},').toList().join('\n    ');
   String get clearMembers => _filters.map((e) => '${e.values.first} = null;').toList().join('\n    ');
-  String get filterClassName => '${onSerializer.serializerTypeName}Filter';
+  String get filterClassName => '${_reName(serializerJsonName)}Filter';
 
   String get queries => 
 """Map<String, dynamic> get queries => <String, dynamic>{
@@ -515,18 +526,28 @@ class QuerySet {
   final JsonSerializer fatherSerializer;
   String serializerJsonName;
   List<Member> _members = [];
+  String name;
 
   QuerySet(this.serializerJsonName, this.fatherSerializer, Map<String, dynamic> obj) {
+    if(obj['__name__'] != null) {
+      name = obj['__name__'];
+      obj.remove('__name__');
+    } else {
+      name = serializerJsonName;
+    }
+
     obj.forEach((String key, dynamic value) {
       _members.add(Member(key, value, this.fatherSerializer, this.fatherSerializer.serializeTool));
     });
   }
 
   JsonSerializer get onSerializer => fatherSerializer.serializeTool.serializers.singleWhere((e) => e.jsonName == serializerJsonName, orElse:()=>null);
-  String get querySetClassName => '${onSerializer.serializerTypeName}QuerySet';
+  String get querySetClassName => '${_reName(name)}QuerySet';
+  String get saveFileName => '${name}_queryset';
   String get members => _members.map((e) => '${e.type} ${e.name} = ${e.init};').toList().join('\n  ');
   String get _queries => _members.map((e) => '\'${e.name}\': ${e.name},').toList().join('\n    ');
   String get clearMembers => _members.map((e) => '${e.name} = null;').toList().join('\n    ');
+  String get import => 'import \'$saveFileName.dart\';';
 
   String get queries => 
 """Map<String, dynamic> get queries => <String, dynamic>{
@@ -538,7 +559,7 @@ class QuerySet {
     $clearMembers
   }""";
 
-  String get querySetClass =>
+  String get content =>
 """class $querySetClassName {
   $members
 
@@ -546,6 +567,12 @@ class QuerySet {
 
   $clear
 }""";
+
+  Future save(String distPath) async {
+    if(_members.isEmpty) return;
+    var file = File(path.join(distPath, '$saveFileName.dart'));
+    await file.writeAsString(content);
+  }
 }
 
 class JsonSerializer {
@@ -674,29 +701,36 @@ class JsonSerializer {
   }
 """ : '';
 
-  String get importSerializers => members.map((e) => e.importSerializer).toSet().join('\n');
-  String get importHttpPackage => (httpMethodsObj != null) ? (serializeTool.importHttpPackage ?? httpMethodsObj.importHttpPackage) : '';
-  String get serializerMembers => ([primaryMember?.hidePrimaryMember] + members.map((e) => e.member).toList()).where((e) => e != null).join('\n  ');
+  String get importStr {
+    var array = members.map((e) => e.importSerializer).toSet();
+    if(httpMethodsObj != null) array.add(serializeTool.importHttpPackage ?? httpMethodsObj.importHttpPackage);
+    if(queryset != null) array.add(queryset.import);
+    return array.join('\n');
+  }
+
+  String get memberStr {
+    var array = ([primaryMember?.hidePrimaryMember] + members.map((e) => e.member).toList()).where((e) => e != null).toList();
+    if(filter != null) array.add('${filter.filterClassName} filter = ${filter.filterClassName}();');
+    if(queryset != null) array.add('${queryset.querySetClassName} queryset = ${queryset.querySetClassName}();');
+    return array.join('\n  ');
+  }
+
   String get httpMethods => httpMethodsObj != null ? httpMethodsObj.methods.join('\n') : '';
-  String get filterMember => filter != null ? '\n  ${filter.filterClassName} filter = ${filter.filterClassName}();' : '';
   String get filterClass => filter != null && members.where((e) => e.isSerializerType
                                                   && e.typeSerializer.filter != null
                                                   && e.typeSerializer.filter.filterClassName == filter.filterClassName).isEmpty ? filter.filterClass : '';
-  String get querySetMember => queryset != null ? '\n  ${queryset.querySetClassName} queryset = ${queryset.querySetClassName}();' : '';
-  String get querySetClass => queryset != null ? queryset.querySetClass : '';
-
   String get content =>
 """
 // **************************************************************************
 // GENERATED CODE BY json_serializer.dart - DO NOT MODIFY BY HAND
 // JsonSerializer
 // **************************************************************************
-$importSerializers$importHttpPackage
+$importStr
 
 class $serializerTypeName {
   $serializerTypeName();
 
-  $serializerMembers$filterMember$querySetMember
+  $memberStr
 
 $httpMethods
 $fromJson
@@ -708,13 +742,12 @@ $from
 }
 
 $filterClass
-$querySetClass
 """;
 
   Future save(String distPath) async {
-    if(members.where((e) => e.isFileType).isNotEmpty) {
-      await SingleFileType().save(distPath);
-    }
+    if(members.where((e) => e.isFileType).isNotEmpty) await SingleFileType().save(distPath);
+    if(queryset != null) await queryset.save(distPath);
+
     await File(path.join(distPath, '$jsonName.dart')).writeAsString(content);
   }
 }
@@ -799,7 +832,7 @@ class JsonSerializeTool {
       return;
     }
 
-    importHttpPackage = obj['http_package'] != null ? '\nimport \'${obj['http_package']}\';\n' : null;
+    importHttpPackage = obj['http_package'] != null ? 'import \'${obj['http_package']}\';' : null;
   }
 
   void run(List<String> args) async {

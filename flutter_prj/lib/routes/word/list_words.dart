@@ -13,12 +13,10 @@ class ListWords extends StatefulWidget {
 }
 
 class _ListWordsState extends State<ListWords> {
-  WordPaginationSerializer _words = WordPaginationSerializer();
+  WordPaginationSerializer _wordPagen = WordPaginationSerializer();
   static final List<String> _tagOptions = ['Tag'] + Global.wordTagOptions;
   static final List<String> _etymaOptions = ['词根'] + Global.etymaOptions;
   List<String> _ddBtnValues = [_tagOptions.first, _etymaOptions.first];
-  num _perPage = 10;
-  num _pageIndex = 1;
   static const _textStyle = const TextStyle(fontSize: 12,);
 
   @override
@@ -28,7 +26,7 @@ class _ListWordsState extends State<ListWords> {
   }
 
   void retrieve() async {
-    await _words.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+    await _wordPagen.retrieve();
     setState((){});
   }
 
@@ -64,7 +62,7 @@ class _ListWordsState extends State<ListWords> {
           hint: Text('Tag', style: TextStyle(fontSize: 12, color: Color.fromRGBO(132,132,132,1.0))),
           value: _ddBtnValues[0],
           items: _tagOptions.map((e)=>DropdownMenuItem(child: Text(e, style: _textStyle,), value: e,)).toList(),
-          onChanged: (v) {setState(() => _ddBtnValues[0] = v); _words.filter.tag__icontains = v != _tagOptions.first ? v : null;},
+          onChanged: (v) {setState(() => _ddBtnValues[0] = v); _wordPagen.filter.tag__icontains = v != _tagOptions.first ? v : null;},
           underline: Divider(height:1, thickness: 1),
         ),
         DropdownButton(
@@ -72,7 +70,7 @@ class _ListWordsState extends State<ListWords> {
           hint: Text('词根', style: TextStyle(fontSize: 12, color: Color.fromRGBO(132,132,132,1.0))),
           value: _ddBtnValues[1],
           items: _etymaOptions.map((e)=>DropdownMenuItem(child: Text(e, style: _textStyle,), value: e,)).toList(),
-          onChanged: (v) {setState(() => _ddBtnValues[1] = v); _words.filter.etyma__icontains = v != _etymaOptions.first ? v : null;},
+          onChanged: (v) {setState(() => _ddBtnValues[1] = v); _wordPagen.filter.etyma__icontains = v != _etymaOptions.first ? v : null;},
           underline: Divider(height:1, thickness: 1),
         ),
         TextButton(
@@ -82,7 +80,7 @@ class _ListWordsState extends State<ListWords> {
             if(word != null && word.name.isNotEmpty) {
               var ret = await word.save();
               if(ret)
-                _words.results.add(word);
+                _wordPagen.results.add(word);
             }
             setState((){});
           },
@@ -97,7 +95,7 @@ class _ListWordsState extends State<ListWords> {
       children: [
         TextField(
           style: TextStyle(fontSize: 14,),
-          onChanged: (v) => _words.filter.name = v.trim().isEmpty ? null : v.trim(),
+          onChanged: (v) => _wordPagen.filter.name = v.trim().isEmpty ? null : v.trim(),
           decoration: InputDecoration(
             isDense: true,
             contentPadding: EdgeInsets.only(left: 6, right: 6),
@@ -108,7 +106,7 @@ class _ListWordsState extends State<ListWords> {
               tooltip: '搜索',
               icon: Icon(Icons.search),
               onPressed: () async {
-                bool ret = await _words.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+                bool ret = await _wordPagen.retrieve();
                 if(ret) setState((){});
               },
             ),
@@ -123,22 +121,22 @@ class _ListWordsState extends State<ListWords> {
     Container(
       padding: EdgeInsets.only(top: 10),
       child: Pagination(
-        pages: (_words.count / _perPage).ceil(),
-        curPage: _pageIndex,
+        pages: (_wordPagen.count / _wordPagen.queryset.page_size).ceil(),
+        curPage: _wordPagen.queryset.page_index,
         goto: (num index) async {
-          _pageIndex = index;
-          bool ret = await _words.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+          _wordPagen.queryset.page_index = index;
+          bool ret = await _wordPagen.retrieve();
           if(ret) setState((){});
         },
-        perPage: _perPage,
+        perPage: _wordPagen.queryset.page_size,
         perPageSet: [10, 20, 30, 50],
         perPageChange: (v) async {
-          _pageIndex = 1;
-          _perPage = v;
-          bool ret = await _words.retrieve(queries:{'page_size':_perPage, 'page_index':_pageIndex});
+          _wordPagen.queryset.page_index = 1;
+          _wordPagen.queryset.page_size = v;
+          bool ret = await _wordPagen.retrieve();
           if(ret) setState((){});
         },
-        rows: _words.results.map<Widget>((e) => 
+        rows: _wordPagen.results.map<Widget>((e) => 
           wordItem(
             context: context,
             word: e,
@@ -189,7 +187,7 @@ class _ListWordsState extends State<ListWords> {
                   },
                   delete: () {
                     e.delete();
-                    _words.results.remove(e);
+                    _wordPagen.results.remove(e);
                     setState(() {});
                   },
                 ),

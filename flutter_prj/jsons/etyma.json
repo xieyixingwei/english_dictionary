@@ -1,27 +1,32 @@
-{ // 词义辨析
-    "id @pk": "num=null",
-    "content": "",
+
+
+{  // 词根词缀表
+    "__name__": "etyma",
+    "name @pk": "",
+    "interpretation": "",
+    "type": 0,
     "image": "$SingleFile image", 
     "vedio": "$SingleFile video",
-    "wordsForeign @fk_mm": ["$word"], // 相关单词列表
-    "sentencePatternForeign @fk_mm @nested": ["$sentence_pattern"],
     "__http__": {
-        "url": "/api/dictionary/distinguish/",
+        "url": "/api/dictionary/etyma/",
         "methods": [
             {
                 "name": "create"
             },
             {
                 "name": "update",
-                "url": "$id/"
+                "url": "$name/"
             },
             {
                 "name": "retrieve",
-                "url": "$id/"
+                "url": "$name/"
             },
             {
                 "name": "delete",
-                "url": "$id/"
+                "url": "$name/"
+            },
+            {
+                "name": "list"
             },
             {
                 "name": "save"
@@ -30,23 +35,22 @@
     }
 }
 
-
-{ // 词义辨析分页查询
-    "__name__": "distinguish_pagination",
+{ // 分页查询 词根词缀
+    "__name__": "etyma_pagination",
     "count": 0,
     "next": "",
     "previous": "",
-    "results": ["$distinguish"],
+    "results": ["$etyma"],
     "__queryset__": {
         "__name__": "global"
     },
     "__filter__": {
-        "__serializer__": "$distinguish",
-        "wordsForeign": ["icontains"],
-        "content": ["icontains"]
+        "__serializer__": "$etyma",
+        "name": ["exact","icontains"],
+        "type": ["exact"]
     },
     "__http__": {
-        "url": "/api/dictionary/distinguish/",
+        "url": "/api/dictionary/etyma/",
         "methods": [
             {
                 "name": "retrieve",
