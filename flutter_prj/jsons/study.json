@@ -99,6 +99,8 @@
         "sentence": ["exact"],
         "categories": ["icontains"],
         "familiarity": ["lte", "gte"],
+        "repeats": ["lte", "gte"],
+        "learnRecord": ["icontains"],
         "inplan": ["exact"]
     },
     "__http__": {
@@ -169,12 +171,17 @@
     "isFavorite": false,
     "comments": "",
     "repeats": 0,
+    "__queryset__": {
+        "__name__": "global"
+    },
     "__filter__": {
         "__serializer__": "$study_word",
         "foreignUser": ["exact"],
         "word": ["exact"],
         "categories": ["icontains"],
         "familiarity": ["lte", "gte"],
+        "repeats": ["lte", "gte"],
+        "learnRecord": ["icontains"],
         "inplan": ["exact"]
     },
     "__http__": {

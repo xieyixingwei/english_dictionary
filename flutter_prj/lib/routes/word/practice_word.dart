@@ -250,6 +250,11 @@ class _PracticeWordState extends State<PracticeWord> {
     );
 
   void _next() {
+    var dt = DateTime.now().toLocal().toString().substring(0, 10);
+    if(!_curStudyWord.learnRecord.contains(dt)) _curStudyWord.learnRecord.insert(0, dt);
+    if(_curStudyWord.learnRecord.length > 7) _curStudyWord.learnRecord.removeRange(7, _curStudyWord.learnRecord.length);
+    _curStudyWord.repeats++;
+    _curStudyWord.save();
     textCtrl.text = '';
     if(cycle && (index == widget.studyWords.length - 1)) index = 0;
     else if(index < (widget.studyWords.length - 1)) index += 1;

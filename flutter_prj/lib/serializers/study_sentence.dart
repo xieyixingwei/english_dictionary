@@ -146,6 +146,9 @@ class StudySentenceFilter {
   String categories__icontains;
   num familiarity__lte;
   num familiarity__gte;
+  num repeats__lte;
+  num repeats__gte;
+  String learnRecord__icontains;
   bool inplan;
 
   Map<String, dynamic> get queries => <String, dynamic>{
@@ -154,6 +157,9 @@ class StudySentenceFilter {
     'categories__icontains': categories__icontains,
     'familiarity__lte': familiarity__lte,
     'familiarity__gte': familiarity__gte,
+    'repeats__lte': repeats__lte,
+    'repeats__gte': repeats__gte,
+    'learnRecord__icontains': learnRecord__icontains,
     'inplan': inplan,
   }..removeWhere((String key, dynamic value) => value == null);
 
@@ -163,6 +169,9 @@ class StudySentenceFilter {
     categories__icontains = null;
     familiarity__lte = null;
     familiarity__gte = null;
+    repeats__lte = null;
+    repeats__gte = null;
+    learnRecord__icontains = null;
     inplan = null;
   }
 }

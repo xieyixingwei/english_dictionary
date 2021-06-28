@@ -95,6 +95,11 @@ class _PracticeSentenceState extends State<PracticeSentence> {
     );
 
   _next() {
+    var dt = DateTime.now().toLocal().toString().substring(0, 10);
+    if(!_curStudySentence.learnRecord.contains(dt)) _curStudySentence.learnRecord.insert(0, dt);
+    if(_curStudySentence.learnRecord.length > 7) _curStudySentence.learnRecord.removeRange(7, _curStudySentence.learnRecord.length);
+    _curStudySentence.repeats++;
+    _curStudySentence.save();
     if(index < (widget.studySentences.length - 1)) index += 1;
     else if(_actionValue('循环')) index = 0;
     _textCtrl.text = '';

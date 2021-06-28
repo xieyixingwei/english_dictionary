@@ -3,7 +3,7 @@ import 'package:flutter_prj/common/global.dart';
 import 'package:flutter_prj/routes/common/practice_item_card.dart';
 import 'package:flutter_prj/routes/sentence/sentence_practice.dart';
 import 'package:flutter_prj/routes/tabs/practice/sentence_pattern_practice.dart';
-import 'package:flutter_prj/routes/tabs/practice/word_practice.dart';
+import 'package:flutter_prj/routes/word/word_practice.dart';
 import 'package:flutter_prj/serializers/index.dart';
 
 
@@ -35,32 +35,39 @@ class _TabPractice extends State<TabPractice> {
             children: [
               practiceItemCard(context, '单词', null, () async {
                 if(Global.localStore.user.studyPlan.wordCategories.isEmpty) return;
-                var studyWord = StudyWordSerializer();
-                studyWord.filter..foreignUser = Global.localStore.user.id
+                var studyWordPagen = StudyWordPaginationSerializer();
+                studyWordPagen.filter..foreignUser = Global.localStore.user.id
                                           ..familiarity__lte = 4
                                           ..inplan = true;
-                var studyWords = await studyWord.list();
+                var categories = Map<String, num>();
+                await Future.forEach(Global.localStore.user.studyPlan.wordCategories, (c) async {
+                  studyWordPagen.filter.categories__icontains = c;
+                  var ret = await studyWordPagen.retrieve();
+                  if(ret) categories[c] = studyWordPagen.count;
+                });
+                var reviewCount = await reviewWordCount();
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => WordPracticePage(studyWords: studyWords),
+                    builder: (context) => WordPracticePage(categories: categories, reviewCount: reviewCount),
                   )
                 );
               }),
               practiceItemCard(context, '句子', null, () async {
                 if(Global.localStore.user.studyPlan.sentenceCategories.isEmpty) return;
-                var studySentencePag = StudySentencePaginationSerializer();
-                studySentencePag.filter..foreignUser = Global.localStore.user.id
+                var studySentencePagen = StudySentencePaginationSerializer();
+                studySentencePagen.filter..foreignUser = Global.localStore.user.id
                                           ..familiarity__lte = 4
                                           ..inplan = true;
                 var categories = Map<String, num>();
                 await Future.forEach(Global.localStore.user.studyPlan.sentenceCategories, (c) async {
-                  studySentencePag.filter.categories__icontains = c;
-                  var ret = await studySentencePag.retrieve();
-                  if(ret) categories[c] = studySentencePag.count;
+                  studySentencePagen.filter.categories__icontains = c;
+                  var ret = await studySentencePagen.retrieve();
+                  if(ret) categories[c] = studySentencePagen.count;
                 });
+                var reviewCount = await reviewSentenceCount();
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => SentencePracticePage(categories: categories),
+                    builder: (context) => SentencePracticePage(categories: categories, reviewCount: reviewCount),
                   )
                 );
               }),

@@ -6,8 +6,7 @@ import 'package:flutter_prj/widgets/column_space.dart';
 
 
 class StudySettings extends StatefulWidget {
-  StudySettings({Key key, StudyPlanSerializer plan})
-    : this.plan = plan??StudyPlanSerializer(), super(key:key);
+  StudySettings({Key key, this.plan});
 
   final StudyPlanSerializer plan;
 

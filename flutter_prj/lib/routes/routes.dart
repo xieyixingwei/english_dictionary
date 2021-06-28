@@ -30,7 +30,6 @@ import 'package:flutter_prj/routes/word/show_word.dart';
 import 'package:flutter_prj/routes/tabs/user_tab/favorite_page.dart';
 import 'package:flutter_prj/routes/user/login.dart';
 import 'package:flutter_prj/routes/user/register.dart';
-import 'package:flutter_prj/routes/tabs/user_tab/study_settings.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import '../dictionary_app.dart';
 import 'tabs/user_tab/setting.dart';
@@ -87,7 +86,6 @@ final _routes = {
   '/show_sentences': (context, {arguments}) => ShowSentencesPage(title: arguments['title'], ids: arguments['ids'],),
   '/show_etyma': (context, {arguments}) => ShowEtymaPage(title: arguments['title'], etyma: arguments['etyma'],),
 
-  '/study_settings': (context, {arguments}) => StudySettings(plan: arguments['plan']),
   '/favorite_page': (context) => FavoritePage(),
 
   '/show_grammar': (context, {arguments}) => ShowGrammarPage(title: arguments['title'], grammar: arguments['grammar'],),

@@ -5,6 +5,7 @@
 
 import 'word.dart';
 import 'package:flutter_prj/common/http.dart';
+import 'global_queryset.dart';
 
 class StudyWordSerializer {
   StudyWordSerializer();
@@ -21,6 +22,7 @@ class StudyWordSerializer {
   String comments = '';
   num repeats = 0;
   StudyWordFilter filter = StudyWordFilter();
+  GlobalQuerySet queryset = GlobalQuerySet();
 
   Future<bool> create({dynamic data, Map<String, dynamic> queries, bool cache=false}) async {
     var res = await Http().request(HttpType.POST, '/api/study/word/', data:data ?? toJson(), queries:queries, cache:cache);
@@ -30,6 +32,7 @@ class StudyWordSerializer {
 
   Future<bool> retrieve({Map<String, dynamic> queries, bool cache=false}) async {
     if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(queryset.queries);
     queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/study/word/$id/', queries:queries, cache:cache);
     fromJson(res?.data);
@@ -54,6 +57,7 @@ class StudyWordSerializer {
 
   Future<List<StudyWordSerializer>> list({Map<String, dynamic> queries, bool cache=false}) async {
     if(queries == null) queries = <String, dynamic>{};
+    queries.addAll(queryset.queries);
     queries.addAll(filter.queries);
     var res = await Http().request(HttpType.GET, '/api/study/word/', queries:queries, cache:cache);
     return res != null ? res.data.map<StudyWordSerializer>((e) => StudyWordSerializer().fromJson(e)).toList() : [];
@@ -126,6 +130,9 @@ class StudyWordFilter {
   String categories__icontains;
   num familiarity__lte;
   num familiarity__gte;
+  num repeats__lte;
+  num repeats__gte;
+  String learnRecord__icontains;
   bool inplan;
 
   Map<String, dynamic> get queries => <String, dynamic>{
@@ -134,6 +141,9 @@ class StudyWordFilter {
     'categories__icontains': categories__icontains,
     'familiarity__lte': familiarity__lte,
     'familiarity__gte': familiarity__gte,
+    'repeats__lte': repeats__lte,
+    'repeats__gte': repeats__gte,
+    'learnRecord__icontains': learnRecord__icontains,
     'inplan': inplan,
   }..removeWhere((String key, dynamic value) => value == null);
 
@@ -143,6 +153,9 @@ class StudyWordFilter {
     categories__icontains = null;
     familiarity__lte = null;
     familiarity__gte = null;
+    repeats__lte = null;
+    repeats__gte = null;
+    learnRecord__icontains = null;
     inplan = null;
   }
 }

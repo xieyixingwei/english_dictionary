@@ -78,11 +78,11 @@ class UserSerializer {
     email = json['email'] == null ? email : json['email'] as String;
     telephone = json['telephone'] == null ? telephone : json['telephone'] as String;
     status = json['status'] == null ? status : json['status'] as String;
+    _id = id;
+    if(!slave) return this;
     studyPlan = json['studyPlan'] == null
                 ? studyPlan
                 : StudyPlanSerializer().fromJson(json['studyPlan'] as Map<String, dynamic>);
-    _id = id;
-    if(!slave) return this;
     studyGrammarSet = json['studyGrammarSet'] == null
                 ? studyGrammarSet
                 : json['studyGrammarSet'].map<StudyGrammarSerializer>((e) => StudyGrammarSerializer().fromJson(e as Map<String, dynamic>)).toList();

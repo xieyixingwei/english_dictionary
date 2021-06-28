@@ -357,3 +357,12 @@ Future<String> popSelectGrammarCategoryDialog(BuildContext context) async {
   );
   return res;
 }
+
+List<String> reviewDates() {
+  var today = DateTime.now();
+  var dates = <DateTime>[];
+  for(var i = 1; i < 5; i++) {
+    dates.add(today.add(Duration(days: -i)));
+  }
+  return dates.map((e) => e.toLocal().toString().substring(0, 10)).toList();
+}
