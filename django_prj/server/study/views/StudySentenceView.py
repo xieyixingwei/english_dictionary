@@ -82,6 +82,8 @@ class _StudySentenceFilter(filterset.FilterSet):
             'sentence': ['exact'],
             'categories': ['icontains'],
             'familiarity': ['lte', 'gte'],
+            'repeats': ['lte', 'gte'],
+            'learnRecord': ['icontains'],
             'inplan': ['exact']
         }
 
@@ -95,4 +97,4 @@ class StudySentenceView(ModelViewSetPermissionSerializerMap):
     pagination_class = _StudySentencePagination
     filter_class = _StudySentenceFilter
     filter_backends = (filters.OrderingFilter, DjangoFilterBackend, )
-    ordering_fields = ('id', 'familiarity', )
+    ordering_fields = ('id', 'familiarity', 'repeats')

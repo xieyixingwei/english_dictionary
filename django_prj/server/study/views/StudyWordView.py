@@ -4,6 +4,8 @@ from rest_framework.pagination import PageNumberPagination
 from django.db import models
 import django_filters
 from django_filters import filterset
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 from server import permissions
 from server.views import ModelViewSetPermissionSerializerMap
@@ -55,6 +57,8 @@ class _StudyWordFilter(filterset.FilterSet):
             'word': ['exact'],
             'categories': ['icontains'],
             'familiarity': ['lte', 'gte'],
+            'repeats': ['lte', 'gte'],
+            'learnRecord': ['icontains'],
             'inplan': ['exact']
         }
 
@@ -67,3 +71,5 @@ class StudyWordView(ModelViewSetPermissionSerializerMap):
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = _StudyWordPagination
     filter_class = _StudyWordFilter
+    filter_backends = (filters.OrderingFilter, DjangoFilterBackend, )
+    ordering_fields = ('id', 'familiarity', 'repeats')
