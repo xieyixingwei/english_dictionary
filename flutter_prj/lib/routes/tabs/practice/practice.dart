@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/global.dart';
+import 'package:flutter_prj/routes/common/common.dart';
 import 'package:flutter_prj/routes/common/practice_item_card.dart';
 import 'package:flutter_prj/routes/sentence/sentence_practice.dart';
 import 'package:flutter_prj/routes/tabs/practice/sentence_pattern_practice.dart';
@@ -35,11 +36,13 @@ class _TabPractice extends State<TabPractice> {
             children: [
               practiceItemCard(context, '单词', null, () async {
                 if(Global.localStore.user.studyPlan.wordCategories.isEmpty) return;
+
+                var categories = Map<String, num>();
                 var studyWordPagen = StudyWordPaginationSerializer();
                 studyWordPagen.filter..foreignUser = Global.localStore.user.id
                                           ..familiarity__lte = 4
                                           ..inplan = true;
-                var categories = Map<String, num>();
+
                 await Future.forEach(Global.localStore.user.studyPlan.wordCategories, (c) async {
                   studyWordPagen.filter.categories__icontains = c;
                   var ret = await studyWordPagen.retrieve();
@@ -50,39 +53,52 @@ class _TabPractice extends State<TabPractice> {
 
                 studyWordPagen = StudyWordPaginationSerializer();
                 studyWordPagen.filter..foreignUser = Global.localStore.user.id
-                                    ..learnRecord__icontains = DateTime.now().toString().substring(0, 10)
+                                    ..learnRecord__icontains = date2str(false)
                                     ..inplan = true;
                 await studyWordPagen.retrieve();
 
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => WordPracticePage(categories: categories, studiedCount: studyWordPagen.count, reviewCount: reviewCount),
+                    builder: (context) =>
+                      WordPracticePage(
+                        categories: categories,
+                        studiedCount: studyWordPagen.count,
+                        reviewCount: reviewCount
+                      ),
                   )
                 );
               }),
               practiceItemCard(context, '句子', null, () async {
                 if(Global.localStore.user.studyPlan.sentenceCategories.isEmpty) return;
+
+                var categories = Map<String, num>();
                 var studySentencePagen = StudySentencePaginationSerializer();
                 studySentencePagen.filter..foreignUser = Global.localStore.user.id
                                           ..familiarity__lte = 4
                                           ..inplan = true;
-                var categories = Map<String, num>();
+
                 await Future.forEach(Global.localStore.user.studyPlan.sentenceCategories, (c) async {
                   studySentencePagen.filter.categories__icontains = c;
                   var ret = await studySentencePagen.retrieve();
                   if(ret) categories[c] = studySentencePagen.count;
                 });
+
                 var reviewCount = await reviewSentenceCount();
 
                 studySentencePagen = StudySentencePaginationSerializer();
                 studySentencePagen.filter..foreignUser = Global.localStore.user.id
-                                          ..learnRecord__icontains = DateTime.now().toString().substring(0, 10)
+                                          ..learnRecord__icontains = date2str(false)
                                           ..inplan = true;
                 await studySentencePagen.retrieve();
 
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => SentencePracticePage(categories: categories, studiedCount: studySentencePagen.count, reviewCount: reviewCount),
+                    builder: (context) =>
+                      SentencePracticePage(
+                        categories: categories,
+                        studiedCount: studySentencePagen.count,
+                        reviewCount: reviewCount
+                      ),
                   )
                 );
               }),
@@ -95,7 +111,10 @@ class _TabPractice extends State<TabPractice> {
                 var studySentencePatterns = await studySentencePattern.list();
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => SentencePatternPracticePage(studySentencePatterns: studySentencePatterns),
+                    builder: (context) =>
+                      SentencePatternPracticePage(
+                        studySentencePatterns: studySentencePatterns
+                      ),
                   )
                 );
               }),

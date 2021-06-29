@@ -47,7 +47,12 @@ class _WordPracticePageState extends State<WordPracticePage> {
                   studyWord.queryset.ordering = "familiarity";
                   var studyWords = await studyWord.list();
                   if(studyWords.isEmpty) return;
-                  Navigator.pushNamed(context, '/practice_word', arguments: {'title': null, 'studyWords': studyWords});
+                  Navigator.pushNamed(context,
+                                      '/practice_word',
+                                      arguments: {
+                                        'title': null,
+                                        'studyWords': studyWords,
+                                        'isReview': false});
               }))
             ).values.toList(),
           ),
@@ -72,7 +77,12 @@ class _WordPracticePageState extends State<WordPracticePage> {
       });
 
       if(studyWords.isEmpty) return;
-      Navigator.pushNamed(context, '/practice_word', arguments: {'title': null, 'studyWords': studyWords});
+      Navigator.pushNamed(context,
+                          '/practice_word',
+                          arguments: {
+                            'title': null,
+                            'studyWords': studyWords,
+                            'isReview': true});
   });
 
   Widget todayStudy(BuildContext context) {
@@ -88,7 +98,12 @@ class _WordPracticePageState extends State<WordPracticePage> {
       var ret = await studyWordPagen.retrieve();
 
       if(!ret && studyWordPagen.results.isEmpty) return;
-      Navigator.pushNamed(context, '/practice_word', arguments: {'title': null, 'studyWords': studyWordPagen.results});
+      Navigator.pushNamed(context,
+                          '/practice_word',
+                          arguments: {
+                            'title': null,
+                            'studyWords': studyWordPagen.results,
+                            'isReview': false});
     });
   }
 }

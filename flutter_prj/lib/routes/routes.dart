@@ -91,8 +91,8 @@ final _routes = {
   '/show_grammar': (context, {arguments}) => ShowGrammarPage(title: arguments['title'], grammar: arguments['grammar'],),
   '/show_distinguish': (context, {arguments}) => ShowDistinguishPage(title: arguments['title'], distinguish: arguments['distinguish'],),
 
-  '/practice_word': (context, {arguments}) => PracticeWord(title: arguments['title'], studyWords: arguments['studyWords'],),
-  '/practice_sentence': (context, {arguments}) => PracticeSentence(title: arguments['title'], studySentences: arguments['studySentences'],),
+  '/practice_word': (context, {arguments}) => PracticeWord(title: arguments['title'], studyWords: arguments['studyWords'], isReview: arguments['isReview']),
+  '/practice_sentence': (context, {arguments}) => PracticeSentence(title: arguments['title'], studySentences: arguments['studySentences'], isReview: arguments['isReview']),
 
   '/list_dialog': (context) => ListDialog(),
   '/edit_dialog': (context, {arguments}) => EditDialog(title: arguments['title'], dialog: arguments['dialog'],),

@@ -65,6 +65,7 @@ class _SentencePracticePageState extends State<SentencePracticePage> {
                           ..inplan = true;
       studySentence.queryset.clear();
       studySentence.queryset.ordering = "familiarity";
+
       await Future.forEach(reviewDates(), (e) async {
         studySentence.filter.learnRecord__icontains = e;
         var ss = await studySentence.list();
@@ -72,7 +73,11 @@ class _SentencePracticePageState extends State<SentencePracticePage> {
       });
 
       if(studySentences.isEmpty) return;
-      Navigator.of(context).pushNamed('/practice_sentence', arguments: {'title': null, 'studySentences': studySentences});
+      Navigator.of(context).pushNamed('/practice_sentence',
+                                      arguments: {
+                                        'title': null,
+                                        'studySentences': studySentences,
+                                        'isReview': true});
   });
 
   Widget todayStudy(BuildContext context) {
@@ -88,7 +93,11 @@ class _SentencePracticePageState extends State<SentencePracticePage> {
       var ret = await studySentencePagen.retrieve();
 
       if(ret && studySentencePagen.results.isEmpty) return;
-      Navigator.of(context).pushNamed('/practice_sentence', arguments: {'title': null, 'studySentences': studySentencePagen.results});
+      Navigator.of(context).pushNamed('/practice_sentence',
+                                      arguments: {
+                                        'title': null,
+                                        'studySentences': studySentencePagen.results,
+                                        'isReview': false});
     });
   }
 }
@@ -107,5 +116,6 @@ Future<num> reviewSentenceCount() async {
       var ss = await studySentencePagen.retrieve();
       if(ss) count += studySentencePagen.count;
     });
+
     return count;
 }

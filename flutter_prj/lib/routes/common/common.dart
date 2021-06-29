@@ -358,11 +358,20 @@ Future<String> popSelectGrammarCategoryDialog(BuildContext context) async {
   return res;
 }
 
+String date2str(bool isReview, [String date]) {
+  var today = DateTime.now().toLocal().toString().substring(0, 10);
+  var tag = isReview ? '-rv' : '-v';
+  return date == null ? '$today$tag' : '$date$tag';
+}
+
 List<String> reviewDates() {
   var today = DateTime.now();
   var dates = <DateTime>[];
   for(var i = 1; i < 5; i++) {
     dates.add(today.add(Duration(days: -i)));
   }
-  return dates.map((e) => e.toLocal().toString().substring(0, 10)).toList();
+
+  return dates.map((e) => date2str(false, e.toLocal().toString().substring(0, 10))).toList();
 }
+
+

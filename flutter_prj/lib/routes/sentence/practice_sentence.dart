@@ -11,10 +11,11 @@ import 'package:flutter_prj/widgets/row_space.dart';
 
 
 class PracticeSentence extends StatefulWidget {
-  PracticeSentence({Key key, this.title, this.studySentences}) : super(key: key);
+  PracticeSentence({Key key, this.title, this.studySentences, this.isReview}) : super(key: key);
 
   final Widget title;
   final List<StudySentenceSerializer> studySentences;
+  final bool isReview;
 
   @override
   _PracticeSentenceState createState() => _PracticeSentenceState();
@@ -95,9 +96,14 @@ class _PracticeSentenceState extends State<PracticeSentence> {
     );
 
   _next() {
-    var dt = DateTime.now().toLocal().toString().substring(0, 10);
-    if(!_curStudySentence.learnRecord.contains(dt)) _curStudySentence.learnRecord.insert(0, dt);
-    if(_curStudySentence.learnRecord.length > 7) _curStudySentence.learnRecord.removeRange(7, _curStudySentence.learnRecord.length);
+    if(widget.isReview != null) {
+      var dt = date2str(widget.isReview);
+      if(!_curStudySentence.learnRecord.contains(dt))
+        _curStudySentence.learnRecord.insert(0, dt);
+      if(_curStudySentence.learnRecord.length > 10)
+        _curStudySentence.learnRecord.removeRange(10, _curStudySentence.learnRecord.length);
+    }
+
     _curStudySentence.repeats++;
     _curStudySentence.save();
     if(index < (widget.studySentences.length - 1)) index += 1;
@@ -168,10 +174,10 @@ class _PracticeSentenceState extends State<PracticeSentence> {
       onDoubleTap: () async {
         if(en2cn == false) return;
         var sentence = (await Navigator.pushNamed(context,
-                                                              '/edit_sentence',
-                                                              arguments: {
-                                                                'title': '编辑句子',
-                                                                'sentence': SentenceSerializer().from(s)})
+                                                  '/edit_sentence',
+                                                  arguments: {
+                                                    'title': '编辑句子',
+                                                    'sentence': SentenceSerializer().from(s)})
                               ) as SentenceSerializer;
         if(sentence != null) await s.from(sentence).save();
         setState(() {});
@@ -274,6 +280,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
             }
             var w = _curStudySentence.newWords.singleWhere((e) => e.name == label, orElse: () => null);
             if(w != null) {
+              await w.retrieve();
               await Navigator.pushNamed(context, '/show_word', arguments: {'title': '', 'word': w});
               return;
             }

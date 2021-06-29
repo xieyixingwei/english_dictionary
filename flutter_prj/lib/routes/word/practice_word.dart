@@ -2,16 +2,18 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_prj/common/http.dart';
+import 'package:flutter_prj/routes/common/common.dart';
 import 'package:flutter_prj/serializers/index.dart';
 import 'package:flutter_prj/widgets/column_space.dart';
 import 'package:flutter_prj/widgets/row_space.dart';
 
 
 class PracticeWord extends StatefulWidget {
-  PracticeWord({Key key, this.title, this.studyWords}) : super(key: key);
+  PracticeWord({Key key, this.title, this.studyWords, this.isReview}) : super(key: key);
 
   final Widget title;
   final List<StudyWordSerializer> studyWords;
+  final bool isReview;
 
   @override
   _PracticeWordState createState() => _PracticeWordState();
@@ -250,10 +252,15 @@ class _PracticeWordState extends State<PracticeWord> {
     );
 
   void _next() {
-    var dt = DateTime.now().toLocal().toString().substring(0, 10);
-    if(!_curStudyWord.learnRecord.contains(dt)) _curStudyWord.learnRecord.insert(0, dt);
-    if(_curStudyWord.learnRecord.length > 7) _curStudyWord.learnRecord.removeRange(7, _curStudyWord.learnRecord.length);
+    if(widget.isReview != null) {
+      var dt = date2str(widget.isReview);
+      if(!_curStudyWord.learnRecord.contains(dt))
+        _curStudyWord.learnRecord.insert(0, dt);
+      if(_curStudyWord.learnRecord.length > 10)
+        _curStudyWord.learnRecord.removeRange(10, _curStudyWord.learnRecord.length);
+    }
     _curStudyWord.repeats++;
+
     _curStudyWord.save();
     textCtrl.text = '';
     if(cycle && (index == widget.studyWords.length - 1)) index = 0;
