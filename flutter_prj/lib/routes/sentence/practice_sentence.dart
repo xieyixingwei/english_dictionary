@@ -349,10 +349,17 @@ class _PracticeSentenceState extends State<PracticeSentence> {
           onPressed: () async {
             var ss = await Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => EditStudySentencePage(title: '编辑生词', studySentence: _curStudySentence,),
+                              builder: (context) =>
+                                EditStudySentencePage(
+                                  title: '编辑生词',
+                                  studySentence: StudySentenceSerializer().from(_curStudySentence),
+                                ),
                             )
                           );
-            if(ss != null) await _curStudySentence.from(ss).save();
+            if(ss != null) {
+              await _curStudySentence.from(ss).save();
+              await _curStudySentence.sentence.retrieve();
+            }
             setState(() {});
           },
         ),
