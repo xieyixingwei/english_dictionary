@@ -106,7 +106,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
 
     _curStudySentence.repeats++;
     await _curStudySentence.save();
-    _curStudySentence.sentence.retrieve();  // 需要更新同义句
+    await _curStudySentence.sentence.retrieve();  // 需要更新同义句
 
     if(index < (widget.studySentences.length - 1)) index += 1;
     else if(_actionValue('循环')) index = 0;
