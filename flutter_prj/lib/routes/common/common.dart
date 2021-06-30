@@ -367,9 +367,10 @@ String date2str(bool isReview, [String date]) {
 List<String> reviewDates() {
   var today = DateTime.now();
   var dates = <DateTime>[];
-  for(var i = 1; i < 5; i++) {
-    dates.add(today.add(Duration(days: -i)));
-  }
+
+  [1,3,5,7].forEach((e) { 
+    dates.add(today.add(Duration(days: -e)));
+  });
 
   return dates.map((e) => date2str(false, e.toLocal().toString().substring(0, 10))).toList();
 }
