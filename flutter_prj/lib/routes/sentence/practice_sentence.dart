@@ -95,7 +95,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
       ),
     );
 
-  _next() async {
+  Future _next() async {
     if(widget.isReview != null) {
       var dt = date2str(widget.isReview);
       if(!_curStudySentence.learnRecord.contains(dt))
@@ -392,7 +392,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
         ),
         IconButton(
           icon: Icon(Icons.arrow_forward_ios, size: 30, color: Colors.blueAccent),
-          onPressed: () => setState(() {_hide = true; _next();}),
+          onPressed: () async { _hide = true; await _next();setState(() {});}
         ),
       ],
     );
