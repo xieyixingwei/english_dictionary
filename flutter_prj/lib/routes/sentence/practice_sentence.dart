@@ -54,7 +54,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
   _init() async {
     await Future.forEach<StudySentenceSerializer>(widget.studySentences, (e) async {
       if(e.sentence.updateSynonum == false) {
-        var ret = await e.sentence.retrieve();
+        var ret = await e.sentence.retrieve();  // 需要更新同义句
         if(ret) e.sentence.updateSynonum = true;
       }
     });
@@ -95,7 +95,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
       ),
     );
 
-  _next() {
+  _next() async {
     if(widget.isReview != null) {
       var dt = date2str(widget.isReview);
       if(!_curStudySentence.learnRecord.contains(dt))
@@ -105,7 +105,9 @@ class _PracticeSentenceState extends State<PracticeSentence> {
     }
 
     _curStudySentence.repeats++;
-    _curStudySentence.save();
+    await _curStudySentence.save();
+    _curStudySentence.sentence.retrieve();  // 需要更新同义句
+
     if(index < (widget.studySentences.length - 1)) index += 1;
     else if(_actionValue('循环')) index = 0;
     _textCtrl.text = '';
@@ -358,7 +360,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
                           );
             if(ss != null) {
               await _curStudySentence.from(ss).save();
-              await _curStudySentence.sentence.retrieve();
+              await _curStudySentence.sentence.retrieve();  // 需要更新同义句
             }
             setState(() {});
           },
@@ -373,6 +375,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
           (v) async {
             _curStudySentence.familiarity = v;
             await _curStudySentence.save();
+            await _curStudySentence.sentence.retrieve(); // 需要更新同义句
             setState(() {});
           }
         )
