@@ -163,18 +163,14 @@ class _PracticeSentenceState extends State<PracticeSentence> {
       ],
     );
 
-  Widget _sentenceA(SentenceSerializer s, bool en2cn) =>
+  Widget _sentenceA(SentenceSerializer s, bool en2cn) => en2cn ? 
     InkWell(
       child: Text(
-        en2cn ? s.en : s.cn,
+        s.en,
         style: const TextStyle(fontSize: 17, color: Colors.black54, fontWeight: FontWeight.w700),
       ),
-      onTap: () {
-        if(en2cn == false) return;
-        _playCurSentenceEn(s);
-      },
+      onTap: () => _playCurSentenceEn(s),
       onDoubleTap: () async {
-        if(en2cn == false) return;
         var sentence = (await Navigator.pushNamed(context,
                                                   '/edit_sentence',
                                                   arguments: {
@@ -184,7 +180,7 @@ class _PracticeSentenceState extends State<PracticeSentence> {
         if(sentence != null) await s.from(sentence).save();
         setState(() {});
       },
-    );
+    ) : SelectableText(s.cn, style: const TextStyle(fontSize: 17, color: Colors.black54, fontWeight: FontWeight.w700));
 
   Widget _sentenceB(SentenceSerializer s, bool en2cn) =>
     InkWell(
