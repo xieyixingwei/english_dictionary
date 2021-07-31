@@ -1,0 +1,302 @@
+{
+    "__name__": "study_plan",
+    "id @pk": "num=null",
+    "foreignUser @fk_oo": "$user",
+    "onceWords": 0,
+    "onceSentences": 0,
+    "onceGrammers": 0,
+    "wordCategories": [""],
+    "sentenceCategories": [""],
+    "sentencePatternCategories": [""],
+    "grammarCategories": [""],
+    "distinguishCategories": [""],
+    "distinguishes": [0],
+    "__http__": {
+        "url": "/api/study/plan/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "retrieve",
+                "url": "$id/"
+            },
+            {
+                "name": "delete",
+                "url": "$id/"
+            },
+            {
+                "name": "update",
+                "url": "$id/"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
+}
+
+{
+    "__name__": "study_grammar",
+    "id @pk": 0,
+    "foreignUser @fk_oo": "$user",
+    "grammar @fk_oo": "$grammar",
+    "category": "",
+    "familiarity": 0,
+    "learnRecord": [""],
+    "inplan": false,
+    "isFavorite": false,
+    "repeats": 0,
+    "__http__": {
+        "url": "/api/study/grammar/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "retrieve",
+                "url": "$id/"
+            },
+            {
+                "name": "delete",
+                "url": "$id/"
+            },
+            {
+                "name": "update",
+                "url": "$id/"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
+}
+
+{
+    "__name__": "study_sentence",
+    "id @pk": 0,
+    "foreignUser @fk_oo": "$user",
+    "sentence @fk_mo @nested_r": "$sentence",
+    "categories": [""],
+    "familiarity": 0,
+    "learnRecord": [""],
+    "inplan": false,
+    "isFavorite": false,
+    "comments": "",
+    "repeats": 0,
+    "newWords @fk_mm @nested_r": ["$word"],
+    "newSentencePatterns @fk_mm @nested_r": ["$sentence_pattern"],
+    "__hideNewWords": true,
+    "__queryset__": {
+        "__name__": "global",
+        "page_size": 10,
+        "page_index": 1,
+        "ordering": "String=null"
+    },
+    "__filter__": {
+        "__serializer__": "$study_sentence",
+        "foreignUser": ["exact"],
+        "sentence": ["exact"],
+        "categories": ["icontains"],
+        "familiarity": ["lte", "gte"],
+        "repeats": ["lte", "gte"],
+        "learnRecord": ["icontains"],
+        "inplan": ["exact"]
+    },
+    "__http__": {
+        "url": "/api/study/sentence/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "retrieve",
+                "url": "$id/"
+            },
+            {
+                "name": "delete",
+                "url": "$id/"
+            },
+            {
+                "name": "update",
+                "url": "$id/"
+            },
+            {
+                "name": "list"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
+}
+
+{ // 分页查询 单词学习表
+    "__name__": "study_sentence_pagination",
+    "count": 0,
+    "next": "",
+    "previous": "",
+    "results": ["$study_sentence"],
+    "__queryset__": {
+        "__name__": "global"
+    },
+    "__filter__": {
+        "__serializer__": "$study_sentence"
+    },
+    "__http__": {
+        "url": "/api/study/sentence/",
+        "methods": [
+            {
+                "name": "retrieve",
+                "filter": true
+            }
+        ]
+    }
+}
+
+{
+    "__name__": "study_word",
+    "id @pk": 0,
+    "foreignUser @fk_oo": "$user",
+    "word @fk_mo @nested_r": "$word",
+    "categories": [""],
+    "familiarity": 0,
+    "learnRecord": [""],
+    "inplan": false,
+    "isFavorite": false,
+    "comments": "",
+    "repeats": 0,
+    "__queryset__": {
+        "__name__": "global"
+    },
+    "__filter__": {
+        "__serializer__": "$study_word",
+        "foreignUser": ["exact"],
+        "word": ["exact"],
+        "categories": ["icontains"],
+        "familiarity": ["lte", "gte"],
+        "repeats": ["lte", "gte"],
+        "learnRecord": ["icontains"],
+        "inplan": ["exact"]
+    },
+    "__http__": {
+        "url": "/api/study/word/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "retrieve",
+                "url": "$id/"
+            },
+            {
+                "name": "delete",
+                "url": "$id/"
+            },
+            {
+                "name": "update",
+                "url": "$id/"
+            },
+            {
+                "name": "list"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
+}
+
+{ // 分页查询 单词学习表
+    "__name__": "study_word_pagination",
+    "count": 0,
+    "next": "",
+    "previous": "",
+    "results": ["$study_word"],
+    "__queryset__": {
+        "__name__": "global"
+    },
+    "__filter__": {
+        "__serializer__": "$study_word"
+    },
+    "__http__": {
+        "url": "/api/study/word/",
+        "methods": [
+            {
+                "name": "retrieve",
+                "filter": true
+            }
+        ]
+    }
+}
+
+{
+    "__name__": "study_sentence_pattern",
+    "id @pk": 0,
+    "foreignUser @fk_oo": "$user",
+    "sentencePattern @fk_mo @nested_r": "$sentence_pattern",
+    "categories": [""],
+    "familiarity": 0,
+    "learnRecord": [""],
+    "inplan": false,
+    "isFavorite": false,
+    "comments": "",
+    "repeats": 0,
+    "__filter__": {
+        "__serializer__": "$study_sentence_pattern",
+        "foreignUser": ["exact"],
+        "sentencePattern": ["exact"],
+        "categories": ["icontains"],
+        "familiarity": ["lte", "gte"],
+        "inplan": ["exact"]
+    },
+    "__http__": {
+        "url": "/api/study/sentence_pattern/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "retrieve",
+                "url": "$id/"
+            },
+            {
+                "name": "delete",
+                "url": "$id/"
+            },
+            {
+                "name": "update",
+                "url": "$id/"
+            },
+            {
+                "name": "list"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
+}
+
+{ // 分页查询 固定表达学习表
+    "__name__": "study_sentence_pattern_pagination",
+    "count": 0,
+    "next": "",
+    "previous": "",
+    "results": ["$study_sentence_pattern"],
+    "__queryset__": {
+        "__name__": "global"
+    },
+    "__filter__": {
+        "__serializer__": "$study_sentence_pattern"
+    },
+    "__http__": {
+        "url": "/api/study/sentence_pattern/",
+        "methods": [
+            {
+                "name": "retrieve",
+                "filter": true
+            }
+        ]
+    }
+}

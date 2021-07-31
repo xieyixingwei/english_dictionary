@@ -1,0 +1,57 @@
+{ // 词义辨析
+    "id @pk": "num=null",
+    "content": "",
+    "image": "$SingleFile image", 
+    "vedio": "$SingleFile video",
+    "wordsForeign @fk_mm": ["$word"], // 相关单词列表
+    "sentencePatternForeign @fk_mm @nested": ["$sentence_pattern"],
+    "__http__": {
+        "url": "/api/dictionary/distinguish/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "update",
+                "url": "$id/"
+            },
+            {
+                "name": "retrieve",
+                "url": "$id/"
+            },
+            {
+                "name": "delete",
+                "url": "$id/"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
+}
+
+
+{ // 词义辨析分页查询
+    "__name__": "distinguish_pagination",
+    "count": 0,
+    "next": "",
+    "previous": "",
+    "results": ["$distinguish"],
+    "__queryset__": {
+        "__name__": "global"
+    },
+    "__filter__": {
+        "__serializer__": "$distinguish",
+        "wordsForeign": ["icontains"],
+        "content": ["icontains"]
+    },
+    "__http__": {
+        "url": "/api/dictionary/distinguish/",
+        "methods": [
+            {
+                "name": "retrieve",
+                "filter": true
+            }
+        ]
+    }
+}

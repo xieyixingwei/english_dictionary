@@ -1,0 +1,94 @@
+{
+    "name @pk": "",
+    "voiceUs": "",
+    "voiceUk": "",
+    "_audioUsMan": "",
+    "_audioUsWoman": "",
+    "_audioUkMan": "",
+    "_audioUkWoman": "",
+    "morph": [""],
+    "tag": [""],
+    "etyma": [""],
+    "origin": "",
+    "shorthand": "",
+    "synonym @fk_mm": ["$word"], //  # 近义词 [word1,word2,...]
+    "antonym @fk_mm": ["$word"],// 反义词 [word1,word2,...]
+    "image": "$SingleFile image", 
+    "vedio": "$SingleFile video",
+    "_paraphraseSet @fk_slave  @save": ["$paraphrase"], // 释义
+    "_sentencePatternSet @fk_slave  @save": ["$sentence_pattern"], // 固定表达
+    "_grammarSet @fk_slave  @save": ["$grammar"], //语法
+    "_distinguishSet @fk_slave @save": ["$distinguish"], // 词义辨析
+    "_studyWordSet @fk_slave": ["$study_word"],
+    "__offstage": true,
+    "__http__": {
+        "url": "/api/dictionary/word/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "update",
+                "url": "$name/"
+            },
+            {
+                "name": "retrieve",
+                "url": "$name/"
+            },
+            {
+                "name": "delete",
+                "url": "$name/"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
+}
+
+
+{ // 分页查询 单词
+    "__name__": "word_pagination",
+    "count": 0,
+    "next": "",
+    "previous": "",
+    "results": ["$word"],
+    "__queryset__": {
+        "__name__": "global"
+    },
+    "__filter__": {
+        "__serializer__": "$word",
+        "name": ["exact","icontains"],
+        "tag": ["icontains"],
+        "etyma": ["icontains"]
+    },
+    "__http__": {
+        "url": "/api/dictionary/word/",
+        "methods": [
+            {
+                "name": "retrieve",
+                "filter": true
+            }
+        ]
+    }
+}
+
+{
+    "__name__": "word_tag",
+    "name @pk": "",
+    "__http__": {
+        "url": "/api/dictionary/word_tag/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "list"
+            },
+            {
+                "name": "delete",
+                "url": "$name/"
+            }
+        ]
+    }
+}

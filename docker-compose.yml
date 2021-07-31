@@ -1,0 +1,32 @@
+version: "3" # docker-compose.yml 的版本，目前最新版为 3，不需要改动它
+
+services:
+  django_server:
+    image: django_server
+    container_name: django_server_1
+    build: ./django_prj
+    volumes:
+      - ./django_prj:/var/www/html/django_prj
+      - ./compose/django_uwsgi:/tmp
+    ports:
+      - 8052:8052
+    restart: always
+    environment:
+      - PYTHONUNBUFFERED=0
+  nginx:
+    image: nginx:latest
+    container_name: nginx_1
+    ports:
+      - 8051:80
+      - 8053:433
+    restart: always
+    volumes:
+      - ./flutter_prj/build/web:/usr/share/nginx/html
+      - ./compose/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./compose/nginx/conf.d:/etc/nginx/conf.d
+      - ./compose/nginx/log:/var/log/nginx
+      - ./django_prj/server/static:/usr/share/nginx/static
+      - ./django_prj/server/media:/usr/share/nginx/media
+    depends_on:
+      - django_server
+

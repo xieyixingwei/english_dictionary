@@ -13,9 +13,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
+# from django.contrib import admin
 from django.urls import path
+from django.conf.urls import url, include
+
+# 在debug模式下要访问上传的文件需要在 urlpatterns 里设置 static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+from server import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-]
+    # path('admin/', admin.site.urls),
+    url(r'^api/dictionary/', include(('dictionary.urls', 'dictionary'), namespace='dictionary')),
+    url(r'^api/user/', include(('user.urls', 'user'), namespace='user')),
+    url(r'^api/study/', include(('study.urls', 'study'), namespace='study')),
+]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

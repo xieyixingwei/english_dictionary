@@ -1,0 +1,99 @@
+{ // 语法表
+    "id @pk": "num=null", //models.AutoField(primary_key=True)
+    "type": [""], // models.JSONField(null=True) # [时态,从句]
+    "tag": [""], // models.JSONField(null=True) # [重要]
+    "title": "",
+    "content": "", // models.TextField(null=False, blank=True) # 内容 markdown文本
+    "image": "$SingleFile image", 
+    "vedio": "$SingleFile video",
+    "wordForeign @fk_mo": "$word",
+    "sentenceForeign @fk_mo": "$sentence",
+    "__http__": {
+        "url": "/api/dictionary/grammar/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "update",
+                "url": "$id/"
+            },
+            {
+                "name": "retrieve",
+                "url": "$id/"
+            },
+            {
+                "name": "delete",
+                "url": "$id/"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
+}
+
+{ // 分页查询 语法
+    "__name__": "grammar_pagination",
+    "count": 0,
+    "next": "",
+    "previous": "",
+    "results": ["$grammar"],
+    "__queryset__": {
+        "__name__": "global"
+    },
+    "__filter__": {
+        "__serializer__": "$grammar",
+        "type": ["icontains"],
+        "tag": ["icontains"],
+        "content": ["icontains"]
+    },
+    "__http__": {
+        "url": "/api/dictionary/grammar/",
+        "methods": [
+            {
+                "name": "retrieve",
+                "filter": true
+            }
+        ]
+    }
+}
+
+{   "__name__": "grammar_type",
+    "name @pk": "",
+    "__http__": {
+        "url": "/api/dictionary/grammar_type/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "list"
+            },
+            {
+                "name": "delete",
+                "url": "$name/"
+
+            }
+        ]
+    }
+}
+
+{   "__name__": "grammar_tag",
+    "name @pk": "",
+    "__http__": {
+        "url": "/api/dictionary/grammar_tag/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "list"
+            },
+            {
+                "name": "delete",
+                "url": "$name/"
+            }
+        ]
+    }
+}

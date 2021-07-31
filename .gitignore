@@ -45,7 +45,13 @@ app.*.map.json
 /flutter_prj/android/app/profile
 /flutter_prj/android/app/release
 
-# python
-*__pycache__
-**/venv/
+flutter_prj/pubspec.lock
 
+# python
+__pycache__
+venv
+migrations
+django_prj/server/static
+django_prj/server/media
+compose/django_uwsgi/
+django_prj/server/db.sqlite3

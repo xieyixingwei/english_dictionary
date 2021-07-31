@@ -1,0 +1,171 @@
+// 单词表
+table words {
+  word_name varchar [primary key]
+  word_morph varchar // 单词变形,json
+  tags varchar       // 情态动词,动物名词,蔬菜名词
+  phonetic_symbol_uk varchar
+  phonetic_symbol_us varchar
+  word_roots varchar         // 词根, 格式: root1,root2,...
+  paraphrase varchar    // markdown text
+  synonym_words varchar // word1,word2,...
+  antonym_words varchar // word1,word2,...
+  distinguish_words_id int   // 词义辨析
+}
+
+// word_name 音标_UK 应标_US
+
+// word_morph json {
+// "v.ing": coordinating,
+// "v.ed": coordinated,
+// "v.edt": coordinated,
+// "v.es": coordinates,
+// "n": coordinateness,
+// "adj": coordinative,
+// "adv": coordinately,
+// }
+
+// word_roots 词根
+
+// paraphrase markdown text example
+// 1. 词源: 1660年左右进入英语，直接源自中古拉丁语的coordinare，意为同一等级的。
+// 2. 词性:
+//     1. 名词(n.) 
+//         1. 同等者， 同等物，同等的人物
+//             - The filter is defined as a box of coordinates.
+//               过滤器定义的是一个方框的坐标。
+//         2. 同位
+//     2. 动词(v.)
+//         1. 协调，协调一致
+//             - If we coordinate our efforts we should be able to win the game.
+//               如果我们同心协力,我们应该能够打赢这场比赛。
+//             - You must coordinate the movements of your arms and legs when swimming.
+//               游泳时你必须使臂和腿的动作相协调。
+//     3. 形容词(adj.)
+//         1. 同等的，同位的， 等位的
+// 3. 词汇搭配
+//     1. 用作动词(v.)
+//         - coordinate one's efforts 齐心协力
+//         - coordinate closely       紧密配合
+//
+
+// synonym_words 近义词
+// - equal
+
+// antonym_words 反义词
+// - subordinate
+
+// distinguish_words_id 词义辨析
+
+// 词根表
+table word_roots {
+  root varchar [primary key]
+  meaning varchar   // markdow text
+  type varchar      // prefix|root|suffix
+}
+
+// 词义辨析表
+table distinguish_words {
+  id int [primary key]
+  words_name varchar [not null, unique] // word1,word2,...
+  content varchar [not null]            // markdown text
+}
+
+// 句子表
+table sentences {
+  id int [primary key]
+  type varchar  // sentence|phrase
+  tags varchar  // 日常用语,商务用语,问候语,一般过去式,被动语态
+  sentence_en varchar [not null]
+  sentence_cn varchar
+  same_expression varchar // 同义表达,格式: 1,2,...
+}
+
+// 用户信息表
+table users {
+  id int [primary key]
+  name varchar [not null, unique]
+  passwd varchar [not null]
+  gender varchar
+  cerated_at varchar
+  birthday varchar
+  wechart varchar [unique]
+  qq varchar [unique]
+  email varchar [unique]
+  telephone varchar [unique]
+  status varchar
+  study_id int
+}
+
+// 学习计划表
+table studies {
+  id int [primary key]
+  words varchar        // json
+  sentences varchar    // json
+  plan varchar         // json
+}
+
+// studies.words json [
+// {
+//    word_name: string
+//    in_plan: bool(0|1)
+//    familiarity: int(0~5)
+//    repeats: int
+//    learn_time: [09122030,09112030,09102030,09092030,09082030,09072030,09062030]
+//    comments: markdown text
+// },
+// ]
+
+// studies.sentences json [
+// {
+//    id: int
+//    in_plan: bool(0|1)
+//    familiarity: int(0~5)
+//    repeats: int
+//    learn_time: [09122030,09112030,09102030,09092030,09082030,09072030,09062030]
+//    new_words: [word1, word2]
+//    comments: markdown text
+//    
+// },
+// ]
+
+// studies.plan json [
+// {
+//    words_oneday: int
+//    sentences_oneday: int
+//    other_settings: string
+// },
+// ]
+
+// 管理表
+table management {
+   root_user varchar    // 根用户,只有一个
+   admin_users varchar  // 管理员用户,格式: name1,name2,...
+}
+
+ref {
+    words.distinguish_words_id - distinguish_words.id
+}
+
+ref {
+    words.word_roots - word_roots.root
+}
+
+ref {
+    distinguish_words.words_name - words.word_name
+}
+
+ref {
+    sentences.same_expression - sentences.id
+}
+
+ref {
+    users.study_id - studies.id
+}
+
+ref {
+    management.root_user - users.name
+}
+
+ref {
+    management.admin_users - users.name
+}

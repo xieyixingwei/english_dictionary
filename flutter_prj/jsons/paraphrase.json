@@ -1,0 +1,56 @@
+{ // 释义
+    "__name__": "paraphrase",
+    "id @pk": "num=null",
+    "interpret": "",
+    "partOfSpeech": "",
+    "wordForeign @fk_mo": "$word",
+    "sentencePatternForeign @fk_mo": "$sentence_pattern",
+    "_sentenceSet @fk_slave  @save": ["$sentence"],
+    "__http__": {
+        "url": "/api/dictionary/paraphrase/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "update",
+                "url": "$id/"
+            },
+            {
+                "name": "retrieve",
+                "url": "$id/"
+            },
+            {
+                "name": "delete",
+                "url": "$id/"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
+}
+
+{ // 分页查询 释义
+    "__name__": "paraphrase_pagination",
+    "count": 0,
+    "next": "",
+    "previous": "",
+    "results": ["$paraphrase"],
+    "__queryset__": {
+        "__name__": "global"
+    },
+    "__filter__": {
+        "__serializer__": "$paraphrase",
+        "interpret": ["icontains"]
+    },
+    "__http__": {
+        "url": "/api/dictionary/paraphrase/",
+        "methods": [
+            {
+                "name": "retrieve",
+                "filter": true
+            }
+        ]
+    }
+}
