@@ -9,32 +9,21 @@ from server import permissions
 from server.views import ModelViewSetPermissionSerializerMap
 from .ParaphraseView import ParaphraseSerializer
 from dictionary.models.SentencePatternTable import SentencePatternTable
+from server.serializer import CustomSerializer, CustomListSerializer
+from study.views.StudySentencePatternView import StudySentencePatternSerializer
 
 
-class SentencePatternSerializer(serializers.ModelSerializer):
+class SentencePatternSerializer(CustomSerializer):
     paraphraseSet = ParaphraseSerializer(many=True, read_only=True)
-    studySentencePatternSet = serializers.SerializerMethodField()
+    studySentencePatternSet = StudySentencePatternSerializer(many=True, read_only=True)
 
     class Meta:
         model = SentencePatternTable
         fields = '__all__'
-    
-    def get_studySentencePatternSet(self, obj):
-        if not 'request' in self.context.keys():
-            # 防止 StudySentencePatternSerializer 和 SentencePatternSerializer 无限循环序列化
-            return []
-        request = self.context['request']
-        token = request.query_params.get('token')
-        if not token:
-            token = request.headers.get('authorization') 
-        try:
-            userId = cache.get(token)
-            return [{'id': ssp.id, 'foreignUser': ssp.foreignUser.id, 'inplan': ssp.inplan, 'categories': ssp.categories}
-                        for ssp in obj.studySentencePatternSet.all()
-                        if userId == ssp.foreignUser.id]
-        except:
-            return []
+        list_serializer_class = CustomListSerializer
 
+    def nested(self):
+        return {'studySentencePatternSet': StudySentencePatternSerializer}
 
 # 分页自定义
 class _SentencePatternPagination(PageNumberPagination):

@@ -8,14 +8,18 @@ from server import permissions
 from server.views import ModelViewSetPermissionSerializerMap
 from .SentenceView import SentenceSerializer
 from dictionary.models.ParaphraseTable import ParaphraseTable
+from server.serializer import CustomSerializer, CustomListSerializer
 
 
-class ParaphraseSerializer(serializers.ModelSerializer):
+class ParaphraseSerializer(CustomSerializer):
     sentenceSet = SentenceSerializer(many=True, read_only=True)
     class Meta:
         model = ParaphraseTable
         fields = '__all__'
+        list_serializer_class = CustomListSerializer
 
+    def nested(self):
+        return {'sentenceSet': SentenceSerializer}
 
 # 分页自定义
 class _ParaphrasePagination(PageNumberPagination):

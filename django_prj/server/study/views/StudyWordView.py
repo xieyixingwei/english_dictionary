@@ -10,28 +10,18 @@ from django_filters.rest_framework import DjangoFilterBackend
 from server import permissions
 from server.views import ModelViewSetPermissionSerializerMap
 from study.models import StudyWordTable
+from server.serializer import CustomSerializer, CustomListSerializer
 
 
-
-class StudyWordSerializer(serializers.ModelSerializer):
+class StudyWordSerializer(CustomSerializer):
     class Meta:
         model = StudyWordTable
         fields = '__all__'
+        list_serializer_class = CustomListSerializer
 
-    def to_representation(self, instance):
-        response = super().to_representation(instance)
-        response['word'] = self._word(instance.word)
-        return response
-
-    def _word(self, word):
-        if word == None:
-            return None
+    def nested(self):
         from dictionary.views.WordView import WordSerializer
-        if 'request' in self.context.keys() and 'study/word' in self.context['request'].path:
-            # 防止 StudySentenceSerializer 和 SentenceSerializer 无限循环序列化
-            return WordSerializer(word).data
-        else:
-            return None
+        return {'word': WordSerializer}
 
 # 分页自定义
 class _StudyWordPagination(PageNumberPagination):

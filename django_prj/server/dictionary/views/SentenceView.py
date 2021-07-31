@@ -12,10 +12,14 @@ from server import permissions
 from dictionary.models.SentenceTable import SentenceTable
 from .GrammarView import GrammarSerializer
 from server.views import ModelViewSetPermissionSerializerMap
+from server.serializer import CustomSerializer, CustomListSerializer
+from django.core.cache import cache
+from dictionary.views.GrammarView import GrammarSerializer
 from study.views.StudySentenceView import StudySentenceSerializer
 
 
-class SentenceSerializer(serializers.ModelSerializer):
+
+class SentenceSerializer(CustomSerializer):
     grammarSet = GrammarSerializer(many=True, read_only=True)
     #studySentenceSet = serializers.SerializerMethodField()
     studySentenceSet = StudySentenceSerializer(many=True, read_only=True)
@@ -23,27 +27,15 @@ class SentenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = SentenceTable
         fields = '__all__'
+        list_serializer_class = CustomListSerializer
 
-    def to_representation(self, instance):
-        response = super().to_representation(instance)
-        response['studySentenceSet'] = self._studySentenceSet(response.pop('studySentenceSet'))
-        response['synonym'] = self._synonym(response.pop('synonym'))
-        response['antonym'] = self._antonym(response.pop('antonym'))
-        return response
+    def nested(self):
+        return {'synonym': SentenceSerializer, 'antonym': SentenceSerializer, 'studySentenceSet': StudySentenceSerializer}
 
-    def _synonym(self, objs):
-        if not 'request' in self.context.keys() or not 'dictionary/sentence' in self.context['request'].path:
-            # 防止 SentenceSerializer 无限循环序列化
-            return []
-        return [SentenceSerializer(SentenceTable.objects.get(pk=pk)).data for pk in objs]
+    def filter(self):
+        return {'studySentenceSet': self.filter_SentenceSet}
 
-    def _antonym(self, objs):
-        if not 'request' in self.context.keys() or not 'dictionary/sentence' in self.context['request'].path:
-            # 防止 SentenceSerializer 无限循环序列化
-            return []
-        return [SentenceSerializer(SentenceTable.objects.get(pk=pk)).data for pk in objs]
-
-    def _studySentenceSet(self, objs):
+    def filter_SentenceSet(self, objs):
         if not 'request' in self.context.keys():
             return objs
         request = self.context['request']
@@ -56,17 +48,15 @@ class SentenceSerializer(serializers.ModelSerializer):
         except:
             return []
 
-    def __nested(self):
-        if not 'sentence' in self.context.keys():
-            return None
-        return self.context['sentence']
+'''
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['studySentenceSet'] = self._studySentenceSet(response.pop('studySentenceSet'))
+        return response
+'''
 
-    def __context(self):
-        nested = 0
-        if 'sentence' in self.context.keys():
-            nested = self.context['sentence'] + 1
-        return {'request': self.context['request'], 'sentence': nested}
 
+#-------------------
 '''
     def get_studySentenceSet(self, obj):
         if not 'request' in self.context.keys():
@@ -84,8 +74,6 @@ class SentenceSerializer(serializers.ModelSerializer):
         except:
             return []
 '''
-
-
 
 # 分页自定义
 class _SentencePagination(PageNumberPagination):

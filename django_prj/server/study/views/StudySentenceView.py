@@ -11,52 +11,22 @@ from rest_framework.pagination import PageNumberPagination
 from study.models import StudySentenceTable
 from dictionary.models.WordTable import WordTable
 from dictionary.models.SentencePatternTable import SentencePatternTable
+from server.serializer import CustomSerializer, CustomListSerializer
 
 
-class StudySentenceSerializer(serializers.ModelSerializer):
+class StudySentenceSerializer(CustomSerializer):
+
     class Meta:
         model = StudySentenceTable
         fields = '__all__'
+        list_serializer_class = CustomListSerializer
 
-    def to_representation(self, instance):
-        response = super().to_representation(instance)
-        response['sentence'] = self._sentence(instance.sentence)
-        response['newWords'] = self._newWords(response.pop('newWords'))
-        response['newSentencePatterns'] = self._newSentencePatterns(response.pop('newSentencePatterns'))
-        return response
-
-    def _newWords(self, objs):
-        from dictionary.views.WordView import WordSerializer
-        if 'request' in self.context.keys() and 'study/sentence' in self.context['request'].path:
-            return [WordSerializer(WordTable.objects.get(pk=pk)).data for pk in objs]
-        return []
-
-    def _newSentencePatterns(self, objs):
+    def nested(self):
         from dictionary.views.SentencePatternView import SentencePatternSerializer
-        if 'request' in self.context.keys() and 'study/sentence' in self.context['request'].path:
-            return [SentencePatternSerializer(SentencePatternTable.objects.get(pk=pk)).data for pk in objs]
-        return
-
-    def _sentence(self, sentence):
-        if self.__nested() == 0 or sentence == None:
-            return None
+        from dictionary.views.WordView import WordSerializer
         from dictionary.views.SentenceView import SentenceSerializer
-        if 'request' in self.context.keys() and 'study/sentence' in self.context['request'].path:
-            # 防止 StudySentenceSerializer 和 SentenceSerializer 无限循环序列化
-            return SentenceSerializer(sentence, context=self.__context()).data
-        else:
-            return None
+        return {'sentence': SentenceSerializer, 'newWords': WordSerializer, 'newSentencePatterns': SentencePatternSerializer}
 
-    def __nested(self):
-        if not 'studysentence' in self.context.keys():
-            return None
-        return self.context['studysentence']
-
-    def __context(self):
-        nested = 0
-        if 'studysentence' in self.context.keys():
-            nested = self.context['studysentence'] + 1
-        return {'request': self.context['request'], 'studysentence': nested}
 
 # 分页自定义
 class _StudySentencePagination(PageNumberPagination):

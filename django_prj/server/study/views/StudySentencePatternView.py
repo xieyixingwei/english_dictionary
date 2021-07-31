@@ -7,19 +7,17 @@ from server import permissions
 from server.views import ModelViewSetPermissionSerializerMap
 from rest_framework.pagination import PageNumberPagination
 from study.models.StudySentencePatternTable import StudySentencePatternTable
-from dictionary.views.SentencePatternView import SentencePatternSerializer
+from server.serializer import CustomSerializer
 
 
-class StudySentencePatternSerializer(serializers.ModelSerializer):
+class StudySentencePatternSerializer(CustomSerializer):
     class Meta:
         model = StudySentencePatternTable
         fields = '__all__'
 
-    def to_representation(self, instance):
-        response = super().to_representation(instance)
-        response['sentencePattern'] = SentencePatternSerializer(instance.sentencePattern).data
-        return response
-
+    def nested(self):
+        from dictionary.views.SentencePatternView import SentencePatternSerializer
+        return {'sentencePattern': SentencePatternSerializer}
 
 # 分页自定义
 class _StudySentencePatternPagination(PageNumberPagination):

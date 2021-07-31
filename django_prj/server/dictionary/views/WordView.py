@@ -13,9 +13,10 @@ from .DistinguishView import DistinguishSerializer
 from .ParaphraseView import ParaphraseSerializer
 from .SentencePatternView import SentencePatternSerializer
 from study.views.StudyWordView import StudyWordSerializer
+from server.serializer import CustomSerializer, CustomListSerializer
 
 
-class WordSerializer(serializers.ModelSerializer):
+class WordSerializer(CustomSerializer):
     paraphraseSet = ParaphraseSerializer(many=True, read_only=True)
     sentencePatternSet = SentencePatternSerializer(many=True, read_only=True)
     grammarSet = GrammarSerializer(many=True, read_only=True)
@@ -26,7 +27,12 @@ class WordSerializer(serializers.ModelSerializer):
     class Meta:
         model = WordTable
         fields = '__all__'
+        list_serializer_class = CustomListSerializer
 
+    def nested(self):
+        return {'studyWordSet': StudyWordSerializer, 'paraphraseSet': ParaphraseSerializer, 'sentencePatternSet': SentencePatternSerializer}
+
+'''
     def to_representation(self, instance):
         response = super().to_representation(instance)
         response['studyWordSet'] = self._studyWordSet(response.pop('studyWordSet'))
@@ -45,7 +51,7 @@ class WordSerializer(serializers.ModelSerializer):
             return [sw for sw in objs if userId == sw['foreignUser']]
         except:
             return []
-
+'''
 
 # 分页自定义
 class _WordPagination(PageNumberPagination):
