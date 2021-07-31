@@ -1,0 +1,3 @@
+{  // 全局配置
+    "http_package": "package:flutter_prj/common/http.dart"
+}

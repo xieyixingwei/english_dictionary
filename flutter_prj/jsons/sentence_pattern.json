@@ -1,0 +1,55 @@
+{ // 固定表达
+    "id @pk": "num=null",
+    "content": "",
+    "wordForeign @fk_mo": "$word",
+    "_paraphraseSet @fk_slave  @save": ["$paraphrase"],
+    "_studySentencePatternSet @fk_slave": ["$study_sentence_pattern"],
+    "__offstage": true,
+    "__http__": {
+        "url": "/api/dictionary/sentence_pattern/",
+        "methods": [
+            {
+                "name": "create"
+            },
+            {
+                "name": "update",
+                "url": "$id/"
+            },
+            {
+                "name": "retrieve",
+                "url": "$id/"
+            },
+            {
+                "name": "delete",
+                "url": "$id/"
+            },
+            {
+                "name": "save"
+            }
+        ]
+    }
+}
+
+{ // 分页查询 固定表达
+    "__name__": "sentence_pattern_pagination",
+    "count": 0,
+    "next": "",
+    "previous": "",
+    "results": ["$sentence_pattern"],
+    "__queryset__": {
+        "__name__": "global"
+    },
+    "__filter__": {
+        "__serializer__": "$sentence_pattern",
+        "content": ["icontains"]
+    },
+    "__http__": {
+        "url": "/api/dictionary/sentence_pattern/",
+        "methods": [
+            {
+                "name": "retrieve",
+                "filter": true
+            }
+        ]
+    }
+}

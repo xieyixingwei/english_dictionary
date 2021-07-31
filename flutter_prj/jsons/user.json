@@ -1,0 +1,63 @@
+{
+    "id @pk": "num=null",
+    "uname": "",
+    "passwd": "",
+    "isAdmin": false,
+    "registerDate": "",
+    "name": "",
+    "gender": true,
+    "birthday": "",
+    "education": 0,
+    "wechart": "",
+    "qq": "",
+    "email": "",
+    "telephone": "",
+    "status": "",
+    "studyPlan @fk_slave": "$study_plan",
+    "studyGrammarSet @fk_slave @save": ["$study_grammar"],
+    //"__studyWordSet": ["$study_word"],
+    //"studySentenceSet": ["$study_sentence"],
+    "__http__": {
+        "url": "/api/user/",
+        "methods": [
+            {
+                "name": "list",
+                "requst": "get"
+            },
+            {
+                "name": "retrieve",
+                "url": "$uname/"
+            },
+            {
+                "name": "delete",
+                "url": "$uname/"
+            },
+            {
+                "name": "update",
+                "url": "$uname/"
+            },
+            {
+                "name": "register",
+                "requst": "post",
+                "url": "register/"
+            }
+        ]
+    }
+}
+
+{
+    "__name__": "login",
+    "msg": "",
+    "status": 0,
+    "token": "String=null",
+    "__http__": {
+        "url": "/api/user/",
+        "methods": [
+            {
+                "name": "login",
+                "requst": "get",
+                "url": "login/"
+            }
+        ]
+    }
+}
